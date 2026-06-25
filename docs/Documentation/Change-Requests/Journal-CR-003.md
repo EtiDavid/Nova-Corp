@@ -35,32 +35,6 @@ The implementation was completed using Microsoft's recommended architecture, whe
 
 ---
 
-# Change Window Timeline
-
-> **Note:** Replace the placeholder times below with the actual implementation timestamps recorded during the deployment.
-
-| Time  | Activity                                   |
-| ----- | ------------------------------------------ |
-| 09:00 | Change Window Opened                       |
-| 09:05 | Recovery Snapshot Created                  |
-| 09:20 | Windows Server Validation                  |
-| 09:35 | Static IP Configuration Verified           |
-| 09:50 | Active Directory Domain Services Installed |
-| 10:15 | Server Promoted to Domain Controller       |
-| 10:30 | Automatic Reboot Completed                 |
-| 10:45 | Active Directory Validation                |
-| 11:00 | DNS Zone Validation                        |
-| 11:15 | SRV Record Verification                    |
-| 11:40 | Infrastructure VLAN Migration Began        |
-| 11:50 | Incident INC-005 Declared                  |
-| 12:25 | Connectivity Restored                      |
-| 12:40 | DNS Forwarders Configured                  |
-| 12:55 | pfSense Domain Override Configured         |
-| 13:10 | End-to-End DNS Validation                  |
-| 13:20 | Change Window Closed                       |
-
----
-
 # Dependency Review
 
 CR-003 depends upon the successful completion of the previous infrastructure layers.
@@ -1290,6 +1264,202 @@ The environment provides:
 Most importantly, Nova Corp now possesses the identity platform upon which every future enterprise service will depend.
 
 ---
+
+# Appendix A — Commands Used
+
+This appendix documents the commands and tools used during the deployment and validation of Active Directory Domain Services.
+
+The objective is to understand **why** each command was used and **what evidence** it provided.
+
+---
+
+## nslookup
+
+```powershell
+nslookup
+```
+
+### Purpose
+
+Query DNS records.
+
+### Used During
+
+* DNS validation
+* SRV record verification
+* Domain Override validation
+
+### What We Verified
+
+* DNS resolution
+* Authoritative responses
+* Service discovery
+
+---
+
+## nslookup -type=SRV
+
+```powershell
+nslookup -type=SRV _ldap._tcp.dc._msdcs.nova.corp
+```
+
+### Purpose
+
+Verify Active Directory Service Records.
+
+### Used During
+
+Post-promotion validation.
+
+### What We Verified
+
+Confirmed that LDAP service records were automatically registered by Active Directory.
+
+---
+
+## ping
+
+```powershell
+ping <hostname or IP>
+```
+
+### Purpose
+
+Verify Layer 3 connectivity.
+
+### Used During
+
+Infrastructure VLAN migration.
+
+### What We Verified
+
+* Gateway reachability
+* pfSense communication
+* General connectivity
+
+---
+
+## DNS Manager
+
+### Purpose
+
+Inspect Active Directory DNS.
+
+### Used During
+
+DNS validation.
+
+### What We Verified
+
+* Forward Lookup Zone
+* A Records
+* SRV Records
+* _msdcs
+* _tcp
+* _udp
+* _sites
+
+---
+
+## Active Directory Users and Computers
+
+### Purpose
+
+Verify Domain Controller health.
+
+### Used During
+
+Post-promotion validation.
+
+### What We Verified
+
+* Domain created
+* Directory operational
+* Administrative access
+
+---
+
+# Troubleshooting Toolkit Learned
+
+| Tool               | Purpose              | Evidence Provided              |
+| ------------------ | -------------------- | ------------------------------ |
+| nslookup           | DNS testing          | Name resolution                |
+| nslookup -type=SRV | Service discovery    | AD health                      |
+| ping               | Connectivity         | Routing and gateway validation |
+| DNS Manager        | DNS inspection       | Zone health                    |
+| ADUC               | Directory validation | Domain health                  |
+
+---
+
+# Engineering Takeaway
+
+Every validation step collected evidence before moving to the next stage.
+
+Rather than assuming Active Directory was healthy after promotion, each supporting service was verified independently.
+
+---
+ 
+# Appendix B — Interview & Knowledge Check
+
+After completing CR-003, I should be able to confidently explain the following concepts without referring to documentation.
+
+---
+
+# Active Directory
+
+* What is Active Directory?
+* What is a Forest?
+* What is a Domain?
+* What is a Domain Controller?
+* Why is Active Directory considered a directory service?
+* Why is DNS required for Active Directory?
+
+---
+
+# DNS
+
+* What is an A Record?
+* What is an SRV Record?
+* Why are SRV records important?
+* What is an Authoritative DNS Server?
+* What is a DNS Resolver?
+* What is a DNS Forwarder?
+* What are Root Hints?
+* Why did Internet DNS work before Forwarders were configured?
+
+---
+
+# Networking
+
+* Why does the Domain Controller use itself as its Preferred DNS server?
+* Why does pfSense use a Domain Override?
+* Why don't clients query the Domain Controller directly?
+* Why did the VLAN migration initially fail?
+* Why doesn't a new VLAN inherit firewall rules from another interface?
+
+---
+
+# Operations
+
+* How would I validate a healthy Domain Controller?
+* How would I verify that Active Directory DNS is working?
+* How would I troubleshoot a failed domain join?
+* How would I verify that clients are using the correct DNS path?
+* How would I safely migrate another server to a new VLAN?
+
+---
+
+# Personal Reflection
+
+The biggest lessons from this Change Request were:
+
+* Active Directory depends on DNS more than I originally realized.
+* DNS is responsible for service discovery, not just hostname resolution.
+* Enterprise services should be migrated only after validating the underlying network.
+* Firewall rules are interface-specific in pfSense.
+* Evidence-based troubleshooting is faster and more reliable than trial-and-error.
+* Understanding *why* something works is more valuable than memorizing installation steps.
+
 
 # Closing Statement
 
