@@ -2141,21 +2141,6 @@ Test-NetConnection 10.10.20.11 -Port 445
 
 
 
-# Appendix C - Publication redaction checklist
-
-Before committing this document or screenshots to GitHub, LinkedIn or a public portfolio:
-
-- [ ] Remove every private key completely.
-- [ ] Redact or replace public keys.
-- [ ] Replace exact public IPv4/IPv6 addresses with placeholders.
-- [ ] Replace MyFRITZ hostname.
-- [ ] Remove FRITZ!Box account email.
-- [ ] Remove browser tabs containing private content.
-- [ ] Remove local personal file paths where unnecessary.
-- [ ] Confirm no QR code exports contain private keys.
-- [ ] Confirm packet captures do not expose unrelated third-party traffic.
-- [ ] Keep internal Nova `10.10.x.x` addresses only if deliberately accepted for portfolio use.
-- [ ] Scrub document author metadata before publishing.
 
 
 # Appendix D - Change closure statement
