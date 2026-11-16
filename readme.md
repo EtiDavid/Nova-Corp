@@ -1,257 +1,91 @@
 # Nova Corp — Enterprise Infrastructure Lab
 
-> **Operate it. Break it. Fix it. Document it.**
+**A fictional company, a real hands-on infrastructure lab.**
 
-Nova Corp is a fictional company that I'm building to simulate a real enterprise IT environment.
+I built Nova Corp to understand what happens *after* a server has been installed: how employees authenticate, how network access is controlled, how permissions are enforced, what breaks, and how to recover without making the problem worse.
 
-Instead of learning technologies in isolation, I wanted to build a project where everything depends on the layer before it—just like in a real company.
+My focus is Windows Server, Active Directory, DNS, enterprise networking, PowerShell administration and incident response. I plan changes, test them from the user's point of view, deliberately investigate failures, and keep the commands and evidence—even when my first attempt was wrong.
 
-I'm acting as the Infrastructure Engineer. I build the environment, operate it, troubleshoot failures, document every change, and gradually expand it into a complete enterprise infrastructure.
+> **Operate it. Break it. Fix it. Document it.**  
+> This is a learning environment, not a claim that I have operated a real company's production network.
 
-This project is part of my journey into Infrastructure Engineering, System Administration and DevOps.
+**[Start the 3-minute tour](docs/START_HERE.md)** · **[Browse completed work](docs/PROJECT_STATUS.md)** · **[Read troubleshooting stories](docs/CASE_STUDIES.md)**
 
----
+## At a glance
 
-# Why I Built This
+| Area | What I have worked on | Where to look |
+| --- | --- | --- |
+| Virtualization and recovery | Nested Proxmox on VMware Workstation; initial network and failure tests | [CR-001](docs/Documentation/Change-Requests/Journal-CR-001.md) · [failure-testing report](docs/Documentation/failure-testing-report.md) |
+| Network and remote access | pfSense, segmented networks, WireGuard, firewall paths and negative-access tests | [CR-007](docs/Documentation/Change-Requests/Journal-CR-007.md) |
+| Identity and workstation management | Active Directory, two domain controllers, DNS, OUs and Group Policy | [CR index](docs/PROJECT_STATUS.md) |
+| File access and recovery | Departmental shares, NTFS permissions, DFS and Shadow Copies | [CR index](docs/PROJECT_STATUS.md) |
+| Safe administration | Eight PowerShell administration scripts, validation, rollback and repeat-run behavior | [CR-011](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md) |
+| Incident investigation | Hypothesis-led diagnostics, controlled fault exercises and recovery checks | [Engineering stories](docs/CASE_STUDIES.md) |
 
-After spending months learning Linux, Docker, networking, AWS, Terraform, GitHub Actions and Windows Server separately, I realized I understood the tools, but not how they all fit together.
+**Status note (reviewed 16 November 2026):** The public repository contains historical journals through CR-011. More recent technical work, including CR-012/CR-013 and active CR-014 incident exercises, is recorded in a separate private working repository. I am reviewing and sanitizing that evidence before publishing it here. **Published documentation is not the same as the full state of the lab.**
 
-Nova Corp solves that problem.
-
-Every server, network, firewall rule and service exists because another service depends on it.
-
-Nothing is built just because it's on a learning checklist.
-
-Everything has a purpose.
-
----
-
-# How the Project Works
-
-Every phase follows three parallel workflows.
-
-| Workflow                | Description                                                                                             |
-| ----------------------- | ------------------------------------------------------------------------------------------------------- |
-| 🎫 **Change Requests**  | Every major implementation is planned, documented and validated before moving on.                       |
-| 🚨 **Incident Reports** | Real problems are investigated using evidence, documented with root cause analysis and lessons learned. |
-| ✅ **Checkpoints**       | Before starting the next phase, backups, testing and documentation must be completed.                   |
-
-This keeps the project focused on operating infrastructure, not just deploying it.
-
----
-
-# Engineering Rules
-
-These are the rules I follow throughout the project.
-
-1. Nothing is considered complete until it has been tested.
-2. Every major change starts with a backup or snapshot.
-3. Every incident is documented with its root cause and resolution.
-4. I focus on understanding **why** something works, not just **how** to configure it.
-
----
-
-# Current Architecture
+## How the systems fit together
 
 ```text
-                     Internet
-                         │
-                  Home Router
-                         │
-                VMware Workstation
-                         │
-                 Proxmox Hypervisor
-                         │
-                     pfSense
-                         │
-        ┌────────────┬────────────┐
-        │            │            │
-     VLAN 10      VLAN 20      VLAN 30
-   Management    Servers     Applications
-                     │
-                nova-dc01
-         Active Directory & DNS
+                  Home / external network
+                            |
+                      Home router
+                            |
+                    VMware Workstation
+                            |
+                     Nested Proxmox
+                            |
+                         pfSense
+                    /       |       \
+          Management    Server network   Remote VPN
+                            |                |
+             +--------------+------+     WireGuard
+             |              |      |
+          NOVA-DC01     NOVA-DC02  NOVA-FILES01
+             |              |      |
+             +--- AD DS / DNS -----+--- SMB / NTFS / DFS
+                            |
+                       Domain client
 ```
 
-The environment will continue to grow as additional services are added.
+*Simplified logical view, not a complete physical wiring diagram or a claim that every service is available from every network. For network restrictions and actual tests, see the journals. A graphical architecture diagram is planned for the website.*
 
----
+## Three problems worth reading
 
-# Current Infrastructure
+**1. WireGuard connected, but access still had to be proven.** In [CR-007](docs/Documentation/Change-Requests/Journal-CR-007.md), I worked through a handshake problem caused by peer key configuration, checked traffic paths across NAT and firewall layers, and tested which internal services a remote client could and could not reach. Not every external-workstation objective was completed; the journal records the remaining Windows Home limitations.
 
-| Hostname    | Role                               | Status |
-| ----------- | ---------------------------------- | ------ |
-| nova-prox01 | Proxmox Hypervisor                 | ✅      |
-| nova-fw01   | pfSense Firewall                   | ✅      |
-| nova-dc01   | Active Directory Domain Controller | ✅      |
+**2. Bulk user creation left half-created accounts.** In [CR-011](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md), a password-policy rejection exposed a flaw: the script returned an error but left disabled accounts behind. I added cleanup/rollback logic, tested the failure again and verified that the incomplete users no longer remained.
 
-More infrastructure will be added as future Change Requests are completed.
+**3. An access-checking script was wrong even though permissions were right.** In [CR-011](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md), the first comparison treated `DL_FS_IT_Modify` and `NOVA\DL_FS_IT_Modify` as different groups. I corrected the matching logic and checked both authorized IT access and denied Finance access. The script is an ACL analysis tool, so I also validated actual access in a user session.
 
----
+[Read the short versions and find the source evidence →](docs/CASE_STUDIES.md)
 
-# Build Progress
+## How I work
 
-| Phase                              | Status         |
-| ---------------------------------- | -------------- |
-| Foundation (Proxmox & Networking)  | ✅ Complete     |
-| Active Directory & Identity        | 🟡 In Progress |
-| Configuration Management (Ansible) | ⬜ Planned      |
-| Applications                       | ⬜ Planned      |
-| Monitoring                         | ⬜ Planned      |
-| CI/CD                              | ⬜ Planned      |
-| Security                           | ⬜ Planned      |
-| Hybrid Cloud                       | ⬜ Planned      |
+1. **Understand the need.** What problem does this service solve for the fictional company?
+2. **Build a baseline.** Record the initial state and define what a working result should look like.
+3. **Make a controlled change.** Consider dependencies, access boundaries and rollback.
+4. **Test from more than one angle.** A successful command alone is not proof that the intended result happened.
+5. **Investigate the failures.** Keep failed commands, wrong assumptions and the tests that ruled them out.
+6. **Validate and document.** Include both positive and negative tests where appropriate.
 
----
+The journals are intentionally detailed; this README and the linked guide are the shorter route for someone evaluating the project.
 
-# Completed Change Requests
+## Find the evidence
 
-| Change Request                                    | Status         |
-| ------------------------------------------------- | -------------- |
-| CR-001 — Deploy Proxmox Hypervisor                | ✅              |
-| CR-002 — Deploy pfSense Network Foundation        | ✅              |
-| CR-003 — Deploy Active Directory & Enterprise DNS | ✅              |
-| CR-004 — Secondary Domain Controller              | 🚧 In Progress |
+- **[3-minute guided tour](docs/START_HERE.md)** — what the lab is and what to open first.
+- **[Change-request index and honest progress](docs/PROJECT_STATUS.md)** — published files versus current engineering status.
+- **[Engineering case studies](docs/CASE_STUDIES.md)** — problem, diagnosis, result and source journal.
+- **[CR-011 PowerShell administration journal](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)** — eight scripts and the failure cases they had to survive.
+- **[CR-007 remote-access journal](docs/Documentation/Change-Requests/Journal-CR-007.md)** — WireGuard, firewall and packet-path evidence.
+- **[Initial failure-testing report](docs/Documentation/failure-testing-report.md)** — intentionally broken Proxmox network configuration and recovery.
 
----
+## What's next
 
-# Documentation
+The lab continues with incident exercises and later security, Linux, Microsoft workplace and operations work under an approved 33-change-request roadmap. **Planned work is not presented as implemented.** My next portfolio tasks are a sanitized architecture diagram, selected screenshots with captions, publicly reviewable later journals and a small visual site at **`novacorp.etidavid.dev`**. That address is a plan, **not a live-site claim**.
 
-This project is documented like a real enterprise environment.
+## About me
 
-The repository contains:
+I'm **David Eti**, and I'm building practical experience for System Engineer, System Administrator, Infrastructure and DevOps roles. I learn best by building something, checking what I actually understand, and working through the problems that come with operating it.
 
-* Change Requests
-* Incident Reports
-* Operations Handbook
-* Architecture Documentation
-* Runbooks
-* Screenshots
-* Network Diagrams
-
-Every major decision is documented so I can explain not only **what** I built, but also **why** I built it.
-
----
-
-# Troubleshooting Approach
-
-Whenever something breaks, I follow the same process.
-
-```text
-Observe
-
-↓
-
-Collect Evidence
-
-↓
-
-Form a Hypothesis
-
-↓
-
-Investigate
-
-↓
-
-Identify the Root Cause
-
-↓
-
-Implement the Fix
-
-↓
-
-Validate
-
-↓
-
-Document
-```
-
-This approach has helped me avoid guessing and build better troubleshooting habits.
-
----
-
-# Technologies
-
-Current technologies:
-
-* Proxmox VE
-* VMware Workstation
-* pfSense
-* Windows Server 2025
-* Active Directory
-* DNS
-* VLANs
-* Linux
-
-Planned technologies:
-
-* Ansible
-* Docker
-* Kubernetes
-* Prometheus
-* Grafana
-* GitHub Actions
-* Jenkins
-* Terraform
-* AWS
-
----
-
-# Repository Structure
-
-```text
-nova-corp/
-│
-├── docs/
-│   ├── change-requests/
-│   ├── incident-reports/
-│   ├── architecture/
-│   ├── runbooks/
-│   ├── screenshots/
-│   └── diagrams/
-│
-├── ansible/
-├── terraform/
-├── scripts/
-└── backups/
-```
-
----
-
-# What I'm Learning
-
-This project is helping me build practical experience in:
-
-* Infrastructure Engineering
-* Windows Server Administration
-* Linux Administration
-* Enterprise Networking
-* Active Directory
-* DNS
-* System Design
-* DevOps
-* Documentation
-* Incident Response
-
----
-
-# About Me
-
-Hi, I'm **David Eti**.
-
-I'm passionate about Infrastructure Engineering, Cloud and DevOps, and I learn best by building real projects.
-
-Nova Corp is my long-term home lab where I can design, operate and troubleshoot an enterprise environment while documenting everything I learn along the way.
-
-My goal is not simply to know the tools, but to understand how real production systems are designed, maintained and improved.
-
----
-
-# Project Status
-
-🚧 **Nova Corp is an active project and will continue to grow as new technologies and services are added.**
-
-Every completed phase, incident and engineering decision will be documented throughout the project.
+For the cloud deployment and CI/CD side of my work, see my separate [NovaPredict DevOps case study](https://github.com/EtiDavid/novapredict-devops-case-study).
