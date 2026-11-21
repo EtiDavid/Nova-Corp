@@ -1,53 +1,55 @@
-# File Storage & Access
+# File & Records Room — Shared files and who may open them
 
-## Why Nova Corp needs a file server
+Nova Corp stores departmental folders on **[NOVA-FILES01](systems/NOVA-FILES01.md)**. Employee access is based on domain identity and the combination of SMB and NTFS permissions.
 
-Departments need shared files, but the right person should see only the folders they are authorized to use.
+## Department folders
 
-**NOVA-FILES01** is the Phase 2 file server. It provides SMB shares and DFS namespace integration; Shadow Copies and Windows Server Backup add recovery paths.
+| Folder | Who it is for | What we know from testing |
+| --- | --- | --- |
+| <a id="it"></a>**IT** | IT staff | Moyo was **allowed**; `DL_FS_IT_Modify` matched SMB and NTFS |
+| <a id="finance"></a>**Finance** | Finance staff | Moyo was **denied**; Finance Domain Local permission groups were reviewed |
+| **HR** | Human Resources | Departmental group and file-sharing work documented |
+| **Sales** | Sales | Departmental group and drive-access work documented |
+| **Management** | Management | Departmental access model and permissions documented |
 
-## How the access decision works
+## Follow the IT access chain
 
-```text
-User signs in
-   ↓
-Active Directory confirms identity
-   ↓
-Security-group membership is evaluated
-   ↓
-SMB share permission + NTFS permission
-   ↓
-Authorized departmental folder
+```mermaid
+flowchart LR
+    MO["Moyo · IT"] --> GG["IT_Users"]
+    GG --> DL["DL_FS_IT_Modify"]
+    DL --> ACL["SMB share + NTFS"]
+    ACL --> F["IT folder"]
 ```
 
-An OU organizes people; it is **not** itself a permission grant.
+[Open Moyo's profile](people/MOYO.md) → [security groups](GROUPS.md) → [how SMB works](services/SMB.md) → [file server](systems/NOVA-FILES01.md).
 
-## File-server profile
+An **OU** organizes users; it does not itself grant a folder permission. The actual resource access depends on the user's groups and the access rules at the share and filesystem.
 
-- Hostname: `NOVA-FILES01.nova.corp`
-- IP: `10.10.20.20`
-- Main role: departmental SMB shares, DFS, Shadow Copies, backup
-- User-facing domain path: `\\nova.corp\shares`
+## The file path
 
-**Documentation:** [File server deployment PDF](../Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf) · [Department permissions PDF](../Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) · [DFS/Shadow Copies PDF](../Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf).
+Employees can use the DFS Namespace path:
 
-## Why negative tests matter
+`\\nova.corp\shares`
 
-A positive test proves an authorized user can open an allowed folder. A negative test proves that someone else cannot open a restricted folder. Both are required.
+[Learn about DFS](services/DFS.md).
 
-[Open the incident and validation summary](../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md).
+## What happens if a file disappears?
 
-## What the site will add
+The recovery design includes [Shadow Copies / Previous Versions](services/VSS.md) and [Windows Server Backup](services/BACKUPS.md). The incident exercises proved a deleted file could be restored after a backup-target failure was repaired.
 
-Each department share will become a clickable profile:
+## Tests
 
-- business purpose;
-- linked department;
-- sanitized SMB/NTFS access rules;
-- groups that grant access;
-- authorized and denied test examples;
-- DFS path;
-- recovery options;
-- screenshots and full journal.
+**Allowed:** Moyo opened IT successfully.
 
-The full current access matrix must be reconciled from validated evidence before every rule appears publicly.
+**Denied:** the same IT identity did not receive Finance access.
+
+**Resilience:** the file-share problem was distinguished from DNS and user authorization during later investigations.
+
+[Tests and recovery](TESTS_AND_RECOVERY.md)
+
+## Original engineering records
+
+[File server deployment PDF](../Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf) · [Shares & drive mapping PDF](../Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) · [DFS & Shadow Copies PDF](../Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf) · [Access script and real-user tests](../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
+
+[← Company map](../EXPLORE_NOVACORP.md)
