@@ -1,54 +1,65 @@
-# Nova Corp — work index and publication status
+# Nova Corp — Project Status and Public Evidence
 
-**Reviewed:** 16 November 2026  
-**Important:** This index distinguishes work in the lab from documentation currently *publicly available in this repository*. It is not a live service-health dashboard.
+**Reviewed:** 21 November 2026  
+**Current milestone:** **Phase 2 closed — CONDITIONAL PASS**  
+**Next mandatory security gate:** **CR-016 — Privileged Admin VPN and Management Plane Firewall Isolation**
 
-## Publicly available journals
+This page distinguishes:
 
-| CR | Subject | Public evidence | Notes |
+- **engineering status** — what was built/tested in the lab;
+- **publication status** — what is currently available in this public repository;
+- **future roadmap** — what is planned but not yet claimed as implemented.
+
+## CR-001 → CR-015
+
+| CR | Subject | Engineering status | Public evidence |
 | --- | --- | --- | --- |
-| CR-001 | Proxmox virtual platform | [Journal](Documentation/Change-Requests/Journal-CR-001.md) · [failure tests](Documentation/failure-testing-report.md) | Foundation and recovery testing |
-| CR-002 | pfSense / network foundation | [Journal](Documentation/Change-Requests/Journal-CR-002.md) | Historical implementation record |
-| CR-003 | Active Directory and DNS | [Journal](Documentation/Change-Requests/Journal-CR-003.md) | Historical implementation record |
-| CR-004 | Domain controller / redundancy foundations | [Journal](Documentation/Change-Requests/Journal-CR-004.md) | Earlier milestone; later resilience validation is CR-013 |
-| CR-005 | Organizational units and identity management | [Journal](Documentation/Change-Requests/Journal-CR-005.md) | Historical implementation record |
-| CR-006 | Group Policy | [Journal](Documentation/Change-Requests/Journal-CR-006.md) | Also contains supporting evidence images |
-| CR-007 | WireGuard remote access and workstation integration | [Journal](Documentation/Change-Requests/Journal-CR-007.md) | Technical implementation passed, with external workstation limitations |
-| CR-008 | File server deployment | [PDF journal](Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf) | PDF currently published |
-| CR-009 | Department shares and drive mapping | [PDF journal](Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) | PDF currently published |
-| CR-010 | DFS and Shadow Copies | [PDF journal](Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf) | PDF currently published |
-| CR-011 | PowerShell administration toolkit | [Markdown journal](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md) · [PDF](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.pdf) | Technical journal identifies completed validated release |
+| CR-001 | Proxmox virtual platform | COMPLETE | [Journal](Documentation/Change-Requests/Journal-CR-001.md) · [Failure tests](Documentation/failure-testing-report.md) |
+| CR-002 | pfSense / network foundation | COMPLETE | [Journal](Documentation/Change-Requests/Journal-CR-002.md) |
+| CR-003 | Active Directory and DNS | COMPLETE | [Journal](Documentation/Change-Requests/Journal-CR-003.md) |
+| CR-004 | Additional Domain Controller / HA foundation | COMPLETE | [Journal](Documentation/Change-Requests/Journal-CR-004.md) |
+| CR-005 | OU / users / groups / AGDLP foundation | COMPLETE | [Journal](Documentation/Change-Requests/Journal-CR-005.md) |
+| CR-006 | Group Policy and workstation security | COMPLETE | [Journal](Documentation/Change-Requests/Journal-CR-006.md) |
+| CR-007 | WireGuard remote access | COMPLETE with documented external-workstation limitations | [Journal](Documentation/Change-Requests/Journal-CR-007.md) |
+| CR-008 | File Server deployment | COMPLETE | [PDF](Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf) |
+| CR-009 | Departmental shares and drive mapping | COMPLETE | [PDF](Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) |
+| CR-010 | DFS and Shadow Copies | COMPLETE | [PDF](Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf) |
+| CR-011 | PowerShell Administration Toolkit | COMPLETE / validated `CR-011-v1.0.0` | [Markdown](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md) · [PDF](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.pdf) |
+| CR-012 | Windows Server Backup and Recovery | IMPLEMENTATION COMPLETE; historical publication had one pending natural schedule item, later recovery controls validated downstream | [Markdown](Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) · [PDF](Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.pdf) |
+| CR-013 | Secondary DC and AD Resilience | COMPLETE / PASS | [Markdown](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md) · [PDF](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.pdf) |
+| CR-014 | Phase 2 Incident Exercises | COMPLETE / PASS; external VPN incident deferred to CR-016 | [Summary](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) · [Engineering PDF](Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) |
+| CR-015 | Phase 2 Validation and Closure | **CLOSED — CONDITIONAL PASS** | [Closure summary](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md) |
 
-**Published file** means the named file has been observed in this public repository's history. It does not mean every link, screenshot, control or statement has been separately revalidated in this publication pass.
+## Phase 2 closure conditions
 
-## More recent working-repository status
+Phase 2 is closed, but not every future security/operations feature is complete.
 
-The private working repository's live handoff (last checked 12 November 2026) records:
+Still open:
 
-| CR | Engineering status recorded there | Public status here |
-| --- | --- | --- |
-| CR-012 | Earlier recovery work referenced in later baselines | Journal not yet published in this repo |
-| CR-013 | Technical validation complete; journal marked **draft pending final editorial review** | Full journal not yet published |
-| CR-014 | Incident exercises **in progress**; share/NTFS and DNS exercises closed; Group Policy exercise active | Live records and evidence not yet sanitized/published |
-| CR-015 | Not yet demonstrated complete in the reviewed handoff | No public journal yet |
-| CR-016 | Required privileged-admin VPN / management-plane isolation security gate before Phase 3 | Not yet demonstrated complete in the reviewed handoff |
+- CR-016 privileged-admin VPN / management-plane isolation;
+- genuine external user/admin VPN validation;
+- later centralized monitoring/observability;
+- accepted home-lab shared physical-host failure domain.
 
-**No status is inferred here for CR-017 through CR-033.** Those are future roadmap items, not evidence of implemented technologies. We will add them to the public roadmap when the approved source and their actual state are reviewed for publication.
+A fresh independent second-operator runbook test was also waived after the extensive CR-014 blind incident campaign. That exception is documented rather than hidden.
 
-## Read this before treating a line as proof
+## Current operations material
 
-- **Technical status** — whether the lab tests and acceptance criteria have passed.
-- **Journal status** — whether the detailed engineering document has finished review.
-- **Portfolio status** — whether public, sanitized evidence can be opened without access to my private repo.
+- [Current Architecture](ARCHITECTURE.md)
+- [Phase 2 Operations Runbook](runbooks/PHASE-2-OPERATIONS-RUNBOOK.md)
+- [Engineering Case Studies](CASE_STUDIES.md)
 
-These are different states. For example, CR-013 passed the recorded technical tests while its journal was still marked draft.
+## Publication quality work still in progress
 
-## Next editorial work
+Some historical Markdown journals reference screenshot assets that are not yet present in the public tree, particularly CR-011, CR-012 and CR-013.
 
-1. Review and sanitize the CR-012–CR-014 material, with source-to-public evidence links.
-2. Replace the simplified ASCII diagram with an accurate, readable architecture image.
-3. Move key PowerShell scripts into a safe, separately reviewed public code section.
-4. Validate image links, crop/redact screenshots and remove accidental metadata sidecar files before expanding the portfolio.
-5. Keep this index aligned with actual change-request closure and newer journal reviews.
+The technical journals remain public, but the screenshot set is being curated rather than dumping every raw lab image into the portfolio.
 
-None of these presentation tasks changes the frozen Nova Corp engineering roadmap or replaces the original journals.
+The next portfolio steps are:
+
+1. repair/curate the missing visual evidence;
+2. design the main architecture SVG;
+3. write the first four dedicated recruiter case studies;
+4. build the interactive story-map website.
+
+Future CRs are not listed as implemented until their own evidence exists.
