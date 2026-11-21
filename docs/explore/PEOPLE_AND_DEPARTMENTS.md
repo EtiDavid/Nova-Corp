@@ -1,59 +1,49 @@
 # People & Departments
 
-## How staff are organized
+Nova Corp's fictional organization uses Active Directory to group employees and manage access by department.
 
-Nova Corp is a **fictional organization**. Its directory was built to model how departments and IT policies can be managed centrally.
+The directory includes **Finance, Human Resources, IT, Management and Sales**, plus contractor and service-account areas.
 
-The historical directory-structure journal records these parent OUs:
+## Open a department
 
-```text
-nova.corp
-├── Nova Administrative Accounts
-├── Nova Computers
-│   ├── Servers
-│   └── Workstations
-├── Nova Disabled Objects
-├── Nova Resources
-├── Nova Security Groups
-├── Nova Service Accounts
-└── Nova Users
-    ├── Finance
-    ├── HR
-    ├── IT
-    ├── Management
-    └── Sales
-```
+[Finance](people/DEPARTMENTS.md#finance) · [Human Resources](people/DEPARTMENTS.md#human-resources) · [IT](people/IT_DEPARTMENT.md) · [Management](people/DEPARTMENTS.md#management) · [Sales](people/DEPARTMENTS.md#sales) · [Contractors](people/DEPARTMENTS.md#contractors)
 
-**Historical source:** [Directory and OU structure](../Documentation/Change-Requests/Journal-CR-005.md). This is an implemented/historical tree, not a live directory export.
+## Meet lab identities
 
-## Why these categories matter
+| Person or account | Department / scenario | Explore |
+| --- | --- | --- |
+| **David Eti** | IT account in directory-organizing exercise | [David's profile](people/DAVID.md) |
+| **Moyo Agunbiade** | IT account used for real file-access validation | [Moyo's profile](people/MOYO.md) |
+| **John Shaw** | Contractor test account for removable-storage policy | [Contractor profile](people/JOHN_SHAW.md) |
+| **svc_backup** | Service identity created during directory setup | [Service accounts](DIRECTORY.md) |
+| **svc_monitoring** | Service identity created during directory setup | [Service accounts](DIRECTORY.md) |
+| **svc_fileserver** | Service identity created during directory setup | [Service accounts](DIRECTORY.md) |
 
-- **Departments / OUs** place accounts where administrators can manage them consistently.
-- **Security groups** decide who can access resources or target some policies.
-- **Computers** can receive different policies from people.
-- **Administrative and service accounts** are separated for clearer responsibility.
-- **Disabled objects** have a designated place rather than being left among active accounts.
+Accounts created for scripting and incident exercises are part of the lab history. For example, test accounts were used to check Finance permission, offboarding and lockout behavior.
 
-## Staff profiles on the future site
+## Inside the directory
 
-Each safe, fictional staff profile will show:
+<details open><summary><strong>Organizational Units</strong></summary>
 
-| Field | Example of the information type |
-| --- | --- |
-| Display name | Approved fictional/alias name |
-| Role / department | IT, Finance, HR, Management or Sales |
-| Logon name | Sanitized or fictional username only |
-| OU | Directory location |
-| Security groups | Only approved sanitized group names |
-| Policies | Relevant policy links (actual application must be evidenced) |
-| File permissions | Why access is allowed or denied |
-| Related tests | The user-access incident/validation |
-| Status | Verified, historical, test account, or planned |
+- **Nova Users** — Finance, HR, IT, Management, Sales and Contractors
+- **Nova Computers** — Workstations and Servers
+- **Nova Security Groups** — global and resource permission groups
+- **Nova Service Accounts**
+- **Nova Administrative Accounts**
+- **Nova Disabled Objects**
+- **Nova Resources**
+- **Built-in Domain Controllers OU**
 
-**Do not publish actual personal information, real credentials, passwords, email addresses, identity secrets or an unreviewed AD export.**
+[Open the expandable OU tree](DIRECTORY.md)
 
-The CR-005 journal described initial IT accounts. That historical fact is **not** proof of the present-day enabled-account list. A fresh approved inventory is needed before claiming current staff counts or full profiles.
+</details>
 
-## Browse connected topics
+## How access follows an employee
 
-[Identity](IDENTITY.md) · [Policies](POLICIES.md) · [File Access](FILE_SERVICES.md) · [Tests](TESTS_AND_RECOVERY.md)
+[Moyo](people/MOYO.md) belongs to [IT_Users](GROUPS.md#it_users), and the documented authorization path includes `DL_FS_IT_Modify`. That allowed the IT folder but did not grant access to Finance.
+
+[Follow the full access chain](FILE_SERVICES.md) · [Explore Group Policy](POLICIES.md).
+
+*Profiles describe documented lab exercises. A username seen in an old test is not automatically a claim that the account is still active today.*
+
+[← Company map](../EXPLORE_NOVACORP.md)
