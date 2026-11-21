@@ -1,94 +1,84 @@
-# Start Here — a three-minute tour of Nova Corp
+# Start Here — Nova Corp in 60 seconds
 
-Nova Corp is a fictional company I use to practice infrastructure engineering.
+If you are reviewing this repository for a **System Engineer, System Administrator, Infrastructure or DevOps** role, this is the shortest useful path.
 
-The goal is not to collect disconnected tutorials. Each change request starts from a business/operational need, changes the lab, validates the result, and preserves failures when they teach something useful.
+## What is Nova Corp?
 
-**Current milestone:** Phase 2 closed with a documented conditional pass on 21 November 2026.
+Nova Corp is a **fictional company used as a hands-on infrastructure lab**.
 
-## 1. See the environment
+I use it to practice the work that connects separate technologies into one operating environment: identity, DNS, networking, security policy, file access, automation, backup, recovery and incident response.
 
-Start with the current-state page:
+**Current milestone:** Phase 2 closed with a documented **Conditional Pass** on **21 November 2026**.
 
-**[Current architecture →](ARCHITECTURE.md)**
+---
 
-It shows the actual identities and addresses used at the Phase 2 boundary, including the places where the running environment differs from older target diagrams.
+## What should make this worth a deeper look?
 
-## 2. See how identity survives failure
+### I did not stop at installation
 
-CR-013 is one of the strongest technical journals.
+I deliberately tested:
 
-It covers:
+- a Domain Controller outage;
+- replication recovery;
+- client DNS failure;
+- Group Policy failure;
+- permissions failure;
+- backup-target failure;
+- deleted-file restore;
+- cross-service faults;
+- firewall/management-access mistakes;
+- snapshot-storage pressure.
 
-- two writable Domain Controllers;
-- replication health;
-- SYSVOL/NETLOGON;
-- DNS/Kerberos/Global Catalog discovery;
-- AD Recycle Bin;
-- DC01 outage with client continuity through DC02;
-- natural recovery after the DC returns;
-- controlled replication divergence and recovery.
+### I kept the failures
 
-**[Open CR-013 →](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md)**
+The journals preserve wrong assumptions, failed injectors and corrections where they teach something useful.
 
-## 3. See automation fail and get corrected
+### I can point to proof
 
-CR-011 builds eight PowerShell administration scripts.
+- **AD resilience:** [CR-013](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md)
+- **PowerShell automation:** [CR-011](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)
+- **Incident response:** [CR-014](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)
+- **Operational acceptance:** [CR-015](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)
 
-The useful part is not the script count. The useful part is what failed:
+---
 
-- a password-policy error left half-created users;
-- an access-analysis script compared group names incorrectly;
-- protected identities and repeat-run behavior needed explicit controls.
+## Five numbers
 
-**[Open CR-011 →](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)**
+- **2** writable Domain Controllers
+- **8** validated PowerShell administration scripts
+- **7** GPOs frozen in the Phase 2 baseline
+- **20** old Proxmox snapshots retired during closure
+- **125.72 GiB** reclaimed from the thin pool while preserving the active rollback point
 
-## 4. See controlled incident response
+And one result I care about more than a number:
 
-CR-014 deliberately exercises:
+**a deleted file was restored and its SHA-256 matched the original.**
 
-- permissions;
-- DNS;
-- Group Policy;
-- backup/recovery;
-- Domain Controller outage;
-- simultaneous cross-service faults.
+---
 
-The external VPN incident was intentionally deferred rather than faked.
+## Pick your depth
 
-**[Open CR-014 summary →](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)**
+### Recruiter / non-technical reviewer
 
-## 5. See how Phase 2 was accepted
+1. [Current architecture](ARCHITECTURE.md)
+2. [Engineering stories](CASE_STUDIES.md)
+3. [Skills → evidence](SKILLS_EVIDENCE.md)
 
-CR-015 performs final validation and handover.
+### Technical hiring manager
 
-It includes:
+1. [CR-013 — AD resilience](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md)
+2. [CR-014 — incident exercises](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)
+3. [CR-015 — final validation](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)
+4. [Phase 2 operations runbook](runbooks/PHASE-2-OPERATIONS-RUNBOOK.md)
 
-- current-state architecture reconciliation;
-- pfSense management exposure discovered and remediated;
-- HTTP → HTTPS management transport;
-- rollback/configuration baselines;
-- GPO export;
-- snapshot-retention cleanup;
-- Phase 2 operations runbook;
-- visible open risks and CR-016 carry-forward.
+### Deep technical review
 
-**[Open CR-015 →](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)**
+[Browse CR-001 → CR-015](PROJECT_STATUS.md)
 
-## Choose your route
+---
 
-| If you care about... | Open |
-| --- | --- |
-| Full CR-001 → CR-015 index | [Project Status](PROJECT_STATUS.md) |
-| Architecture | [Architecture](ARCHITECTURE.md) |
-| Troubleshooting stories | [Case Studies](CASE_STUDIES.md) |
-| Operations / recovery | [Phase 2 Runbook](runbooks/PHASE-2-OPERATIONS-RUNBOOK.md) |
-| Remote access | [CR-007](Documentation/Change-Requests/Journal-CR-007.md) |
-| Group Policy | [CR-006](Documentation/Change-Requests/Journal-CR-006.md) |
-| Backup and recovery | [CR-012](Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) |
+## One important boundary
 
-## One important note
+This is a **home lab**, not a production environment from an employer.
 
-This is a home lab.
-
-The systems, incidents and recovery exercises are real hands-on work inside the lab, but they are not stories from a real employer's production network.
+The engineering work is real hands-on work in the lab. The project also keeps unfinished work visible: CR-016 privileged-management isolation and centralized monitoring are not presented as already completed.
