@@ -2,6 +2,8 @@
 
 If you are reviewing this repository for a **System Engineer, System Administrator, Infrastructure or DevOps** role, this is the shortest useful path.
 
+**[Start by exploring the company →](EXPLORE_NOVACORP.md)**
+
 ## What is Nova Corp?
 
 Nova Corp is a **fictional company used as a hands-on infrastructure lab**.
