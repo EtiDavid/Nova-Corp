@@ -19,7 +19,7 @@ The directory includes **Finance, Human Resources, IT, Management and Sales**, p
 | **svc_monitoring** | Service identity created during directory setup | [Service accounts](DIRECTORY.md) |
 | **svc_fileserver** | Service identity created during directory setup | [Service accounts](DIRECTORY.md) |
 
-Accounts created for scripting and incident exercises are part of the lab history. For example, test accounts were used to check Finance permission, offboarding and lockout behavior.
+Accounts created for scripting and incident exercises are part of the lab history. [Explore the test accounts used for onboarding, access, offboarding and lockout](people/TEST_ACCOUNTS.md).
 
 ## Inside the directory
 
