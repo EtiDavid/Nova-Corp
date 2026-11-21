@@ -2,7 +2,7 @@
 
 **Document ID:** NOVACORP-WEB-SOT  
 **Version:** 2.0 — company-first redesign  
-**Status:** APPROVED DIRECTION / IMPLEMENTATION NOT YET STARTED  
+**Status:** PROPOSED FOR OWNER REVIEW / IMPLEMENTATION NOT YET STARTED  
 **Owner:** David Eti  
 **Reviewed:** 21 November 2026  
 **Engineering baseline:** Phase 2 conditionally closed; privileged-management security work is next  
@@ -1597,16 +1597,16 @@ Existing CR-015 screenshots and earlier journals remain valuable, but they canno
 
 | Decision | Why | Status |
 | --- | --- | --- |
-| Company explorer replaces CR-first story map | Nontechnical visitors should discover systems, not archival IDs | Accepted |
-| CRs remain as evidence links | Preserve technical history without making it user navigation | Accepted |
-| Static documented snapshot, not live lab dashboard | Security and maintainability | Accepted |
-| Astro pages + bounded interactive React Flow island | Rich relationships without whole-site SPA | Accepted pending prototype evaluation |
+| Company explorer replaces CR-first story map | Nontechnical visitors should discover systems, not archival IDs | Proposed |
+| CRs remain as evidence links | Preserve technical history without making it user navigation | Proposed |
+| Static documented snapshot, not live lab dashboard | Security and maintainability | Proposed |
+| Astro pages + bounded interactive React Flow island | Rich relationships without whole-site SPA | Proposed — confirm by prototype |
 | Synthetic/approved staff profiles only | Privacy and accurate simulation | Mandatory |
 | GPO scope ≠ observed effective policy | Technical correctness | Mandatory |
 | Full firewall rule list requires current audited sanitized export | Security and correctness | Mandatory |
 | Map has accessible tree/list fallback | WCAG/mobile usability | Mandatory |
 | One structured entity graph feeds all views | No duplicated conflicting facts | Mandatory |
-| No game engine/3D in v1 | Recruiter clarity and performance | Accepted |
+| No game engine/3D in v1 | Recruiter clarity and performance | Proposed |
 
 ---
 
