@@ -6,8 +6,7 @@ date: "22 October 2026"
 status: "COMPLETE - validated baseline CR-011-v1.0.0"
 ---
 
-> **Public evidence note (21 Nov 2026):** this historical journal originally referenced local screenshot assets that are not currently present in the public repository. Broken image embeds have been removed from the rendered page while the exact evidence filenames remain preserved in the Markdown source comments. A smaller curated screenshot set will be republished after privacy review.
-
+**Explore the related parts of Nova Corp:** [PowerShell toolkit](../../explore/AUTOMATION.md) · [People](../../explore/PEOPLE_AND_DEPARTMENTS.md) · [Groups](../../explore/GROUPS.md) · [File access](../../explore/FILE_SERVICES.md)
 
 # CR-011 - PowerShell Administration Toolkit
 
@@ -1044,8 +1043,6 @@ Finance_Users             Global       Security  Direct
 DL_FS_Finance_Modify      DomainLocal  Security  Nested/Effective
 Domain Users              Global       Security  Primary
 ```
-
-<!-- Evidence reference: images/group_membership.png | Repaired group membership script passes parser and returns direct, nested/effective and primary membership -->
 
 ### 9.8 Include Windows/system authorization groups
 
@@ -2092,8 +2089,6 @@ ParserErrors = 0
 Status       = PASS
 ```
 
-<!-- Evidence reference: images/parser.png | All eight CR-011 scripts pass the PowerShell parser gate -->
-
 This is useful because a syntax regression can be detected before a state-changing script ever touches AD.
 
 ---
@@ -2129,8 +2124,6 @@ Final known-good SHA-256 values:
 | `Get-LockedAccounts.ps1` | `B8309B0AEF3E053F074E8DD05E16A389D4BD512098F50FDC6AA32B8606E3FE93` |
 | `Reset-UserPassword.ps1` | `2D9477CD19174938404AF7C8555FABC09BA3B5FEE05D1D2EB76D8B9D07CD2A9D` |
 | `Get-ADComputerReport.ps1` | `8E119154C3446BBE76AEFC0EA78BFFD9AECDA92432B1CB734130F8F308740483` |
-
-<!-- Evidence reference: images/hashes.png | SHA-256 fingerprints for all eight scripts -->
 
 A cryptographic hash is a file fingerprint. If even one character is changed, the expected and current hashes will no longer match.
 
@@ -2221,8 +2214,6 @@ Get-ChildItem `
     Format-Table -AutoSize
 ```
 
-<!-- Evidence reference: images/package_scripts.png | Eight scripts copied into the CR-011-v1.0.0 package -->
-
 ### 17.3 Release inventory
 
 ```powershell
@@ -2253,8 +2244,6 @@ $ReleaseInventory |
         -NoTypeInformation `
         -Encoding UTF8
 ```
-
-<!-- Evidence reference: images/inventory.png | Release inventory proves every packaged script exists -->
 
 ### 17.4 Package hash comparison
 
@@ -2299,8 +2288,6 @@ Observed:
 8 / 8 HashMatches = True
 ```
 
-<!-- Evidence reference: images/hashmatch.png | Working scripts and packaged scripts match by SHA-256 -->
-
 This proves the baseline copy was not altered while being packaged.
 
 ### 17.5 Version marker
@@ -2334,8 +2321,6 @@ Host: NOVA-DC01
 Scripts: 8
 Integrity: SHA256
 ```
-
-<!-- Evidence reference: images/version.png | Version file and final 8-of-8 integrity comparison -->
 
 ---
 
@@ -2490,8 +2475,6 @@ Timestamp:
 ```text
 2026-10-22 08:25:48
 ```
-
-<!-- Evidence reference: images/snapshot.png | Final Proxmox rollback point after CR-011 validation -->
 
 This snapshot is a **short-term lab rollback point**, not a replacement for the independent backup work planned in CR-012.
 
