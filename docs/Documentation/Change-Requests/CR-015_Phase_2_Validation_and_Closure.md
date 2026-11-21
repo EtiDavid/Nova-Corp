@@ -64,7 +64,7 @@ Before CR-016, Nova Corp now has multiple recovery layers:
 - a backup of all 7 current GPOs with a hashed manifest;
 - the validated CR-011 PowerShell release.
 
-Private configuration files and secrets are not published here.
+The published baseline includes the snapshot, VM backup, configuration-export and GPO-backup verification results.
 
 ### Snapshot-retention risk was fixed
 
@@ -89,6 +89,10 @@ The result is conditional rather than unconditional because the project delibera
 - a fresh second-operator runbook test was waived after the extensive CR-014 blind incident campaign.
 
 None of those is presented as completed work.
+
+## Connected parts of Nova Corp
+
+[pfSense firewall](../../explore/systems/NOVA-FW01.md) · [Proxmox](../../explore/systems/NOVA-PROX01.md) · [Domain Controllers](../../explore/IDENTITY.md) · [Group Policy](../../explore/POLICIES.md) · [Recovery](../../explore/services/BACKUPS.md) · [Incident Lab](../../explore/TESTS_AND_RECOVERY.md)
 
 ## Phase 2 result
 
