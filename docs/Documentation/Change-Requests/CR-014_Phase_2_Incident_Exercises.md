@@ -60,10 +60,14 @@ The external VPN incident was not fabricated.
 
 The required genuinely external test device was unavailable, so the external-user / privileged-admin validation was carried forward to **CR-016 — Privileged Admin VPN and Management Plane Firewall Isolation**.
 
+## Connected parts of Nova Corp
+
+[Domain Controllers](../../explore/IDENTITY.md) · [File server](../../explore/systems/NOVA-FILES01.md) · [DNS](../../explore/services/DNS.md) · [Group Policy](../../explore/POLICIES.md) · [Recovery](../../explore/services/BACKUPS.md) · [All investigations](../../explore/TESTS_AND_RECOVERY.md)
+
 ## Full historical record
 
 The public engineering PDF remains available here:
 
 [CR-014 Engineering Journal and Evidence](Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf)
 
-The public portfolio intentionally keeps this Markdown page shorter than the raw engineering record.
+The engineering PDF contains the complete incident execution record.
