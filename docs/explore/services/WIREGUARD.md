@@ -18,6 +18,8 @@ Remote laptop
    → approved internal destination
 ```
 
+[Meet the remote laptop test participant](../people/ZOE.md).
+
 ## What Nova Corp tested
 
 During the initial attempt, UDP packets reached pfSense but the VPN did not respond. Packet capture and rule counters helped isolate the problem to the WireGuard peer configuration, rather than routing or port forwarding. Recreating the client key pair and correcting the peer entry resolved the failure.
