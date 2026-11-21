@@ -1,9 +1,7 @@
 # Nova Corp — Phase 2 Operations Runbook
 
 **Validated baseline:** 21 November 2026  
-**Purpose:** concise operator guidance for the current Windows/network foundation.
-
-This public runbook is intentionally shorter than the engineering journals.
+**Purpose:** Operating and troubleshooting guide for the current Windows/network foundation.
 
 ## Safe startup order
 
@@ -138,4 +136,4 @@ A running service does not prove the client can actually use it.
 - centralized monitoring is a later phase;
 - the lab is nested on one wider physical host environment.
 
-For command-level history, use the individual CR journals.
+[Explore the systems](../explore/SYSTEMS.md) · [Open the Incident Lab](../explore/TESTS_AND_RECOVERY.md) · [Browse the engineering journals](../Documentation/Change-Requests/README.md).
