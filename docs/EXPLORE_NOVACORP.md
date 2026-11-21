@@ -38,3 +38,7 @@ These GitHub pages are linked **reading paths**, not the eventual graphical webs
 - [Phase 2 operations runbook](runbooks/PHASE-2-OPERATIONS-RUNBOOK.md)
 
 **Note:** CR means *Change Request*: a documented unit of engineering work. You do not need the CR numbers to explore the company.
+
+## Building the full interactive explorer
+
+The detailed, continuously updated product and engineering blueprint is [Nova Corp World Explorer — Source of Truth](site/NOVACORP-EXPLORER-SOURCE-OF-TRUTH.md). It defines clickable system profiles, OU/staff/group/GPO relationships, firewall-rule browsing, evidence views, design tokens, technology stack and the release process.
