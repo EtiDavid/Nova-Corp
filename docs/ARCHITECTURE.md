@@ -1,109 +1,75 @@
-# Nova Corp — Current Architecture
+# How Nova Corp fits together
 
-**Validated current state:** 21 November 2026  
-**Scope:** Phase 2 closure / pre-CR-016
+Nova Corp runs as a nested lab: a Windows host runs VMware Workstation; VMware runs Proxmox; Proxmox hosts the company's virtual machines. pfSense controls routed traffic between network segments.
 
-This page is the public text version of the current architecture. The interactive SVG is a separate design step and will be added later.
+This diagram shows the key systems and their roles, rather than every virtual cable.
 
-## Core systems
+```mermaid
+flowchart TB
+    H["Outer Windows host"] --> VM["VMware Workstation"]
+    VM --> PVE["Proxmox: nova-prox01"]
+    PVE --> FW["pfSense: nova-fw01"]
+    PVE --> DC1["NOVA-DC01"]
+    PVE --> DC2["NOVA-DC02"]
+    PVE --> FS["NOVA-FILES01"]
+    PVE --> CL["NOVA-CLIENT"]
+    FW --> IN["INFRA / VLAN 20"]
+    FW --> CN["CLIENT / VLAN 40"]
+    IN --- DC1
+    IN --- DC2
+    IN --- FS
+    CN --- CL
+```
 
-| System | Current identity | Address / zone | Role |
-| --- | --- | --- | --- |
-| pfSense firewall VM | `nova-fw01` | WAN `192.168.178.71` + internal gateways | Firewall, routing, DNS Resolver, WireGuard |
-| pfSense OS | `pfSense.home.arpa` | same appliance | OS identity |
-| Proxmox | `nova-prox01.nova.local` | `192.168.178.26/24` | Nested hypervisor |
-| Domain Controller 1 | `NOVA-DC01.nova.corp` | `10.10.20.10/24` | AD DS, DNS |
-| Domain Controller 2 | `NOVA-DC02.nova.corp` | `10.10.20.11/24` | AD DS, DNS, resilience / FSMO |
-| File server | `NOVA-FILES01.nova.corp` | `10.10.20.20/24` | SMB, DFS, Shadow Copies, Windows Server Backup |
-| Domain client | `NOVA-CLIENT.nova.corp` | `10.10.40.100/24` | User/workstation validation |
+## Open a server
+
+| System | Main role | Documented address |
+| --- | --- | --- |
+| [nova-prox01](explore/systems/NOVA-PROX01.md) | Nested hypervisor | `192.168.178.26` on upstream network |
+| [nova-fw01 / pfSense](explore/systems/NOVA-FW01.md) | Firewall/router, DNS Resolver and VPN | WAN `192.168.178.71`; several internal gateways |
+| [NOVA-DC01](explore/systems/NOVA-DC01.md) | AD DS and DNS | `10.10.20.10` |
+| [NOVA-DC02](explore/systems/NOVA-DC02.md) | Second AD DS and DNS | `10.10.20.11` |
+| [NOVA-FILES01](explore/systems/NOVA-FILES01.md) | SMB, DFS, VSS and backup | `10.10.20.20` |
+| [NOVA-CLIENT](explore/systems/NOVA-CLIENT.md) | User and policy test workstation | `10.10.40.100` |
 
 ## Network zones
 
-| Zone | Subnet | Gateway | Current purpose |
+| Zone | Subnet | Gateway | State |
 | --- | --- | --- | --- |
-| Upstream host | `192.168.178.0/24` | `192.168.178.1` | Outer VMware/host network |
-| Legacy LAN | `10.99.99.0/24` | `10.99.99.1` | Legacy / minimal current use |
-| MGMT / VLAN 10 | `10.10.10.0/24` | `10.10.10.1` | Management zone |
+| Upstream | `192.168.178.0/24` | `192.168.178.1` | Proxmox management and firewall WAN |
+| Legacy LAN | `10.99.99.0/24` | `10.99.99.1` | Configured older segment |
+| MGMT / VLAN 10 | `10.10.10.0/24` | `10.10.10.1` | Firewall management |
 | INFRA / VLAN 20 | `10.10.20.0/24` | `10.10.20.1` | Domain Controllers and file server |
-| APP / VLAN 30 | `10.10.30.0/24` | `10.10.30.1` | Reserved for application services |
-| CLIENT / VLAN 40 | `10.10.40.0/24` | `10.10.40.1` | Domain client/workstation |
-| DMZ / VLAN 50 | `10.10.50.0/24` | `10.10.50.1` | Reserved for public-facing services |
-| VPN_REMOTE / VLAN 60 | `10.10.60.0/24` | `10.10.60.1` | WireGuard peers |
+| APP / VLAN 30 | `10.10.30.0/24` | `10.10.30.1` | Reserved segment |
+| CLIENT / VLAN 40 | `10.10.40.0/24` | `10.10.40.1` | Domain workstation |
+| DMZ / VLAN 50 | `10.10.50.0/24` | `10.10.50.1` | Reserved segment |
+| VPN_REMOTE / VLAN 60 | `10.10.60.0/24` | `10.10.60.1` | WireGuard peer network |
 
-## Simplified logical flow
+[Explore the network in plain English](explore/NETWORK.md).
 
-```text
-Windows host
-  |
-  +-- VMware Workstation
-        |
-        +-- Nested Proxmox
-              |
-              +-- pfSense
-              |     |
-              |     +-- VLAN 20 / INFRA
-              |     |     +-- NOVA-DC01
-              |     |     +-- NOVA-DC02
-              |     |     +-- NOVA-FILES01
-              |     |
-              |     +-- VLAN 40 / CLIENT
-              |     |     +-- NOVA-CLIENT
-              |     |
-              |     +-- VLAN 60 / VPN_REMOTE
-              |
-              +-- additional lab VMs
+## Follow a normal employee request
+
+```mermaid
+flowchart LR
+    PC["Windows workstation"] --> DNS["DNS on DC01/DC02"]
+    DNS --> AD["Active Directory / Kerberos"]
+    AD --> G["Security groups"]
+    G --> FS["DFS / SMB on FILES01"]
+    FS --> ACL["SMB + NTFS access decision"]
 ```
 
-## Identity flow
+[Open Active Directory](explore/services/ACTIVE_DIRECTORY.md) · [Open file permissions](explore/FILE_SERVICES.md) · [Open Group Policy](explore/POLICIES.md).
 
-```text
-NOVA-CLIENT
-   |
-   +--> internal DNS
-   |      +--> NOVA-DC01
-   |      +--> NOVA-DC02
-   |
-   +--> Kerberos / LDAP / AD
-          +--> NOVA-DC01
-          +--> NOVA-DC02
-```
+## What happens when something fails?
 
-Both Domain Controllers are writable and provide directory/DNS services.
+Nova Corp uses several recovery paths: a second Domain Controller, AD Recycle Bin, file Previous Versions, Windows Server Backup, Proxmox VM backups and pfSense rollback snapshots.
 
-CR-013 includes the stronger resilience proof: DC01 was taken offline in a controlled exercise and client/domain services continued through DC02.
+[Explore backup/recovery](explore/services/BACKUPS.md) · [Browse tests](explore/TESTS_AND_RECOVERY.md).
 
-## File-access flow
+## What is still a lab limitation?
 
-```text
-User
-  -> AD group membership
-  -> department authorization groups
-  -> SMB share permission
-  -> NTFS permission
-  -> NOVA-FILES01
-```
+Proxmox is actually managed on the upstream host network, not yet inside the final privileged-management VLAN design. The dedicated admin VPN and wider management-plane security change are next. The environment also shares one outer physical host failure domain.
 
-DFS provides a domain-based namespace so users can use a logical path instead of depending on the server name directly.
+**Documented state:** 20 November 2026 asset/network validation, with Phase 2 closure on 21 November 2026.
 
-## Recovery layers
-
-```text
-File change/deletion
-  -> Shadow Copies when appropriate
-  -> Windows Server Backup for independent file recovery
-
-Directory object deletion
-  -> AD Recycle Bin where appropriate
-
-pfSense change failure
-  -> configuration export / VM backup / known-good snapshot
-```
-
-## Important current limitations
-
-- Proxmox is currently managed from the upstream host network, not yet from the final privileged-management design.
-- External ordinary-user versus privileged-admin VPN isolation is a CR-016 task.
-- Centralized monitoring/dashboarding is not yet implemented.
-- The nested environment ultimately shares the outer physical-host failure domain.
-
-The architecture page describes what exists now, not the final roadmap target.
+[← Company map](EXPLORE_NOVACORP.md)
