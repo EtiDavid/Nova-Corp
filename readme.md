@@ -1,73 +1,61 @@
-# Nova Corp | Explore a simulated company's IT infrastructure
+# Nova Corp — Explore an Enterprise Infrastructure Lab
 
-**A fictional company. A real hands-on enterprise infrastructure lab.**
+**A fictional company. Real hands-on infrastructure engineering.**
 
-I built Nova Corp to learn how the parts of a company's IT environment work **together**: employees sign in, computers find services, departmental files have access controls, networks are separated, administrators apply policies, and systems can be tested and recovered when something fails.
+I built Nova Corp to learn how a company’s IT systems work **together**. It has employees and departments in Active Directory, Domain Controllers and DNS, a segmented network behind pfSense, shared files with permission controls, centralized Windows policies, PowerShell administration tools and tested recovery procedures.
 
-I'm David Eti, building practical experience for **System Engineer, System Administrator, Infrastructure and DevOps** roles. This is my home lab—not a claim of employment or production operations.
+The interesting part is not just what I installed. It’s how the pieces connect — and what happened when they failed.
 
-### [🏢 Explore Nova Corp — start with the company, not the documentation →](docs/EXPLORE_NOVACORP.md)
+**[🏢 Enter Nova Corp — explore the company →](docs/EXPLORE_NOVACORP.md)**
 
-**Other ways in:** [See the architecture](docs/ARCHITECTURE.md) · [Investigate failures](docs/explore/TESTS_AND_RECOVERY.md) · [Skills and proof](docs/SKILLS_EVIDENCE.md)
+[See how everything connects](docs/ARCHITECTURE.md) · [Meet the systems](docs/explore/SYSTEMS.md) · [Browse tests and failures](docs/explore/TESTS_AND_RECOVERY.md) · [Technical evidence](docs/SKILLS_EVIDENCE.md)
 
 ---
 
-## What's inside Nova Corp?
+## Where would you like to go?
 
-| Explore | What you can learn |
+| Place | Open the door |
 | --- | --- |
-| **[Computers & Servers](docs/explore/SYSTEMS.md)** | What the two Domain Controllers, file server, firewall, hypervisor and client actually do. |
-| **[People & Departments](docs/explore/PEOPLE_AND_DEPARTMENTS.md)** | How employees, departmental OUs and security groups are organized. |
-| **[Active Directory & DNS](docs/explore/IDENTITY.md)** | How computers find the domain and people authenticate; how the second DC provides resilience. |
-| **[Network & Firewall](docs/explore/NETWORK.md)** | Why different networks exist and how pfSense restricts communication. |
-| **[Files & Permissions](docs/explore/FILE_SERVICES.md)** | How departments share files without receiving unrestricted access to other departments. |
-| **[Rules & Group Policy](docs/explore/POLICIES.md)** | How Windows settings are managed centrally and tested. |
-| **[Failures & Recovery](docs/explore/TESTS_AND_RECOVERY.md)** | Real lab failures, investigation steps, fixes, and restore/validation results. |
+| 🖥️ **IT Control Room** | [Servers, firewall, hypervisor and workstation](docs/explore/SYSTEMS.md) |
+| 🔑 **Identity Office** | [Domain Controllers → Active Directory → DNS / Kerberos / LDAP](docs/explore/services/ACTIVE_DIRECTORY.md) |
+| 👥 **People & Departments** | [Staff accounts → OUs → groups → access](docs/explore/PEOPLE_AND_DEPARTMENTS.md) |
+| 🌐 **Network Gatehouse** | [pfSense → zones → firewall rules → VPN](docs/explore/NETWORK.md) |
+| 📁 **File & Records Room** | [NOVA-FILES01 → shares → SMB/NTFS → DFS → backups](docs/explore/FILE_SERVICES.md) |
+| 🛡️ **Workstation Rules** | [Group Policy → targeting → effective results](docs/explore/POLICIES.md) |
+| ⚙️ **Admin Toolkit** | [Eight PowerShell scripts](docs/explore/AUTOMATION.md) |
+| ♻️ **Recovery Center** | [Backups, VSS, AD recovery and restore proof](docs/explore/services/BACKUPS.md) |
+| 🧪 **Incident Lab** | [Mistakes, outages, investigations and recovery](docs/explore/TESTS_AND_RECOVERY.md) |
 
-*These GitHub pages are a navigable reading guide. The interactive visual company explorer is being designed; it is not live yet.*
+**[Complete component index — all fifteen completed engineering changes →](docs/explore/ALL_COMPONENTS.md)**
 
----
+## One example of how the company works
 
-## What I actually demonstrated
+Moyo signs in to a domain workstation, authenticates through the domain, and wants to open IT files. AD group membership and the file server’s permissions decide the result.
 
-**Identity resilience.** Two writable Domain Controllers were validated. In a controlled outage, client/domain services continued through the second controller, followed by replication recovery.
+The lab verified that **IT access worked while Finance access was denied**.
 
-**Recovery instead of backup theatre.** A backup target was deliberately made unavailable. After diagnosis and repair, a deleted file was restored and its SHA-256 matched the original.
+**[Moyo](docs/explore/people/MOYO.md)** → [**IT_Users group**](docs/explore/GROUPS.md#it_users) → [**SMB + NTFS**](docs/explore/services/SMB.md) → [**IT folder**](docs/explore/FILE_SERVICES.md#it) → [**real-user proof**](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-**Useful automation.** Eight PowerShell administration scripts were validated; a bulk-user script was corrected after a password failure left partially created accounts.
+## Four things I proved
 
-**Security and operational review.** Final testing uncovered an unintended normal-client management path to pfSense; it was corrected and tested against both denied and allowed traffic.
+**Active Directory resilience:** DC01 was taken offline in a controlled test. The workstation continued through DC02, and replication was checked when DC01 returned. [Explore DC02](docs/explore/systems/NOVA-DC02.md).
 
-**Storage discipline.** Twenty obsolete snapshots were retired; Proxmox thin-pool utilization fell from **86.73% to 52.88%** while the active rollback point was preserved.
+**Backup and recovery:** A backup target was deliberately disconnected. After repair and a fresh backup, a deleted file was restored with the **same SHA-256 hash** as the original. [Explore recovery](docs/explore/services/BACKUPS.md).
 
-[Open the evidence-led investigations →](docs/CASE_STUDIES.md)
+**PowerShell fault handling:** A bulk-user script initially left half-created accounts after a password-policy rejection. I corrected the cleanup and repeated the failure test. [Explore automation](docs/explore/AUTOMATION.md).
 
----
+**Operational hardening:** Final validation uncovered unnecessary client access to pfSense management and a snapshot-storage problem. Both were addressed; `local-lvm` fell from **86.73% to 52.88%** after retiring 20 superseded snapshots. [Explore pfSense](docs/explore/systems/NOVA-FW01.md).
 
-## Current progress
+## Current milestone
 
-**Windows infrastructure foundation: Phase 2 closed with documented conditions (21 November 2026).**
+**Windows infrastructure foundation completed and conditionally accepted — 21 November 2026.**
 
-The next security project is stronger privileged-administrator VPN and management-plane isolation. Centralized monitoring is later work. Neither is presented as already completed.
-
-The lab remains nested in VMware and shares the outer host's physical failure domain.
-
----
+The next security milestone is a dedicated privileged-admin VPN and better management-plane isolation. Centralized monitoring is planned for later work. The project remains a nested home lab, not an employer production network.
 
 ## For technical reviewers
 
-Want the exact commands, failures, tests, screenshots and journal sources?
+[Detailed architecture](docs/ARCHITECTURE.md) · [Skills mapped to evidence](docs/SKILLS_EVIDENCE.md) · [Engineering case studies](docs/CASE_STUDIES.md) · [Full implementation journals and PDFs](docs/Documentation/Change-Requests/README.md) · [Operations runbook](docs/runbooks/PHASE-2-OPERATIONS-RUNBOOK.md)
 
-- [Skills → supporting evidence](docs/SKILLS_EVIDENCE.md)
-- [Current architecture, names and network zones](docs/ARCHITECTURE.md)
-- [Full engineering record index](docs/Documentation/Change-Requests/README.md)
-- [Phase 2 operations runbook](docs/runbooks/PHASE-2-OPERATIONS-RUNBOOK.md)
-- [Project status and roadmap](docs/PROJECT_STATUS.md)
+**About me:** I'm David Eti, building practical experience for System Engineer, System Administrator, Infrastructure and DevOps roles.
 
-In the detailed engineering records, **CR = Change Request**, a documented piece of work. You do **not** need to know or navigate by CR numbers to explore Nova Corp.
-
-For my separate cloud/DevOps work, see [NovaPredict](https://github.com/EtiDavid/novapredict-devops-case-study).
-
----
-
-**What the lab is not:** a production environment, a fictional employee-count claim, a live management dashboard, or an assertion that unfinished security/monitoring work is complete.
+My separate cloud/CI/CD project: [NovaPredict DevOps](https://github.com/EtiDavid/novapredict-devops-case-study).
