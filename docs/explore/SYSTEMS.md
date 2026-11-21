@@ -1,26 +1,42 @@
-# Computers & Servers
+# IT Control Room — Computers and servers
 
-Think of this as the equipment directory for Nova Corp. Choose a system to understand its job, its dependencies, and where its validation evidence lives.
+Nova Corp runs multiple virtual machines, each with a different job. Select one to see the services inside it, its network connection and the tests involving it.
 
-| System | Why the company needs it | Explore |
+| Machine | What it does | Open |
 | --- | --- | --- |
-| **NOVA-DC01** | Identity server: helps computers discover the domain and authenticate users. | [Domain Controllers](IDENTITY.md#domain-controllers) |
-| **NOVA-DC02** | Second identity server: provides resilience when DC01 is unavailable. | [Resilience and replication](IDENTITY.md#what-happens-if-dc01-is-offline) |
-| **NOVA-FILES01** | Stores departmental folders and supports recovery. | [File server](FILE_SERVICES.md) |
-| **nova-fw01 / pfSense** | Routes traffic between network zones and enforces firewall rules. | [Network & Firewall](NETWORK.md) |
-| **nova-prox01 / Proxmox** | Runs the virtual machines in the nested lab. | [Virtualization](../ARCHITECTURE.md) |
-| **NOVA-CLIENT** | Domain-joined Windows workstation used for user-side acceptance tests. | [Client and domain use](IDENTITY.md) |
+| **NOVA-DC01** | Domain identity and DNS | [Explore DC01](systems/NOVA-DC01.md) |
+| **NOVA-DC02** | Second domain identity and DNS; resilience | [Explore DC02](systems/NOVA-DC02.md) |
+| **NOVA-FILES01** | Department files, DFS and backup | [Explore file server](systems/NOVA-FILES01.md) |
+| **NOVA-CLIENT** | Windows workstation for user-facing tests | [Explore workstation](systems/NOVA-CLIENT.md) |
+| **nova-fw01** | pfSense firewall, router and VPN | [Explore firewall](systems/NOVA-FW01.md) |
+| **nova-prox01** | Proxmox hypervisor hosting VMs | [Explore hypervisor](systems/NOVA-PROX01.md) |
 
-These are current-state Phase 2 roles—not a claim that there are no other virtual machines in the lab.
+## How the machines connect
 
-## How the systems work together
+```mermaid
+flowchart TB
+    WIN["Windows host + VMware"] --> PVE["nova-prox01 / Proxmox"]
+    PVE --> FW["nova-fw01 / pfSense"]
+    PVE --> DC1["NOVA-DC01"]
+    PVE --> DC2["NOVA-DC02"]
+    PVE --> FILE["NOVA-FILES01"]
+    PVE --> PC["NOVA-CLIENT"]
+    FW --> INFRA["INFRA VLAN 20"]
+    FW --> CLIENT["CLIENT VLAN 40"]
+    INFRA --- DC1
+    INFRA --- DC2
+    INFRA --- FILE
+    CLIENT --- PC
+```
 
-A user on **NOVA-CLIENT** finds **NOVA-DC01/DC02** through DNS, authenticates to the domain, and then reaches authorized folders on **NOVA-FILES01**. **pfSense** routes and filters cross-network traffic. **Proxmox** hosts the environment.
+The arrows distinguish the outer hosting relationship from pfSense's traffic-routing zones. Not every server "connects through" pfSense to communicate with another server in its own subnet.
 
-**[Full current architecture →](../ARCHITECTURE.md)**
+## Choose a service instead
 
-## What the interactive site will add
+[Active Directory](services/ACTIVE_DIRECTORY.md) · [DNS](services/DNS.md) · [Kerberos/KDC](services/KERBEROS.md) · [LDAP](services/LDAP.md) · [SYSVOL/NETLOGON](services/SYSVOL_NETLOGON.md) · [SMB](services/SMB.md) · [DFS](services/DFS.md) · [Backup](services/BACKUPS.md).
 
-Each system will get a stable URL, clickable diagram node, purpose, roles, dependencies, current documented configuration, relevant policies, incidents, screenshot evidence, and full technical journal links.
+## Choose a test
 
-Nothing on this page is a direct connection to a live server.
+[DC failover](TESTS_AND_RECOVERY.md) · [File permissions](FILE_SERVICES.md) · [Management firewall hardening](NETWORK.md) · [Restore proof](services/BACKUPS.md).
+
+[← Company map](../EXPLORE_NOVACORP.md)
