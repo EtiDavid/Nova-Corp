@@ -1,37 +1,34 @@
-# Identity & Active Directory
+# Identity Office — How Nova Corp signs people in
 
-## In plain English
+The company's identity system is **Active Directory**, hosted on two Domain Controllers.
 
-Rather than create a separate local account on every computer, Nova Corp uses **Active Directory**, a central directory of accounts, computers and groups. **DNS** helps computers find the correct services. **Domain Controllers** run the directory and authentication services.
+Imagine signing in at a Nova Corp workstation. Several connected services are involved:
 
-## Domain Controllers
+1. [DNS](services/DNS.md) finds a Domain Controller.
+2. [Kerberos/KDC](services/KERBEROS.md) helps authenticate the domain account.
+3. [Active Directory](services/ACTIVE_DIRECTORY.md) contains the user and computer objects.
+4. [LDAP](services/LDAP.md) allows directory information to be queried.
+5. [Group Policy](POLICIES.md) configures the workstation and user according to the policy design.
+6. [Security groups](GROUPS.md) determine access to protected resources.
+7. [SMB](services/SMB.md) provides the file-sharing path.
 
-| System | Current Phase 2 address | Purpose |
-| --- | --- | --- |
-| **NOVA-DC01** | `10.10.20.10` | Active Directory Domain Services and DNS |
-| **NOVA-DC02** | `10.10.20.11` | A second writable Domain Controller and DNS server; holds FSMO roles at the Phase 2 baseline |
+## Open a Domain Controller
 
-Domain: `nova.corp`. Both controllers are writable and are validated for replication, service discovery, SYSVOL and NETLOGON.
+**[NOVA-DC01](systems/NOVA-DC01.md)** — 10.10.20.10  
+**[NOVA-DC02](systems/NOVA-DC02.md)** — 10.10.20.11
 
-### Open related topics
+Both provide AD DS and DNS; DC02 also maintained client/domain continuity in a controlled DC01 outage.
 
-- [Directory tree and organizational units](PEOPLE_AND_DEPARTMENTS.md)
-- [Groups and access permissions](FILE_SERVICES.md)
-- [Group Policy](POLICIES.md)
-- [Recovery and failure tests](TESTS_AND_RECOVERY.md)
+## Open the directory
 
-## What happens if DC01 is offline?
+[Browse organizational units](DIRECTORY.md) · [Meet the IT accounts](people/IT_DEPARTMENT.md) · [Open security groups](GROUPS.md) · [View policies](POLICIES.md).
 
-In a controlled exercise, the client continued to discover and use domain services through DC02. When DC01 returned, the directory was checked for natural convergence rather than assuming it had immediately recovered.
+## What happens during a failure?
 
-**Technical evidence:** [AD resilience engineering journal](../Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md).
+A Domain Controller can fail without making the entire identity service unavailable when a second healthy controller is present and clients can find it.
 
-## How directory objects work
+Nova Corp tested that case by taking DC01 offline, validating client functionality through DC02 and checking replication when DC01 returned.
 
-An **OU (Organizational Unit)** organizes accounts/computers, while a **security group** is used for authorization or policy filtering. These are not interchangeable: an employee can live in one OU and belong to several groups.
+[Read the failover story](../Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md) · [Explore all tests](TESTS_AND_RECOVERY.md).
 
-The interactive website will support opening an OU, selecting a (public-safe fictional) account, following the account's group memberships, and viewing applicable policies.
-
-## What is not claimed
-
-This page does not claim a real-time directory feed or that every historical user mentioned in a journal is still enabled now. Staff records need a current privacy-reviewed inventory before publication.
+[← Company map](../EXPLORE_NOVACORP.md)
