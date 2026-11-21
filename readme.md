@@ -2,90 +2,119 @@
 
 **A fictional company, a real hands-on infrastructure lab.**
 
-I built Nova Corp to understand what happens *after* a server has been installed: how employees authenticate, how network access is controlled, how permissions are enforced, what breaks, and how to recover without making the problem worse.
+I built Nova Corp to learn what happens *after* a server has been installed: how employees authenticate, how network access is controlled, how permissions are enforced, what breaks, how to recover, and how to hand the environment to another engineer without relying on memory.
 
-My focus is Windows Server, Active Directory, DNS, enterprise networking, PowerShell administration and incident response. I plan changes, test them from the user's point of view, deliberately investigate failures, and keep the commands and evidence—even when my first attempt was wrong.
+My focus is Windows Server, Active Directory, DNS, enterprise networking, PowerShell administration, backup/recovery and incident response.
 
-> **Operate it. Break it. Fix it. Document it.**  
-> This is a learning environment, not a claim that I have operated a real company's production network.
+> **Operate it. Break it. Fix it. Document it.**
 
-**[Start the 3-minute tour](docs/START_HERE.md)** · **[Browse completed work](docs/PROJECT_STATUS.md)** · **[Read troubleshooting stories](docs/CASE_STUDIES.md)**
+This is a learning environment, not a claim that I have operated a real company's production network.
+
+**[Start the 3-minute tour](docs/START_HERE.md)** · **[View current architecture](docs/ARCHITECTURE.md)** · **[Browse CR-001 → CR-015](docs/PROJECT_STATUS.md)** · **[Read engineering stories](docs/CASE_STUDIES.md)**
+
+## Current milestone
+
+**Phase 2: CLOSED — CONDITIONAL PASS (21 November 2026)**
+
+The current Windows/network foundation includes:
+
+- nested Proxmox on VMware Workstation;
+- pfSense routing/firewalling and segmented lab networks;
+- two writable `nova.corp` Domain Controllers;
+- internal DNS and Windows domain time;
+- Group Policy;
+- departmental SMB/NTFS access;
+- DFS Namespace and Shadow Copies;
+- PowerShell administration automation;
+- Windows Server Backup and file recovery;
+- AD resilience and Recycle Bin recovery;
+- controlled incident exercises;
+- Phase 2 validation, rollback baselines and operations runbook.
+
+The next mandatory security gate is **CR-016 — Privileged Admin VPN and Management Plane Firewall Isolation**. It is **not** presented as completed.
 
 ## At a glance
 
-| Area | What I have worked on | Where to look |
+| Area | What I built / tested | Best starting point |
 | --- | --- | --- |
-| Virtualization and recovery | Nested Proxmox on VMware Workstation; initial network and failure tests | [CR-001](docs/Documentation/Change-Requests/Journal-CR-001.md) · [failure-testing report](docs/Documentation/failure-testing-report.md) |
-| Network and remote access | pfSense, segmented networks, WireGuard, firewall paths and negative-access tests | [CR-007](docs/Documentation/Change-Requests/Journal-CR-007.md) |
-| Identity and workstation management | Active Directory, two domain controllers, DNS, OUs and Group Policy | [CR index](docs/PROJECT_STATUS.md) |
-| File access and recovery | Departmental shares, NTFS permissions, DFS and Shadow Copies | [CR index](docs/PROJECT_STATUS.md) |
-| Safe administration | Eight PowerShell administration scripts, validation, rollback and repeat-run behavior | [CR-011](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md) |
-| Incident investigation | Hypothesis-led diagnostics, controlled fault exercises and recovery checks | [Engineering stories](docs/CASE_STUDIES.md) |
+| Virtualization | Nested Proxmox, storage and failure/recovery testing | [CR-001](docs/Documentation/Change-Requests/Journal-CR-001.md) |
+| Network | pfSense, VLANs, firewall paths, WireGuard | [CR-007](docs/Documentation/Change-Requests/Journal-CR-007.md) |
+| Identity | Active Directory, DNS, two DCs, resilience | [CR-013](docs/Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md) |
+| Policy | Modular Group Policy and workstation controls | [CR-006](docs/Documentation/Change-Requests/Journal-CR-006.md) |
+| File services | SMB/NTFS, DFS, Shadow Copies | [CR index](docs/PROJECT_STATUS.md) |
+| Automation | Eight PowerShell administration scripts | [CR-011](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md) |
+| Recovery | Windows Server Backup, System State, restore verification | [CR-012](docs/Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) |
+| Incident response | Blind/reversible DNS, permissions, GPO, backup and AD exercises | [CR-014](docs/Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) |
+| Operational acceptance | Current-state reconciliation, management hardening, rollback and closure | [CR-015](docs/Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md) |
 
-**Status note (reviewed 16 November 2026):** The public repository contains historical journals through CR-011. More recent technical work, including CR-012/CR-013 and active CR-014 incident exercises, is recorded in a separate private working repository. I am reviewing and sanitizing that evidence before publishing it here. **Published documentation is not the same as the full state of the lab.**
+## Architecture
 
-## How the systems fit together
+The current text architecture is here:
 
-```text
-                  Home / external network
-                            |
-                      Home router
-                            |
-                    VMware Workstation
-                            |
-                     Nested Proxmox
-                            |
-                         pfSense
-                    /       |       \
-          Management    Server network   Remote VPN
-                            |                |
-             +--------------+------+     WireGuard
-             |              |      |
-          NOVA-DC01     NOVA-DC02  NOVA-FILES01
-             |              |      |
-             +--- AD DS / DNS -----+--- SMB / NTFS / DFS
-                            |
-                       Domain client
-```
+**[Current architecture →](docs/ARCHITECTURE.md)**
 
-*Simplified logical view, not a complete physical wiring diagram or a claim that every service is available from every network. For network restrictions and actual tests, see the journals. A graphical architecture diagram is planned for the website.*
+A recruiter-facing interactive SVG is the next design step. Until then, the public documentation uses the validated current-state register rather than an older target diagram.
 
-## Three problems worth reading
+## Four examples of the engineering approach
 
-**1. WireGuard connected, but access still had to be proven.** In [CR-007](docs/Documentation/Change-Requests/Journal-CR-007.md), I worked through a handshake problem caused by peer key configuration, checked traffic paths across NAT and firewall layers, and tested which internal services a remote client could and could not reach. Not every external-workstation objective was completed; the journal records the remaining Windows Home limitations.
+### 1. A WireGuard handshake was not treated as authorization
 
-**2. Bulk user creation left half-created accounts.** In [CR-011](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md), a password-policy rejection exposed a flaw: the script returned an error but left disabled accounts behind. I added cleanup/rollback logic, tested the failure again and verified that the incomplete users no longer remained.
+CR-007 follows the packet path through the home router, NAT, pfSense and the remote client. It separates "the tunnel exists" from "the user can reach the correct internal service."
 
-**3. An access-checking script was wrong even though permissions were right.** In [CR-011](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md), the first comparison treated `DL_FS_IT_Modify` and `NOVA\DL_FS_IT_Modify` as different groups. I corrected the matching logic and checked both authorized IT access and denied Finance access. The script is an ACL analysis tool, so I also validated actual access in a user session.
+[Read CR-007 →](docs/Documentation/Change-Requests/Journal-CR-007.md)
 
-[Read the short versions and find the source evidence →](docs/CASE_STUDIES.md)
+### 2. A bulk-user script failed safely only after I fixed rollback
+
+In CR-011, a weak password was rejected after the AD object had already been created. The first version reported failure but left incomplete accounts behind. I added cleanup logic and repeated the failure test.
+
+[Read CR-011 →](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)
+
+### 3. Backup was proven by restore, not by a green job status
+
+The recovery work progressed from backup configuration to a real target-unavailable failure and a deleted-file restore. The recovered file's SHA-256 matched the original.
+
+[Read CR-012 →](docs/Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) · [Incident validation →](docs/Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)
+
+### 4. Final validation found a real management weakness
+
+CR-015 found that a normal client could reach pfSense management paths more broadly than intended. The path was reproduced, corrected and regression-tested. The same closure review also found snapshot-retention pressure and reclaimed about 125.72 GiB while preserving the active rollback point.
+
+[Read CR-015 →](docs/Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)
 
 ## How I work
 
-1. **Understand the need.** What problem does this service solve for the fictional company?
-2. **Build a baseline.** Record the initial state and define what a working result should look like.
-3. **Make a controlled change.** Consider dependencies, access boundaries and rollback.
-4. **Test from more than one angle.** A successful command alone is not proof that the intended result happened.
-5. **Investigate the failures.** Keep failed commands, wrong assumptions and the tests that ruled them out.
-6. **Validate and document.** Include both positive and negative tests where appropriate.
+1. **Understand the need.**
+2. **Record the baseline.**
+3. **Make a controlled change.**
+4. **Test the intended path.**
+5. **Test the path that should be denied.**
+6. **Investigate failures by layer.**
+7. **Use the smallest safe repair.**
+8. **Retest and document the evidence.**
 
-The journals are intentionally detailed; this README and the linked guide are the shorter route for someone evaluating the project.
+The detailed journals intentionally preserve wrong assumptions, failed commands and failed injectors when they produced a useful engineering lesson.
 
-## Find the evidence
+## Operations
 
-- **[3-minute guided tour](docs/START_HERE.md)** — what the lab is and what to open first.
-- **[Change-request index and honest progress](docs/PROJECT_STATUS.md)** — published files versus current engineering status.
-- **[Engineering case studies](docs/CASE_STUDIES.md)** — problem, diagnosis, result and source journal.
-- **[CR-011 PowerShell administration journal](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)** — eight scripts and the failure cases they had to survive.
-- **[CR-007 remote-access journal](docs/Documentation/Change-Requests/Journal-CR-007.md)** — WireGuard, firewall and packet-path evidence.
-- **[Initial failure-testing report](docs/Documentation/failure-testing-report.md)** — intentionally broken Proxmox network configuration and recovery.
+A concise public operator runbook is available here:
 
-## What's next
+**[Phase 2 Operations Runbook →](docs/runbooks/PHASE-2-OPERATIONS-RUNBOOK.md)**
 
-The lab continues with incident exercises and later security, Linux, Microsoft workplace and operations work under an approved 33-change-request roadmap. **Planned work is not presented as implemented.** My next portfolio tasks are a sanitized architecture diagram, selected screenshots with captions, publicly reviewable later journals and a small visual site at **`novacorp.etidavid.dev`**. That address is a plan, **not a live-site claim**.
+## Important limitations
+
+This portfolio does **not** claim that:
+
+- the lab is production-scale;
+- backup storage is physically off-host;
+- centralized monitoring is already implemented;
+- a privileged-admin VPN is already complete;
+- external WireGuard validation was repeated during CR-015;
+- the pfSense certificate is enterprise-trusted.
+
+Those items are either lab limitations or future work.
 
 ## About me
 
-I'm **David Eti**, and I'm building practical experience for System Engineer, System Administrator, Infrastructure and DevOps roles. I learn best by building something, checking what I actually understand, and working through the problems that come with operating it.
+I'm **David Eti**. I am building practical experience for System Engineer, System Administrator, Infrastructure and DevOps roles by building, operating, breaking, recovering and documenting this environment.
 
-For the cloud deployment and CI/CD side of my work, see my separate [NovaPredict DevOps case study](https://github.com/EtiDavid/novapredict-devops-case-study).
+For the cloud/CI/CD side of my work, see my separate [NovaPredict DevOps case study](https://github.com/EtiDavid/novapredict-devops-case-study).
