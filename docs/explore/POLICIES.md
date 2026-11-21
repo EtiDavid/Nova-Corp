@@ -1,45 +1,78 @@
-# Rules & Group Policy
+# Workstation Rules — Group Policy
 
-## What is a Group Policy?
+A **Group Policy (GPO)** is a set of Windows settings that the domain can apply to selected users or computers. It is one way Nova Corp keeps workstations consistent instead of manually configuring every device.
 
-A **Group Policy** lets IT configure Windows settings centrally rather than manually adjusting every workstation or user.
+Policies connect to [Active Directory](services/ACTIVE_DIRECTORY.md), the [OU tree](DIRECTORY.md), [security groups](GROUPS.md) and the [Windows client](systems/NOVA-CLIENT.md).
 
-A policy only affects the intended object when targeting, linking, security filtering and processing are correct.
+## Open a policy
 
-## What can be explored?
+### Domain password and account-lockout rules
 
-- Workstation security settings
-- User restrictions and contractor controls
-- Removable-storage policy and approved exceptions
-- Firewall/legacy-protocol hardening
-- Policy targeting (OU links and security filtering)
-- Troubleshooting and rollback
+The historical domain-policy baseline included:
+- Minimum password length: 12 characters
+- Password complexity: enabled
+- Maximum password age: 90 days
+- Lockout after 5 failed attempts
+- Lockout duration: 15 minutes
 
-**Engineering source:** [Group Policy implementation and validation](../Documentation/Change-Requests/Journal-CR-006.md).
+The lockout controls were also used in a controlled administration test.
 
-## Important difference
+[Read the password/lockout settings and tests](../Documentation/Change-Requests/Journal-CR-006.md).
 
-An **OU** is where an object is organized. A **security group** can be used to target or authorize. A **GPO** is the policy definition. Effective policy depends on scope and processing, not merely on the GPO existing.
+### Corporate wallpaper
 
-A complete website policy card will show:
-- purpose;
-- exact public-safe settings;
-- link target;
-- filter/group target;
-- affected user/computer class;
-- evidence of application;
-- exceptions/deferred tests;
-- linked incidents;
-- exact documentation/PDF link.
+The `Nova Corp - Corporate wallpaper` policy provides a consistent desktop look and demonstrates user-policy application.
 
-The full current seven-GPO settings/targeting inventory is **not yet published as structured website data**; it will be populated only after auditing the current exported GPO backups and available test evidence. Seven GPOs were reconciled in the CR-015 baseline.
+The contractor test account's `gpresult` showed this wallpaper policy together with the contractor USB restriction.
 
-## Failure story
+### <a id="contractor-usb-restriction"></a>Contractor removable-storage restriction
 
-The lab recorded policy targeting and processing problems, including how a policy can appear in older `gpresult` data while a fresh processing attempt fails.
+GPO: `NOVA-sec-deny-usb-contractors`  
+OU: `Nova Users → Contractors`
 
-[Read incident exercises](../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md).
+Contractors received a policy denying all removable-storage classes. This was verified as **policy processing** on John Shaw; physical USB passthrough could not be reliably tested in the nested virtual environment.
 
-## Connect policies to the company
+![USB policy link on Contractors OU](../Documentation/Change-Requests/evidence/01-contractor-usb-gpo-link.png)
 
-[People and OUs](PEOPLE_AND_DEPARTMENTS.md) · [Identity](IDENTITY.md) · [Systems](SYSTEMS.md)
+![Removable-storage deny setting enabled](../Documentation/Change-Requests/evidence/02-usb-deny-all-removable-storage-enabled.png)
+
+[Open John Shaw's profile](people/JOHN_SHAW.md).
+
+### Workstation security baseline
+
+GPO: `NOVA-SEC-Workstation-Baseline`  
+Target: `Nova Computers → Workstations`
+
+The implementation covered workstation firewall settings, disabling AutoPlay/AutoRun and SMBv1 configuration.
+
+![Workstation baseline linked to Workstations OU](../Documentation/Change-Requests/evidence/04-workstation-baseline-gpo-link.png)
+
+The baseline's `Enforced` setting was corrected from an earlier over-broad configuration. The documented test showed SMBv1 disabled while SMBv2 remained enabled.
+
+### Policies studied, not applied as live controls
+
+The `NOVA-SEC-User-Lockdown` restriction policy was explored through a tabletop scenario. Its group-targeting design must not be confused with an applied and validated production-like GPO.
+
+The `USB_Authorized` group was part of the approved exception design; the physical USB test remained open.
+
+## How a policy reaches a computer
+
+```mermaid
+flowchart LR
+    OU["User or computer in OU"] --> LINK["GPO link"]
+    LINK --> FILTER["Security filtering / processing"]
+    FILTER --> RESULT["Effective settings"]
+    RESULT --> TEST["gpresult + behavior test"]
+```
+
+A GPO existing or being linked does **not** automatically prove its intended setting affected a user. Nova Corp used `gpresult` and client-side checks to distinguish configuration from effective behavior.
+
+## Phase 2 baseline
+
+At closure, **seven current GPOs were exported and matched to seven backup folders**. Their exact current settings are documented in the private baseline exports, while the historical public journal explains the specific implemented controls above.
+
+## Incidents and proof
+
+[Group Policy incident tests](TESTS_AND_RECOVERY.md) · [Original implementation journal](../Documentation/Change-Requests/Journal-CR-006.md).
+
+[← Company map](../EXPLORE_NOVACORP.md)
