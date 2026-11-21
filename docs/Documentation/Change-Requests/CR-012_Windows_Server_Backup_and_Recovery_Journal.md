@@ -11,6 +11,11 @@ header-includes:
     \floatplacement{figure}{H}
 ---
 
+> **Editorial closure note (21 Nov 2026):** this journal was originally published while one natural DC01 scheduled-run evidence item was still pending. Later CR-013/CR-014 work reused and revalidated the backup/recovery controls, including target-failure detection, fresh backup completion and a file restore with matching SHA-256. The historical chronology below is preserved rather than rewritten.
+>
+> **Public evidence note:** the original journal referenced screenshot assets that are not currently present in the public repository. Broken image embeds have been removed from the rendered page while filenames are preserved in source comments pending a curated privacy-reviewed evidence set.
+
+
 # CR-012 - Windows Server Backup and Recovery
 
 **Nova Corp Enterprise Infrastructure Lab**  
@@ -113,7 +118,7 @@ The root filesystem was already around two-thirds used and contained legacy Prox
 1. backups were consuming root-filesystem capacity;
 2. the backup directory was not an independently mounted repository.
 
-![Proxmox disk discovery and confirmation that `/dev/sda` was the separate 300 GiB disk selected for CR-012.](assets/01-proxmox-disk-discovery.png){ width=92% }
+<!-- Evidence reference: assets/01-proxmox-disk-discovery.png | Proxmox disk discovery and confirmation that `/dev/sda` was the separate 300 GiB disk selected for CR-012. -->{ width=92% }
 
 **What this proves:** the backup disk was identified before partitioning. The command also showed that `sda` was not the Proxmox system NVMe device.
 
@@ -319,7 +324,7 @@ n        # create partition 1
 w        # write changes
 ```
 
-![`/dev/sda1` created as a single 300 GiB partition.](assets/02-sda-partition-created.png){ width=88% }
+<!-- Evidence reference: assets/02-sda-partition-created.png | `/dev/sda1` created as a single 300 GiB partition. -->{ width=88% }
 
 ### Expected
 
@@ -355,7 +360,7 @@ lsblk -f /dev/sda
 blkid /dev/sda1
 ```
 
-![ext4 filesystem creation, label `NOVA_BACKUP` and filesystem UUID.](assets/03-ext4-format-uuid.png){ width=90% }
+<!-- Evidence reference: assets/03-ext4-format-uuid.png | ext4 filesystem creation, label `NOVA_BACKUP` and filesystem UUID. -->{ width=90% }
 
 Observed filesystem UUID:
 
@@ -427,7 +432,7 @@ cp /etc/fstab /etc/fstab.cr012-before
 cat /etc/fstab
 ```
 
-![`/etc/fstab` baseline captured before adding the backup repository.](assets/04-fstab-baseline.png){ width=88% }
+<!-- Evidence reference: assets/04-fstab-baseline.png | `/etc/fstab` baseline captured before adding the backup repository. -->{ width=88% }
 
 The persistent entry added was:
 
@@ -443,7 +448,7 @@ systemctl daemon-reload
 
 was run and the mount was verified again with `findmnt`.
 
-![Persistent UUID-based mount validated; the legacy `/backups` dataset is also visible for migration.](assets/05-fstab-persistent-old-backups.png){ width=92% }
+<!-- Evidence reference: assets/05-fstab-persistent-old-backups.png | Persistent UUID-based mount validated; the legacy `/backups` dataset is also visible for migration. -->{ width=92% }
 
 ### Learner question - Why UUID instead of `/dev/sda1` for persistence?
 
@@ -479,7 +484,7 @@ cat /root/cr012-old-backups.sha256
 wc -l /root/cr012-old-backups.sha256
 ```
 
-![Twelve legacy backup files hashed before migration.](assets/06-old-backup-sha256-baseline.png){ width=92% }
+<!-- Evidence reference: assets/06-old-backup-sha256-baseline.png | Twelve legacy backup files hashed before migration. -->{ width=92% }
 
 The data was copied with `rsync`:
 
@@ -552,7 +557,7 @@ pvesh get /cluster/backup --output-format json-pretty
 
 This was used to inspect the existing scheduled backup job and determine that it still referenced the old storage ID.
 
-![`pvesh` and configuration search used to find the existing Proxmox backup job dependency on `backup-store`.](assets/07-pvesh-backup-job-audit.png){ width=92% }
+<!-- Evidence reference: assets/07-pvesh-backup-job-audit.png | `pvesh` and configuration search used to find the existing Proxmox backup job dependency on `backup-store`. -->{ width=92% }
 
 The job storage target was updated to `nova-backup`, then verified in `/etc/pve/jobs.cfg` and through `pvesh`.
 
@@ -581,7 +586,7 @@ cat /etc/pve/storage.cfg
 pvesm list nova-backup
 ```
 
-![Old `backup-store` registration removed while migrated backups remain visible through `nova-backup`.](assets/08-old-storage-removed.png){ width=92% }
+<!-- Evidence reference: assets/08-old-storage-removed.png | Old `backup-store` registration removed while migrated backups remain visible through `nova-backup`. -->{ width=92% }
 
 **Conclusion:** PASS - no backup files were deleted by removing the storage configuration entry.
 
@@ -597,7 +602,7 @@ pvesm set nova-backup --content backup,images
 
 A 100 GiB disk was added to VM 104 (`nova-files01`) on `nova-backup` with `backup=0`.
 
-![FILES01 hardware view showing `scsi2` on `nova-backup` and `backup=0`.](assets/09-files01-proxmox-backup-disk.png){ width=95% }
+<!-- Evidence reference: assets/09-files01-proxmox-backup-disk.png | FILES01 hardware view showing `scsi2` on `nova-backup` and `backup=0`. -->{ width=95% }
 
 ### Why `backup=0`?
 
@@ -659,7 +664,7 @@ filesystem exists
 usable Windows volume
 ```
 
-![FILES01 `B:` validated as healthy NTFS and Windows Server Backup feature installed.](assets/10-files01-wsb-feature-volume.png){ width=90% }
+<!-- Evidence reference: assets/10-files01-wsb-feature-volume.png | FILES01 `B:` validated as healthy NTFS and Windows Server Backup feature installed. -->{ width=90% }
 
 ---
 
@@ -735,11 +740,11 @@ A Windows Server Backup copy of `D:` was created to `B:`.
 
 The GUI showed a successful backup and the recovery catalogue became available.
 
-![Windows Server Backup GUI showing scheduled FILES01 protection of `NovaData (D:)` to `NovaBackup (B:)`.](assets/11-files01-wsb-gui-schedule.png){ width=95% }
+<!-- Evidence reference: assets/11-files01-wsb-gui-schedule.png | Windows Server Backup GUI showing scheduled FILES01 protection of `NovaData (D:)` to `NovaBackup (B:)`. -->{ width=95% }
 
 The test Finance file was deleted and recovered using Windows Server Backup.
 
-![`wbadmin` file recovery completed successfully for the Finance test report.](assets/13-file-recovery-original-path.png){ width=90% }
+<!-- Evidence reference: assets/13-file-recovery-original-path.png | `wbadmin` file recovery completed successfully for the Finance test report. -->{ width=90% }
 
 The restored file's content, hash and ACLs were validated.
 
@@ -753,7 +758,7 @@ Yes. Windows Server Backup's Recover wizard is designed to select a backup date,
 
 The Finance folder already had Previous Versions from CR-010.
 
-![Explorer Previous Versions tab showing Shadow Copy-based file history.](assets/12-previous-versions-gui.png){ width=82% }
+<!-- Evidence reference: assets/12-previous-versions-gui.png | Explorer Previous Versions tab showing Shadow Copy-based file history. -->{ width=82% }
 
 ### Shadow Copies
 
@@ -836,11 +841,11 @@ System State includes components required for AD-aware recovery, including Activ
 
 `vssadmin list writers` confirmed the important writers were stable.
 
-![NTDS Writer stable with no error after System State backup.](assets/20-ntds-writer-stable.png){ width=78% }
+<!-- Evidence reference: assets/20-ntds-writer-stable.png | NTDS Writer stable with no error after System State backup. -->{ width=78% }
 
 A later System State backup took approximately 55 minutes 10 seconds in the nested lab.
 
-![Measured DC01 System State backup duration: approximately 55 minutes.](assets/19-dc-system-state-duration.png){ width=55% }
+<!-- Evidence reference: assets/19-dc-system-state-duration.png | Measured DC01 System State backup duration: approximately 55 minutes. -->{ width=55% }
 
 This is a measured **backup duration**, not a measured DC restore RTO.
 
@@ -903,7 +908,7 @@ Event model:
 
 A healthy test produced Event 4100.
 
-![FILES01 backup health monitor PASS and Event 4100 evidence.](assets/15-files01-monitor-pass.png){ width=88% }
+<!-- Evidence reference: assets/15-files01-monitor-pass.png | FILES01 backup health monitor PASS and Event 4100 evidence. -->{ width=88% }
 
 ### Controlled failure injection - backup target unavailable
 
@@ -922,7 +927,7 @@ Backup volume B: is unavailable.
 
 Event Viewer recorded Event 4101 as an Error.
 
-![Event Viewer showing NovaBackupMonitor Event 4101 after the backup target was deliberately made unavailable.](assets/16-event-viewer-monitor-failure.png){ width=96% }
+<!-- Evidence reference: assets/16-event-viewer-monitor-failure.png | Event Viewer showing NovaBackupMonitor Event 4101 after the backup target was deliberately made unavailable. -->{ width=96% }
 
 The disk was brought back online:
 
@@ -957,7 +962,7 @@ Triggers:
 00:05 - post-backup freshness/health check
 ```
 
-![Task Scheduler showing the two daily Nova Backup Health Monitor triggers.](assets/17-task-scheduler-monitor-triggers.png){ width=96% }
+<!-- Evidence reference: assets/17-task-scheduler-monitor-triggers.png | Task Scheduler showing the two daily Nova Backup Health Monitor triggers. -->{ width=96% }
 
 ### Why pre- and post-checks?
 
@@ -1021,7 +1026,7 @@ System State recovery versions: 1
 Policy target: 7
 ```
 
-![DC monitor correctly detecting a stale backup after the VM had been offline.](assets/18-dc-monitor-stale-error.png){ width=90% }
+<!-- Evidence reference: assets/18-dc-monitor-stale-error.png | DC monitor correctly detecting a stale backup after the VM had been offline. -->{ width=90% }
 
 This was a genuine RPO/freshness violation, not a script bug.
 
@@ -1029,7 +1034,7 @@ A fresh System State backup was then completed and the monitor changed from Erro
 
 A scheduled-task execution later completed with `LastTaskResult = 0` and Event 4202.
 
-![DC monitor scheduled execution succeeded; only the two-of-seven retention-depth warning remained.](assets/22-dc-monitor-scheduled-warning.png){ width=92% }
+<!-- Evidence reference: assets/22-dc-monitor-scheduled-warning.png | DC monitor scheduled execution succeeded; only the two-of-seven retention-depth warning remained. -->{ width=92% }
 
 ---
 
@@ -1067,7 +1072,7 @@ At the time of testing only two versions existed, so Event 4210 recorded:
 No System State pruning required. Available versions: 2. Retention target: 7.
 ```
 
-![DC retention job correctly refusing unnecessary deletion with only two recovery versions present.](assets/21-dc-retention-event.png){ width=88% }
+<!-- Evidence reference: assets/21-dc-retention-event.png | DC retention job correctly refusing unnecessary deletion with only two recovery versions present. -->{ width=88% }
 
 The permanent schedule is:
 
@@ -1118,7 +1123,7 @@ returned:
 True
 ```
 
-![Alternate-path recovery integrity verification: original and recovered SHA-256 values match exactly.](assets/23-alternate-restore-hash-match.png){ width=88% }
+<!-- Evidence reference: assets/23-alternate-restore-hash-match.png | Alternate-path recovery integrity verification: original and recovered SHA-256 values match exactly. -->{ width=88% }
 
 ### Expected
 
@@ -1170,7 +1175,7 @@ wbadmin enable backup -schedule:$TestTime -quiet
 
 The policy then showed 18:17 and Task Scheduler's next run time changed accordingly.
 
-![Temporary FILES01 schedule changed to 18:17 without re-adding the existing backup target.](assets/24-files01-temp-schedule.png){ width=90% }
+<!-- Evidence reference: assets/24-files01-temp-schedule.png | Temporary FILES01 schedule changed to 18:17 without re-adding the existing backup target. -->{ width=90% }
 
 No manual `wbadmin start backup` command was run. At 18:17 Windows launched the backup naturally.
 
@@ -1182,7 +1187,7 @@ Event evidence:
 18:17:19 Event 14 - backup operation completed
 ```
 
-![Events 1, 4 and 14 proving the FILES01 backup was launched by the configured schedule and completed successfully.](assets/25-files01-scheduled-events.png){ width=90% }
+<!-- Evidence reference: assets/25-files01-scheduled-events.png | Events 1, 4 and 14 proving the FILES01 backup was launched by the configured schedule and completed successfully. -->{ width=90% }
 
 The production policy was then restored:
 
@@ -1191,7 +1196,7 @@ wbadmin enable backup -schedule:22:00 -quiet
 wbadmin enable backup
 ```
 
-![FILES01 production schedule restored to 22:00 after the acceptance test.](assets/26-files01-schedule-restored.png){ width=90% }
+<!-- Evidence reference: assets/26-files01-schedule-restored.png | FILES01 production schedule restored to 22:00 after the acceptance test. -->{ width=90% }
 
 ### Conclusion
 
