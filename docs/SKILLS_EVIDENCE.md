@@ -1,10 +1,8 @@
 # Skills → Evidence
 
-This page answers a hiring-manager question directly:
+The table connects each capability to an actual Nova Corp component and the journal that records how it was tested.
 
-> **If David says he can work with a technology, where is the proof?**
-
-The table links skills to the strongest public Nova Corp evidence instead of requiring a reviewer to search 15 journals.
+[Explore the company](EXPLORE_NOVACORP.md) · [Complete component index](explore/ALL_COMPONENTS.md)
 
 ## Identity and Windows Server
 
@@ -61,14 +59,8 @@ The table links skills to the strongest public Nova Corp evidence instead of req
 | Change validation | Current-state reconciliation, rollback baseline, risk register and closure | [CR-015](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md) |
 | Runbooks | Phase 2 operating and recovery procedures | [Phase 2 Runbook](runbooks/PHASE-2-OPERATIONS-RUNBOOK.md) |
 
-## What is next — not yet claimed
+## Current boundary
 
-The following are future/next-stage work and are deliberately not listed above as completed skills evidence:
+The next security milestone is privileged-admin VPN and management isolation. Centralized monitoring and later Linux/Microsoft workplace features are not part of the completed foundation.
 
-- privileged-admin VPN / final management-plane isolation;
-- centralized monitoring/observability;
-- later Linux/Ansible operations;
-- future Microsoft 365 / Entra / Intune work;
-- later service desk / ticketing expansion.
-
-That separation is intentional: **implemented evidence and roadmap intent are different things.**
+[See current progress](PROJECT_STATUS.md).
