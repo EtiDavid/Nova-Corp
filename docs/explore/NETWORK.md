@@ -1,44 +1,52 @@
-# Network & Firewall
+# Network Gatehouse — pfSense and network zones
 
-## In plain English
+Nova Corp uses [pfSense](systems/NOVA-FW01.md) as its firewall and gateway between several networks. Separating networks means employees can reach what they need without automatically receiving access to every management interface.
 
-Nova Corp uses **pfSense** to route traffic between different parts of the lab and enforce rules about what may communicate. A network zone is like a department area of a building: not every visitor should have access everywhere.
+## Select a network
 
-## Known network zones at the Phase 2 boundary
+| Area | Subnet | Gateway | What lives there |
+| --- | --- | --- | --- |
+| **Upstream host** | `192.168.178.0/24` | `192.168.178.1` | Proxmox management; pfSense WAN |
+| **Legacy LAN** | `10.99.99.0/24` | `10.99.99.1` | Legacy internal segment |
+| **MGMT / VLAN 10** | `10.10.10.0/24` | `10.10.10.1` | Firewall management interface |
+| **INFRA / VLAN 20** | `10.10.20.0/24` | `10.10.20.1` | [DC01](systems/NOVA-DC01.md), [DC02](systems/NOVA-DC02.md), [FILES01](systems/NOVA-FILES01.md) |
+| **APP / VLAN 30** | `10.10.30.0/24` | `10.10.30.1` | Reserved application segment |
+| **CLIENT / VLAN 40** | `10.10.40.0/24` | `10.10.40.1` | [NOVA-CLIENT](systems/NOVA-CLIENT.md) |
+| **DMZ / VLAN 50** | `10.10.50.0/24` | `10.10.50.1` | Reserved public-service segment |
+| **VPN_REMOTE / VLAN 60** | `10.10.60.0/24` | `10.10.60.1` | Remote WireGuard peers |
 
-| Zone | Network | Purpose |
-| --- | --- | --- |
-| MGMT / VLAN 10 | `10.10.10.0/24` | Management |
-| INFRA / VLAN 20 | `10.10.20.0/24` | Domain Controllers and file server |
-| APP / VLAN 30 | `10.10.30.0/24` | Reserved future application area |
-| CLIENT / VLAN 40 | `10.10.40.0/24` | Domain workstations |
-| DMZ / VLAN 50 | `10.10.50.0/24` | Reserved future public-facing area |
-| VPN_REMOTE / VLAN 60 | `10.10.60.0/24` | WireGuard remote-access zone |
+## How routing and firewall policy work
 
-The hypervisor is currently managed from the **upstream host network**, not from the final isolated privileged-management design. This is explicitly carried forward to the next security work.
+```mermaid
+flowchart LR
+    PC["Employee workstation"] --> V40["CLIENT VLAN 40"]
+    V40 --> FW["pfSense firewall"]
+    FW -->|approved AD/DNS/SMB traffic| V20["INFRA VLAN 20"]
+    FW -.->|management restriction| MGMT["MGMT VLAN 10"]
+    V20 --> DC["Domain Controllers"]
+    V20 --> FS["File server"]
+```
 
-## Open the firewall
+## Open the parts of the firewall
 
-**Asset label:** nova-fw01  
-**Operating-system name:** pfSense.home.arpa
+[pfSense server profile](systems/NOVA-FW01.md) · [Firewall rules explained](services/FIREWALL.md) · [WireGuard VPN](services/WIREGUARD.md) · [DNS Resolver](services/DNS.md).
 
-What can be explored:
+## What was tested
 
-- [Current architecture](../ARCHITECTURE.md)
-- [Remote-access engineering](../Documentation/Change-Requests/Journal-CR-007.md)
-- [Security findings during final validation](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)
-- [Tests and recovery](TESTS_AND_RECOVERY.md)
+**Firewall and VLAN foundation:** Routing, gateways, DHCP, WAN and firewall rules were configured and validated.
 
-## About firewall rules
+**VPN:** A failed WireGuard handshake was traced through packet arrival, firewall counters and peer authentication before being repaired.
 
-A complete rule browser should show the **sanitized and verified** rule list per interface, with rule order, human-readable purpose, source and destination type, permitted/blocked service, validation and revision date.
+**Management isolation:** Final validation found and corrected a management interface path reachable by an ordinary client. The repair was tested against blocked management traffic and required application traffic.
 
-**That complete current rule inventory is not published yet.** It must be derived from an audited pfSense ruleset/export and compared with the last tested state. We must not recreate every rule from memory or expose sensitive endpoints, remote-access keys or recovery material.
+**Unfinished security work:** Proxmox management is still on the upstream host network; the dedicated privileged-admin VPN is the next security milestone.
 
-## Security lesson already demonstrated
+## Visual explanation
 
-Final validation discovered unwanted management reachability from a normal client. The path was corrected, then negative management tests **and** positive DNS/AD/SMB/Internet tests verified that the repair had not broken required traffic.
+![Packet path through network layers](../Documentation/Change-Requests/cr007_assets/02_packet_journey.png)
 
-## Future security work
+*The connection must pass several network and policy layers before an internal service can respond.*
 
-Privileged-admin VPN and full management-plane isolation are **next**, not complete.
+**Engineering depth:** [Network foundation](../Documentation/Change-Requests/Journal-CR-002.md) · [VPN and firewall packet journey](../Documentation/Change-Requests/Journal-CR-007.md) · [Management validation](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+
+[← Company map](../EXPLORE_NOVACORP.md)
