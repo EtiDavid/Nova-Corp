@@ -55,6 +55,8 @@ Some historical Markdown journals reference screenshot assets that are not yet p
 
 The technical journals remain public, but the screenshot set is being curated rather than dumping every raw lab image into the portfolio.
 
+**[Browse Nova Corp by its systems and departments →](EXPLORE_NOVACORP.md)**
+
 The next portfolio steps are:
 
 1. repair/curate the missing visual evidence;
