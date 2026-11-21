@@ -1,57 +1,79 @@
-# Engineering stories — problems I actually investigated
+# Engineering Stories — problems I actually investigated
 
-These are the shorter versions for a recruiter or hiring manager. The linked journals carry the full commands, results and troubleshooting history.
+These are short recruiter/hiring-manager entry points. The detailed journals contain the commands, outputs, failed assumptions and recovery evidence.
 
-## 1. A WireGuard tunnel is more than a green handshake
+## Existing story — WireGuard is more than a green handshake
 
 **Source:** [CR-007 — Remote Access VPN](Documentation/Change-Requests/Journal-CR-007.md)
 
-**The problem.** I wanted to administer selected Nova Corp services from a separate external network without treating VPN access as permission to reach everything.
+A tunnel indicator is not proof that the user can reach the intended service—or that they are blocked from services they should not reach.
 
-**What happened.** A peer public-key configuration mistake prevented the expected tunnel behaviour. I checked the endpoint path through the home router, NAT, pfSense and the remote client rather than assuming the issue was inside Active Directory.
+The work followed the path through NAT, pfSense, WireGuard and internal firewall policy rather than treating the handshake as the final test.
 
-**What I checked.** Handshake state, routing, DNS/DC discovery, firewall rules and approved versus disallowed network paths. The journal also covers the distinction between a working WireGuard tunnel and a successful Windows domain join.
+The remaining external-workstation/privileged-management limitations are documented and carried into CR-016.
 
-**Result.** The controlled remote-access implementation passed its recorded final checks. External Windows domain joining and physical USB-policy validation remained deferred because the available remote laptop used Windows Home.
+## Existing story — bulk user creation left incomplete accounts
 
-**What I learned.** I should test the *service a user needs*, and the access they must *not* receive—not only the connectivity indicator.
+**Source:** [CR-011 — PowerShell Administration Toolkit](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)
 
-## 2. My bulk-user script reported failure but left accounts behind
+A weak temporary password was rejected after an AD user object had already been created.
 
-**Source:** [CR-011 — PowerShell Administration Toolkit, bulk provisioning section](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)
+The first script version reported failure but left incomplete accounts behind.
 
-**The problem.** A bulk onboarding workflow should either create a fully valid user or leave no incomplete user behind.
+The workflow was changed to clean up partial state, then the failure was repeated to prove the rollback behavior.
 
-**What happened.** A weak password failed the domain's password policy after the AD object had already been created. The script stopped, but the objects were left disabled and without the intended group membership.
+**Lesson:** error handling is not the same thing as state recovery.
 
-**What I changed.** I added transaction-like cleanup when a required step fails, recorded the rollback outcome, and reran the failure test.
+## Existing story — the access-analysis tool was wrong
 
-**Result.** The journal records that incomplete accounts from the failed run were removed, valid users were later created, and rerunning the same CSV skipped existing accounts rather than duplicating them.
+**Source:** [CR-011 — Test-UserAccess](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)
 
-**What I learned.** Error handling is not the same thing as state recovery. A script is not safe just because it prints “Failed.”
+The first comparison treated an AD group name and the domain-qualified ACL identity as different strings even though they represented the same group.
 
-## 3. A permission report was wrong because of a string comparison
+The comparison logic was corrected, then the result was checked against an actual user session.
 
-**Source:** [CR-011 — Test-UserAccess section](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)
+**Lesson:** a diagnostic tool can create its own misleading symptom.
 
-**The problem.** A PowerShell access-analysis script said an IT user could not reach the IT share, even though their AD membership and the intended permissions were correct.
-
-**What happened.** The script compared `DL_FS_IT_Modify` from the AD group results against `NOVA\DL_FS_IT_Modify` in the ACLs and treated the names as different.
-
-**What I changed.** I normalized identity names for comparison and checked matching permissions at both SMB share and NTFS levels.
-
-**Result.** The corrected administrative report predicted IT access allowed and Finance access denied for the test user. I also checked from the actual user session, because ACL inspection alone is not proof of successful authentication or file access.
-
-**What I learned.** A diagnostic tool can itself introduce a misleading symptom. The safest approach is to confirm important claims through independent tests.
-
-## 4. Early failure testing: a wrong network route
+## Existing story — wrong network route / recovery preparation
 
 **Source:** [Proxmox failure-testing report](Documentation/failure-testing-report.md)
 
-I deliberately misconfigured a network gateway and documented the baseline, recovery options and troubleshooting steps. This exercise taught me to preserve a known-good configuration and rollback path *before* changing the network that I use to administer the lab.
+An intentionally wrong network route was used to practice baseline capture and recovery planning before changing the network used to administer the lab.
 
-## Strong future stories — evidence not publicly released yet
+## New Phase 2 evidence now public
 
-My working journals also document two-domain-controller failover and replication divergence (CR-013), including observing natural recovery rather than claiming a repair I did not perform. CR-014 is collecting more controlled incident exercises. Those stories will get public case studies once the supporting logs and screenshots have been reviewed and safely published.
+The next dedicated case-study writing step will turn these into four full recruiter stories:
 
-**Note:** This is a home lab. Incidents described here are either controlled exercises or problems observed in the lab. They are not stories about a real employer's production systems.
+### AD survives a Domain Controller outage
+
+Source:
+[CR-013 — AD Resilience](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md)
+
+The lab tested client/domain continuity through DC02 while DC01 was unavailable, then observed natural convergence when DC01 returned.
+
+### Backup was proven by restore
+
+Sources:
+[CR-012 — Backup and Recovery](Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) · [CR-014 Incident Exercises](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)
+
+A backup target was made unavailable, the failure was detected, the target repaired, a new backup completed, and a deleted file was restored with matching SHA-256.
+
+### One user complaint had two independent root causes
+
+Source:
+[CR-014 — Incident Exercises](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)
+
+A blind cross-service incident combined incorrect DNS data with a separate authorization failure. The investigation had to isolate both layers instead of stopping after the first repair.
+
+### Final validation found a management weakness and a storage risk
+
+Source:
+[CR-015 — Phase 2 Validation and Closure](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)
+
+Final acceptance found broader-than-intended pfSense management reachability from a normal client and a Proxmox thin-pool snapshot-retention problem.
+
+The management path was remediated and regression-tested. Twenty superseded snapshots were retired, reducing local-lvm from 86.73% to 52.88%.
+
+---
+
+**Note:** Nova Corp is a home lab. These are controlled lab incidents and observed lab failures, not production incidents from an employer.
