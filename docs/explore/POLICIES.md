@@ -6,7 +6,7 @@ Policies connect to [Active Directory](services/ACTIVE_DIRECTORY.md), the [OU tr
 
 ## Open a policy
 
-### Domain password and account-lockout rules
+### [Domain password and account-lockout rules](policies/DOMAIN_PASSWORD.md)
 
 The historical domain-policy baseline included:
 - Minimum password length: 12 characters
@@ -19,13 +19,13 @@ The lockout controls were also used in a controlled administration test.
 
 [Read the password/lockout settings and tests](../Documentation/Change-Requests/Journal-CR-006.md).
 
-### Corporate wallpaper
+### [Corporate wallpaper](policies/WALLPAPER.md)
 
 The `Nova Corp - Corporate wallpaper` policy provides a consistent desktop look and demonstrates user-policy application.
 
 The contractor test account's `gpresult` showed this wallpaper policy together with the contractor USB restriction.
 
-### <a id="contractor-usb-restriction"></a>Contractor removable-storage restriction
+### <a id="contractor-usb-restriction"></a>[Contractor removable-storage restriction](policies/CONTRACTOR_USB.md)
 
 GPO: `NOVA-sec-deny-usb-contractors`  
 OU: `Nova Users → Contractors`
@@ -38,7 +38,7 @@ Contractors received a policy denying all removable-storage classes. This was ve
 
 [Open John Shaw's profile](people/JOHN_SHAW.md).
 
-### Workstation security baseline
+### [Workstation security baseline](policies/WORKSTATION_BASELINE.md)
 
 GPO: `NOVA-SEC-Workstation-Baseline`  
 Target: `Nova Computers → Workstations`
