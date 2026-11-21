@@ -1,86 +1,27 @@
-# Start Here — Nova Corp in 60 seconds
+# Welcome — your first minute in Nova Corp
 
-If you are reviewing this repository for a **System Engineer, System Administrator, Infrastructure or DevOps** role, this is the shortest useful path.
+Nova Corp is a **fictional company built inside a real home lab**. It has the core IT services you would expect in a small Windows-based business.
 
-**[Start by exploring the company →](EXPLORE_NOVACORP.md)**
+You don't need to know what a Domain Controller, GPO or VLAN is to explore it.
 
-## What is Nova Corp?
+## Take a short tour
 
-Nova Corp is a **fictional company used as a hands-on infrastructure lab**.
+1. **[See the company's servers](explore/SYSTEMS.md)** — what runs everything?
+2. **[Visit the Identity Office](explore/services/ACTIVE_DIRECTORY.md)** — how do employees log in?
+3. **[Meet the IT department](explore/people/IT_DEPARTMENT.md)** — who belongs in the directory?
+4. **[Open the file server](explore/systems/NOVA-FILES01.md)** — which teams can open which folders?
+5. **[Enter the Incident Lab](explore/TESTS_AND_RECOVERY.md)** — what broke, and how did we recover?
 
-I use it to practice the work that connects separate technologies into one operating environment: identity, DNS, networking, security policy, file access, automation, backup, recovery and incident response.
+## One thing worth remembering
 
-**Current milestone:** Phase 2 closed with a documented **Conditional Pass** on **21 November 2026**.
+Nova Corp is deliberately built and tested. It isn't a collection of screenshots showing successful installations.
 
----
+The lab demonstrated a Domain Controller outage, permission denial, DNS failure, Group Policy troubleshooting and a restored file whose hash matched the original.
 
-## What should make this worth a deeper look?
+## Want to explore at your own pace?
 
-### I did not stop at installation
+**[Open the company map](EXPLORE_NOVACORP.md)**
 
-I deliberately tested:
+## Need technical depth?
 
-- a Domain Controller outage;
-- replication recovery;
-- client DNS failure;
-- Group Policy failure;
-- permissions failure;
-- backup-target failure;
-- deleted-file restore;
-- cross-service faults;
-- firewall/management-access mistakes;
-- snapshot-storage pressure.
-
-### I kept the failures
-
-The journals preserve wrong assumptions, failed injectors and corrections where they teach something useful.
-
-### I can point to proof
-
-- **AD resilience:** [CR-013](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md)
-- **PowerShell automation:** [CR-011](Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md)
-- **Incident response:** [CR-014](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)
-- **Operational acceptance:** [CR-015](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)
-
----
-
-## Five numbers
-
-- **2** writable Domain Controllers
-- **8** validated PowerShell administration scripts
-- **7** GPOs frozen in the Phase 2 baseline
-- **20** old Proxmox snapshots retired during closure
-- **125.72 GiB** reclaimed from the thin pool while preserving the active rollback point
-
-And one result I care about more than a number:
-
-**a deleted file was restored and its SHA-256 matched the original.**
-
----
-
-## Pick your depth
-
-### Recruiter / non-technical reviewer
-
-1. [Current architecture](ARCHITECTURE.md)
-2. [Engineering stories](CASE_STUDIES.md)
-3. [Skills → evidence](SKILLS_EVIDENCE.md)
-
-### Technical hiring manager
-
-1. [CR-013 — AD resilience](Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md)
-2. [CR-014 — incident exercises](Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md)
-3. [CR-015 — final validation](Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md)
-4. [Phase 2 operations runbook](runbooks/PHASE-2-OPERATIONS-RUNBOOK.md)
-
-### Deep technical review
-
-[Browse CR-001 → CR-015](PROJECT_STATUS.md)
-
----
-
-## One important boundary
-
-This is a **home lab**, not a production environment from an employer.
-
-The engineering work is real hands-on work in the lab. The project also keeps unfinished work visible: CR-016 privileged-management isolation and centralized monitoring are not presented as already completed.
+[Architecture](ARCHITECTURE.md) · [Complete component inventory](explore/ALL_COMPONENTS.md) · [Engineering records](Documentation/Change-Requests/README.md) · [Skills and evidence](SKILLS_EVIDENCE.md)
