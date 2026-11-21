@@ -14,8 +14,7 @@ header-includes:
     \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
 
-> **Publication review note (21 Nov 2026):** technical validation is complete and the journal has passed final editorial reconciliation during CR-015 closure. The original screenshot binaries are not currently present in the public repository; broken embeds have been removed from the rendered page while exact evidence filenames remain preserved in Markdown source comments pending curation.
-
+**Explore the related parts of Nova Corp:** [DC01](../../explore/systems/NOVA-DC01.md) · [DC02](../../explore/systems/NOVA-DC02.md) · [Active Directory](../../explore/services/ACTIVE_DIRECTORY.md) · [Failure tests](../../explore/TESTS_AND_RECOVERY.md)
 
 # CR-013 - Secondary Domain Controller and AD Resilience
 
@@ -145,7 +144,7 @@ The CR deliberately included both **normal-state validation** and **failure-stat
 
 Both DCs were already members of `Default-First-Site-Name` and both were Global Catalogs. CR-013 therefore began from an already-built environment and focused on **validation, resilience and recovery**, not promotion of a new DC.
 
-<!-- Evidence reference: assets/CP01-DC01-authoritative-baseline.png | Authoritative CR-013 baseline showing both domain controllers, their IP addresses, site, Global Catalog state and FSMO ownership. -->{ width=92% }
+
 
 **Figure 1 - Authoritative DC baseline.** This captured the factual starting point before any CR-013 fault injection.
 
@@ -334,7 +333,7 @@ repadmin /replsummary
 
 **What the largest delta meant:** it was the age of the oldest successful replication relationship represented by the summary, not the time taken to perform replication and not itself a failure.
 
-<!-- Evidence reference: assets/CP02-repadmin-replsummary.png | Baseline replication summary showing zero failures on both domain controllers. -->{ width=92% }
+
 
 **Figure 2 - Baseline replication summary.** The critical fields are `fails/total`, `%`, and `error`.
 
@@ -353,9 +352,6 @@ repadmin /showrepl NOVA-DC02
 
 **Actual:** each controller showed successful inbound replication from the opposite controller for all five naming contexts over RPC.
 
-<!-- Evidence reference: assets/CP02-showrepl-DC01.png | Detailed inbound replication for NOVA-DC01. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP02-showrepl-DC02.png | Detailed inbound replication for NOVA-DC02. -->{ width=92% }
 
 ### Conclusion
 
@@ -385,7 +381,7 @@ Ideally, no output.
 
 The command reported DFS Replication warnings and, depending on the direction from which the enterprise query was executed, remote event-log queries failed with `0x6ba - The RPC server is unavailable`. The output also flagged `DFSREvent`, `KccEvent` and `SystemLog` tests because recent error/warning entries existed.
 
-<!-- Evidence reference: assets/CP03-dcdiag-DC02-local-and-enterprise.png | Initial DCDIAG evidence showing DFSR and reciprocal RPC/event-log query warnings. -->{ width=92% }
+
 
 ### Thought process
 
@@ -441,9 +437,6 @@ Each selected test should return `passed test`.
 
 Both controllers passed Connectivity, Advertising, SysVolCheck, MachineAccount, NetLogons, Replications and Services.
 
-<!-- Evidence reference: assets/CP03-dcdiag-targeted-DC01-pass.png | Current-state DCDIAG on DC01 with the targeted service tests passing. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP03-dcdiag-targeted-DC02-pass.png | Current-state DCDIAG on DC02 with the targeted service tests passing. -->{ width=92% }
 
 ### Conclusion
 
@@ -484,9 +477,6 @@ The relevant share checks were performed from both controllers.
 
 All captured path tests returned `True`, and both controllers published the expected SMB shares.
 
-<!-- Evidence reference: assets/CP04-DC01-SYSVOL-NETLOGON-pass.png | DC01 SYSVOL/NETLOGON publication and reachability checks. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP04-DC02-SYSVOL-NETLOGON-pass.png | DC02 SYSVOL/NETLOGON publication and reciprocal reachability checks. -->{ width=92% }
 
 ### Conclusion
 
@@ -528,13 +518,6 @@ nltest /dclist:nova.corp
 
 Both controllers appeared in the correct SRV record sets. Their A records resolved to `10.10.20.10` and `10.10.20.11`. `nltest` successfully located a DC and listed both controllers.
 
-<!-- Evidence reference: assets/CP05-SRV-LDAP-both-DCs.png | LDAP/DC Locator SRV records for both controllers. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP05-SRV-Kerberos-both-DCs.png | Kerberos SRV records for both controllers. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP05-SRV-GlobalCatalog-both-DCs.png | Global Catalog SRV records for both controllers. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP05-nltest-DC-discovery.png | Windows DC Locator / domain-controller enumeration. -->{ width=92% }
 
 ### What we wanted to find
 
@@ -588,13 +571,6 @@ For the DCs, the exact order can differ, but both domain DNS addresses should be
 - `NOVA-FILES01` used both.
 - DC01 and DC02 both had redundant AD DNS resolver addresses configured.
 
-<!-- Evidence reference: assets/CP06-client01-DNS-servers.png | Client DNS resolver configuration. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP06-dc01-DNS-servers-1.png | DC01 DNS resolver configuration. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP06-dc02-DNS-servers.png | DC02 DNS resolver configuration. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP06-files01-DNS-servers.png | FILES01 DNS resolver configuration. -->{ width=92% }
 
 ### Conclusion
 
@@ -645,13 +621,6 @@ w32tm /query /status
 - FILES01 used DC01 and reported Stratum 4.
 - The client also followed DC01 and reported Stratum 4 in the captured status.
 
-<!-- Evidence reference: assets/CP07-DC02-time-source-status.png | DC02 PDC Emulator using external NTP and reporting a healthy time status. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP07-DC01-time-source-status.png | DC01 synchronizing from DC02. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP07-FILES01-time-source-status.png | FILES01 following the domain time hierarchy. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP07-CLIENT01-time-source-status.png | Client time status showing domain synchronization. -->{ width=92% }
 
 ### Troubleshooting lesson - non-elevated client query
 
@@ -691,7 +660,7 @@ The feature cannot simply be disabled again after enablement. We therefore neede
 - Recycle Bin was disabled.
 - The forest mode was `Windows2025Forest`, comfortably above the requirement.
 
-<!-- Evidence reference: assets/CP08-AD-Recycle-Bin-baseline.png | Recycle Bin baseline showing the feature disabled and the forest mode sufficient. -->{ width=92% }
+
 
 ### 6.8.2 Enable the forest-wide feature
 
@@ -716,7 +685,7 @@ The first immediate validation still showed an empty `EnabledScopes`, while a su
 
 This was a useful replication lesson: a forest-wide AD configuration change can be committed correctly while an immediate read briefly observes stale state. The correct response was to verify both DCs and replication rather than instantly retrying or changing unrelated settings.
 
-<!-- Evidence reference: assets/CP08-AD-Recycle-Bin-enable-and-validation.png | Recycle Bin enablement and validation sequence. -->{ width=92% }
+
 
 ### 6.8.3 Verify both DCs see the feature
 
@@ -734,7 +703,7 @@ repadmin /replsummary
 
 **Actual:** both DCs showed populated enabled scopes and replication remained clean.
 
-<!-- Evidence reference: assets/CP08-Recycle-Bin-both-DCs-and-replication-pass.png | Recycle Bin enabled on both DCs with healthy replication. -->{ width=92% }
+
 
 ### 6.8.4 Create and fingerprint a disposable user
 
@@ -771,7 +740,7 @@ If a deleted account is simply recreated with the same name, it receives a diffe
 
 `MemberOf` was empty because the fresh account had no direct group memberships; the primary group relationship is not represented by the `memberOf` attribute.
 
-<!-- Evidence reference: assets/CP08-test-user-predelete-identity.png | Disposable user identity captured before deletion. -->{ width=92% }
+
 
 ### 6.8.5 Delete the user and discover the deleted object
 
@@ -804,7 +773,7 @@ $Deleted |
 
 The deleted object retained the exact original GUID and SID and recorded its original location.
 
-<!-- Evidence reference: assets/CP08-deleted-object-discovery.png | Deleted user discovered with identity and last-known-parent metadata preserved. -->{ width=92% }
+
 
 ### 6.8.6 Restore through ADAC GUI
 
@@ -827,7 +796,7 @@ Same GUID, same SID, original DN, description preserved, account remains disable
 
 All matched the original fingerprint.
 
-<!-- Evidence reference: assets/CP08-restored-user-identity-pass.png | Restored user retaining the original object and security identity. -->{ width=92% }
+
 
 ### Conclusion
 
@@ -856,7 +825,7 @@ Its identity was captured before deletion:
 
 After deletion, normal `Get-ADGroup` lookup returned `ADIdentityNotFoundException`, while `Get-ADObject -IncludeDeletedObjects` showed the original GUID/SID, `LastKnownParent` and `msDS-LastKnownRDN`.
 
-<!-- Evidence reference: assets/CR013-recyclegroup-deleted-object-discovery.png | Deleted security group preserved in AD Deleted Objects. -->{ width=92% }
+
 
 The group was restored through ADAC and validated:
 
@@ -876,7 +845,7 @@ Same GUID/SID, original `CN=Users` location, Global scope, Security category and
 
 All identity and core group attributes matched.
 
-<!-- Evidence reference: assets/CR013-recyclegroup-restored-pass.png | Restored security group retaining its original identity and attributes. -->{ width=92% }
+
 
 ### Conclusion
 
@@ -1005,11 +974,6 @@ After shutdown:
 
 Before the outage, DC Locator selected DC01 and both DC names resolved. Moyo could reach the IT share. After the controlled shutdown, DC01 stopped responding.
 
-<!-- Evidence reference: assets/CP09-preoutage-DC01-baseline.png | Pre-outage DC01 baseline. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP09-preoutage-client01-baseline.png | Pre-outage client baseline with Moyo's normal context. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP09-DC01-outage-transition.png | DC01 transitioning from available to unavailable while authorized file access remained available. -->{ width=92% }
 
 ### Conclusion
 
@@ -1041,7 +1005,7 @@ DC02 / `10.10.20.11` should be selected.
 
 The client selected `nova-dc02.nova.corp`.
 
-<!-- Evidence reference: assets/CP12-client-force-DC02-and-SRV.png | Client forcing fresh DC discovery and selecting DC02 while DC01 was offline. -->{ width=92% }
+
 
 ### Test B - DNS and service ports
 
@@ -1077,7 +1041,7 @@ Test-Path "\\nova-dc02\NETLOGON"
 
 **Actual:** both returned `True` while DC01's share paths were unavailable.
 
-<!-- Evidence reference: assets/CP12-DC02-SYSVOL-NETLOGON-DC01-unreachable.png | DC02 SYSVOL/NETLOGON available while DC01 remained unavailable. -->{ width=92% }
+
 
 ### Test D - Authorized file-server access
 
@@ -1108,7 +1072,7 @@ Test-Path "\\nova-files01\IT"
 
 All passed.
 
-<!-- Evidence reference: assets/CP12-client-postlogin-DC02-and-IT-access.png | Post-login proof: Moyo authenticated while DC01 was offline, DC02 was selected and IT share access remained available. -->{ width=92% }
+
 
 ### Two important interpretation lessons
 
@@ -1166,7 +1130,7 @@ Both controllers showed `2 / 5` failures (`40%`) with errors including:
 - `1722 - The RPC server is unavailable`
 - `1908 - Could not find the domain controller for this domain`
 
-<!-- Evidence reference: assets/CP13-DC01-services-and-replsummary-partial-failure.png | DC01 core services running while the first post-boot replication summary still showed partial failure. -->{ width=92% }
+
 
 ### Thought process - why 2/5 mattered
 
@@ -1201,9 +1165,6 @@ Temporarily failing:
 
 Each affected context showed only one consecutive failure.
 
-<!-- Evidence reference: assets/CP13-DC01-showrepl-partial-convergence-1.png | Per-naming-context view showing partial convergence. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP13-DC01-showrepl-partial-convergence-2.png | Additional partial-convergence evidence showing successful DNS application partitions. -->{ width=92% }
 
 ### What we wanted to find
 
@@ -1232,11 +1193,6 @@ Resolve-DnsName -Type SRV "_ldap._tcp.dc._msdcs.nova.corp"
 
 **Actual:** DC02 resolved to `10.10.20.11`, and both DCs were advertised.
 
-<!-- Evidence reference: assets/CP13-DC-KDC-discovery-and-DC02-DNS.png | DC/KDC discovery and DC02 name resolution during diagnosis. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP13-Kerberos-SRV-records.png | Kerberos SRV records during recovery diagnosis. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP13-LDAP-SRV-records.png | LDAP SRV records during recovery diagnosis. -->{ width=92% }
 
 ### Stage 6 - Check authentication/time dependencies
 
@@ -1274,9 +1230,6 @@ Test-NetConnection nova-dc02.nova.corp -Port 389
 
 All returned `TcpTestSucceeded : True`.
 
-<!-- Evidence reference: assets/CP13-KDC-time-and-Kerberos-port.png | KDC/time health and Kerberos port reachability. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP13-RPC-LDAP-port-connectivity.png | RPC endpoint mapper and LDAP reachability from DC01 to DC02. -->{ width=92% }
 
 ### Why we did not run `repadmin /syncall`
 
@@ -1293,11 +1246,11 @@ repadmin /showrepl NOVA-DC02
 
 showed current successful inbound replication for all five naming contexts.
 
-<!-- Evidence reference: assets/CP13-DC01-showrepl-natural-success.png | DC01 showing current successful inbound replication after natural recovery. -->{ width=92% }
+
 
 On DC02, current attempts were successful even though an old `1722` consecutive-failure line remained visible lower in the output. This was a reminder that historical counters/status lines can remain visible after the current condition has recovered.
 
-<!-- Evidence reference: assets/CP13-DC02-showrepl-success-with-lingering-counter.png | DC02 showing current successful replication with an older historical failure line still visible. -->{ width=92% }
+
 
 ### Stage 9 - Final aggregate validation
 
@@ -1313,7 +1266,7 @@ repadmin /replsummary
 
 Exactly that; no active error remained.
 
-<!-- Evidence reference: assets/CP13-final-replsummary-zero-failures.png | Final aggregate replication summary after DC01 recovery. -->{ width=92% }
+
 
 ### Stage 10 - Validate the recovered DC as an actual domain controller
 
@@ -1329,7 +1282,7 @@ REPADMIN proves replication. It does not independently prove that the DC is adve
 
 Advertising, SysVolCheck and Replications all passed.
 
-<!-- Evidence reference: assets/CP13-final-dcdiag-targeted-pass.png | Targeted DCDIAG confirming the recovered DC is healthy above the replication layer. -->{ width=92% }
+
 
 ### Conclusion
 
@@ -1363,9 +1316,6 @@ showed both controllers at `0 / 5`, `0%` failures.
 
 The disposable object `CR013-DivergenceTest` was confirmed absent on both DCs.
 
-<!-- Evidence reference: assets/CP14-clean-replsummary-baseline.png | Clean replication baseline before the divergence incident. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP14-baseline-no-test-group-both-DCs.png | Disposable divergence object absent from both DCs before fault injection. -->{ width=92% }
 
 ### Fault mechanism
 
@@ -1391,7 +1341,7 @@ IS_GC
 DISABLE_INBOUND_REPL
 ```
 
-<!-- Evidence reference: assets/CP14-final-disable-inbound-repl-verified.png | Controlled inbound-replication flag applied and verified on DC02. -->{ width=92% }
+
 
 ### Create a change explicitly on DC01
 
@@ -1429,7 +1379,7 @@ Get-ADGroup "CR013-DivergenceTest" `
 
 Exactly that. Both DCs were online, but their directory state differed.
 
-<!-- Evidence reference: assets/CP14-divergence-object-on-DC01-not-DC02.png | Object exists on DC01 but is absent from DC02 while inbound replication is blocked. -->{ width=92% }
+
 
 ### Diagnose replication while the fault exists
 
@@ -1448,7 +1398,7 @@ repadmin /replsummary
 
 The aggregate summary showed `2 / 5` failures (`40%`) on the affected source/destination path.
 
-<!-- Evidence reference: assets/CP14-showrepl-DC02-error-8457.png | DC02 reporting replication error 8457 while the controlled block is active. -->{ width=92% }
+
 
 ### Why only 2/5 failed instead of 5/5
 
@@ -1467,13 +1417,13 @@ repadmin /options NOVA-DC02
 
 The new DSA options returned to `IS_GC` only.
 
-<!-- Evidence reference: assets/CP14-replsummary-8457-and-rollback.png | Replication summary during the fault and the rollback command that removed the block. -->{ width=92% }
+
 
 ### Important post-rollback observation
 
 Immediately after removing the flag, DC02 still did **not** contain the group.
 
-<!-- Evidence reference: assets/CP14-postrollback-object-still-missing-on-DC02.png | The object was still absent immediately after rollback. -->{ width=92% }
+
 
 This was not proof of rollback failure. It demonstrated a key operational concept:
 
@@ -1496,7 +1446,7 @@ DC02 returned:
 
 These matched DC01 exactly.
 
-<!-- Evidence reference: assets/CP14-DC02-object-arrived-same-identity.png | DC02 receives the same original divergence-test object after normal replication resumes. -->{ width=92% }
+
 
 ### Why matching GUID/SID is stronger than matching the name
 
@@ -1504,7 +1454,7 @@ A same-named group could have been recreated manually. Matching the GUID and SID
 
 `repadmin /showrepl NOVA-DC02` then showed current successful inbound replication again.
 
-<!-- Evidence reference: assets/CP14-DC02-showrepl-postrollback-success.png | Post-rollback DC02 replication returns to successful current attempts. -->{ width=92% }
+
 
 Final validation:
 
@@ -1514,7 +1464,7 @@ repadmin /replsummary
 
 returned `0 / 5`, `0%` for both DCs as sources and destinations.
 
-<!-- Evidence reference: assets/CP14-final-replsummary-zero-failures.png | Final zero-failure replication summary closing the divergence incident. -->{ width=92% }
+
 
 ### Conclusion
 
@@ -1545,11 +1495,6 @@ dcdiag /s:NOVA-DC02 /test:Replications /test:Advertising /test:SysVolCheck /test
 
 All passed.
 
-<!-- Evidence reference: assets/CP15-replsummary-clean-and-dcdiag-DC01-start.png | Fresh final replication summary and DC01 health validation. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP15-dcdiag-DC01-pass.png | DC01 targeted DCDIAG passing. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP15-dcdiag-DC02-pass.png | DC02 targeted DCDIAG passing. -->{ width=92% }
 
 ### 6.16.2 Final DNS/service discovery
 
@@ -1565,9 +1510,6 @@ Resolve-DnsName -Type SRV "_ldap._tcp.gc._msdcs.nova.corp"
 - both DCs on Kerberos port 88;
 - both DCs on Global Catalog port 3268.
 
-<!-- Evidence reference: assets/CP15-dns-ldap-srv-both-DCs.png | Final LDAP SRV validation. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP15-dns-kerberos-srv-both-DCs.png | Final Kerberos SRV validation. -->{ width=92% }
 
 ### 6.16.3 Final SYSVOL / NETLOGON reachability
 
@@ -1580,7 +1522,7 @@ Test-Path "\\NOVA-DC02\NETLOGON"
 
 **Actual:** all four returned `True`.
 
-<!-- Evidence reference: assets/CP15-dns-gc-srv-and-sysvol-netlogon-all-true.png | Global Catalog SRV records plus final SYSVOL/NETLOGON reachability. -->{ width=92% }
+
 
 ### 6.16.4 Final time and FSMO checks
 
@@ -1613,9 +1555,6 @@ Get-ADForest |
 - DC02 source = `1.pool.ntp.org,0x8`.
 - all five FSMO roles = `nova-dc02.nova.corp`.
 
-<!-- Evidence reference: assets/CP15-DC01-time-source-DC02-and-FSMO.png | DC01 following DC02 for time and domain FSMO role output. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP15-DC02-external-NTP-and-FSMO.png | DC02 PDC using external NTP with FSMO roles still on DC02. -->{ width=92% }
 
 ### 6.16.5 Final client test as Moyo
 
@@ -1646,9 +1585,6 @@ A normal domain user should be able to discover a valid DC, resolve both control
 - IT share = `True`;
 - both SYSVOL paths = `True`.
 
-<!-- Evidence reference: assets/CP15-moyo-client-dc-discovery-dns-share-sysvol.png | Final client-side discovery, DNS, file-share and SYSVOL proof from Moyo's session. -->{ width=92% }
-
-<!-- Evidence reference: assets/CP15-moyo-client-both-sysvol-true.png | Moyo confirms SYSVOL reachability on both DCs. -->{ width=92% }
 
 ### 6.16.6 Inventory and remove disposable objects
 
@@ -1666,7 +1602,7 @@ Get-ADGroup -Filter 'SamAccountName -eq "CR013-RecycleGroup" -or SamAccountName 
 
 This confirmed the user and two groups were the disposable CR-013 objects.
 
-<!-- Evidence reference: assets/CP15-final-inventory-disposable-objects.png | Final disposable-object inventory before cleanup. -->{ width=92% }
+
 
 They were then removed:
 
@@ -1704,7 +1640,7 @@ repadmin /replsummary
 
 Both DCs reported `0 / 5`, `0%` as sources and destinations, with no active error.
 
-<!-- Evidence reference: assets/CP15-cleanup-flags-and-final-replsummary.png | Cleanup complete, no replication-disable flags, and final zero-failure replication state. -->{ width=92% }
+
 
 ### About the 57-minute largest delta in the final screen
 
