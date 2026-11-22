@@ -1,5 +1,7 @@
 # Inside the Nova Corp directory
 
+**[Open the complete verified directory inventory (22 November 2026)](DIRECTORY_SNAPSHOT_2026-11-22.md)**
+
 [← Active Directory](services/ACTIVE_DIRECTORY.md) · [Meet the people](PEOPLE_AND_DEPARTMENTS.md) · [Security groups](GROUPS.md) · [Group Policy](POLICIES.md)
 
 An **Organizational Unit (OU)** is a folder-like container for directory objects. It helps administrators organize the company and attach policies to the right users or computers.
@@ -12,7 +14,7 @@ An **Organizational Unit (OU)** is a folder-like container for directory objects
 
 - [Finance department](people/DEPARTMENTS.md#finance)
 - [Human Resources](people/DEPARTMENTS.md#human-resources)
-- [IT department](people/IT_DEPARTMENT.md) — [David](people/DAVID.md), [Moyo](people/MOYO.md) (historical IT account records)
+- [IT department](people/IT_DEPARTMENT.md) — [David](people/DAVID.md), [Moyo](people/MOYO.md), [Isaac](people/accounts/cr011-it.md)
 - [Management](people/DEPARTMENTS.md#management)
 - [Sales](people/DEPARTMENTS.md#sales)
 - **Contractors** — [John Shaw](people/JOHN_SHAW.md), contractor test account documented in the GPO journal
@@ -83,4 +85,4 @@ OU location organizes. A group membership can authorize a resource or help filte
 
 **How the directory was organized:** [Original OU, user and group journal](../Documentation/Change-Requests/Journal-CR-005.md).
 
-*The tree combines documented foundational OUs with later documented contractor/policy objects. Account status and membership can change after the recorded exercises.*
+*The structure and current account placement were cross-checked against the read-only inventory collected on 22 November 2026.*
