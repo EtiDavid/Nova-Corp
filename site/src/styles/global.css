@@ -228,3 +228,28 @@ p { margin: 0; }
 .rule-action.pass { background:#DCFCE7; color:#166534; }
 .rule-action.block { background:#FEE2E2; color:#991B1B; }
 @media(max-width:480px){ .rule-entry { grid-template-columns:1fr auto; gap:10px; } .rule-action { grid-column:1/-1; justify-self:start; } }
+
+/* Public Group Policy browser: three evidence classes, accessible ordinary links,
+ * responsive screenshots, and a semantic filter that works with JavaScript off. */
+.proof-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:15px; }
+.proof-grid > div { min-width:0; background:#F1F5F9; border:1px solid #DDE5EF; padding:18px; border-radius:12px; }
+.proof-grid strong { color:#0F172A; font-weight:800; display:block; }
+.proof-grid p { font-size:.88rem; color:#475569; margin-top:8px; line-height:1.55; }
+.proof-grid.vertical { grid-template-columns:1fr; gap:10px; }
+.proof-grid.vertical .proof-item { border-left:4px solid #2563EB; }
+.mini-badge { display:inline-block; font-size:.74rem; font-weight:750; line-height:1.3; padding:7px 9px; border-radius:7px; background:#EFF6FF; color:#1D4ED8; }
+.tag-line { margin:13px 0 0; }
+.search-label { font-size:.91rem; font-weight:750; color:#334155; display:inline-block; }
+.policy-section { overflow-wrap:anywhere; }
+.policy-section .fact-list dd { font-size:.89rem; line-height:1.55; }
+.evidence-figure { margin:0; overflow:hidden; display:flex; flex-direction:column; }
+.evidence-figure a:first-child { display:block; background:#E2E8F0; }
+.evidence-figure img { width:100%; display:block; height:auto; max-height:390px; object-fit:contain; border-bottom:1px solid var(--border); }
+.evidence-figure figcaption { padding:17px 19px 20px; display:flex; flex-direction:column; gap:8px; }
+.evidence-figure figcaption strong { font-size:.88rem; line-height:1.45; font-weight:800; }
+.evidence-figure figcaption small { font-size:.78rem; color:#64748B; }
+@media(max-width:900px) { .proof-grid { grid-template-columns:1fr; } }
+@media(max-width:520px) {
+ .evidence-figure img { max-height:250px; }
+ .policy-section .fact-list dd { overflow-wrap:anywhere; }
+}

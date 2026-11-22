@@ -1,7 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { organizationalUnits, identities, directorySource } from "../../data/directory";
-import { companyPolicies } from "../../data/policies";
 const base=import.meta.env.BASE_URL;
 const roots=organizationalUnits.filter(o=>!o.parent);
 const children=(slug:string)=>organizationalUnits.filter(o=>o.parent===slug);
