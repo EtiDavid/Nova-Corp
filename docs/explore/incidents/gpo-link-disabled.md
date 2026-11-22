@@ -84,9 +84,9 @@ Re-enable the existing OU link without rebuilding the GPO; refresh and retest us
 
 ## Additional engineering lesson
 
-The earlier incident journal calls this GPO 'Cooperate wallpaper'; the current 22 November A02 GPO export records the technical name 'Nova Corp - Coperate wallpaper'. Both are preserved as dated source names rather than silently treated as proof the string never changed.
+The original incident notes use 'Cooperate wallpaper'. The configured policy is named 'Nova Corp - Coperate wallpaper' (including the typo). The engineering journal preserves the older wording, so readers can follow the investigation without assuming the names were identical.
 
-## What proves this outcome?
+## See the original test results
 
 The full illustrated [incident engineering journal (PDF)](../../Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) contains the execution evidence, screenshots, exact command history and troubleshooting decisions. The brief [public incident-exercise overview](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) explains the wider exercise.
 
