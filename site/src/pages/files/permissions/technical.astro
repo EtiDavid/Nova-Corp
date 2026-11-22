@@ -1,0 +1,97 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import acl from "../../../data/fileAcls.json";
+const base=import.meta.env.BASE_URL;
+const smbNames=[...new Set(acl.smb.map(a=>a.share))];
+const folderNames=[...new Set(acl.ntfs.map(a=>a.folder))];
+const smbFor=(name:string)=>acl.smb.filter(a=>a.share===name);
+const ntfsFor=(name:string)=>acl.ntfs.filter(a=>a.folder===name);
+const isNamespace=(name:string)=>name.startsWith("C:\\DFSRoots\\");
+---
+<BaseLayout title="Exact file access rules" description="Browse the 27 SMB share access entries and 73 NTFS access entries recorded on 11 shares and 14 folder scopes, including inheritance." breadcrumbs={[{label:"File Centre",href:"files/"},{label:"Permissions",href:"files/permissions/"},{label:"Technical rules"}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">Company files / Technical permission explorer</div>
+<h1>Who is actually listed in each access rule?</h1>
+<p class="lead" style="margin-top:18px">Inspect the file server's recorded network share rights and NTFS folder permissions. These are two different checks. Every row is taken from the same previously reviewed public source, with original account names, access rights and inheritance flags preserved.</p>
+<div class="button-row" style="margin-top:23px">
+ <a class="btn" href={base+"files/permissions/"}>Back to the simple permission map</a>
+ <a class="btn ghost" href={acl.source}>Open original ACL record ↗</a>
+</div>
+</div></section>
+<section class="section compact"><div class="container">
+<div class="stats-strip" style="margin:0 0 29px">
+<div class="stat"><b>27</b><span>SMB share permission entries</span></div>
+<div class="stat"><b>73</b><span>NTFS folder access entries</span></div>
+<div class="stat"><b>14</b><span>Inspected folder scopes, not a recursive scan</span></div>
+</div>
+<div class="paper panel" style="margin-bottom:30px">
+ <p class="kicker">Find a permission</p>
+ <label class="search-label" for="acl-search">Search a share, folder, principal, or right</label>
+ <div class="searchbox" style="margin:10px 0 14px"><span aria-hidden="true">⌕</span><input type="search" id="acl-search" data-acl-search placeholder="Try Finance, IT, Authenticated Users or FullControl" autocomplete="off" /></div>
+ <p role="status" aria-live="polite" data-acl-count class="muted">100 recorded entries</p>
+ <p class="muted" style="margin-top:12px">Every group and entry is present in ordinary HTML, even without JavaScript. Expand a group to read its exact entries. Search opens matching groups automatically when JavaScript is enabled.</p>
+</div>
+<section class="content-section">
+ <h2>Network share permissions</h2>
+ <p class="muted" style="margin:12px 0 17px">There are eleven shares: five department data shares, one DFS namespace share and five built-in administrative shares. An SMB permission controls access at the network-share layer.</p>
+ {smbNames.map(name=><details class="acl-group" data-acl-group>
+   <summary><span><strong>{name}</strong><small>SMB / {smbFor(name).length} recorded entries</small></span><span aria-hidden="true">⌄</span></summary>
+   <div class="acl-table-wrap"><table class="data-table">
+    <caption>Saved permissions on the {name} SMB share</caption>
+    <thead><tr><th scope="col">Principal</th><th scope="col">Rule</th><th scope="col">Access</th></tr></thead>
+    <tbody>{smbFor(name).map(a=><tr id={"ace-"+a.id} data-acl-row data-acl-search-text={(name+" "+a.principal+" "+a.action+" "+a.access).toLowerCase()}>
+      <th scope="row"><code>{a.principal}</code></th><td>{a.action}</td><td><strong>{a.access}</strong></td>
+    </tr>)}</tbody>
+   </table></div>
+  </details>)}
+</section>
+<section class="content-section">
+ <h2>NTFS folder permissions</h2>
+ <p class="muted" style="margin:12px 0 17px">These entries were collected on fourteen folder scopes, including the five department roots, DFS namespace objects, and selected incident folders. <strong>Child folders and files were not exhaustively scanned.</strong></p>
+ <div class="note warning" style="margin-bottom:20px">The DFS namespace objects under <code>C:\DFSRoots\shares</code> are referrals, not the departmental data itself. Numeric inherited access masks and <code>InheritOnly</code> are recorded verbatim; do not interpret them as permission to open Finance or HR documents.</div>
+ {folderNames.map(name=><details class="acl-group" data-acl-group>
+   <summary><span><strong>{name}</strong><small>{isNamespace(name)?"DFS referral scope":"Department/incident folder"} · {ntfsFor(name).length} recorded entries</small></span><span aria-hidden="true">⌄</span></summary>
+   <div class="acl-table-wrap"><table class="data-table">
+    <caption>Recorded NTFS access-control entries for {name}</caption>
+    <thead><tr><th scope="col">Principal</th><th scope="col">Rights</th><th scope="col">Rule</th><th scope="col">Inherited?</th><th scope="col">Inheritance / propagation</th></tr></thead>
+    <tbody>{ntfsFor(name).map(a=><tr id={"ace-"+a.id} data-acl-row data-acl-search-text={(name+" "+a.principal+" "+a.rights+" "+a.action+" "+a.inherited+" "+a.inheritance+" "+a.propagation).toLowerCase()}>
+      <th scope="row"><code>{a.principal}</code></th>
+      <td><code>{a.rights}</code></td><td>{a.action}</td>
+      <td>{a.inherited?"Yes":"No"}</td>
+      <td><span>{a.inheritance}</span><br/><span class="muted">{a.propagation}</span></td>
+    </tr>)}</tbody>
+   </table></div>
+  </details>)}
+</section>
+<div class="note" style="margin-top:22px"><strong>Evidence and date:</strong> {acl.snapshotDate}. This page reproduces the saved access-control entries, not an effective access-token result for every identity. For an actual exercised path, <a href={base+"people/moyo/"}>follow Moyo's IT test</a> or open the <a href="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/file-permission-denial.md">historical permission-denial incident</a>. <a href={acl.source}>Original documented ACL table ↗</a>.</div>
+<p data-acl-empty hidden class="note" style="margin-top:18px">No rules matched. Try a department name or a broader permission term.</p>
+</div></section>
+<script>
+ const input=document.querySelector<HTMLInputElement>("[data-acl-search]");
+ const groups=[...document.querySelectorAll<HTMLDetailsElement>("[data-acl-group]")];
+ const count=document.querySelector<HTMLElement>("[data-acl-count]");
+ const empty=document.querySelector<HTMLElement>("[data-acl-empty]");
+ function filter(){
+  const q=input?.value.trim().toLowerCase()??"";
+  let total=0;
+  for(const group of groups){
+    let matched=0;
+    for(const row of group.querySelectorAll<HTMLElement>("[data-acl-row]")){
+      const shown=(row.dataset.aclSearchText||"").includes(q);
+      row.hidden=!shown;
+      if(shown){total++;matched++;}
+    }
+    group.hidden=matched===0;
+    if(q&&matched>0)group.open=true;
+  }
+  if(count)count.textContent=total+" "+(total===1?"recorded entry":"recorded entries");
+  if(empty)empty.hidden=total!==0;
+ }
+ if(input) {
+   const urlQ=new URLSearchParams(window.location.search).get("q");
+   if(urlQ)input.value=urlQ;
+   input.addEventListener("input",filter);
+   filter();
+ }
+</script>
+</BaseLayout>
