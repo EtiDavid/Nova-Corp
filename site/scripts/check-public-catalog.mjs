@@ -37,6 +37,7 @@ const required=[
 "network/index.html","network/rules/index.html","network/zones/client/index.html",
 "network/rules/1795199640/index.html","network/rules/1782219813/index.html",
 "network/aliases/index.html","network/aliases/nova-domain-controllers/index.html",
+"incidents/index.html","incidents/dns-client-outage/index.html","incidents/firewall-management-exposure/index.html","404.html",
 "policies/index.html","policies/contractor-usb/index.html","policies/keyboard/index.html",
 "policies/drive-mapping/index.html","policies/workstation-baseline/index.html",
 "directory/ous/contractors/index.html","people/john-shaw/index.html",

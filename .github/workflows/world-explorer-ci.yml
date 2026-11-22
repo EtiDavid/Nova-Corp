@@ -39,6 +39,8 @@ jobs:
         run: npm run test:evidence
       - name: Verify all 100 ACL records against reviewed source
         run: npm run test:acls
+      - name: Run interactive desktop and mobile browser smoke tests
+        run: npm run test:browser
       - name: Capture real browser desktop and mobile screenshots
         shell: bash
         run: |
