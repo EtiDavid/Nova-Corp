@@ -25,6 +25,12 @@ DC02 is a **writable** Domain Controller, not merely a passive backup image.
 | Directory | Writable DC, Global Catalog |
 | FSMO ownership | DC02 held FSMO roles during the validated resilience exercise |
 
+## Domain Controller Group Policy
+
+NOVA-DC02 sits in the built-in Domain Controllers OU targeted by [Default Domain Controllers Policy](../policies/DEFAULT_DC.md). The domain-wide [Default Domain Policy](../policies/DOMAIN_PASSWORD.md) also exists at the domain root.
+
+The November policy report documents configuration; the earlier resilience tests establish the Domain Controller services that were actually exercised.
+
 ## What we tested
 
 The controlled outage deliberately stopped DC01, then checked whether clients could still find DC02 and access the required domain services. When DC01 returned, replication was examined before declaring recovery.
