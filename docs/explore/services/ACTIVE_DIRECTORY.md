@@ -32,6 +32,8 @@ Nova Corp initially installed AD DS and DNS on DC01, created the `nova.corp` dom
 
 **Read the build:** [Install AD DS and DNS](../../Documentation/Change-Requests/Journal-CR-003.md) → [Add a second DC](../../Documentation/Change-Requests/Journal-CR-004.md).
 
+**[See the actual November 2026 directory snapshot: 16 OUs, 20 users, 62 groups, 4 computers](../DIRECTORY_SNAPSHOT_2026-11-22.md)**
+
 ## What was tested?
 
 - Name resolution and LDAP/Kerberos service discovery.
