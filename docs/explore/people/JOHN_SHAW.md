@@ -11,6 +11,10 @@ John Shaw is a fictional contractor account used to validate Group Policy target
 | Applied policy | `NOVA-sec-deny-usb-contractors` |
 | Also applied | `Nova Corp - Corporate wallpaper` |
 
+## Which policies target the contractor OU?
+
+The Contractors OU has its own [removable-storage restriction](../policies/CONTRACTOR_USB.md), and it sits beneath **Nova Users**, which also has the [corporate wallpaper](../policies/WALLPAPER.md) and [department drive mapping](../policies/DRIVE_MAPPING.md) links.
+
 ## What was the policy supposed to do?
 
 Contractors should not be able to use removable storage even if a generic exception exists for approved staff.
