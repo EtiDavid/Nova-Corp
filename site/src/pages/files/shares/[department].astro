@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { shares, type Share } from "../../../data/fileCentre";
+import { findGroupByName } from "../../../data/groups";
+import { identities } from "../../../data/directory";
+export function getStaticPaths(){ return shares.map(share=>({params:{department:share.id},props:{share}})); }
+interface Props{share:Share}
+const {share}=Astro.props;
+const base=import.meta.env.BASE_URL;
+const group=findGroupByName(share.group);
+const access=findGroupByName(share.resourceGroup);
+const users=identities.filter(i=>i.directGroups.includes(share.group));
+const encode=(slug:string)=>base+"groups/"+slug+"/";
+---
+<BaseLayout title={share.name+" shared folder"} description={"Explore "+share.name+" folder access at Nova Corp: directory groups, DFS, SMB and NTFS permissions."} breadcrumbs={[{label:"Explore",href:"explore/"},{label:"File Centre",href:"files/"},{label:share.name}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">File & Records Room / {share.name}</div>
+<h1>{share.name} shared folder</h1>
+<p class="lead" style="margin-top:17px">{share.purpose} Follow the actual chain from company identity to the folder, then inspect the two Windows access checks.</p>
+<div class="button-row" style="margin-top:20px"><a class="btn small" href={base+"files/permissions/"}>Compare department permissions →</a><a class="btn ghost small" href={base+"files/dfs/"}>Open the company file map</a></div>
+</div></section>
+<section class="section compact"><div class="container grid-main">
+<div>
+  <section class="content-section">
+    <h2>Follow the access path</h2>
+    <p class="muted" style="margin:12px 0 19px">These are separate configuration relationships. The final access outcome depends on the user's logon token and the exact folder or file requested.</p>
+    <ol class="walkthrough">
+      <li class="walk-step">
+        <h3>People belong to a department group</h3>
+        <p><a href={group?encode(group.slug):base+"groups/"}><strong>{share.group}</strong></a> contains the recorded department identities.</p>
+        <p style="margin-top:8px">{users.map((user,index)=><span><a href={base+"people/"+user.slug+"/"}>{user.name}</a>{index<users.length-1?", ":""}</span>)}</p>
+      </li>
+      <li class="walk-step"><h3>The group is nested into a resource group</h3>
+        <p><a href={access?encode(access.slug):base+"groups/"}><strong>{share.resourceGroup}</strong></a> is assigned the folder permissions. The department group itself does not need a separate direct ACL entry.</p>
+      </li>
+      <li class="walk-step"><h3>The friendly address finds the file server</h3>
+        <p><code class="technical">{share.dfs}</code> resolves to <code class="technical">{share.smb}</code>.</p>
+        <a class="evidence-link" href={base+"files/dfs/"}>Follow the DFS namespace →</a>
+      </li>
+      <li class="walk-step"><h3>Windows checks the shared-folder permission</h3>
+        <p>The resource group is allowed <strong>Change</strong> through SMB. This checks permission to access the share across the network.</p>
+      </li>
+      <li class="walk-step"><h3>Windows also checks the folder permission</h3>
+        <p>At <code class="technical">{share.ntfs}</code>, the same resource group has <strong>Modify</strong> on the NTFS root. Administrators and SYSTEM have their separately recorded administrative permissions.</p>
+      </li>
+    </ol>
+    <div class="note warning" style="margin-top:20px">DFS routing and group membership alone are not a claim that any particular file operation succeeds. Selected allowed and denied outcomes were tested historically; the present page represents the recorded share/root configuration.</div>
+  </section>
+  {share.exception && <section class="content-section">
+    <div class="paper panel">
+      <div class="eyebrow">An additional authorized path</div>
+      <h2 style="margin:15px 0">Management can have broader Finance access.</h2>
+      <p class="muted"><a href={base+"groups/management-users/"}>{share.exception.member}</a> is nested into <a href={base+"groups/dl-fs-finance-fullcontrol/"}>{share.exception.group}</a>. The latter has <strong>{share.exception.smb}</strong> at the SMB layer and <strong>{share.exception.ntfs}</strong> at the NTFS root.</p>
+      <div class="definition">{share.exception.description}</div>
+      <a class="evidence-link" href={base+"people/maria-manager/"}>Follow Maria Manager's identity →</a>
+    </div>
+  </section>}
+  <section class="content-section">
+    <h2>What happened during access testing?</h2>
+    <div class="paper panel">
+      <p class="muted">Moyo's documented IT tests confirmed an allowed IT path and a denied Finance path. A later incident deliberately placed a temporary denial on an IT child folder and then repaired it. The current IT incident-folder snapshot has no lingering Moyo-specific DENY.</p>
+      <a class="evidence-link" href="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/file-permission-denial.md">Read the actual access-denial investigation ↗</a>
+      <p class="source-line">This does not imply that every department or account has passed the same end-to-end test.</p>
+    </div>
+  </section>
+</div>
+<aside>
+  <div class="sidebox"><h3>Folder addresses</h3><dl class="fact-list"><div><dt>Company address (DFS)</dt><dd><code class="technical">{share.dfs}</code></dd></div><div><dt>Server share</dt><dd><code class="technical">{share.smb}</code></dd></div><div><dt>NTFS folder</dt><dd><code class="technical">{share.ntfs}</code></dd></div></dl></div>
+  <div class="sidebox"><h3>Rights at a glance</h3><dl class="fact-list"><div><dt>Department group</dt><dd>{share.group}</dd></div><div><dt>Resource group</dt><dd>{share.resourceGroup}</dd></div><div><dt>SMB access</dt><dd>Change</dd></div><div><dt>NTFS access</dt><dd>Modify</dd></div></dl><a class="evidence-link" href={base+"files/permissions/"}>All five department groups →</a></div>
+  <div class="sidebox"><h3>Original source</h3><p class="muted">This page reflects the reviewed departmental file-server configuration. Detailed original rules and exceptions remain in the linked public record.</p><a class="evidence-link" href={share.evidence}>Department configuration ↗</a></div>
+  <div class="sidebox"><a href={base+"files/"}>← Back to File Centre</a><p style="margin-top:12px"><a href={base+"systems/nova-files01/"}>Open the file server →</a></p></div>
+</aside>
+</div></section>
+</BaseLayout>

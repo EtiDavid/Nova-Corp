@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { shares, fileEvidence } from "../../data/fileCentre";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Company File Centre" description="Explore the actual five shared departmental folders, identity-based access, DFS paths and permission checks." breadcrumbs={[{label:"Explore",href:"explore/"},{label:"File & Records Room"}]}>
+<section class="page-head"><div class="container">
+  <div class="eyebrow">Company files / Five departments</div>
+  <h1>One file server. Different access for every team.</h1>
+  <p class="lead" style="margin-top:18px">Employees work from shared folders instead of storing every important document on individual computers. Explore who belongs to a department, which group receives access, and how the company checks that access.</p>
+  <div class="button-row" style="margin-top:25px"><a class="btn" href={base+"files/shares/it/"}>Follow an IT employee's request →</a><a class="btn ghost" href={base+"files/dfs/"}>Understand the company file address</a></div>
+</div></section>
+<section class="section compact"><div class="container">
+  <div class="section-heading"><div><div class="eyebrow">Choose a department</div><h2>Open a shared folder</h2></div><a class="text-link" href={base+"files/permissions/"}>Compare permissions ↗</a></div>
+  <div class="area-grid">
+  {shares.map((share,index)=><a class="area-card" href={base+"files/shares/"+share.id+"/"} style={"--accent:"+(share.id==="finance"?"#7C3AED":"#2563EB")}>
+    <div class="number"><span>{String(index+1).padStart(2,"0")} / SHARED FOLDER</span><span aria-hidden="true">↗</span></div>
+    <h3>{share.name}</h3><p>{share.purpose}</p>
+    <span class="arrow-label">Follow access →</span>
+  </a>)}
+  </div>
+  <div class="grid-main" style="margin-top:30px">
+    <div class="paper panel">
+      <p class="kicker">Walkthrough / Document request</p>
+      <h3 style="margin:12px 0 15px">Moyo opens an IT team file.</h3>
+      <p class="muted">Moyo's IT account belongs to a department group, nested into a resource-permission group. A familiar DFS path leads to the real share, where Windows evaluates both share permissions and folder permissions.</p>
+      <div class="button-row" style="margin-top:24px"><a class="btn small" href={base+"people/moyo/"}>Start with Moyo →</a><a class="btn ghost small" href={base+"files/shares/it/"}>Open the IT share</a></div>
+    </div>
+    <div class="paper panel">
+      <p class="kicker">An important difference</p>
+      <h3 style="margin:12px 0 15px">Finance has a second authorization path.</h3>
+      <p class="muted">Finance staff use standard Modify permissions. Authorized management identities receive broader Finance FullControl through a separate nested group.</p>
+      <a class="evidence-link" href={base+"files/shares/finance/"}>See why Finance is different →</a>
+    </div>
+  </div>
+</div></section>
+<section class="section soft-band"><div class="container">
+ <h2>Three things that must not be confused</h2>
+ <div class="outcome-grid">
+   <div class="outcome"><strong>The company address</strong><p>The DFS namespace directs employees to one of five targets. The namespace's Read rule does not grant unrestricted access to departmental documents.</p><a class="evidence-link" href={base+"files/dfs/"}>Follow DFS referrals →</a></div>
+   <div class="outcome"><strong>Network vs folder rights</strong><p>SMB share permission and NTFS folder permission are evaluated separately. A working network connection is not enough to open a restricted file.</p><a class="evidence-link" href={base+"files/permissions/"}>Compare both checks →</a></div>
+   <div class="outcome"><strong>Backup vs earlier version</strong><p>Windows Backup restored a deleted file in one test; Shadow Copy preserved a previous version in another. Both have different limits.</p><a class="evidence-link" href={base+"recovery/"}>See recovery options →</a></div>
+ </div>
+ <p class="source-line">Recorded configuration, not live access testing. The detailed access lists cover specified shares and folder levels, not every file recursively. <a href={fileEvidence.full}>Original engineering journal ↗</a></p>
+</div></section>
+</BaseLayout>

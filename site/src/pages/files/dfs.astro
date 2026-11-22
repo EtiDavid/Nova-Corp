@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { shares, fileEvidence } from "../../data/fileCentre";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Company file addresses" description="Explore how one DFS namespace directs people to five departmental SMB shares while preserving folder permissions." breadcrumbs={[{label:"Explore",href:"explore/"},{label:"Files",href:"files/"},{label:"File addresses"}]}>
+<section class="page-head"><div class="container">
+  <div class="eyebrow">File Centre / Network paths</div>
+  <h1>One familiar address. Five protected destinations.</h1>
+  <p class="lead" style="margin-top:18px">Nova Corp uses a domain-based DFS namespace so employees can find their department without remembering the server name. The namespace redirects a request—it does not grant access to the actual documents.</p>
+</div></section>
+<section class="section compact"><div class="container grid-main">
+<div>
+  <section class="content-section">
+    <div class="paper panel">
+      <p class="kicker">The company entry point</p>
+      <h2 style="margin:12px 0 15px"><code class="technical">\\nova.corp\shares</code></h2>
+      <p class="muted">The namespace root is stored on NOVA-FILES01 at <code class="technical">C:\DFSRoots\shares</code>. Its SMB share called <code>shares</code> has a recorded <strong>Everyone: Read</strong> entry for the namespace, which must not be confused with unrestricted access to Finance or HR data on D:.</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>Choose a department referral</h2>
+    <div class="card-list">{shares.map(share=><a class="system-card" href={base+"files/shares/"+share.id+"/"}><small>Observed DFS referral: online</small><h3>{share.name}</h3><p><code class="technical">{share.dfs}</code><br/><span class="muted">→</span> <code class="technical">{share.smb}</code></p><span class="readmore">Inspect the destination →</span></a>)}</div>
+  </section>
+  <section class="content-section">
+    <h2>What happens after a referral?</h2>
+    <ol class="walkthrough">
+      <li class="walk-step"><h3>The employee opens the friendly path</h3><p>The workstation asks the DFS namespace where the requested department folder lives.</p></li>
+      <li class="walk-step"><h3>DFS returns the configured target</h3><p>In the documented setup, each of the five DFS links has one online target on NOVA-FILES01. No additional independent file-server target is claimed.</p></li>
+      <li class="walk-step"><h3>The target checks SMB and NTFS rights</h3><p>The employee's domain group and current security token are evaluated against the real share and folder permissions. Namespace Read is not a bypass.</p></li>
+    </ol>
+  </section>
+</div>
+<aside>
+  <div class="sidebox"><h3>Inspect the real file server</h3><a href={base+"systems/nova-files01/"}>NOVA-FILES01 →</a><p class="muted" style="margin-top:12px">The lab uses one documented target per department. This is not a file-server failover cluster.</p></div>
+  <div class="sidebox"><h3>Go deeper</h3><a href={base+"files/permissions/"}>SMB and NTFS permission checks →</a><p style="margin-top:14px"><a href={fileEvidence.dfs}>Original DFS configuration ↗</a></p></div>
+</aside>
+</div></section>
+</BaseLayout>

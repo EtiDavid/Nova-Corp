@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { shares, fileEvidence } from "../../data/fileCentre";
+import { findGroupByName } from "../../data/groups";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Shared-folder permissions" description="Compare group membership, SMB access and NTFS folder rights for all five departments, including Finance's management exception." breadcrumbs={[{label:"Explore",href:"explore/"},{label:"Files",href:"files/"},{label:"Permissions"}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">File Centre / Access controls</div>
+<h1>Who can open each folder?</h1>
+<p class="lead" style="margin-top:17px">Instead of giving permissions individually to every staff account, Nova Corp uses department groups nested into resource groups. SMB and NTFS permissions remain separate security checks.</p>
+</div></section>
+<section class="section compact"><div class="container">
+  <div class="paper" style="overflow-x:auto">
+  <table class="data-table" style="min-width:690px">
+   <caption>Reviewed departmental root permissions. Select a share or group for the full access path.</caption>
+   <thead><tr><th scope="col">Department</th><th scope="col">Global membership group</th><th scope="col">Domain Local permission group</th><th scope="col">SMB</th><th scope="col">NTFS</th></tr></thead>
+   <tbody>{shares.map(s=><tr>
+      <th scope="row"><a href={base+"files/shares/"+s.id+"/"}>{s.name}</a></th>
+      <td><a href={base+"groups/"+findGroupByName(s.group)?.slug+"/"}>{s.group}</a></td>
+      <td><a href={base+"groups/"+findGroupByName(s.resourceGroup)?.slug+"/"}>{s.resourceGroup}</a></td>
+      <td>Allow · Change</td><td>Allow · Modify</td>
+   </tr>)}</tbody>
+  </table></div>
+  <div class="paper panel" style="margin-top:22px">
+    <p class="kicker">Finance has an additional exception</p>
+    <h3 style="margin:11px 0 12px">Authorized management accounts use a separate FullControl path.</h3>
+    <p class="muted"><a href={base+"groups/management-users/"}>Management_Users</a> is nested into <a href={base+"groups/dl-fs-finance-fullcontrol/"}>DL_FS_Finance_FullControl</a>. That group has <strong>SMB Full</strong> and <strong>NTFS FullControl</strong> at the Finance root, unlike the regular Finance Modify access.</p>
+    <a class="evidence-link" href={base+"files/shares/finance/"}>Explore Finance in context →</a>
+  </div>
+  <div class="grid-main" style="margin-top:35px">
+    <div>
+    <h2>The five checkpoints of access</h2>
+    <ol class="walkthrough">
+      <li class="walk-step"><h3>Identity</h3><p>The user signs in using a domain account. This alone does not grant access to every company folder.</p></li>
+      <li class="walk-step"><h3>Department membership</h3><p>The account is a direct member of a Global Security group, for example IT_Users.</p></li>
+      <li class="walk-step"><h3>Resource group nesting</h3><p>The department group is nested into a Domain Local group associated with the folder.</p></li>
+      <li class="walk-step"><h3>SMB share permission</h3><p>The share ACL allows the resource group to cross the network share boundary with Change or Full access.</p></li>
+      <li class="walk-step"><h3>NTFS folder permission</h3><p>The actual folder ACL is evaluated too. A child folder can have additional or inherited rules that change the outcome.</p></li>
+    </ol>
+    </div>
+    <aside><div class="sidebox"><h3>What was actually inspected?</h3><p class="muted">The detailed source records 27 SMB permission entries and 73 NTFS access entries across 11 shares and 14 reviewed folder scopes. It is not a recursive audit of all files.</p><a class="evidence-link" href={fileEvidence.technical}>Open every recorded permission ↗</a></div>
+    <div class="sidebox"><h3>Real incident</h3><p class="muted">A controlled IT folder-denial test was later repaired. The restored snapshot shows inherited Modify and no remaining Moyo-specific explicit DENY.</p><a class="evidence-link" href={fileEvidence.incident}>See the repair evidence ↗</a></div></aside>
+  </div>
+</div></section>
+</BaseLayout>
