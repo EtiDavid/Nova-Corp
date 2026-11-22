@@ -19,7 +19,7 @@ A successful backup job does not mean a file can actually be recovered. Nova Cor
 
 ## Backup storage
 
-**Proxmox:** `nova-backup` was created on a separate Proxmox-visible disk and used for six VM backup archives (four pfSense, two DC01). The B02 inventory also found two **live qcow2 VM disks** attached from this same store, not archives. The current PVE backup job is **monthly**, targets only VM100/101 and has a legacy cron warning requiring a GUI schedule check. This is not an off-site or independent physical-host failure domain.
+**Proxmox:** `nova-backup` was created on a separate Proxmox-visible disk and used for six VM backup archives (four pfSense, two DC01). Proxmox also holds two **live qcow2 VM disks** attached from this same store, not archives. The current PVE backup job is **monthly**, targets only VM100/101 and has a legacy cron warning requiring a GUI schedule check. This is not an off-site or independent physical-host failure domain.
 
 **Windows Server:** FILES01 uses a dedicated backup disk (drive `B:`), Windows Server Backup and a scheduled health-check policy.
 
