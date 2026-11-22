@@ -1,6 +1,6 @@
 # vmbr1 — Nova Corp's internal virtual switch
 
-**Status:** UP · **Layer:** Linux bridge · **No routed IPv4 address assigned to the bridge in the B02 capture**.
+**Status:** UP · **Type:** Linux virtual switch · **Host IP:** none assigned
 
 ## What it does
 
@@ -19,8 +19,8 @@
 
 Inside pfSense, the `vtnet1` interface carries VLAN interfaces for MGMT 10, INFRA 20, APP 30, CLIENT 40 and DMZ 50. WireGuard's VPN_REMOTE is a tunnel and not an 802.1Q VLAN.
 
-## What the B02 inventory proves
+## What's connected to this switch?
 
-It documents the 6 listed NIC attachments on `vmbr1` and 22 Linux host interface records, many of which are internal TAP/firewall plumbing rather than separate networks.
+Six virtual network adapters connect to `vmbr1`: pfSense's internal interface and the five Windows/spare VMs listed above. Proxmox also has internal TAP and firewall interfaces that help carry this traffic; they are **not** 22 separate company networks.
 
 [Network overview](../../NETWORK.md) · [INFRA](../../network/zones/INFRA.md) · [CLIENT](../../network/zones/CLIENT.md) · [VM list](../README.md).
