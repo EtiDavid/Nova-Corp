@@ -31,6 +31,8 @@ jobs:
         run: npm run build
       - name: Validate generated HTML navigation
         run: npm run test:links
+      - name: Verify full first-slice catalog and user journeys
+        run: npm run test:coverage
       - name: Keep site preview artifact for QA
         uses: actions/upload-artifact@v4
         with:
