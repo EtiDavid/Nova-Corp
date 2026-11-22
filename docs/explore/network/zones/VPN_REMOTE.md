@@ -1,6 +1,6 @@
 # VPN_REMOTE — Nova Corp network area
 
-**Interface:** `opt6` · **Device:** `tun_wg0 (WireGuard; NOT an 802.1Q VLAN)` · **Address / gateway:** `10.10.60.1/24` · **Verified configuration:** 22 November 2026.
+**Interface:** `opt6` · **Device:** `tun_wg0 (WireGuard; NOT an 802.1Q VLAN)` · **Address / gateway:** `10.10.60.1/24`
 
 ## Why this network exists
 
@@ -29,6 +29,6 @@ No pfSense DHCP scope. WireGuard peer addresses are configured separately.
 
 [See the rules in order](../RULES.md) · [pfSense](../../systems/NOVA-FW01.md) · [Network overview](../../NETWORK.md) · [Tests and incidents](../../TESTS_AND_RECOVERY.md).
 
-The exported settings describe the firewall configuration; they are not a substitute for observing actual packets and client behavior.
+The firewall's rules define which connections may pass. The linked tests demonstrate how these settings behaved during real lab exercises.
 
 [← Network Gatehouse](../../NETWORK.md)
