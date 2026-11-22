@@ -10,10 +10,12 @@ This profile describes the **fictional-company directory role**, not private per
 | --- | --- |
 | Name | David Eti |
 | Department | IT |
+| Account name | `david.eti` |
+| Account enabled (22 November 2026) | Yes |
 | OU | `Nova Users → IT` |
 | Department group | `IT_Users` |
 
-The historical journal did not establish a complete current membership export for every later group, so this profile does not infer extra permissions.
+The **22 November 2026 AD inventory** confirms David remains in the IT OU and is a direct member of `IT_Users`. That group is nested into `DL_FS_IT_Modify`, used for IT-file authorization. Whether a particular file access is allowed is determined by actual SMB and NTFS permissions.
 
 ## Connected to
 
