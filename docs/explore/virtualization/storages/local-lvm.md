@@ -1,18 +1,18 @@
 # local-lvm — The thin-provisioned VM disk pool
 
-**Backend:** `lvmthin` · **Volume group:** `pve` · **Thinpool:** `data` · **Used:** **53.67%** at 22 November 2026, 16:03.
+**Space available (last check):** **46.33% free** · **Type:** LVM thin-provisioned VM disk storage · **Volume group:** `pve`
 
 ## What is a thin pool?
 
 Thin provisioning gives VMs virtual disk sizes without immediately allocating all those bytes physically. Snapshots also depend on this storage pool. If it fills, guest writes and snapshots can fail.
 
-The B02 source records the thin pool as **371.41 GiB**, with **53.67% data use** and **2.08% metadata use**.
+The thin pool has **371.41 GiB** of provisioned capacity. At the latest check it was **53.67% used**, with **2.08% metadata use**.
 
 ## The storage incident we investigated
 
 Before Phase 2 closure, numerous old snapshots had pushed data utilization to **86.73%**. [Read the exact investigation and cleanup](../../incidents/proxmox-snapshot-pressure.md).
 
-Twenty historical snapshots were removed, preserving one known-good pre-security-change pfSense snapshot. Usage immediately afterward was **52.88%**; this later inventory records **53.67%**.
+Twenty historical snapshots were removed, preserving one known-good pre-security-change pfSense snapshot. Usage immediately afterward was **52.88%**; it was **53.67%** at the latest check.
 
 ## Which VM disks use it?
 
