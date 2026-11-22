@@ -8,12 +8,15 @@ The directory includes **Finance, Human Resources, IT, Management and Sales**, p
 
 [Finance](people/DEPARTMENTS.md#finance) · [Human Resources](people/DEPARTMENTS.md#human-resources) · [IT](people/IT_DEPARTMENT.md) · [Management](people/DEPARTMENTS.md#management) · [Sales](people/DEPARTMENTS.md#sales) · [Contractors](people/DEPARTMENTS.md#contractors)
 
+**[Explore the full directory snapshot — all 20 accounts, 16 OUs, groups and computers](DIRECTORY_SNAPSHOT_2026-11-22.md)**
+
 ## Meet lab identities
 
 | Person or account | Department / scenario | Explore |
 | --- | --- | --- |
 | **David Eti** | IT account in directory-organizing exercise | [David's profile](people/DAVID.md) |
 | **Moyo Agunbiade** | IT account used for real file-access validation | [Moyo's profile](people/MOYO.md) |
+| **Isaac Technology** | IT account created in the administration exercises | [Isaac's profile](people/accounts/cr011-it.md) |
 | **John Shaw** | Contractor test account for removable-storage policy | [Contractor profile](people/JOHN_SHAW.md) |
 | **Zoë** | Remote laptop used for WireGuard connectivity testing | [Remote-access test device](people/ZOE.md) |
 | **svc_backup** | Service identity created during directory setup | [Service accounts](DIRECTORY.md) |
@@ -27,8 +30,8 @@ Accounts created for scripting and incident exercises are part of the lab histor
 <details open><summary><strong>Organizational Units</strong></summary>
 
 - **Nova Users** — Finance, HR, IT, Management, Sales and Contractors
-- **Nova Computers** — Workstations and Servers
-- **Nova Security Groups** — global and resource permission groups
+- **Nova-Computers** — Workstations and Servers
+- **Nova Security groups** — global and resource permission groups
 - **Nova Service Accounts**
 - **Nova Administrative Accounts**
 - **Nova Disabled Objects**
@@ -45,6 +48,6 @@ Accounts created for scripting and incident exercises are part of the lab histor
 
 [Follow the full access chain](FILE_SERVICES.md) · [Explore Group Policy](POLICIES.md).
 
-*Profiles describe documented lab exercises. A username seen in an old test is not automatically a claim that the account is still active today.*
+*Account status and group relationships shown in the directory snapshot were collected on 22 November 2026.*
 
 [← Company map](../EXPLORE_NOVACORP.md)
