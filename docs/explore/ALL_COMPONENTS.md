@@ -83,7 +83,7 @@ The lab grew through fifteen recorded engineering changes. Instead of making you
 | Workstation firewall/AutoPlay/SMBv1 baseline | [Workstation policy](policies/WORKSTATION_BASELINE.md) |
 | Departmental drive-mapping logon script GPO | [Drive mapping](policies/DRIVE_MAPPING.md) |
 | USB exception design and user-lockdown tabletop exercise | [Original Group Policy work](../Documentation/Change-Requests/Journal-CR-006.md) |
-| Seven-GPO backup and current seven-report/6-link export | [All seven verified current GPOs](POLICIES.md) |
+| Seven configured policies, six active links, and a preserved policy backup | [All seven verified current GPOs](POLICIES.md) |
 
 [Original GPO journal with screenshots](../Documentation/Change-Requests/Journal-CR-006.md).
 
