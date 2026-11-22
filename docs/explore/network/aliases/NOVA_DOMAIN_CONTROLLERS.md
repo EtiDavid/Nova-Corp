@@ -1,6 +1,6 @@
 # Domain Controller host list
 
-**Exact alias:** `NOVA_DOMAIN_CONTROLLERS` · **Type:** host · **Source:** pfSense configuration, 22 November 2026.
+**Exact alias:** `NOVA_DOMAIN_CONTROLLERS` · **Type:** host
 
 ## Why it exists
 
