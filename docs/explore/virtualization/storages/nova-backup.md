@@ -10,7 +10,7 @@ To keep standalone Proxmox VM backup archives away from the `local-lvm` thin poo
 
 Nova Corp stores **six vzdump archives**, four for pfSense VM100 and two for DC01 VM101.
 
-It also found **two attached live qcow2 VM disks**, which are *not* the same thing as archived backups:
+It also holds **two attached live qcow2 VM disks**, which are *not* the same thing as archived backups:
 
 - [DC01 VM101](../vms/101.md): `scsi1` declared 60G, `nova-backup:101/vm-101-disk-0.qcow2`, VM backup flag `0`.
 - [FILES01 VM104](../vms/104.md): `scsi2` declared 100G, `nova-backup:104/vm-104-disk-0.qcow2`, VM backup flag `0`.
