@@ -40,3 +40,19 @@ jobs:
             echo "::error::Custom domain did not return Nova Corp website HTML in this external test"
             exit 1
           fi
+      - name: Verify real HTTPS deep links and original public evidence image
+        shell: bash
+        run: |
+          set -euo pipefail
+          HOST="https://novacorp.davideti.dev"
+          for ITEM in "incidents/:When something breaks" "policies/contractor-usb/:Contractor" "files/permissions/technical/:Who is actually listed"; do
+            PATH_PART="${ITEM%%:*}"
+            EXPECT="${ITEM#*:}"
+            curl --fail --silent --show-error --location --retry 3 --max-time 20 "${HOST}/${PATH_PART}" -o /tmp/novacorp-deep.html
+            grep -Fqi "${EXPECT}" /tmp/novacorp-deep.html
+            echo "HTTPS deep-link PASS: /${PATH_PART}"
+          done
+          curl --fail --silent --show-error --location --retry 3 --max-time 20 \
+            "${HOST}/evidence/03-contractor-user-gpresult.png" -o /tmp/novacorp-original-evidence.png
+          head -c 8 /tmp/novacorp-original-evidence.png | od -An -t x1 | grep -F "89 50 4e 47 0d 0a 1a 0a"
+          echo "HTTPS original image PASS: 03-contractor-user-gpresult.png"
