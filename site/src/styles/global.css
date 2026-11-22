@@ -317,3 +317,11 @@ p { margin: 0; }
  .mobile-nav nav { grid-template-columns:1fr; }
  .credit-actions .btn { width:100%; }
 }
+
+/* Browser QA fix: on 390px screens the search action overlapped Menu.
+ * Search remains available inside the native-details menu. */
+@media(max-width:430px){
+ .site-header .header-search { display:none; }
+ .site-header .mobile-nav { margin-left:auto; flex:0 0 auto; }
+ .site-header .brand { min-width:0; }
+}
