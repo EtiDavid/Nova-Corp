@@ -33,6 +33,12 @@ It also answers internal DNS questions, such as where to find the domain and its
 | Key services | NTDS, DNS, Netlogon |
 | Partner | [NOVA-DC02](NOVA-DC02.md) |
 
+## Policies attached to the identity infrastructure
+
+[Default Domain Policy](../policies/DOMAIN_PASSWORD.md) is linked at the domain root. [Default Domain Controllers Policy](../policies/DEFAULT_DC.md) is linked to the built-in Domain Controllers OU containing DC01 and DC02.
+
+The November report documents SMB signing requirements and a **configured LDAP signing level of None** in the DC policy. The effective state of both Domain Controllers would need a separate security check before treating the GPO value as the active operating setting.
+
 ## What we tested
 
 **Directory health:** `dcdiag` and `repadmin` were used to inspect directory services and replication.
