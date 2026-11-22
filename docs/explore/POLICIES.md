@@ -1,78 +1,57 @@
 # Workstation Rules — Group Policy
 
-A **Group Policy (GPO)** is a set of Windows settings that the domain can apply to selected users or computers. It is one way Nova Corp keeps workstations consistent instead of manually configuring every device.
+Windows computers at Nova Corp don't need to be configured one at a time. **Group Policy** lets IT define settings once and deliver them to the right users or computers through Active Directory.
 
-Policies connect to [Active Directory](services/ACTIVE_DIRECTORY.md), the [OU tree](DIRECTORY.md), [security groups](GROUPS.md) and the [Windows client](systems/NOVA-CLIENT.md).
+The company has **seven Group Policy Objects (GPOs)** in the inventory captured from NOVA-DC01 on **22 November 2026**. Six have active links to the domain or an OU; one is an unused, empty GPO.
 
-## Open a policy
+## Explore the seven policies
 
-### [Domain password and account-lockout rules](policies/DOMAIN_PASSWORD.md)
+| Policy | Where it is linked | What it controls |
+| --- | --- | --- |
+| **[Default Domain Policy](policies/DOMAIN_PASSWORD.md)** | Entire `nova.corp` domain | Password rules, account lockout, Kerberos settings |
+| **[Default Domain Controllers Policy](policies/DEFAULT_DC.md)** | [Domain Controllers](systems/NOVA-DC01.md) OU | Domain Controller rights and security settings |
+| **[Corporate wallpaper](policies/WALLPAPER.md)** | [Nova Users](DIRECTORY.md) | A shared company desktop wallpaper |
+| **[Nova Corp - Keyboard](policies/KEYBOARD.md)** | **Not linked** | No settings configured in this GPO |
+| **[Contractor removable-storage policy](policies/CONTRACTOR_USB.md)** | [Contractors](people/JOHN_SHAW.md) OU | Deny removable-storage access and write operations |
+| **[Workstation security baseline](policies/WORKSTATION_BASELINE.md)** | [Workstations](systems/NOVA-CLIENT.md) OU | Firewall, AutoPlay and SMBv1 configuration |
+| **[Department drive mapping](policies/DRIVE_MAPPING.md)** | [Nova Users](DIRECTORY.md) | Run the departmental drive-mapping script at sign-in |
 
-The historical domain-policy baseline included:
-- Minimum password length: 12 characters
-- Password complexity: enabled
-- Maximum password age: 90 days
-- Lockout after 5 failed attempts
-- Lockout duration: 15 minutes
+All six existing links are **enabled** and **not enforced**. All seven GPO security descriptors give **Authenticated Users** permission to apply policy, subject to the GPO's actual scope and processing rules.
 
-The lockout controls were also used in a controlled administration test.
+The names above are visitor-friendly. Each individual policy page includes its exact configured GPO name.
 
-[Read the password/lockout settings and tests](../Documentation/Change-Requests/Journal-CR-006.md).
-
-### [Corporate wallpaper](policies/WALLPAPER.md)
-
-The `Nova Corp - Corporate wallpaper` policy provides a consistent desktop look and demonstrates user-policy application.
-
-The contractor test account's `gpresult` showed this wallpaper policy together with the contractor USB restriction.
-
-### <a id="contractor-usb-restriction"></a>[Contractor removable-storage restriction](policies/CONTRACTOR_USB.md)
-
-GPO: `NOVA-sec-deny-usb-contractors`  
-OU: `Nova Users → Contractors`
-
-Contractors received a policy denying all removable-storage classes. This was verified as **policy processing** on John Shaw; physical USB passthrough could not be reliably tested in the nested virtual environment.
-
-![USB policy link on Contractors OU](../Documentation/Change-Requests/evidence/01-contractor-usb-gpo-link.png)
-
-![Removable-storage deny setting enabled](../Documentation/Change-Requests/evidence/02-usb-deny-all-removable-storage-enabled.png)
-
-[Open John Shaw's profile](people/JOHN_SHAW.md).
-
-### [Workstation security baseline](policies/WORKSTATION_BASELINE.md)
-
-GPO: `NOVA-SEC-Workstation-Baseline`  
-Target: `Nova Computers → Workstations`
-
-The implementation covered workstation firewall settings, disabling AutoPlay/AutoRun and SMBv1 configuration.
-
-![Workstation baseline linked to Workstations OU](../Documentation/Change-Requests/evidence/04-workstation-baseline-gpo-link.png)
-
-The baseline's `Enforced` setting was corrected from an earlier over-broad configuration. The documented test showed SMBv1 disabled while SMBv2 remained enabled.
-
-### Policies studied, not applied as live controls
-
-The `NOVA-SEC-User-Lockdown` restriction policy was explored through a tabletop scenario. Its group-targeting design must not be confused with an applied and validated production-like GPO.
-
-The `USB_Authorized` group was part of the approved exception design; the physical USB test remained open.
-
-## How a policy reaches a computer
+## How a policy reaches someone
 
 ```mermaid
 flowchart LR
-    OU["User or computer in OU"] --> LINK["GPO link"]
-    LINK --> FILTER["Security filtering / processing"]
-    FILTER --> RESULT["Effective settings"]
-    RESULT --> TEST["gpresult + behavior test"]
+    OU["Active Directory OU"] --> LINK["Linked policy"]
+    LINK --> FILTER["Security filtering and inheritance"]
+    FILTER --> PC["User or computer processes policy"]
+    PC --> TEST["gpresult / observed behavior"]
 ```
 
-A GPO existing or being linked does **not** automatically prove its intended setting affected a user. Nova Corp used `gpresult` and client-side checks to distinguish configuration from effective behavior.
+For example, [John Shaw](people/JOHN_SHAW.md) lives in the Contractors OU, which has a linked removable-storage restriction. The earlier test showed that policy in his `gpresult` output.
 
-## Phase 2 baseline
+A GPO link proves where IT has **assigned** a setting. To prove it actually **applied**, you also check the client and the resulting behavior.
 
-At closure, **seven current GPOs were exported and matched to seven backup folders**. Their exact current settings are documented in the private baseline exports, while the historical public journal explains the specific implemented controls above.
+## Connected parts of Nova Corp
 
-## Incidents and proof
+[Open the directory tree](DIRECTORY.md) → [Select a staff account](PEOPLE_AND_DEPARTMENTS.md) → [Find its OU](DIRECTORY_SNAPSHOT_2026-11-22.md) → [Explore a policy](POLICIES.md) → [See tests and incidents](TESTS_AND_RECOVERY.md).
 
-[Group Policy incident tests](TESTS_AND_RECOVERY.md) · [Original implementation journal](../Documentation/Change-Requests/Journal-CR-006.md).
+The drive-mapping policy also connects to [SMB and file access](FILE_SERVICES.md). The workstation baseline connects to [NOVA-CLIENT](systems/NOVA-CLIENT.md), and the Domain Controllers policy connects to [DC01](systems/NOVA-DC01.md) and [DC02](systems/NOVA-DC02.md).
 
-[← Company map](../EXPLORE_NOVACORP.md)
+## What the November inventory clarified
+
+- The configured maximum password age is **180 days**, not the earlier 90-day figure.
+- The actual wallpaper GPO is named **`Nova Corp - Coperate wallpaper`**, including the typo.
+- **`Nova Corp - Keyboard`** currently has no link or settings; keyboard-layout preferences actually appear in the Default Domain Controllers Policy.
+- The department drive-mapping GPO executes a script from `NETLOGON`.
+- Domain Controller LDAP signing in the exported policy is set to **None**; this is a separate security-hardening item to verify and address.
+
+## See how it was implemented and tested
+
+[Group Policy build journal](../Documentation/Change-Requests/Journal-CR-006.md) · [Department share mapping](../Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) · [GPO incident exercises](../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) · [Final baseline export](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+
+*This is the configuration reported on 22 November 2026. Client-side effective policy and successful script execution are separate test results.*
+
+[← Explore Nova Corp](../EXPLORE_NOVACORP.md)
