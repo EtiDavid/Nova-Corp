@@ -8,7 +8,7 @@ Nova Corp has **30 recorded VSS shadow-copy objects**, attached to **two underly
 
 Employee → File server → Previous Versions / Shadow Copy → Choose a restore point → Validate the recovered file.
 
-**A previous-version recovery was tested too.** An administrator saved a test file, created a Shadow Copy, then changed the live file. Reading the older version returned the original contents, and its SHA-256 matched the original exactly. This proves the particular Shadow Copy test worked; it does **not** mean all 30 snapshots were individually restored. [See the final infrastructure-validation evidence](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+**A previous-version recovery was tested too.** An administrator saved a test file, created a Shadow Copy, then changed the live file. Reading the older version returned the original contents, and its SHA-256 matched the original exactly. This proves the particular Shadow Copy test worked; it does **not** mean all 30 snapshots were individually restored. [See the complete previous-version recovery walkthrough](SHADOW_COPY_RECOVERY.md).
 
 A **different** [backup failure-and-restore investigation](../incidents/backup-target-disappears.md) recovered a deleted file using Windows Server Backup. It also matched the original SHA-256. Previous Versions and Windows Backup are separate recovery methods.
 
