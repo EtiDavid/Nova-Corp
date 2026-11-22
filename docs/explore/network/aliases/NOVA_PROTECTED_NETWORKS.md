@@ -1,6 +1,6 @@
 # Networks remote VPN users cannot freely enter
 
-**Exact alias:** `NOVA_PROTECTED_NETWORKS` · **Type:** network · **Source:** pfSense configuration, 22 November 2026.
+**Exact alias:** `NOVA_PROTECTED_NETWORKS` · **Type:** network
 
 ## Why it exists
 
