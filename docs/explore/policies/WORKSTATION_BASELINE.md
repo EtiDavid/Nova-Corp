@@ -1,43 +1,48 @@
-# Windows workstation security baseline
+# Workstation security baseline — Rules for company computers
 
 **GPO:** `NOVA-SEC-Workstation-Baseline`  
-**Target:** `Nova Computers → Workstations` OU
+**Linked to:** `nova.corp/Nova-Computers/Workstations`  
+**Link:** Enabled, not enforced  
+**Captured:** 22 November 2026
 
-## What it does
+## Why it exists
 
-Instead of configuring every Windows workstation manually, Nova Corp applies a collection of basic computer security settings through Group Policy.
+Nova Corp needs ordinary workstations to have consistent basic security settings without having to configure each device manually.
 
-## Documented settings
+The domain-joined [NOVA-CLIENT](../systems/NOVA-CLIENT.md) is registered in the Workstations OU.
 
-- Windows Defender Firewall enabled through domain policy configuration.
-- AutoPlay turned off on all drives.
-- AutoRun command execution disabled.
-- SMBv1 registry policy value set to `0`.
+## Exact settings in the November report
 
-The original validation showed SMBv1 server support disabled while SMBv2 remained enabled on the tested machine.
+| Setting | Current configured value |
+| --- | --- |
+| Windows Defender Firewall | Enabled for Domain, Private and Public profiles |
+| Windows Defender Firewall default inbound policy | Block incoming connections unless allowed |
+| Turn off AutoPlay | Enabled; **all drives** |
+| SMBv1 server setting | `HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters\SMB1` = `0` (DWORD) |
 
-## How it is targeted
+**AutoPlay** and **AutoRun** are related but separate Windows mechanisms. The current report explicitly shows *Turn off AutoPlay*; it does not show a separate configured *Turn off AutoRun* administrative-template entry.
 
-This is **computer-side policy**. It follows the computer object in the Workstations OU, rather than being linked only to the person who logs in.
+## Screenshots
 
-### Evidence
+![Workstation baseline linked to the Workstations OU](../../Documentation/Change-Requests/evidence/04-workstation-baseline-gpo-link.png)
 
-![Workstation baseline linked](../../Documentation/Change-Requests/evidence/04-workstation-baseline-gpo-link.png)
+![Windows Defender Firewall settings](../../Documentation/Change-Requests/evidence/05-firewall-gpo-configuration.png)
 
-![Firewall policy settings](../../Documentation/Change-Requests/evidence/05-firewall-gpo-configuration.png)
+## What was tested?
 
-The baseline's Enforced setting was corrected from its initial configuration to avoid unintended override behavior.
+The original work checked GPO processing, SMBv1 disabled while SMBv2 remained enabled, and Windows Firewall behavior. A previously enforced link was corrected so the GPO did not override policy hierarchy more broadly than intended.
 
-## Tests
+## Explore the connected systems
 
-The journal records:
-- GPO link and computer policy processing;
-- SMBv1/SMBv2 checks;
-- Firewall profile configuration;
-- errors encountered when running `gpresult` without the appropriate context.
+[Computer object and OU](../DIRECTORY_SNAPSHOT_2026-11-22.md) → [NOVA-CLIENT](../systems/NOVA-CLIENT.md) → [SMB file sharing](../services/SMB.md) → [Policy and incident tests](../TESTS_AND_RECOVERY.md).
 
-[Workstation profile](../systems/NOVA-CLIENT.md) · [Directory tree](../DIRECTORY.md) · [Policy processing incidents](../TESTS_AND_RECOVERY.md).
+[Original workstation-policy journal](../../Documentation/Change-Requests/Journal-CR-006.md).
 
-[Read original Group Policy journal](../../Documentation/Change-Requests/Journal-CR-006.md).
+<details><summary><strong>Technical identifier</strong></summary>
 
-[← All policies](../POLICIES.md)
+GPO GUID: `3b481639-a09c-413c-8dc5-3501cd977a51`.  
+Security filter: Authenticated Users (Apply Group Policy).
+
+</details>
+
+[← All seven GPOs](../POLICIES.md)
