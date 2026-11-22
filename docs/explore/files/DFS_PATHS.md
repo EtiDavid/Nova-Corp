@@ -33,6 +33,6 @@ The DFS namespace itself is hosted from `C:\DFSRoots\shares` and shared as `shar
 
 There is **one configured target for each of the five DFS department links** in this setup. A working DFS path is not proof of multiple independent file-server targets.
 
-[DFS explained](../services/DFS.md) · [Department permissions](PERMISSIONS.md) · [File-server profile](../systems/NOVA-FILES01.md) · [DFS implementation journal](../../Documentation/Change-Requests/Journal-CR-010.md)
+[DFS explained](../services/DFS.md) · [Department permissions](PERMISSIONS.md) · [File-server profile](../systems/NOVA-FILES01.md) · [DFS implementation journal](../../Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf)
 
 [← Shared folders](SHARES.md)
