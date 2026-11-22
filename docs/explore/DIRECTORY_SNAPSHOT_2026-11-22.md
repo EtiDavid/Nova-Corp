@@ -66,6 +66,22 @@ A service account existing in AD does not by itself mean a service is currently 
 
 </details>
 
+## Which Group Policies are connected to this directory?
+
+The Group Policy inventory collected from NOVA-DC01 later on **22 November 2026** shows these current links:
+
+| Directory location | Linked policy |
+| --- | --- |
+| Entire `nova.corp` domain | [Default Domain Policy: passwords and Kerberos](policies/DOMAIN_PASSWORD.md) |
+| Built-in **Domain Controllers** OU | [Default Domain Controllers Policy](policies/DEFAULT_DC.md) |
+| **Nova Users** parent OU | [Corporate wallpaper](policies/WALLPAPER.md) and [department drive mapping](policies/DRIVE_MAPPING.md) |
+| **Contractors** OU | [Removable-storage restriction](policies/CONTRACTOR_USB.md) |
+| **Nova-Computers → Workstations** | [Workstation security baseline](policies/WORKSTATION_BASELINE.md) |
+
+The seventh GPO, [Nova Corp - Keyboard](policies/KEYBOARD.md), is not linked to the directory. A link describes intended scope; client-side processing is a separate validation result.
+
+[Explore every Group Policy](POLICIES.md).
+
 ## Who belongs to which company group?
 
 These are the **11 company-created security groups**, including department groups and resource-access groups. The directory has 51 additional built-in/default security groups used by Windows and Active Directory.
