@@ -14,7 +14,7 @@ const segments=zones.filter(z=>z.kind==="VLAN");
 <section class="section compact"><div class="container">
  <div class="stats-strip" style="margin:0 0 36px"><div class="stat"><b>{segments.length}</b><span>Configured VLANs</span></div><div class="stat"><b>{rules.length}</b><span>Explicit saved firewall rules</span></div><div class="stat"><b>{aliases.length}</b><span>Reusable firewall aliases</span></div></div>
  <div class="section-heading"><div><div class="eyebrow">Select a network area</div><h2>Explore how the company is segmented</h2></div><a class="text-link" href={base+"network/rules/"}>All rules →</a></div>
- <div class="area-grid">{zones.map((z,index)=><a class="area-card" href={base+"network/zones/"+z.slug+"/"} style={"--accent:"+(z.slug==="vpn_remote"?"#0F766E":z.slug==="client"?"#7C3AED":"#2563EB")}>
+ <div class="area-grid">{zones.map(z=><a class="area-card" href={base+"network/zones/"+z.slug+"/"} style={"--accent:"+(z.slug==="vpn_remote"?"#0F766E":z.slug==="client"?"#7C3AED":"#2563EB")}>
    <div class="number"><span>{z.kind}</span><span aria-hidden="true">↗</span></div><h3>{z.name}</h3>
    <p>{z.purpose}</p><span class="arrow-label">Explore network →</span>
  </a>)}</div>

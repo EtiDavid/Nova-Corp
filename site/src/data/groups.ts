@@ -1,5 +1,4 @@
 import { identities, groupSource } from "./directory";
-import { shares } from "./fileCentre";
 export type AccessGroup = {
   slug:string;name:string;scope:"Global"|"Domain Local";kind:"Department membership"|"Resource permission";
   description:string; directMemberGroups:string[]; folder?:string; shareRight?:string; ntfsRight?:string;
