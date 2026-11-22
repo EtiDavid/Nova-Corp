@@ -19,7 +19,7 @@ Nova Corp uses AD-integrated DNS on [DC01](../systems/NOVA-DC01.md) and [DC02](.
 - AD-integrated domain zone for `nova.corp`.
 - DC discovery SRV records.
 - Domain Controller DNS configuration and forwarder/Resolver dependencies.
-- pfSense Unbound DNS Resolver is enabled; the actual 22 November XML contains a domain override `nova.corp → 10.10.20.10` (NOVA-DC01), and an allow ACL for VPN_REMOTE `10.10.60.0/24`. This source does not establish a DC02 failover target in the pfSense override.
+- pfSense Unbound DNS Resolver is enabled; the pfSense DNS setup includes a domain override `nova.corp → 10.10.20.10` (NOVA-DC01), and an allow ACL for VPN_REMOTE `10.10.60.0/24`. These settings do not establish a DC02 failover target in the pfSense override.
 - Windows domain clients pointing at internal Nova DNS servers.
 
 ## What went wrong
