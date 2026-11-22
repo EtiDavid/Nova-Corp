@@ -216,3 +216,15 @@ p { margin: 0; }
 .directory-tree details { padding:10px; border-radius:10px; background:#F8FAFC; }
 .directory-tree summary { cursor:pointer; }
 .data-table a,.tree-item a { overflow-wrap:anywhere; }
+
+/* Clear ordered firewall paths, which remain regular links without JavaScript. */
+.rule-stack { margin:0; padding:0; list-style:none; display:grid; gap:12px; counter-reset:rule; }
+.rule-step { counter-increment:rule; min-width:0; }
+.rule-entry { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:17px; padding:17px 19px; border:1px solid var(--border); background:var(--surface); border-radius:13px; color:var(--text); text-decoration:none; min-width:0; }
+.rule-entry:hover { border-color:#93C5FD; color:var(--text); box-shadow:var(--shadow); }
+.rule-entry small { display:block; color:#64748B; font-size:.79rem; line-height:1.45; margin-top:7px; overflow-wrap:anywhere; }
+.rule-entry strong { font-size:.91rem; line-height:1.35; display:block; }
+.rule-action { display:inline-flex; justify-content:center; align-items:center; font-size:.74rem; font-weight:850; letter-spacing:.03em; border-radius:8px; padding:6px 10px; min-width:67px; }
+.rule-action.pass { background:#DCFCE7; color:#166534; }
+.rule-action.block { background:#FEE2E2; color:#991B1B; }
+@media(max-width:480px){ .rule-entry { grid-template-columns:1fr auto; gap:10px; } .rule-action { grid-column:1/-1; justify-self:start; } }

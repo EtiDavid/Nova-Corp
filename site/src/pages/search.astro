@@ -5,6 +5,7 @@ import { areas } from "../data/areas";
 import { shares } from "../data/fileCentre";
 import { identities, organizationalUnits } from "../data/directory";
 import { accessGroups } from "../data/groups";
+import { zones, rules, aliases } from "../data/network";
 const base=import.meta.env.BASE_URL;
 const index=[
 ...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"areas/"+item.id+"/"})),
@@ -13,6 +14,9 @@ const index=[
 ...organizationalUnits.map(item=>({name:item.name,kind:"Organizational Unit",description:item.meaning,url:base+"directory/ous/"+item.slug+"/"})),
 ...identities.map(item=>({name:item.name,kind:item.category.replace("-"," ")+" directory account",description:item.location+" · "+item.logon,url:base+"people/"+item.slug+"/"})),
 ...accessGroups.map(item=>({name:item.name,kind:item.kind,description:item.description,url:base+"groups/"+item.slug+"/"})),
+...zones.map(item=>({name:item.name+" network",kind:item.kind,description:item.purpose,url:base+"network/zones/"+item.slug+"/"})),
+...rules.map(item=>({name:item.description,kind:item.action+" firewall rule",description:item.zone.toUpperCase()+" · "+item.protocol+" · "+item.destination,url:base+"network/rules/"+item.id+"/"})),
+...aliases.map(item=>({name:item.name,kind:item.kind+" alias",description:item.description,url:base+"network/aliases/"+item.slug+"/"})),
 {name:"Backup disk disappears",kind:"Investigated incident",description:"A real file restore after a deliberately unavailable backup target.",url:base+"incidents/backup-target-unavailable/"},
 {name:"Identity server goes offline",kind:"Investigated incident",description:"A controlled outage tested directory resilience.",url:base+"incidents/dc01-outage/"},
 {name:"Recovery options",kind:"Recovery guide",description:"What has been tested and what remains configured-only.",url:base+"recovery/"}
