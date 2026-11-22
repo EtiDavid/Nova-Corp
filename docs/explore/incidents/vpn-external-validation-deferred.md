@@ -50,7 +50,7 @@ See the separate WireGuard handshake case
 
 Perform external peer + privileged administrative VPN and management-plane validation during the approved later security gate (CR-016).
 
-## What proves this outcome?
+## Original tests and evidence
 
 The full illustrated [incident engineering journal (PDF)](../../Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) contains the execution evidence, screenshots, exact command history and troubleshooting decisions. The brief [public incident-exercise overview](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) explains the wider exercise.
 
