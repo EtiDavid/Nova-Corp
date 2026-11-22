@@ -1,37 +1,39 @@
-# Firewall rules — Who can communicate?
+# pfSense firewall — Who can reach which service?
 
-A firewall rule decides whether traffic entering an interface can reach a particular service or network. In Nova Corp, pfSense performs routing and filtering between the company’s network zones.
+A firewall checks traffic against ordered rules. When a Windows workstation connects to a server, that connection may cross the pfSense router and be allowed or blocked by the rules on its incoming network interface.
 
-## Important idea
+Nova Corp currently has **17 explicitly configured filter rules** in its 22 November 2026 export: **13 allow and 4 block**.
 
-**A connection is allowed because the applicable policy permits it, not simply because a route exists.**
+## Start with the rules
 
-pfSense is stateful: after permitting a connection, the firewall tracks the conversation so appropriate return traffic is allowed.
+**[Explore all 17 rules, in interface order](../network/RULES.md)**.
 
-## Understanding a rule
+Each rule has a profile describing its source, destination, action, protocol, port, aliases, the reason it exists and its related evidence.
 
-| Field | Meaning |
-| --- | --- |
-| Interface | Where the traffic entered the firewall |
-| Source | Who initiated the traffic |
-| Destination | Which network or host it is targeting |
-| Protocol/port | Which service is involved |
-| Action | Pass/block/reject |
-| Order | Which matching rule takes precedence |
+## What makes a rule work?
 
-## Rules and tests shown in the lab
+A rule contains an **interface**, **source**, **destination**, **service/port**, **action** and **position**. The first matching rule and pfSense's stateful handling determine whether the traffic is permitted.
 
-| Policy area | What was demonstrated |
-| --- | --- |
-| Remote VPN | WireGuard peer authentication is separate from firewall authorization. |
-| Remote directory access | Restricted service traffic was tested toward Domain Controllers. |
-| CLIENT management | An unintended management path was reproduced, corrected and retested. |
-| Normal workstation traffic | Required DNS/AD/SMB/Internet traffic still worked after the management fix. |
+The three CLIENT rules are a useful example:
 
-For the **current full rule order**, the technical journal remains the source until the rules are exported into a browsable public table. This page deliberately avoids presenting a made-up or out-of-date rule count.
+1. [Block CLIENT access to the pfSense GUI ports](../network/rules/1795199640.md) (TCP 80 and 443).
+2. [Block CLIENT access to the management network](../network/rules/1795195682.md).
+3. [Allow other CLIENT IPv4 traffic](../network/rules/1782219813.md).
 
-## Interactive relationships in the documentation
+The first two are checked before the broader third rule.
 
-[pfSense device](../systems/NOVA-FW01.md) → [Network zones](../NETWORK.md) → [Remote VPN](WIREGUARD.md) → [Management hardening incident](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+## Remote-access rules
 
-**Original work:** [Firewall and VLAN build](../../Documentation/Change-Requests/Journal-CR-002.md) · [WireGuard packet path](../../Documentation/Change-Requests/Journal-CR-007.md).
+[VPN_REMOTE](../network/zones/VPN_REMOTE.md) allows selected DNS, Kerberos, LDAP, SMB and related Domain Controller ports, plus certain ICMP traffic. It then blocks access to unapproved INFRA and protected networks.
+
+[Open the WireGuard connection](WIREGUARD.md) · [Open port and host aliases](../network/ALIASES.md).
+
+## What was actually verified?
+
+The export proves how the explicit pfSense rules are **configured**. Earlier incident exercises separately proved blocked management paths and required DNS/AD/SMB/Internet traffic after the CR-015 firewall correction.
+
+The presence of a separate VLAN doesn't, by itself, guarantee strict isolation. Some of our zones intentionally retain broad pass rules, and stronger privileged management isolation is future work.
+
+[Read the management-hardening investigation](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+
+[← Network Gatehouse](../NETWORK.md)
