@@ -82,11 +82,11 @@ Test-Path "\\nova-files01\IT"
 
 Restore client DNS servers to 10.10.20.10 and 10.10.20.11; clear resolver cache; verify both A and SRV records and file access.
 
-## What proves this outcome?
+## Original tests and evidence
 
 The full illustrated [incident engineering journal (PDF)](../../Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) contains the execution evidence, screenshots, exact command history and troubleshooting decisions. The brief [public incident-exercise overview](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) explains the wider exercise.
 
-Source evidence identifiers (see the full journal): `CP03-10-user-symptom-unc-fail-dns-timeout.png`; `CP03-12-root-cause-client-dns-misconfigured.png`; `CP03-15-nltest-and-share-post-repair-pass.png`.
+The linked engineering journal identifies the original screenshots and preserves the command-by-command results.
 
 ## Explore connected services
 
