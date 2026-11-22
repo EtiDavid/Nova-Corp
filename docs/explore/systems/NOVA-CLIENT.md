@@ -28,6 +28,12 @@ Earlier documentation called the machine `nova-client01`; the November 2026 live
 5. [SMB and DFS](../FILE_SERVICES.md) provide authorized file access.
 6. [pfSense](NOVA-FW01.md) controls routed paths between networks.
 
+## Workstation Group Policy
+
+NOVA-CLIENT is registered in **Nova-Computers → Workstations**, linked to [NOVA-SEC-Workstation-Baseline](../policies/WORKSTATION_BASELINE.md). That policy sets Windows Firewall profiles, turns off AutoPlay and disables the SMBv1 server component by registry value.
+
+User policies such as the [company wallpaper](../policies/WALLPAPER.md) and [drive mapping](../policies/DRIVE_MAPPING.md) are linked through the **Nova Users** OU and depend on which user is signed in.
+
 ## Employee-perspective tests
 
 - DC01 outage and DC02 continuity;
