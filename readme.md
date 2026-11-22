@@ -34,7 +34,7 @@ Moyo signs in to a domain workstation, authenticates through the domain, and wan
 
 The lab verified that **IT access worked while Finance access was denied**.
 
-**[Moyo](docs/explore/people/MOYO.md)** → [**IT_Users group**](docs/explore/GROUPS.md#it_users) → [**SMB + NTFS**](docs/explore/services/SMB.md) → [**IT folder**](docs/explore/FILE_SERVICES.md#it) → [**real-user proof**](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
+**[Moyo](docs/explore/people/MOYO.md)** → [**IT_Users group**](docs/explore/GROUPS.md#it_users) → [**SMB + NTFS**](docs/explore/services/SMB.md) → [**IT folder**](docs/explore/files/it.md) → [**real-user proof**](docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
 ## Four things I proved
 
