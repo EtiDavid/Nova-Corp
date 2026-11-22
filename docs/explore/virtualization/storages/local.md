@@ -1,6 +1,6 @@
 # local — Proxmox directory storage
 
-**Backend:** directory (`dir`) · **Path:** `/var/lib/vz` · **Used:** 63.12% in the 22 November 2026 B02 capture.
+**Backend:** directory (`dir`) · **Path:** `/var/lib/vz` · **Used:** 63.12% at the last check.
 
 ## What is it used for?
 
