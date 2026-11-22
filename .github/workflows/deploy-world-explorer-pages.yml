@@ -1,8 +1,14 @@
-name: Deploy Nova Corp World Explorer (owner-approved)
+name: Publish Nova Corp website preview to GitHub Pages
 
-# Deliberately manual. A merge into main does NOT publish the site.
-# Launch only after the master-spec release gates and owner approval.
+# Owner authorized a first professional public preview on 23 November 2026.
+# A feature branch can publish a QA-gated preview without merging the
+# incomplete long-term specification to main. No live lab access is exposed.
 on:
+  push:
+    branches: [feature/world-explorer-site]
+    paths:
+      - "site/**"
+      - ".github/workflows/deploy-world-explorer-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -15,37 +21,50 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    if: github.ref == 'refs/heads/main'
+  preview:
+    if: github.ref == 'refs/heads/feature/world-explorer-site' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    defaults:
+      run:
+        working-directory: site
     steps:
-      - name: Checkout approved main branch
+      - name: Checkout reviewed website branch
         uses: actions/checkout@v4
-      - name: Set up Node.js
+      - name: Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Install dependencies
-        working-directory: site
         run: npm install --no-audit --no-fund
-      - name: Validate data, type-check and build for custom domain
-        working-directory: site
+      - name: Validate public source data
+        run: npm run validate
+      - name: Type-check Astro pages
+        run: npm run check
+      - name: Build for GitHub Pages custom subdomain
         env:
           PUBLIC_BASE_PATH: /
-        run: |
-          npm run validate
-          npm run check
-          npm run build
-          npm run test:links
-      - name: Configure GitHub Pages
+        run: npm run build
+      - name: Verify local links
+        run: npm run test:links
+      - name: Verify published object catalog routes
+        run: npm run test:coverage
+      - name: Verify public source document targets
+        run: npm run test:sources
+      - name: Verify original GPO evidence images
+        run: npm run test:evidence
+      - name: Verify all 100 ACL entries
+        run: npm run test:acls
+      - name: Interactive desktop and mobile smoke test
+        run: npm run test:browser
+      - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Upload generated site
+      - name: Upload verified static website
         uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist
-      - name: Deploy approved website
+      - name: Deploy first public site preview
         id: deployment
         uses: actions/deploy-pages@v4
