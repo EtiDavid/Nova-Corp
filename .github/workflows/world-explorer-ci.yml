@@ -37,6 +37,8 @@ jobs:
         run: npm run test:sources
       - name: Verify reused public screenshots and accessibility text
         run: npm run test:evidence
+      - name: Verify all 100 ACL records against reviewed source
+        run: npm run test:acls
       - name: Keep site preview artifact for QA
         uses: actions/upload-artifact@v4
         with:

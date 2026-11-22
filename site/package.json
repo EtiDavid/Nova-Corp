@@ -13,7 +13,8 @@
     "test:links": "node scripts/check-built-links.mjs",
     "test:coverage": "node scripts/check-public-catalog.mjs",
     "test:sources": "node scripts/check-public-sources.mjs",
-    "test:evidence": "node scripts/check-published-evidence.mjs"
+    "test:evidence": "node scripts/check-published-evidence.mjs",
+    "test:acls": "node scripts/validate-public-acls.mjs"
   },
   "dependencies": {
     "astro": "^5.16.0",

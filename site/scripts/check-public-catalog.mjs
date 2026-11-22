@@ -29,7 +29,7 @@ for (const scope of scopes){
 }
 const required=[
 "index.html","explore/index.html","directory/index.html","files/index.html",
-"files/dfs/index.html","files/permissions/index.html",
+"files/dfs/index.html","files/permissions/index.html","files/permissions/technical/index.html",
 "people/moyo/index.html","people/maria-manager/index.html",
 "groups/it-users/index.html","groups/dl-fs-it-modify/index.html",
 "groups/management-users/index.html","groups/dl-fs-finance-fullcontrol/index.html",
