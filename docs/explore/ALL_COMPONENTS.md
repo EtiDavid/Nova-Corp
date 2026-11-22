@@ -75,12 +75,15 @@ The lab grew through fifteen recorded engineering changes. Instead of making you
 | Service accounts `svc_backup`, `svc_monitoring`, `svc_fileserver` | [Directory](DIRECTORY.md) |
 | Global groups `IT_Users`, `Finance_Users`, `HR_Users`, `Sales_Users`, `Management_Users` | [Groups](GROUPS.md) |
 | Domain Local file groups `DL_FS_IT_Modify`, `DL_FS_Finance_Modify`, `DL_FS_Finance_FullControl` | [Groups](GROUPS.md) |
-| Corporate wallpaper | [Group Policy](POLICIES.md) |
-| Contractor removable-storage restriction | [Group Policy](POLICIES.md) |
-| Password/lockout policy | [Group Policy](POLICIES.md) |
-| Workstation firewall/AutoRun/SMBv1 baseline | [Group Policy](POLICIES.md) |
-| USB exception design and user-lockdown tabletop policy | [Group Policy](POLICIES.md) |
-| Seven-GPO export and restore baseline | [Operations](OPERATIONS.md) |
+| Default Domain Policy: password, lockout, Kerberos | [Domain policy](policies/DOMAIN_PASSWORD.md) |
+| Default Domain Controllers Policy: rights, signing and keyboard-layout preferences | [DC policy](policies/DEFAULT_DC.md) |
+| Corporate wallpaper (`Coperate` in the actual GPO name) | [Wallpaper policy](policies/WALLPAPER.md) |
+| `Nova Corp - Keyboard` — unlinked/empty GPO | [Keyboard policy](policies/KEYBOARD.md) |
+| Contractor removable-storage restriction (two settings) | [Contractor policy](policies/CONTRACTOR_USB.md) |
+| Workstation firewall/AutoPlay/SMBv1 baseline | [Workstation policy](policies/WORKSTATION_BASELINE.md) |
+| Departmental drive-mapping logon script GPO | [Drive mapping](policies/DRIVE_MAPPING.md) |
+| USB exception design and user-lockdown tabletop exercise | [Original Group Policy work](../Documentation/Change-Requests/Journal-CR-006.md) |
+| Seven-GPO backup and current seven-report/6-link export | [All seven verified current GPOs](POLICIES.md) |
 
 [Original GPO journal with screenshots](../Documentation/Change-Requests/Journal-CR-006.md).
 
