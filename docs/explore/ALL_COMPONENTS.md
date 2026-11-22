@@ -13,11 +13,11 @@ The lab grew through fifteen recorded engineering changes. Instead of making you
 | Windows physical/outer host | The machine on which the nested lab runs | [Proxmox profile](systems/NOVA-PROX01.md) | [Platform build](../Documentation/Change-Requests/Journal-CR-001.md) |
 | VMware Workstation | First virtualization layer | [Hypervisor](systems/NOVA-PROX01.md) | [Platform build](../Documentation/Change-Requests/Journal-CR-001.md) |
 | Proxmox VE | Hosts the virtual company | [nova-prox01](systems/NOVA-PROX01.md) | [Platform journal](../Documentation/Change-Requests/Journal-CR-001.md) |
-| Proxmox bridges and VM network interfaces | Connect VM interfaces to pfSense/network segments | [Network](NETWORK.md) | [Platform](../Documentation/Change-Requests/Journal-CR-001.md), [pfSense](../Documentation/Change-Requests/Journal-CR-002.md) |
-| Proxmox `local`/`local-lvm` | VM and host storage | [Storage and recovery](services/BACKUPS.md) | [Platform](../Documentation/Change-Requests/Journal-CR-001.md) |
-| `nova-backup` storage | Dedicated Proxmox-visible backup repository | [Backup](services/BACKUPS.md) | [Backup journal](../Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) |
-| Snapshots and VM backups | Recovery and rollback states | [Backup and snapshot lifecycle](services/BACKUPS.md) | [Phase 2 closure](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md) |
-| Nested-virtualization failures | Platform troubleshooting and recovery | [Incidents](TESTS_AND_RECOVERY.md) | [Failure-testing report](../Documentation/failure-testing-report.md) |
+| Proxmox bridges and VM network interfaces | Seven NICs and two core bridges; tagged VLANs 20 and 40 for Windows guests | [vmbr0](virtualization/bridges/vmbr0.md) · [vmbr1](virtualization/bridges/vmbr1.md) | [Platform](../Documentation/Change-Requests/Journal-CR-001.md), [pfSense](../Documentation/Change-Requests/Journal-CR-002.md) |
+| Proxmox `local`/`local-lvm` | VM and host storage | [local](virtualization/storages/local.md) · [local-lvm](virtualization/storages/local-lvm.md) | [Platform](../Documentation/Change-Requests/Journal-CR-001.md) |
+| `nova-backup` storage | Holds six archives **and two live qcow2 disks** | [Actual storage](virtualization/storages/nova-backup.md) | [Backup journal](../Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) |
+| Snapshots and VM backups | One retained snapshot, six archives, current monthly job for VMs 100/101 | [Archive & schedule](virtualization/BACKUPS.md) · [Snapshot](virtualization/snapshots/100.md) | [Phase 2 closure](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md) |
+| Nested-virtualization failures | Platform troubleshooting and recovery | [Gateway fault](incidents/proxmox-default-gateway.md) · [GUI outage](incidents/proxmox-webgui-outage.md) | [Failure-testing report](../Documentation/failure-testing-report.md) |
 
 ## 2. Firewalls and all network areas
 
