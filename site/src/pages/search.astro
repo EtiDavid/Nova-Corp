@@ -22,6 +22,7 @@ const index=[
 ...companyPolicies.map(item=>({name:item.name,kind:"Group Policy",description:item.summary+" "+item.technicalName,url:base+"policies/"+item.slug+"/"})),
 {name:"Backup disk disappears",kind:"Investigated incident",description:"A real file restore after a deliberately unavailable backup target.",url:base+"incidents/backup-target-unavailable/"},
 {name:"Identity server goes offline",kind:"Investigated incident",description:"A controlled outage tested directory resilience.",url:base+"incidents/dc01-outage/"},
+{name:"Exact SMB and NTFS access-control entries",kind:"Permission explorer",description:"Search 100 recorded SMB and NTFS access entries across company shares and selected folders.",url:base+"files/permissions/technical/"},
 {name:"Recovery options",kind:"Recovery guide",description:"What has been tested and what remains configured-only.",url:base+"recovery/"}
 ];
 ---

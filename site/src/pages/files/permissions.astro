@@ -28,6 +28,12 @@ const base=import.meta.env.BASE_URL;
     <p class="muted"><a href={base+"groups/management-users/"}>Management_Users</a> is nested into <a href={base+"groups/dl-fs-finance-fullcontrol/"}>DL_FS_Finance_FullControl</a>. That group has <strong>SMB Full</strong> and <strong>NTFS FullControl</strong> at the Finance root, unlike the regular Finance Modify access.</p>
     <a class="evidence-link" href={base+"files/shares/finance/"}>Explore Finance in context →</a>
   </div>
+  <div class="paper panel" style="margin-top:21px">
+  <p class="kicker">Look deeper / 100 recorded access entries</p>
+  <h3 style="margin:12px 0">Inspect every share and folder access rule</h3>
+  <p class="muted" style="margin:10px 0 18px">Browse all 27 SMB and 73 NTFS access entries with individual principals, inherited flags and propagation settings. The evidence covers selected scopes, not a recursive audit.</p>
+  <a class="btn small" href={base+"files/permissions/technical/"}>Open the technical permission explorer →</a>
+  </div>
   <div class="grid-main" style="margin-top:35px">
     <div>
     <h2>The five checkpoints of access</h2>

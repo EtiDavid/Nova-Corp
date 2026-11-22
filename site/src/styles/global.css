@@ -253,3 +253,18 @@ p { margin: 0; }
  .evidence-figure img { max-height:250px; }
  .policy-section .fact-list dd { overflow-wrap:anywhere; }
 }
+
+/* Technical file-permission browser — native disclosures and local searching. */
+.acl-group { border:1px solid var(--border); background:white; border-radius:13px; margin:12px 0; overflow:hidden; }
+.acl-group > summary { list-style:none; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px; padding:17px 20px; }
+.acl-group > summary::-webkit-details-marker { display:none; }
+.acl-group > summary:hover { background:#F8FAFC; }
+.acl-group > summary strong { display:block; overflow-wrap:anywhere; font-size:.92rem; color:#0F172A; }
+.acl-group > summary small { display:block; margin-top:3px; color:#64748B; font-size:.79rem; }
+.acl-group > summary > span:last-child { color:#2563EB; font-size:1.15rem; }
+.acl-group[open] > summary { background:#F1F5F9; border-bottom:1px solid var(--border); }
+.acl-table-wrap { max-width:100%; overflow-x:auto; }
+.acl-table-wrap .data-table { min-width:540px; }
+.acl-table-wrap th,.acl-table-wrap td { overflow-wrap:anywhere; }
+.acl-table-wrap tr:target { background:#DBEAFE; outline:2px solid #60A5FA; outline-offset:-2px; }
+@media(max-width:520px){ .acl-group > summary { padding:14px 13px; } }

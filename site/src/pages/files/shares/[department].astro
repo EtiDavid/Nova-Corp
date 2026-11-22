@@ -67,7 +67,7 @@ const encode=(slug:string)=>base+"groups/"+slug+"/";
 <aside>
   <div class="sidebox"><h3>Folder addresses</h3><dl class="fact-list"><div><dt>Company address (DFS)</dt><dd><code class="technical">{share.dfs}</code></dd></div><div><dt>Server share</dt><dd><code class="technical">{share.smb}</code></dd></div><div><dt>NTFS folder</dt><dd><code class="technical">{share.ntfs}</code></dd></div></dl></div>
   <div class="sidebox"><h3>Rights at a glance</h3><dl class="fact-list"><div><dt>Department group</dt><dd>{share.group}</dd></div><div><dt>Resource group</dt><dd>{share.resourceGroup}</dd></div><div><dt>SMB access</dt><dd>Change</dd></div><div><dt>NTFS access</dt><dd>Modify</dd></div></dl><a class="evidence-link" href={base+"files/permissions/"}>All five department groups →</a></div>
-  <div class="sidebox"><h3>Original source</h3><p class="muted">This page reflects the reviewed departmental file-server configuration. Detailed original rules and exceptions remain in the linked public record.</p><a class="evidence-link" href={share.evidence}>Department configuration ↗</a></div>
+  <div class="sidebox"><h3>Original source</h3><p class="muted">This page reflects the reviewed departmental file-server configuration. Detailed original rules and exceptions remain in the linked public record.</p><a class="evidence-link" href={base+"files/permissions/technical/?q="+encodeURIComponent(share.name)}>Inspect the exact access entries →</a><p style="margin-top:13px"><a href={share.evidence}>Department source record ↗</a></p></div>
   <div class="sidebox"><a href={base+"files/"}>← Back to File Centre</a><p style="margin-top:12px"><a href={base+"systems/nova-files01/"}>Open the file server →</a></p></div>
 </aside>
 </div></section>
