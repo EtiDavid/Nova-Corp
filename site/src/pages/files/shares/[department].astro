@@ -28,7 +28,7 @@ const encode=(slug:string)=>base+"groups/"+slug+"/";
       <li class="walk-step">
         <h3>People belong to a department group</h3>
         <p><a href={group?encode(group.slug):base+"groups/"}><strong>{share.group}</strong></a> contains the recorded department identities.</p>
-        <p style="margin-top:8px">{users.map((user,index)=><span><a href={base+"people/"+user.slug+"/"}>{user.name}</a>{index<users.length-1?", ":""}</span>)}</p>
+        <ul class="plain-list" style="margin-top:8px">{users.map(user=><li><a href={base+"people/"+user.slug+"/"}>{user.name}</a></li>)}</ul>
       </li>
       <li class="walk-step"><h3>The group is nested into a resource group</h3>
         <p><a href={access?encode(access.slug):base+"groups/"}><strong>{share.resourceGroup}</strong></a> is assigned the folder permissions. The department group itself does not need a separate direct ACL entry.</p>
