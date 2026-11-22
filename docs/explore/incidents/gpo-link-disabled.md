@@ -90,7 +90,7 @@ The original incident notes use 'Cooperate wallpaper'. The configured policy is 
 
 The full illustrated [incident engineering journal (PDF)](../../Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) contains the execution evidence, screenshots, exact command history and troubleshooting decisions. The brief [public incident-exercise overview](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) explains the wider exercise.
 
-Source evidence identifiers (see the full journal): `image(20261116-213526).png`; `image(20261116-213629).png`; `image(20261116-214726).png`.
+The linked engineering journal identifies the original screenshots and preserves the command-by-command results.
 
 ## Explore connected services
 
