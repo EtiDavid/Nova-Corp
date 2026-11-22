@@ -8,7 +8,7 @@ Moyo was used as an IT-department account in the Nova Corp lab and, later, as a 
 | --- | --- |
 | Name | Moyo Agunbiade |
 | Tested logon | `moyo` |
-| Account enabled (22 November 2026) | Yes |
+| Account enabled (last checked) | Yes |
 | Department | IT |
 | OU (directory setup) | `Nova Users → IT` |
 | Global security group | `IT_Users` |
@@ -18,10 +18,10 @@ Moyo was used as an IT-department account in the Nova Corp lab and, later, as a 
 
 | Resource | Expected / tested |
 | --- | --- |
-| [IT share](../FILE_SERVICES.md#it) | **ALLOW** |
-| [Finance share](../FILE_SERVICES.md#finance) | **DENY** |
+| [IT share](../files/it.md) | **ALLOW** |
+| [Finance share](../files/finance.md) | **DENY** |
 
-The **22 November 2026 AD inventory** confirms Moyo is still in the IT OU, enabled and a direct member of `IT_Users`. The allowed/denied results were separately confirmed by group/ACL analysis and a real user-session access test.
+The latest documented directory shows Moyo is still in the IT OU, enabled and a direct member of `IT_Users`. The allowed/denied results were separately confirmed by group/ACL analysis and a real user-session access test.
 
 ## Why that matters
 

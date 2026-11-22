@@ -11,7 +11,7 @@ Finance handles the fictional company's finance documents.
 
 - OU: `Nova Users → Finance`
 - Group: [Finance_Users](../GROUPS.md#finance_users)
-- Resource: [Finance share](../FILE_SERVICES.md#finance)
+- Resource: [Finance share](../files/finance.md)
 - Related groups: `DL_FS_Finance_Modify`, `DL_FS_Finance_FullControl`
 - Test: Moyo's IT account was **denied** access to Finance.
 
@@ -32,7 +32,7 @@ IT operates the lab.
 - OU: `Nova Users → IT`
 - Group: [IT_Users](../GROUPS.md#it_users)
 - Profiles: [David](DAVID.md), [Moyo](MOYO.md)
-- Resource: [IT share](../FILE_SERVICES.md#it)
+- Resource: [IT share](../files/it.md)
 
 [Open IT department](IT_DEPARTMENT.md).
 

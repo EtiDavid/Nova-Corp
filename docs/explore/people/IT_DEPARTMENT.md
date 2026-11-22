@@ -8,13 +8,13 @@ IT is the team used to administer Nova Corp's domain, servers, workstations and 
 
 Security group: [IT_Users](../GROUPS.md#it_users)
 
-## People in the IT OU on 22 November 2026
+## People in the IT department
 
 - [David Eti](DAVID.md)
 - [Moyo Agunbiade](MOYO.md)
 - [Isaac Technology](accounts/cr011-it.md)
 
-The original directory exercise placed David and Moyo here. The **22 November 2026 inventory** also confirms Isaac Technology: all three are enabled and are direct members of **IT_Users**. Moyo's file-access results were separately tested from a real user session.
+The original directory exercise placed David and Moyo here. The current directory record also shows Isaac Technology: all three are enabled and are direct members of **IT_Users**. Moyo's file-access results were separately tested from a real user session.
 
 ## What IT works with
 
