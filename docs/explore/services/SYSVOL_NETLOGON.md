@@ -12,6 +12,12 @@ Nova Corp tested both shares on both Domain Controllers and later investigated a
 
 [DC01](../systems/NOVA-DC01.md) · [DC02](../systems/NOVA-DC02.md) · [Group Policy](../POLICIES.md) · [SMB](SMB.md) · [AD replication](ACTIVE_DIRECTORY.md).
 
+## Why NETLOGON also matters to drive mapping
+
+The [department drive-mapping policy](../policies/DRIVE_MAPPING.md) is configured to run a PowerShell script from `\\nova.corp\NETLOGON\Map-DepartmentDrive.ps1` during user sign-in.
+
+A GPO referring to a script does not guarantee that the script file still exists or that every mapped drive succeeded. The file itself and the user's session are the next evidence layers.
+
 ## What was tested
 
 - SYSVOL and NETLOGON available on both DCs.
