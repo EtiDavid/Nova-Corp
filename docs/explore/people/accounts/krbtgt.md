@@ -2,7 +2,7 @@
 
 Built-in Kerberos service identity used internally by Active Directory for ticket operations. Disabled status is normal; it is not an employee login.
 
-| Attribute | Directory snapshot: 22 November 2026 |
+| Account detail | Last documented setting |
 | --- | --- |
 | Account name | `krbtgt` |
 | Location | Built-in Users container |
@@ -12,7 +12,7 @@ Built-in Kerberos service identity used internally by Active Directory for ticke
 
 ## How this account connects
 
-The directory export did not record a direct membership in a Nova Corp department group for this identity. That does not imply the account has no Windows built-in or primary-group membership.
+This account has no direct Nova Corp department-group membership in the directory. Windows built-in and primary-group memberships may still apply.
 
 The krbtgt account participates in Kerberos internals; it is not expected to be enabled as an interactive user.
 
@@ -22,4 +22,4 @@ The krbtgt account participates in Kerberos internals; it is not expected to be 
 
 **Engineering evidence:** [Directory and group design](../../../Documentation/Change-Requests/Journal-CR-005.md) · [Account automation tests](../../../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-*The account state shown is a dated AD snapshot, not live synchronization.*
+*Account state reflects the last documented directory check.*

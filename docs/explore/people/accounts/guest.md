@@ -1,8 +1,8 @@
 # Guest — Nova Corp directory profile
 
-Built-in Guest account, disabled in the captured directory. It is not a staff member.
+Built-in Guest account, currently shown disabled. It is not a staff member.
 
-| Attribute | Directory snapshot: 22 November 2026 |
+| Account detail | Last documented setting |
 | --- | --- |
 | Account name | `Guest` |
 | Location | Built-in Users container |
@@ -12,7 +12,7 @@ Built-in Guest account, disabled in the captured directory. It is not a staff me
 
 ## How this account connects
 
-This account is a recorded direct member of `Guests`. Actual resource access still depends on the configured SMB/NTFS permissions and the tested account session.
+This account is a direct member of `Guests`. Opening a shared folder also requires suitable SMB and NTFS permissions.
 
 ## Explore related parts of the lab
 
@@ -20,4 +20,4 @@ This account is a recorded direct member of `Guests`. Actual resource access sti
 
 **Engineering evidence:** [Directory and group design](../../../Documentation/Change-Requests/Journal-CR-005.md) · [Account automation tests](../../../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-*The account state shown is a dated AD snapshot, not live synchronization.*
+*Account state reflects the last documented directory check.*
