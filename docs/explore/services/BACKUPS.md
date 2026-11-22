@@ -15,9 +15,11 @@ A successful backup job does not mean a file can actually be recovered. Nova Cor
 | pfSense config change fails | Config export / whole-VM backup / known-good snapshot | [nova-fw01](../systems/NOVA-FW01.md) |
 | Hypervisor VM recovery | Proxmox VM backups | [nova-prox01](../systems/NOVA-PROX01.md) |
 
+**[Inspect the actual Proxmox backup job and six archive records](../virtualization/BACKUPS.md)** · [Snapshot inventory](../virtualization/snapshots/100.md) · [Real restore investigation](../incidents/backup-target-disappears.md).
+
 ## Backup storage
 
-**Proxmox:** `nova-backup` was created on a separate Proxmox-visible disk and used for VM backup archives. It is not an off-site or independent physical-host failure domain.
+**Proxmox:** `nova-backup` was created on a separate Proxmox-visible disk and used for six VM backup archives (four pfSense, two DC01). The B02 inventory also found two **live qcow2 VM disks** attached from this same store, not archives. The current PVE backup job is **monthly**, targets only VM100/101 and has a legacy cron warning requiring a GUI schedule check. This is not an off-site or independent physical-host failure domain.
 
 **Windows Server:** FILES01 uses a dedicated backup disk (drive `B:`), Windows Server Backup and a scheduled health-check policy.
 
@@ -50,4 +52,4 @@ This is stronger than a screenshot of a green backup-job status.
 
 The backup disks are separate inside the nested lab, but the wider environment shares the outer physical host. Snapshots are fast rollback tools; they are not replacements for independent backups.
 
-[Read the complete backup engineering journal](../../Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) · [Read the recovery incident](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) · [Final snapshot retention review](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+[See the exact file recovery commands and matching SHA-256](../incidents/backup-target-disappears.md) · [Read the complete backup engineering journal](../../Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md) · [Read the recovery incident](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) · [Final snapshot retention review](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
