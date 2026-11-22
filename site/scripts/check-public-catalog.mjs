@@ -14,7 +14,8 @@ const scopes=[
  {label:"8 configured network areas including WAN/LAN/VPN",path:"network/zones",count:8},
  {label:"17 ordered pfSense rules",path:"network/rules",count:17},
  {label:"5 pfSense aliases",path:"network/aliases",count:5},
- {label:"7 recorded GPO objects",path:"policies",count:7}
+ {label:"7 recorded GPO objects",path:"policies",count:7},
+ {label:"4 domain-joined computer objects",path:"computers",count:4}
 ];
 const errors=[];
 for (const scope of scopes){
@@ -38,7 +39,9 @@ const required=[
 "network/aliases/index.html","network/aliases/nova-domain-controllers/index.html",
 "policies/index.html","policies/contractor-usb/index.html","policies/keyboard/index.html",
 "policies/drive-mapping/index.html","policies/workstation-baseline/index.html",
-"directory/ous/contractors/index.html","people/john-shaw/index.html"
+"directory/ous/contractors/index.html","people/john-shaw/index.html",
+"computers/index.html","computers/nova-dc01/index.html",
+"computers/nova-files01/index.html","computers/nova-client/index.html"
 ];
 for(const page of required){
  if(!existsSync(join(dist,page)))errors.push("Missing critical user-journey page: "+page);

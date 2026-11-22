@@ -4,6 +4,7 @@ import SystemCard from "../../components/SystemCard.astro";
 import { getArea } from "../../data/areas";
 import { systems, connectedTo, type Entity } from "../../data/model";
 import { linksForSystem } from "../../data/policies";
+import { getComputer } from "../../data/computers";
 export function getStaticPaths() {
   return systems.map((system) => ({params:{slug:system.slug},props:{system}}));
 }
@@ -13,6 +14,7 @@ const base = import.meta.env.BASE_URL;
 const area = getArea(system.area);
 const connected = connectedTo(system.id);
 const associatedPolicies=linksForSystem(system.slug);
+const computer=getComputer(system.slug);
 const statusText = system.status === "observed-running" ? "Documented running at last check" : "Documented configuration";
 ---
 <BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"explore/"},{label:area?.name||"Systems",href:"areas/"+system.area+"/"},{label:system.name}]}>
@@ -38,6 +40,11 @@ const statusText = system.status === "observed-running" ? "Documented running at
           </ul>
         </div>
       </section>
+      {computer&&<section class="content-section"><div class="paper panel"><p class="kicker">Directory object / Virtual machine</p>
+        <h2 style="margin:12px 0">This server also has an Active Directory computer identity.</h2>
+        <p class="muted" style="margin:12px 0 18px">The directory computer object links to a specific Organizational Unit and possible Group Policy scope. That object is not the same as the VM that runs Windows services.</p>
+        <a class="btn small" href={base+"computers/"+computer.slug+"/"}>Open the directory computer →</a>
+      </div></section>}
       {associatedPolicies.length>0&&<section class="content-section">
         <h2>Workstation rules and related policies</h2>
         <p class="muted" style="margin:12px 0 17px">These policies connect to this machine or its workflows. Some are user-side policies processed on a workstation; a connection here is <strong>not proof that every setting applied to this device</strong>.</p>
