@@ -2,7 +2,7 @@
 
 Nova Corp's office, directory servers, file services and network firewall are **virtual machines**. A Windows computer runs VMware Workstation; inside it, **nova-prox01** runs Proxmox VE; Proxmox runs the company VMs.
 
-This isn't a diagram of what we planned to build. It is the actual **22 November 2026 hypervisor inventory**.
+Explore the machines, network switches and storage that support the company. Select any component to see what it runs and how it connects to the rest of Nova Corp.
 
 ## Enter the virtual data centre
 
@@ -40,26 +40,26 @@ Each VM profile lists the actual virtual NIC, VLAN tag, disks, storage backend a
 
 ## Storage and recovery
 
-| Storage | Used at 22 Nov 16:03 | What is stored |
+| Storage | Space available (last check) | What is stored |
 |---|---:|---|
-| [local](storages/local.md) | 63.12% | Proxmox local directory and ISO images |
-| [local-lvm](storages/local-lvm.md) | **53.67%** | Thin-provisioned virtual disks and one retained snapshot |
-| [nova-backup](storages/nova-backup.md) | 22.30% | vzdump backup archives **and two active qcow2 VM disks** |
+| [local](storages/local.md) | **36.88% free** | Proxmox local directory and ISO images |
+| [local-lvm](storages/local-lvm.md) | **46.33% free** | Thin-provisioned virtual disks and one retained snapshot |
+| [nova-backup](storages/nova-backup.md) | **77.70% free** | vzdump backup archives **and two active qcow2 VM disks** |
 
 [Explore all backups, the configured schedule and retained snapshot](BACKUPS.md).
 
-The collected inventory contains **6 VMs, 0 containers, 7 virtual NICs, 28 disk/media attachments, 3 storage backends, 22 host network interfaces, 6 backup archives and 1 retained VM snapshot**. The 28 attachments include CD-ROM devices, ISOs and no-media entries; they are **not** 28 independent data disks.
+Nova Corp has **six VMs**, **two main virtual switches**, **three storage areas**, **six archived VM backups**, and **one retained rollback snapshot**. For engineers: the platform has seven VM network adapters and 28 disk/media attachments; some are installation ISOs or virtual CD-ROMs, not data disks.
 
 ## Reliability tests and failures
 
 - [Hypervisor gateway misconfiguration](../incidents/proxmox-default-gateway.md): local network remained reachable, internet failed; recovered through configuration rollback.
 - [WebGUI failure](../incidents/proxmox-webgui-outage.md): Proxmox HTTP management died, but SSH and VMs remained usable.
-- [Snapshot storage pressure](../incidents/proxmox-snapshot-pressure.md): old snapshots pushed local-lvm to **86.73%**. Retention cleanup reduced it to **52.88%**, with the later capture at **53.67%**.
+- [Snapshot storage pressure](../incidents/proxmox-snapshot-pressure.md): old snapshots pushed local-lvm to **86.73%**. Retention cleanup reduced it to **52.88%**, with **53.67% used** at the latest check.
 
-## What this inventory does not prove
+## How do we know the machines actually work?
 
-A VM marked Running does **not** prove the Windows services inside it are healthy. The [Domain Controller outage](../incidents/domain-controller-outage.md), [file recovery](../incidents/backup-target-disappears.md) and [firewall test](../incidents/pfsense-management-exposure.md) separately demonstrate application-level behavior.
+A VM showing “Running” doesn't tell us whether people can log in or open files. That's why we also tested the services inside: The [Domain Controller outage](../incidents/domain-controller-outage.md), [file recovery](../incidents/backup-target-disappears.md) and [firewall test](../incidents/pfsense-management-exposure.md) separately demonstrate application-level behavior.
 
 **[Full build journal](../../Documentation/Change-Requests/Journal-CR-001.md)** · [Company systems](../SYSTEMS.md) · [Company explorer](../../EXPLORE_NOVACORP.md)
 
-*Read-only Proxmox capture: 22 November 2026, 16:03:54 Europe/Brussels. The virtualized lab shares a physical host; a separate virtual disk is not automatically an off-site backup.*
+*Storage figures are from the latest recorded check, not a live feed. The nested lab shares one physical host; a separate virtual disk is not automatically an off-site backup.*
