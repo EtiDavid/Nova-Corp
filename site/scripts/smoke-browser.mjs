@@ -111,4 +111,9 @@ try {
 }finally{
  if(browser)await browser.close();
  server.kill("SIGTERM");
+ server.stdout.destroy();
+ server.stderr.destroy();
 }
+// npm spawns a child preview server that may retain inherited descriptors.
+// QA is already complete; never leave a GitHub runner hanging on its pipes.
+process.exit(process.exitCode ?? 0);

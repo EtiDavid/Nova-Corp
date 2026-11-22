@@ -25,7 +25,7 @@ jobs:
     if: github.ref == 'refs/heads/feature/world-explorer-site' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     environment:
-      name: github-pages
+      name: world-explorer-preview
       url: ${{ steps.deployment.outputs.page_url }}
     defaults:
       run:
@@ -58,6 +58,7 @@ jobs:
       - name: Verify all 100 ACL entries
         run: npm run test:acls
       - name: Interactive desktop and mobile smoke test
+        timeout-minutes: 5
         run: npm run test:browser
       - name: Configure Pages
         uses: actions/configure-pages@v5
