@@ -21,6 +21,8 @@ You can explore those parts of the company here. Every highlighted system, servi
 | 🧪 **[Incident Lab — Tests & Failures](explore/TESTS_AND_RECOVERY.md)** | DNS, GPO, permissions, backup, DC and firewall mistakes with repairs. |
 | 📋 **[Operations Room](explore/OPERATIONS.md)** | How the environment is checked, recovered and maintained. |
 
+**[Browse the current company directory — every user, OU, company group and registered computer](explore/DIRECTORY_SNAPSHOT_2026-11-22.md)**
+
 ## Take one connected journey
 
 A person wants to open an IT file. What needs to work?
