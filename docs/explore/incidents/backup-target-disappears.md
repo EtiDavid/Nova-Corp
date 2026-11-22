@@ -96,11 +96,11 @@ Bring Disk 2 online, run the existing backup template, restore a disposable dele
 
 The first scheduled-task trigger returned 'task settings do not allow start on demand'; the correct backup template was launched with wbadmin. A later Get-FileHash attempt failed because a PowerShell variable was null—this was a validation-command mistake, not a restore failure.
 
-## What proves this outcome?
+## Original tests and evidence
 
 The full illustrated [incident engineering journal (PDF)](../../Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) contains the execution evidence, screenshots, exact command history and troubleshooting decisions. The brief [public incident-exercise overview](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) explains the wider exercise.
 
-Source evidence identifiers (see the full journal): `image(20261118-120215).png`; `image(20261118-121953).png`; `image(20261118-125112).png`.
+The linked engineering journal identifies the original screenshots and preserves the command-by-command results.
 
 ## Explore connected services
 
