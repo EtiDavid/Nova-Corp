@@ -1,17 +1,24 @@
-# Contractor removable-storage policy
+# Contractors — Removable-storage restriction
 
 **GPO:** `NOVA-sec-deny-usb-contractors`  
-**Target:** `Nova Users → Contractors` OU
+**Linked to:** `nova.corp/Nova Users/Contractors`  
+**Link:** Enabled, not enforced  
+**Captured:** 22 November 2026
 
-## Why it exists
+## Why Nova Corp created it
 
-Contractor accounts should not be able to use removable storage on company workstations.
+The company wants contractors to work on its Windows computers without copying data to removable drives.
 
-## Configuration
+## What the current GPO configures
 
-In the user half of Group Policy, **All Removable Storage classes: Deny all access** was enabled.
+Two user-side policy settings are enabled:
 
-### Link to the OU
+1. **All Removable Storage classes: Deny all access.**
+2. **Removable Disks: Deny write access.**
+
+The broad deny-all setting takes precedence over individual removable-storage class settings. Both remain visible in the exported configuration.
+
+### Where the policy is linked
 
 ![GPO linked to Contractors OU](../../Documentation/Change-Requests/evidence/01-contractor-usb-gpo-link.png)
 
@@ -19,18 +26,25 @@ In the user half of Group Policy, **All Removable Storage classes: Deny all acce
 
 ![Deny all removable storage enabled](../../Documentation/Change-Requests/evidence/02-usb-deny-all-removable-storage-enabled.png)
 
-## Test user
+## Who was used to test it?
 
-[John Shaw](../people/JOHN_SHAW.md) was located in the contractor OU. His `gpresult` output showed this policy in the applied list.
+[John Shaw](../people/JOHN_SHAW.md) is a fictional contractor account located inside the Contractors OU. His `gpresult` showed the policy was applied to his user session.
 
-![Test account received policy](../../Documentation/Change-Requests/evidence/03-contractor-user-gpresult.png)
+![The contractor test account's applied policies](../../Documentation/Change-Requests/evidence/03-contractor-user-gpresult.png)
 
-**What was not fully tested:** passing a physical USB device through the nested VMware/Proxmox/Windows chain was unreliable, so the documented result is policy configuration/application rather than a proven physical USB block.
+The physical USB block could not be independently proven during the original nested-virtualization test because physical device passthrough was unreliable. This result is **configured policy and observed GPO processing**, not a claim that a real USB device was blocked.
 
-## Connected concepts
+## Follow the connected parts
 
-[OU tree](../DIRECTORY.md) · [Windows client](../systems/NOVA-CLIENT.md) · [Group Policy](../POLICIES.md).
+[John Shaw](../people/JOHN_SHAW.md) → [Contractors OU](../DIRECTORY.md) → [this policy](CONTRACTOR_USB.md) → [Windows workstation](../systems/NOVA-CLIENT.md) → [GPO tests](../TESTS_AND_RECOVERY.md).
 
-[Read original implementation and limits](../../Documentation/Change-Requests/Journal-CR-006.md).
+[Original implementation and testing journal](../../Documentation/Change-Requests/Journal-CR-006.md).
 
-[← All policies](../POLICIES.md)
+<details><summary><strong>Technical identifier</strong></summary>
+
+GPO GUID: `359aeed7-40b1-432b-aae8-983c980f93d6`.  
+Security filter: Authenticated Users (Apply Group Policy).
+
+</details>
+
+[← All seven GPOs](../POLICIES.md)
