@@ -1,8 +1,8 @@
 import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 
-// Defaults to '/' for local development or root-domain hosting.
-// On GitHub Pages set PUBLIC_BASE_PATH=/Nova-Corp/ at build time.
+// '/' is correct for novacorp.davideti.dev (independent custom-domain Pages site).
+// Use /Nova-Corp/ only for temporary repository-path builds without a custom domain.
 export default defineConfig({
   output: "static",
   base: process.env.PUBLIC_BASE_PATH || "/",
