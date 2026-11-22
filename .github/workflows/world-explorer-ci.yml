@@ -29,3 +29,11 @@ jobs:
         run: npm run check
       - name: Build static website
         run: npm run build
+      - name: Validate generated HTML navigation
+        run: npm run test:links
+      - name: Keep site preview artifact for QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-explorer-static-preview
+          path: site/dist/
+          retention-days: 7
