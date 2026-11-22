@@ -1,6 +1,6 @@
 # WAN — Nova Corp network area
 
-**Interface:** `wan` · **Device:** `vtnet0` · **Address / gateway:** `DHCP (runtime address last recorded as 192.168.178.71)` · **Verified configuration:** 22 November 2026.
+**Interface:** `wan` · **Device:** `vtnet0` · **Address / gateway:** `DHCP (runtime address last recorded as 192.168.178.71)`
 
 ## Why this network exists
 
@@ -24,6 +24,6 @@ WAN obtains its own address using upstream DHCP; no pfSense LAN-style DHCP scope
 
 [See the rules in order](../RULES.md) · [pfSense](../../systems/NOVA-FW01.md) · [Network overview](../../NETWORK.md) · [Tests and incidents](../../TESTS_AND_RECOVERY.md).
 
-The exported settings describe the firewall configuration; they are not a substitute for observing actual packets and client behavior.
+The firewall's rules define which connections may pass. The linked tests demonstrate how these settings behaved during real lab exercises.
 
 [← Network Gatehouse](../../NETWORK.md)
