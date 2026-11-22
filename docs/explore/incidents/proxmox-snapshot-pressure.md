@@ -69,7 +69,7 @@ pvesm status
 
 **Expected / hypothesis:** Capacity remains safely below the former pressure level.
 
-**Actual result from the journal:** B02 22 Nov inventory reports local-lvm 53.67%, separate later measurement.
+**Actual result:** At a later check, local-lvm was **53.67% used (46.33% free)**; the cleanup improvement was maintained.
 
 ## Repair and outcome
 
