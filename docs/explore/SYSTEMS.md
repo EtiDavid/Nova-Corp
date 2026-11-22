@@ -1,6 +1,6 @@
 # IT Control Room — Computers and servers
 
-Nova Corp runs **six Proxmox virtual machines** at the 22 November 2026 inventory: five running company VMs and one stopped, unassigned VM201. Choose a machine to see the services inside it, its network connection, disks and tests. Select one to see the services inside it, its network connection and the tests involving it.
+Nova Corp has **six Proxmox virtual machines**: five running company VMs and one stopped, unassigned VM201. Choose a machine to see the services inside it, its network connection, disks and tests. Select one to see the services inside it, its network connection and the tests involving it.
 
 | Machine | What it does | Open |
 | --- | --- | --- |
