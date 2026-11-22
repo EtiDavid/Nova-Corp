@@ -21,14 +21,14 @@ An **Organizational Unit (OU)** is a folder-like container for directory objects
 
 </details>
 
-<details><summary><strong>Nova Computers</strong></summary>
+<details><summary><strong>Nova-Computers</strong></summary>
 
 - **Workstations** — [NOVA-CLIENT](systems/NOVA-CLIENT.md)
 - **Servers** — member-server organizational area
 
 </details>
 
-<details><summary><strong>Nova Security Groups</strong></summary>
+<details><summary><strong>Nova Security groups</strong></summary>
 
 [IT_Users](GROUPS.md#it_users) · [Finance_Users](GROUPS.md#finance_users) · [HR_Users](GROUPS.md#hr_users) · [Sales_Users](GROUPS.md#sales_users) · [Management_Users](GROUPS.md#management_users) · [Resource permission groups](GROUPS.md#resource-permission-groups)
 
