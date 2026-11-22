@@ -33,13 +33,20 @@ Every system page includes an evidence date, plain-language explanation, source 
 
 **Still required under the master specification:** complete identity/OU, staff, GPO, firewall-rule and file-permission browsers; curated real screenshots; expanded verified graph; proof gallery; advanced search; actual mobile/keyboard QA; performance and deployment. These have NOT been marked complete.
 
-## Hosting base paths
+## Hosting and custom domain (prepared — not activated)
 
-Local development and root-domain builds default to /. For GitHub Pages under the repository path, run:
+**Chosen target:** `https://novacorp.davideti.dev`, hosted on **GitHub Pages** using this repository. The existing personal site at `https://davideti.dev` remains unchanged. The alternative spelling `etidavid.dev` has not been confirmed as an owned/working domain.
 
-    PUBLIC_BASE_PATH=/Nova-Corp/ npm run build
+- `site/public/CNAME` contains `novacorp.davideti.dev`. This stages the name in Astro's build output, but does **not** provision DNS or set the GitHub Pages repository setting.
+- `.github/workflows/deploy-world-explorer-pages.yml` compiles the static Astro site at **root base path `/`** and deploys to the `github-pages` environment. It runs **only by manual dispatch from `main`**, after approval; an unreviewed feature-branch push or PR cannot launch the public site.
+- Developer CI for this branch continues building **without deployment**, validating entity data, type-checks, the static build and generated internal links.
+- GitHub Pages setup still required once launch is approved: `Nova-Corp → Settings → Pages → Build and deployment → GitHub Actions`, then set Custom domain to `novacorp.davideti.dev` and enable **Enforce HTTPS** when a certificate is issued.
+- DNS-provider change still required **at launch**: a `CNAME` record for host `novacorp` pointing to `EtiDavid.github.io` (DNS name, no `https://`), assuming this subdomain is available. Do not modify existing apex, `www`, MX, or other records for `davideti.dev`.
+- GitHub recommends verifying ownership of the domain with a DNS TXT record under account Settings → Pages before activating the custom domain, to reduce takeover risk.
 
-All site-internal links use the configured Astro base path. Cloudflare Pages/custom-domain deploys should normally use /.
+If a temporary repository-path build is needed before the custom domain, use `PUBLIC_BASE_PATH=/Nova-Corp/`. **Production custom-domain builds must use `/`**, never `/Nova-Corp/`.
+
+This preparation does **not** claim `novacorp.davideti.dev` already resolves, that the personal site DNS was changed, or that the World Explorer is deployed.
 
 ## Repository boundary
 
