@@ -91,11 +91,11 @@ Get-Content "\\nova-files01\IT\CR014-IncidentLab\Incident-Test.txt"
 
 Remove only the Moyo-specific explicit DENY; leave IT-group Modify and administrative permissions intact.
 
-## What proves this outcome?
+## Original tests and evidence
 
 The full illustrated [incident engineering journal (PDF)](../../Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) contains the execution evidence, screenshots, exact command history and troubleshooting decisions. The brief [public incident-exercise overview](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) explains the wider exercise.
 
-Source evidence identifiers (see the full journal): `CP02-08-moyo-read-write-access-denied-powershell.png`; `CP02-09-moyo-scope-dns-445-share-root-pass.png`; `CP02-11-share-acl-healthy-child-folder-explicit-deny.png`.
+The linked engineering journal identifies the original screenshots and preserves the command-by-command results.
 
 ## Explore connected services
 
