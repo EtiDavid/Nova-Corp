@@ -1,0 +1,52 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { organizationalUnits, identities, directorySource } from "../../data/directory";
+import { accessGroups } from "../../data/groups";
+const base=import.meta.env.BASE_URL;
+const roots=organizationalUnits.filter(o=>!o.parent);
+const children=(slug:string)=>organizationalUnits.filter(o=>o.parent===slug);
+const rootUsers=identities.filter(i=>i.category==="built-in"||i.slug==="test-user");
+---
+<BaseLayout title="People and company directory" description="Explore Nova Corp's actual directory structure: 16 OUs, 20 lab identities, 11 custom groups and tested access paths." breadcrumbs={[{label:"Explore",href:"explore/"},{label:"Company directory"}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">People & Identity / Company directory</div>
+<h1>How the company organizes identities.</h1>
+<p class="lead" style="margin-top:17px">Active Directory keeps accounts and computers organized. An Organizational Unit is where an object lives; a security group is what can connect it to permissions. Those are different relationships.</p>
+<div class="button-row" style="margin-top:22px"><a class="btn" href={base+"people/moyo/"}>Follow an employee's file access →</a><a class="btn ghost" href={base+"groups/"}>Explore security groups</a></div>
+</div></section>
+<section class="section compact"><div class="container">
+  <div class="stats-strip" style="margin:0 0 36px">
+    <div class="stat"><b>16</b><span>Documented organizational units</span></div>
+    <div class="stat"><b>20</b><span>Accounts of different types</span></div>
+    <div class="stat"><b>62</b><span>Security groups, 11 company-created</span></div>
+  </div>
+  <div class="grid-main">
+    <div>
+      <section class="content-section">
+        <h2>Explore the directory tree</h2>
+        <p class="muted" style="margin:13px 0 20px">Select any OU to see its documented role and direct entries. Parent-child links are real; built-in Users is a container, not a seventeenth OU.</p>
+        <div class="paper panel">
+          <div class="directory-tree"><p class="kicker">nova.corp / Directory root</p>
+          {roots.map(ou=><div class="ou-branch"><a class="tree-item" href={base+"directory/ous/"+ou.slug+"/"}><strong>{ou.name}</strong><span aria-hidden="true">↗</span></a>
+            {children(ou.slug).length>0 && <div class="tree-children">{children(ou.slug).map(child=><a class="tree-item" href={base+"directory/ous/"+child.slug+"/"}>{child.name}<span aria-hidden="true">↗</span></a>)}</div>}
+          </div>)}
+          <details style="margin-top:14px"><summary><strong>Built-in Users container (CN, not an OU)</strong></summary>
+            <ul class="plain-list" style="margin-top:12px">{rootUsers.map(u=><li><a href={base+"people/"+u.slug+"/"}>{u.name}</a> — {u.enabled?"enabled":"disabled"} {u.category} identity</li>)}</ul>
+          </details>
+          </div>
+        </div>
+      </section>
+      <section class="content-section">
+        <div class="section-heading"><h2>Browse directory accounts</h2><a class="text-link" href={base+"groups/"}>Open groups →</a></div>
+        <p class="muted" style="margin:10px 0 20px">These are **directory records**, not a company payroll list. Service identities, built-in accounts and disposable test users are labelled separately.</p>
+        <div class="card-list">{identities.map(user=><a class="system-card" href={base+"people/"+user.slug+"/"}><small>{user.category.replace("-"," ")} · {user.enabled?"Enabled":"Disabled at last check"}</small><h3>{user.name}</h3><p>{user.location}</p><span class="readmore">Open directory identity →</span></a>)}</div>
+      </section>
+    </div>
+    <aside>
+      <div class="sidebox"><h3>What does an OU do?</h3><p class="muted">It organizes directory objects and offers a place to link Group Policy. Being in the OU does not mean a given GPO was proven applied to the user's session.</p><a class="evidence-link" href="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/POLICIES.md">See linked policy objects ↗</a></div>
+      <div class="sidebox"><h3>Groups are a separate path</h3><p class="muted">Department Global groups collect identities. Domain Local groups are placed on file share and folder ACLs.</p><a class="evidence-link" href={base+"groups/"}>Explore the 11 company groups →</a></div>
+      <div class="sidebox"><h3>Evidence and boundaries</h3><p class="muted">The reviewed directory snapshot had 16 OUs, 20 user objects and 62 security groups. The built-in 51 groups remain in the deeper technical source rather than being mislabelled as company creations.</p><a class="evidence-link" href={directorySource}>Original directory snapshot ↗</a></div>
+    </aside>
+  </div>
+</div></section>
+</BaseLayout>

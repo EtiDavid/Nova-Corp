@@ -1,0 +1,40 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { organizationalUnits, identities, type Ou, directorySource } from "../../../data/directory";
+const base=import.meta.env.BASE_URL;
+export function getStaticPaths(){return organizationalUnits.map(ou=>({params:{slug:ou.slug},props:{ou}}));}
+interface Props{ou:Ou}
+const {ou}=Astro.props;
+const parent=organizationalUnits.find(p=>p.slug===ou.parent);
+const children=organizationalUnits.filter(p=>p.parent===ou.slug);
+const direct=identities.filter(u=>u.ou===ou.slug);
+const controllers=ou.slug==="domain-controllers";
+const workstations=ou.slug==="workstations";
+const servers=ou.slug==="servers";
+---
+<BaseLayout title={ou.name+" · Organizational Unit"} description={"Open the documented "+ou.name+" Active Directory organizational unit and its connected identities and systems."} breadcrumbs={[{label:"Directory",href:"directory/"},{label:ou.name}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">Active Directory / Organizational Unit</div>
+<h1>{ou.name}</h1><p class="lead" style="margin-top:17px">{ou.meaning}</p>
+</div></section>
+<section class="section compact"><div class="container grid-main"><div>
+  {parent && <div class="note" style="margin-bottom:24px">This OU is inside <a href={base+"directory/ous/"+parent.slug+"/"}>{parent.name}</a>. Parent location is part of the directory hierarchy, not automatic membership in a resource group.</div>}
+  <section class="content-section">
+    <h2>What's directly inside?</h2>
+    {children.length>0 && <div class="card-list" style="margin-top:18px">{children.map(child=><a class="system-card" href={base+"directory/ous/"+child.slug+"/"}><small>Child Organizational Unit</small><h3>{child.name}</h3><p>{child.meaning}</p><span class="readmore">Open OU →</span></a>)}</div>}
+    {direct.length>0 && <div class="card-list" style="margin-top:18px">{direct.map(u=><a class="system-card" href={base+"people/"+u.slug+"/"}><small>{u.category.replace("-"," ")} · {u.enabled?"Enabled":"Disabled"}</small><h3>{u.name}</h3><p>Lab directory sign-in: <code>{u.logon}</code></p><span class="readmore">Open identity →</span></a>)}</div>}
+    {controllers && <div class="card-list" style="margin-top:18px">{["nova-dc01","nova-dc02"].map(s=><a class="system-card" href={base+"systems/"+s+"/"}><small>Identity server</small><h3>{s.toUpperCase()}</h3><p>Writable Domain Controller documented in this built-in OU.</p><span class="readmore">Explore server →</span></a>)}</div>}
+    {workstations && <a class="system-card" style="margin-top:18px" href={base+"systems/nova-client/"}><small>Domain-joined client</small><h3>NOVA-CLIENT</h3><p>Employee workstation used during logon, policy and file access tests.</p><span class="readmore">Open workstation →</span></a>}
+    {servers && <a class="system-card" style="margin-top:18px" href={base+"systems/nova-files01/"}><small>Member server</small><h3>NOVA-FILES01</h3><p>Company file server hosted in the member-server area.</p><span class="readmore">Open file server →</span></a>}
+    {ou.slug==="security-groups" && <a class="system-card" style="margin-top:18px" href={base+"groups/"}><small>Group catalog</small><h3>Company access groups</h3><p>Browse Global department membership and Domain Local resource-permission groups.</p><span class="readmore">Open the groups →</span></a>}
+    {ou.slug==="contractors" && <div class="note warning" style="margin-top:18px">A removable-storage Group Policy is linked to this OU. Its complete physical-device enforcement was not tested end to end in the nested lab. <a href="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/policies/CONTRACTOR_USB.md">See source ↗</a></div>}
+    {direct.length===0&&children.length===0&&!controllers&&!workstations&&!servers&&ou.slug!=="security-groups" && <div class="note" style="margin-top:18px">No direct user or child OU is listed for this scope in the published snapshot. That is a documentation boundary—not a claim that the OU has no other possible objects.</div>}
+  </section>
+  <section class="content-section"><h2>How this connects to access</h2><p class="muted" style="margin-top:14px">OU membership determines location and possible policy scope. File access follows separate direct group membership, nesting, SMB and NTFS permissions. No object is assumed to have access solely because of its OU.</p><div class="button-row" style="margin-top:17px"><a class="btn ghost small" href={base+"groups/"}>Browse group membership →</a><a class="btn ghost small" href={base+"files/permissions/"}>Inspect file permissions</a></div></section>
+</div>
+<aside>
+ <div class="sidebox"><h3>Where is it?</h3><p class="muted">Directory: <strong>nova.corp</strong></p><p class="muted" style="margin-top:8px">Parent: {parent?parent.name:"Domain root"}</p><p class="muted" style="margin-top:8px">Documented direct users: {direct.length}</p></div>
+ <div class="sidebox"><h3>Source</h3><p class="muted">The directory object and hierarchy were taken from the reviewed Active Directory snapshot. Use the technical record for object-level verification.</p><a class="evidence-link" href={directorySource}>Read the directory record ↗</a></div>
+ <div class="sidebox"><a href={base+"directory/"}>← All Organizational Units</a><p style="margin-top:12px"><a href={base+"explore/"}>Company map →</a></p></div>
+</aside></div></section>
+</BaseLayout>

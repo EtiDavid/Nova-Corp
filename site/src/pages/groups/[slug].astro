@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { accessGroups, groupPeople, groupResources, findGroupByName, accessSources, type AccessGroup } from "../../data/groups";
+import { shares } from "../../data/fileCentre";
+export function getStaticPaths(){return accessGroups.map(group=>({params:{slug:group.slug},props:{group}}));}
+interface Props{group:AccessGroup}
+const {group}=Astro.props;
+const base=import.meta.env.BASE_URL;
+const people=groupPeople(group.name);
+const nested=groupResources(group.name);
+const directShare=shares.find(share=>share.id===group.folder);
+---
+<BaseLayout title={group.name+" · Security group"} description={"Understand the documented "+group.name+" group, direct membership, group nesting and permission relationships in Nova Corp."} breadcrumbs={[{label:"Directory",href:"directory/"},{label:"Groups",href:"groups/"},{label:group.name}]}>
+<section class="page-head"><div class="container">
+  <div class="eyebrow">{group.scope} security group / {group.kind}</div>
+  <h1>{group.name}</h1><p class="lead" style="margin-top:17px">{group.description}</p>
+</div></section>
+<section class="section compact"><div class="container grid-main"><div>
+  <section class="content-section">
+  <h2>What connects to this group?</h2>
+  {people.length>0&&<div class="paper panel" style="margin-top:20px">
+    <h3>Recorded direct identity members</h3>
+    <div class="card-list" style="margin-top:18px">{people.map(u=><a class="system-card" href={base+"people/"+u.slug+"/"}><small>{u.category.replace("-"," ")} · {u.enabled?"Enabled":"Disabled"}</small><h3>{u.name}</h3><p>Account <code>{u.logon}</code></p><span class="readmore">Open identity →</span></a>)}</div>
+  </div>}
+  {group.directMemberGroups.length>0&&<div class="paper panel" style="margin-top:20px">
+    <h3>Groups nested inside</h3>
+    <p class="muted" style="margin:11px 0 15px">These are recorded direct group-to-group memberships, not an assertion that every user's access was individually tested.</p>
+    {group.directMemberGroups.map(name=>{const g=findGroupByName(name);return <p style="margin-bottom:12px"><a href={base+"groups/"+g?.slug+"/"}>{name} →</a></p>})}
+  </div>}
+  {nested.length>0&&<div class="paper panel" style="margin-top:20px">
+    <h3>Resource groups that include this one</h3>
+    <p class="muted" style="margin:11px 0 15px">Membership continues through these Domain Local groups, which receive access on files.</p>
+    {nested.map(g=><p style="margin-bottom:12px"><a href={base+"groups/"+g.slug+"/"}>{g.name} →</a></p>)}
+  </div>}
+  {directShare&&<div class="paper panel" style="margin-top:20px">
+    <h3>Configured file permissions</h3>
+    <p class="muted" style="margin:12px 0 18px">The group appears in the recorded <strong>{directShare.name}</strong> folder's rules: <strong>SMB {group.shareRight}</strong> and <strong>NTFS {group.ntfsRight}</strong>. Those are separate ACL facts, not an automatic per-user access-test result.</p>
+    <a class="btn small" href={base+"files/shares/"+directShare.id+"/"}>Follow the actual {directShare.name} folder →</a>
+  </div>}
+  </section>
+  <section class="content-section">
+    <h2>Where did this information come from?</h2>
+    <div class="note"><strong>Two independent sources:</strong> direct identity/group membership comes from the Active Directory snapshot, while share and NTFS permission grants come from the file-server inventory. Their combined path is meaningful, but still must be distinguished from a successful client-side test.</div>
+    <div class="button-row" style="margin-top:17px"><a class="btn ghost small" href={accessSources.membership}>Directory source ↗</a><a class="btn ghost small" href={accessSources.permissions}>Folder ACL source ↗</a></div>
+  </section>
+</div><aside>
+ <div class="sidebox"><h3>Group attributes</h3><dl class="fact-list"><div><dt>Scope</dt><dd>{group.scope}</dd></div><div><dt>Function</dt><dd>{group.kind}</dd></div><div><dt>Direct identity members in this published custom model</dt><dd>{people.length}</dd></div>{directShare&&<div><dt>Department file resource</dt><dd><a href={base+"files/shares/"+directShare.id+"/"}>{directShare.name}</a></dd></div>}</dl></div>
+ <div class="sidebox"><a href={base+"groups/"}>← Company groups</a><p style="margin-top:14px"><a href={base+"directory/"}>Directory tree →</a></p><p style="margin-top:14px"><a href={base+"files/permissions/"}>Permission matrix →</a></p></div>
+</aside></div></section>
+</BaseLayout>
