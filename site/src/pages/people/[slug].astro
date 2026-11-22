@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { identities, organizationalUnits, directorySource, type DirectoryIdentity } from "../../data/directory";
 import { findGroupByName } from "../../data/groups";
+import { companyPolicies } from "../../data/policies";
 export function getStaticPaths(){return identities.map(person=>({params:{slug:person.slug},props:{person}}));}
 interface Props{person:DirectoryIdentity}
 const {person}=Astro.props;
@@ -10,6 +11,9 @@ const ou=organizationalUnits.find(x=>x.slug===person.ou);
 const groupTargets=person.directGroups.map(name=>findGroupByName(name)).filter(Boolean);
 const isExample=person.slug==="moyo";
 const isManager=person.slug==="maria-manager";
+const directlyLinked=companyPolicies.filter(p=>p.link?.ouSlug===person.ou);
+const fromParent=companyPolicies.filter(p=>p.link?.ouSlug===ou?.parent);
+const likelyPolicies=[...directlyLinked,...fromParent];
 const label=person.category==="service"?"Service identity":person.category==="built-in"?"Built-in directory identity":person.category==="test"?"Lab test identity":"Fictional company lab identity";
 ---
 <BaseLayout title={person.name} description={person.name+" is a recorded "+label.toLowerCase()+" in the Nova Corp Active Directory exercise."} breadcrumbs={[{label:"Directory",href:"directory/"},{label:person.name}]}>
@@ -30,6 +34,15 @@ const label=person.category==="service"?"Service identity":person.category==="bu
      </dl>
    </div>
   </section>
+  {ou&&<section class="content-section">
+    <h2>Policies that could reach this account</h2>
+    <p class="muted" style="margin:12px 0 17px">These policies are linked to this account's OU or its documented parent. An OU link only establishes possible scope, not effective application.</p>
+    <div class="card-list">{likelyPolicies.map(policy=><a class="system-card" href={base+"policies/"+policy.slug+"/"}>
+      <small>{policy.link?.ouSlug===person.ou?"Direct OU link":"Parent OU link"} · Not proof of application</small>
+      <h3>{policy.name}</h3><p>{policy.summary}</p><span class="readmore">See applied vs configured evidence →</span>
+    </a>)}</div>
+    <p class="muted" style="margin-top:15px">Domain-wide policy links are a separate inherited scope. <a href={base+"policies/domain-password/"}>See the default domain policy</a>.</p>
+  </section>}
   <section class="content-section">
     <h2>Direct membership and related permissions</h2>
     {groupTargets.length>0?<div class="card-list" style="margin-top:19px">{groupTargets.map(group=>group&&<a class="system-card" href={base+"groups/"+group.slug+"/"}><small>Recorded direct group membership</small><h3>{group.name}</h3><p>{group.description}</p><span class="readmore">Follow the group →</span></a>)}</div>:

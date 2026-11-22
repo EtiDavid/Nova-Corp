@@ -17,6 +17,7 @@ const isIdentity = area.id === "identity-office" || area.id === "department-offi
 const isFiles = area.id === "file-records";
 const isNetwork = area.id === "network-gatehouse";
 const isIncident = area.id === "incident-lab";
+const isIdentitySide = area.id === "identity-office";
 ---
 <BaseLayout title={area.name} description={area.description} breadcrumbs={[{label:"Explore",href:"explore/"},{label:area.name}]}>
   <section class="page-head"><div class="container">
@@ -44,6 +45,11 @@ const isIncident = area.id === "incident-lab";
           </div>
         </div>
       </section>}
+      {isIdentitySide&&<section class="content-section"><div class="paper panel">
+        <p class="kicker">Rules for company devices</p><h2 style="margin:12px 0">What Group Policy is really configured?</h2>
+        <p class="muted">Browse all seven current GPOs, their exact link targets and saved settings, and see why a policy being linked is not proof that a test device applied it.</p>
+        <a class="btn small" style="margin-top:18px" href={base+"policies/"}>Explore seven Group Policies →</a>
+      </div></section>}
       <section class="content-section">
         <h2>{isControlRoom?"Open a system profile":"Connected systems"}</h2>
         <p class="muted" style="margin:12px 0 20px">{isControlRoom?"Every card opens the actual documented purpose, relationships and source evidence.":"These systems have documented roles in this area. Their profiles are available now; some deeper browsers are planned for later site stages."}</p>

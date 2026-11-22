@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import SystemCard from "../../components/SystemCard.astro";
 import { getArea } from "../../data/areas";
 import { systems, connectedTo, type Entity } from "../../data/model";
+import { linksForSystem } from "../../data/policies";
 export function getStaticPaths() {
   return systems.map((system) => ({params:{slug:system.slug},props:{system}}));
 }
@@ -11,6 +12,7 @@ const { system } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const area = getArea(system.area);
 const connected = connectedTo(system.id);
+const associatedPolicies=linksForSystem(system.slug);
 const statusText = system.status === "observed-running" ? "Documented running at last check" : "Documented configuration";
 ---
 <BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"explore/"},{label:area?.name||"Systems",href:"areas/"+system.area+"/"},{label:system.name}]}>
@@ -36,6 +38,11 @@ const statusText = system.status === "observed-running" ? "Documented running at
           </ul>
         </div>
       </section>
+      {associatedPolicies.length>0&&<section class="content-section">
+        <h2>Workstation rules and related policies</h2>
+        <p class="muted" style="margin:12px 0 17px">These policies connect to this machine or its workflows. Some are user-side policies processed on a workstation; a connection here is <strong>not proof that every setting applied to this device</strong>.</p>
+        <div class="card-list">{associatedPolicies.map(policy=><a class="system-card" href={base+"policies/"+policy.slug+"/"}><small>{policy.side} · {policy.link?"Linked to "+policy.link.label:"Not linked"}</small><h3>{policy.name}</h3><p>{policy.summary}</p><span class="readmore">Inspect settings and verification →</span></a>)}</div>
+      </section>}
       <section class="content-section">
         <h2>Open the technical view</h2>
         <p class="muted" style="margin:12px 0 18px">For readers who want the specific configuration. Everything shown here is already reviewed for public use; private infrastructure access is never exposed.</p>

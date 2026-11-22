@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { organizationalUnits, identities, directorySource } from "../../data/directory";
+import { companyPolicies } from "../../data/policies";
 const base=import.meta.env.BASE_URL;
 const roots=organizationalUnits.filter(o=>!o.parent);
 const children=(slug:string)=>organizationalUnits.filter(o=>o.parent===slug);
@@ -34,6 +35,11 @@ const rootUsers=identities.filter(i=>i.category==="built-in"||i.slug==="test-use
           </details>
           </div>
         </div>
+      </section>
+      <section class="content-section">
+        <div class="paper panel"><p class="kicker">Policies & workplace rules</p><h2 style="margin:12px 0 16px">Seven policies, six active links, one empty object.</h2>
+        <p class="muted">Explore domain password rules, the workstation baseline and contractor restrictions. Each policy separates configured OU scope from client-side proof.</p>
+        <div class="button-row" style="margin-top:18px"><a class="btn small" href={base+"policies/"}>Explore Group Policy →</a><a class="btn ghost small" href={base+"policies/contractor-usb/"}>See a tested example</a></div></div>
       </section>
       <section class="content-section">
         <div class="section-heading"><h2>Browse directory accounts</h2><a class="text-link" href={base+"groups/"}>Open groups →</a></div>

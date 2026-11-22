@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { organizationalUnits, identities, type Ou, directorySource } from "../../../data/directory";
+import { companyPolicies } from "../../../data/policies";
 const base=import.meta.env.BASE_URL;
 export function getStaticPaths(){return organizationalUnits.map(ou=>({params:{slug:ou.slug},props:{ou}}));}
 interface Props{ou:Ou}
@@ -11,6 +12,9 @@ const direct=identities.filter(u=>u.ou===ou.slug);
 const controllers=ou.slug==="domain-controllers";
 const workstations=ou.slug==="workstations";
 const servers=ou.slug==="servers";
+const directPolicies=companyPolicies.filter(p=>p.link?.ouSlug===ou.slug);
+const parentPolicies=companyPolicies.filter(p=>p.link?.ouSlug===ou.parent);
+const domainPolicy=companyPolicies.find(p=>p.slug==="domain-password");
 ---
 <BaseLayout title={ou.name+" · Organizational Unit"} description={"Open the documented "+ou.name+" Active Directory organizational unit and its connected identities and systems."} breadcrumbs={[{label:"Directory",href:"directory/"},{label:ou.name}]}>
 <section class="page-head"><div class="container">
@@ -29,6 +33,14 @@ const servers=ou.slug==="servers";
     {ou.slug==="security-groups" && <a class="system-card" style="margin-top:18px" href={base+"groups/"}><small>Group catalog</small><h3>Company access groups</h3><p>Browse Global department membership and Domain Local resource-permission groups.</p><span class="readmore">Open the groups →</span></a>}
     {ou.slug==="contractors" && <div class="note warning" style="margin-top:18px">A removable-storage Group Policy is linked to this OU. Its complete physical-device enforcement was not tested end to end in the nested lab. <a href="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/policies/CONTRACTOR_USB.md">See source ↗</a></div>}
     {direct.length===0&&children.length===0&&!controllers&&!workstations&&!servers&&ou.slug!=="security-groups" && <div class="note" style="margin-top:18px">No direct user or child OU is listed for this scope in the published snapshot. That is a documentation boundary—not a claim that the OU has no other possible objects.</div>}
+  </section>
+  <section class="content-section">
+    <h2>Which Group Policies are connected here?</h2>
+    <p class="muted" style="margin:12px 0 19px">This shows <strong>configured OU links</strong> and possible inherited parent/domain scope—not a verified list of policies that actually reached the account or computer.</p>
+    {directPolicies.length>0&&<div class="card-list">{directPolicies.map(policy=><a class="system-card" href={base+"policies/"+policy.slug+"/"}><small>Linked directly to this OU · Enabled, not enforced</small><h3>{policy.name}</h3><p>{policy.summary}</p><span class="readmore">Read settings and tests →</span></a>)}</div>}
+    {parentPolicies.length>0&&<div class="paper panel" style="margin-top:17px"><h3>Possible inherited policies from the parent OU</h3><p class="muted" style="margin:10px 0 14px">These links are attached to {parent?.name}. Actual processing depends on inheritance, security filters and client results.</p><ul class="plain-list">{parentPolicies.map(policy=><li><a href={base+"policies/"+policy.slug+"/"}>{policy.name}</a></li>)}</ul></div>}
+    {domainPolicy&&<div class="note" style="margin-top:18px">The <a href={base+"policies/domain-password/"}>Default Domain Policy</a> is linked to the domain root, which can be in scope across company OUs. Link inheritance is not an independent effective-password-policy test for an individual account.</div>}
+    <a class="evidence-link" style="margin-top:16px;display:inline-flex" href={base+"policies/"}>Browse all seven company policies →</a>
   </section>
   <section class="content-section"><h2>How this connects to access</h2><p class="muted" style="margin-top:14px">OU membership determines location and possible policy scope. File access follows separate direct group membership, nesting, SMB and NTFS permissions. No object is assumed to have access solely because of its OU.</p><div class="button-row" style="margin-top:17px"><a class="btn ghost small" href={base+"groups/"}>Browse group membership →</a><a class="btn ghost small" href={base+"files/permissions/"}>Inspect file permissions</a></div></section>
 </div>
