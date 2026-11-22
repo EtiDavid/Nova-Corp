@@ -40,7 +40,7 @@ The DFS namespace `\\nova.corp\shares` points employees to departmental folders 
 
 The file server has **30 Shadow Copy points**, a dedicated Windows Backup volume, and a completed incident where a deleted file was restored with the **same SHA-256 hash**.
 
-[Shadow Copies](files/VSS.md) · [Disk space and backup target](files/VOLUMES.md) · [Restore incident, command by command](incidents/backup-target-disappears.md).
+[Shadow Copies](files/VSS.md) · [Tested earlier-version recovery](files/SHADOW_COPY_RECOVERY.md) · [Disk space and backup target](files/VOLUMES.md) · [Windows Backup restore incident](incidents/backup-target-disappears.md).
 
 ## Go deeper
 
