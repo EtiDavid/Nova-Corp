@@ -102,7 +102,7 @@ These are the **11 company-created security groups**, including department group
 
 [Learn how group nesting leads to file access](GROUPS.md) · [Open the shared files](FILE_SERVICES.md).
 
-**Technical detail:** Membership counts here refer to direct group members. Windows also has **primary group** membership (such as Domain Users), which is not shown as a normal direct-member record in this export.
+**Technical detail:** Membership counts here refer to direct group members. Windows also has **primary group** membership (such as Domain Users), which does not appear as an ordinary direct group-membership entry.
 
 ## Computers registered in Active Directory
 
