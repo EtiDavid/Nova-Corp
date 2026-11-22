@@ -2,6 +2,8 @@
 
 [← Directory tree](DIRECTORY.md) · [People](PEOPLE_AND_DEPARTMENTS.md) · [Files](FILE_SERVICES.md) · [Group Policy](POLICIES.md)
 
+At the **22 November 2026** snapshot, the domain contained **62 security groups**, including **11 groups created for Nova Corp's departmental access model**. [See every current direct member and resource group](DIRECTORY_SNAPSHOT_2026-11-22.md).
+
 A **security group** collects accounts that share a responsibility. Instead of granting a folder permission separately to each employee, Nova Corp assigns permission to a group.
 
 ## Department groups
@@ -10,7 +12,7 @@ The directory setup created these five **Global Security** groups:
 
 | Group | Department | Connected people or resources |
 | --- | --- | --- |
-| <a id="it_users"></a>**IT_Users** | IT | [David](people/DAVID.md), [Moyo](people/MOYO.md), [IT folder](FILE_SERVICES.md#it) |
+| <a id="it_users"></a>**IT_Users** | IT | [David](people/DAVID.md), [Moyo](people/MOYO.md), [Isaac](people/accounts/cr011-it.md), [IT folder](FILE_SERVICES.md#it) |
 | <a id="finance_users"></a>**Finance_Users** | Finance | [Finance share](FILE_SERVICES.md#finance) |
 | <a id="hr_users"></a>**HR_Users** | HR | [HR department](people/DEPARTMENTS.md#human-resources) |
 | <a id="sales_users"></a>**Sales_Users** | Sales | [Sales department](people/DEPARTMENTS.md#sales) |
@@ -27,6 +29,9 @@ The file-access and automation journals give concrete Domain Local group example
 | `DL_FS_IT_Modify` | Allows IT folder modification | Moyo membership and matching SMB+NTFS checks |
 | `DL_FS_Finance_Modify` | Finance folder modification | NTFS permission review |
 | `DL_FS_Finance_FullControl` | Higher-level Finance resource control | Management access test |
+| `DL_FS_HR_Modify` | HR folder modification | `HR_Users` nesting |
+| `DL_FS_Management_Modify` | Management folder modification | `Management_Users` nesting |
+| `DL_FS_Sales_Modify` | Sales folder modification | `Sales_Users` nesting |
 
 These permissions connect to [NOVA-FILES01](systems/NOVA-FILES01.md).
 
