@@ -2,7 +2,7 @@
 
 Active test identity in the Sales department; distinct from disabled cr011.sales.
 
-| Attribute | Directory snapshot: 22 November 2026 |
+| Account detail | Last documented setting |
 | --- | --- |
 | Account name | `sales.test` |
 | Location | Nova Users → Sales |
@@ -13,7 +13,7 @@ Active test identity in the Sales department; distinct from disabled cr011.sales
 
 ## How this account connects
 
-This account is a recorded direct member of `Sales_Users`. The group nesting leads to `DL_FS_Sales_Modify`. Actual resource access still depends on the configured SMB/NTFS permissions and the tested account session.
+This account is a direct member of `Sales_Users`. The group nesting leads to `DL_FS_Sales_Modify`. Opening a shared folder also requires suitable SMB and NTFS permissions.
 
 ## Explore related parts of the lab
 
@@ -21,4 +21,4 @@ This account is a recorded direct member of `Sales_Users`. The group nesting lea
 
 **Engineering evidence:** [Directory and group design](../../../Documentation/Change-Requests/Journal-CR-005.md) · [Account automation tests](../../../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-*The account state shown is a dated AD snapshot, not live synchronization.*
+*Account state reflects the last documented directory check.*

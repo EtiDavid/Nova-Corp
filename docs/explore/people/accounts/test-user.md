@@ -2,7 +2,7 @@
 
 Enabled lab test identity in the default Users container, rather than a departmental OU.
 
-| Attribute | Directory snapshot: 22 November 2026 |
+| Account detail | Last documented setting |
 | --- | --- |
 | Account name | `test.user` |
 | Location | Built-in Users container |
@@ -12,7 +12,7 @@ Enabled lab test identity in the default Users container, rather than a departme
 
 ## How this account connects
 
-The directory export did not record a direct membership in a Nova Corp department group for this identity. That does not imply the account has no Windows built-in or primary-group membership.
+This account has no direct Nova Corp department-group membership in the directory. Windows built-in and primary-group memberships may still apply.
 
 ## Explore related parts of the lab
 
@@ -20,4 +20,4 @@ The directory export did not record a direct membership in a Nova Corp departmen
 
 **Engineering evidence:** [Directory and group design](../../../Documentation/Change-Requests/Journal-CR-005.md) · [Account automation tests](../../../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-*The account state shown is a dated AD snapshot, not live synchronization.*
+*Account state reflects the last documented directory check.*
