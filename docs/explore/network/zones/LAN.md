@@ -1,6 +1,6 @@
 # LAN — Nova Corp network area
 
-**Interface:** `lan` · **Device:** `vtnet1` · **Address / gateway:** `10.99.99.1/24` · **Verified configuration:** 22 November 2026.
+**Interface:** `lan` · **Device:** `vtnet1` · **Address / gateway:** `10.99.99.1/24`
 
 ## Why this network exists
 
@@ -25,6 +25,6 @@ Two broad default allow rules remain: one IPv4, one IPv6. The presence of the IP
 
 [See the rules in order](../RULES.md) · [pfSense](../../systems/NOVA-FW01.md) · [Network overview](../../NETWORK.md) · [Tests and incidents](../../TESTS_AND_RECOVERY.md).
 
-The exported settings describe the firewall configuration; they are not a substitute for observing actual packets and client behavior.
+The firewall's rules define which connections may pass. The linked tests demonstrate how these settings behaved during real lab exercises.
 
 [← Network Gatehouse](../../NETWORK.md)
