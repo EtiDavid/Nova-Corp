@@ -22,7 +22,7 @@ Remote laptop
 
 ## Actual WireGuard configuration — 22 November 2026
 
-The pfSense export contains one **enabled** tunnel and one **enabled** peer.
+pfSense runs one **enabled** tunnel and one **enabled** peer.
 
 | Component | Recorded configuration |
 | --- | --- |
