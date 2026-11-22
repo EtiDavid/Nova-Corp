@@ -2,7 +2,7 @@
 
 Built-in privileged domain administration account. This is not a fictional staff employee; it is a Windows/Active Directory system identity.
 
-| Attribute | Directory snapshot: 22 November 2026 |
+| Account detail | Last documented setting |
 | --- | --- |
 | Account name | `Administrator` |
 | Location | Built-in Users container |
@@ -12,9 +12,9 @@ Built-in privileged domain administration account. This is not a fictional staff
 
 ## How this account connects
 
-This account is a recorded direct member of `Administrators`, `Domain Admins`, `Enterprise Admins`, `Schema Admins`, `Group Policy Creator Owners`. Actual resource access still depends on the configured SMB/NTFS permissions and the tested account session.
+This account is a direct member of `Administrators`, `Domain Admins`, `Enterprise Admins`, `Schema Admins`, `Group Policy Creator Owners`. Opening a shared folder also requires suitable SMB and NTFS permissions.
 
-The privileged memberships listed above are current **direct** memberships in the exported directory. The profile does not reveal credentials or administrative session material.
+These are the account's **direct group memberships**. Built-in and primary-group relationships are handled separately.
 
 ## Explore related parts of the lab
 
@@ -22,4 +22,4 @@ The privileged memberships listed above are current **direct** memberships in th
 
 **Engineering evidence:** [Directory and group design](../../../Documentation/Change-Requests/Journal-CR-005.md) · [Account automation tests](../../../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-*The account state shown is a dated AD snapshot, not live synchronization.*
+*Account state reflects the last documented directory check.*

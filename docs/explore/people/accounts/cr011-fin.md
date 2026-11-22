@@ -2,7 +2,7 @@
 
 Finance account created during the PowerShell bulk-user exercises.
 
-| Attribute | Directory snapshot: 22 November 2026 |
+| Account detail | Last documented setting |
 | --- | --- |
 | Account name | `cr011.fin` |
 | Location | Nova Users → Finance |
@@ -13,7 +13,7 @@ Finance account created during the PowerShell bulk-user exercises.
 
 ## How this account connects
 
-This account is a recorded direct member of `Finance_Users`. The group nesting leads to `DL_FS_Finance_Modify`. Actual resource access still depends on the configured SMB/NTFS permissions and the tested account session.
+This account is a direct member of `Finance_Users`. The group nesting leads to `DL_FS_Finance_Modify`. Opening a shared folder also requires suitable SMB and NTFS permissions.
 
 ## Explore related parts of the lab
 
@@ -21,4 +21,4 @@ This account is a recorded direct member of `Finance_Users`. The group nesting l
 
 **Engineering evidence:** [Directory and group design](../../../Documentation/Change-Requests/Journal-CR-005.md) · [Account automation tests](../../../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-*The account state shown is a dated AD snapshot, not live synchronization.*
+*Account state reflects the last documented directory check.*

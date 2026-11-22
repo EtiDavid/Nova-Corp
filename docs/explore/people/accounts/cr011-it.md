@@ -2,7 +2,7 @@
 
 IT account created for the PowerShell user-administration exercises. The current IT OU screenshot shows Isaac alongside David and Moyo.
 
-| Attribute | Directory snapshot: 22 November 2026 |
+| Account detail | Last documented setting |
 | --- | --- |
 | Account name | `cr011.it` |
 | Location | Nova Users → IT |
@@ -13,7 +13,7 @@ IT account created for the PowerShell user-administration exercises. The current
 
 ## How this account connects
 
-This account is a recorded direct member of `IT_Users`. The group nesting leads to `DL_FS_IT_Modify`. Actual resource access still depends on the configured SMB/NTFS permissions and the tested account session.
+This account is a direct member of `IT_Users`. The group nesting leads to `DL_FS_IT_Modify`. Opening a shared folder also requires suitable SMB and NTFS permissions.
 
 ## Explore related parts of the lab
 
@@ -21,4 +21,4 @@ This account is a recorded direct member of `IT_Users`. The group nesting leads 
 
 **Engineering evidence:** [Directory and group design](../../../Documentation/Change-Requests/Journal-CR-005.md) · [Account automation tests](../../../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
 
-*The account state shown is a dated AD snapshot, not live synchronization.*
+*Account state reflects the last documented directory check.*
