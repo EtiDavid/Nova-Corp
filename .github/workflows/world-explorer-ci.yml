@@ -1,0 +1,31 @@
+name: World Explorer site checks
+on:
+  push:
+    branches: [feature/world-explorer-site]
+    paths:
+      - "site/**"
+      - ".github/workflows/world-explorer-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/world-explorer-ci.yml"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Validate public entity graph
+        run: npm run validate
+      - name: Astro type-check
+        run: npm run check
+      - name: Build static website
+        run: npm run build
