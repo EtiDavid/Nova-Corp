@@ -7,7 +7,7 @@ import { identities, organizationalUnits } from "../data/directory";
 import { accessGroups } from "../data/groups";
 import { zones, rules, aliases } from "../data/network";
 import { companyPolicies } from "../data/policies";
-import { computerObjects } from "../data/computers";
+
 const base=import.meta.env.BASE_URL;
 const index=[
 ...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"areas/"+item.id+"/"})),

@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 const base=import.meta.env.BASE_URL;
-const cases=(await getCollection("incidents")).sort((a,b)=>a.data.status===b.data.status?a.data.title.localeCompare(b.data.title):a.data.status==="tested"?-1:1);
+const cases: CollectionEntry<"incidents">[]=(await getCollection("incidents")).sort((a:CollectionEntry<"incidents">,b:CollectionEntry<"incidents">)=>a.data.status===b.data.status?a.data.title.localeCompare(b.data.title):a.data.status==="tested"?-1:1);
 ---
 <BaseLayout title="What happened when things broke" description="Investigate real controlled failures in Nova Corp: identity, DNS, firewall rules, file permissions, VPN and backups." breadcrumbs={[{label:"Incident Lab"}]}>
 <section class="page-head"><div class="container">
@@ -14,7 +14,7 @@ const cases=(await getCollection("incidents")).sort((a,b)=>a.data.status===b.dat
 <section class="section compact"><div class="container">
 <div class="section-heading"><div><div class="eyebrow">Case studies</div><h2>Start with the symptom</h2></div><span class="muted">Recorded tests, not live alerts</span></div>
 <div class="incident-grid">
-{cases.map(entry=><a class="incident-card" href={base+"incidents/"+entry.id+"/"}>
+{cases.map((entry:CollectionEntry<"incidents">)=><a class="incident-card" href={base+"incidents/"+entry.id+"/"}>
  <span class={entry.data.status==="tested"?"incident-chip":"incident-chip pending"}>{entry.data.status==="tested"?"Recorded investigation":"Deferred validation"}</span>
  <h3>{entry.data.title}</h3>
  <p>{entry.data.summary}</p>
