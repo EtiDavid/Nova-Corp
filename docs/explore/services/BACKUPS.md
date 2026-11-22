@@ -19,11 +19,11 @@ A successful backup job does not mean a file can actually be recovered. Nova Cor
 
 ## Backup storage
 
-**Proxmox:** `nova-backup` was created on a separate Proxmox-visible disk and used for six VM backup archives (four pfSense, two DC01). Proxmox also holds two **live qcow2 VM disks** attached from this same store, not archives. The current PVE backup job is **monthly**, targets only VM100/101 and has a legacy cron warning requiring a GUI schedule check. This is not an off-site or independent physical-host failure domain.
+**Proxmox:** `nova-backup` holds six documented whole-VM archive files (four for pfSense and two for DC01). The same store also contains two **live virtual-machine disks**, which are not backup archives. The last verified Proxmox configuration (22 November 2026) contained one enabled **monthly backup job for those two systems**. A separate older scheduler file contained **no active backup-job entry**. The backup destination is not physically independent from the home-lab host.
 
 **Windows Server:** FILES01 uses a dedicated backup disk (drive `B:`), Windows Server Backup and a scheduled health-check policy.
 
-**AD:** DC01 System State protection was configured to capture directory-aware recovery material. A complete System State restore is **not** documented as tested. The backup schedule shown below is historical, not a live schedule dashboard.
+**AD:** DC01 has a verified scheduled System State backup and three recorded System State-capable recovery points. A complete Domain Controller System State restoration is **not** documented as tested. The schedule below is the last checked configuration, not a live dashboard.
 
 ## When the company backs up its systems
 
@@ -40,7 +40,7 @@ Both systems recorded a successful backup completion on 22 November. FILES01's b
 
 <details><summary>Technical note — backup monitoring</summary>
 
-The file server's Windows Backup job succeeded at the last recorded check. Its **separate backup-health monitoring task** had returned a nonzero result at its last execution, so that monitoring outcome still requires investigation. A successful backup job alone does not prove every surrounding monitoring check has passed.
+The file server's latest recorded backup succeeded. Its separate health-check script was then run manually and **passed**: backup disk healthy, about 98% free, and 20 recovery points available. An earlier run of the scheduled monitoring task had returned an unexpected nonzero result, whose cause was not established. One successful manual check does not prove every scheduled health check has worked.
 
 </details>
 
