@@ -7,20 +7,30 @@ const nav = [
   {label:"Policies",href:"policies/"},
   {label:"File Centre",href:"files/"},
   {label:"Network",href:"network/"},
-  {label:"Tour",href:"tour/"},
-  {label:"Evidence",href:"sources/"},
-  {label:"Glossary",href:"glossary/"}
+  {label:"Incidents",href:"incidents/"},
+  {label:"Recovery",href:"recovery/"},
+  {label:"Evidence",href:"sources/"}
 ];
 ---
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href={base} aria-label="Nova Corp, home">
-      <span class="brand-mark" aria-hidden="true">N<span style="font-size:.6em;align-self:end;padding-bottom:5px">/</span></span>
-      <span>Nova Corp<small>Enterprise Lab Atlas</small></span>
+    <a class="brand" href={base} aria-label="Nova Corp home">
+      <span class="brand-mark" aria-hidden="true">N/</span>
+      <span>Nova Corp<small>Enterprise infrastructure atlas</small></span>
     </a>
     <nav class="topnav" aria-label="Primary navigation">
-      {nav.map(item => <a href={base + item.href} aria-current={current.startsWith("/"+item.href)?"page":undefined}>{item.label}</a>)}
+      {nav.map(item => <a href={base+item.href} aria-current={current.startsWith("/"+item.href)?"page":undefined}>{item.label}</a>)}
     </nav>
-    <a href={base+"search/"} class="btn ghost small header-action">Search the atlas <span aria-hidden="true">⌕</span></a>
+    <a href={base+"search/"} class="header-search" aria-label="Search Nova Corp">Search <span aria-hidden="true">⌕</span></a>
+    <details class="mobile-nav">
+      <summary aria-label="Open navigation menu"><span aria-hidden="true">☰</span> Menu</summary>
+      <nav aria-label="Mobile navigation">
+        <a href={base}>Home</a>
+        {nav.map(item => <a href={base+item.href} aria-current={current.startsWith("/"+item.href)?"page":undefined}>{item.label}</a>)}
+        <a href={base+"tour/"}>Guided tour</a>
+        <a href={base+"glossary/"}>Glossary</a>
+        <a href={base+"search/"}>Search the atlas</a>
+      </nav>
+    </details>
   </div>
 </header>

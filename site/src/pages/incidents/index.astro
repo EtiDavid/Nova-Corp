@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+const base=import.meta.env.BASE_URL;
+const cases=(await getCollection("incidents")).sort((a,b)=>a.data.status===b.data.status?a.data.title.localeCompare(b.data.title):a.data.status==="tested"?-1:1);
+---
+<BaseLayout title="What happened when things broke" description="Investigate real controlled failures in Nova Corp: identity, DNS, firewall rules, file permissions, VPN and backups." breadcrumbs={[{label:"Incident Lab"}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">Inside Nova Corp / Incident Lab</div>
+<h1>When something breaks, follow the evidence.</h1>
+<p class="lead" style="margin-top:17px">These are controlled home-lab investigations, with recorded symptoms, troubleshooting steps and results. They show engineering decisions, not invented incidents at a real employer.</p>
+<div class="button-row" style="margin-top:24px"><a class="btn" href={base+"incidents/dns-client-outage/"}>Read a DNS investigation →</a><a class="btn ghost" href={base+"sources/"}>Open original journals</a></div>
+</div></section>
+<section class="section compact"><div class="container">
+<div class="section-heading"><div><div class="eyebrow">Case studies</div><h2>Start with the symptom</h2></div><span class="muted">Recorded tests, not live alerts</span></div>
+<div class="incident-grid">
+{cases.map(entry=><a class="incident-card" href={base+"incidents/"+entry.id+"/"}>
+ <span class={entry.data.status==="tested"?"incident-chip":"incident-chip pending"}>{entry.data.status==="tested"?"Recorded investigation":"Deferred validation"}</span>
+ <h3>{entry.data.title}</h3>
+ <p>{entry.data.summary}</p>
+ <span class="readmore">{entry.data.status==="tested"?"Read the investigation":"Understand the limitation"} →</span>
+</a>)}
+</div>
+<div class="paper panel" style="margin-top:30px"><h3>More engineering investigations in the source archive</h3>
+<p class="muted" style="margin:12px 0 15px">The visitor case studies are curated summaries. Additional detailed investigations are available in the original technical archive; they have not all been rewritten as website case studies.</p>
+<a class="evidence-link" href="https://github.com/EtiDavid/Nova-Corp/tree/main/docs/explore/incidents" target="_blank" rel="noopener noreferrer">Open the public incident archive ↗</a>
+</div>
+</div></section>
+</BaseLayout>

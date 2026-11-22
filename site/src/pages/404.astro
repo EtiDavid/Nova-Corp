@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Page not found" description="That Nova Corp address is not available. Continue exploring verified infrastructure stories.">
+<section class="page-head"><div class="container">
+<div class="eyebrow">The requested page isn't here</div>
+<h1>This room doesn't exist.</h1>
+<p class="lead" style="margin-top:18px">The link may have changed or the page might not be part of the published company atlas. You can still find the documented systems and engineering evidence.</p>
+<div class="button-row" style="margin-top:26px">
+<a class="btn" href={base+"explore/"}>Explore the company →</a>
+<a class="btn ghost" href={base+"search/"}>Search the atlas</a>
+</div>
+</div></section>
+</BaseLayout>
