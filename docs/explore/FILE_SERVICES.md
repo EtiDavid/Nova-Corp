@@ -34,6 +34,12 @@ Employees can use the DFS Namespace path:
 
 [Learn about DFS](services/DFS.md).
 
+## How network drives appear
+
+Nova Corp also configured a [department drive-mapping Group Policy](policies/DRIVE_MAPPING.md) on **Nova Users**. Its logon script is stored under the `NETLOGON` path.
+
+A mapped drive only provides a convenient path. The employee still needs the correct [security-group memberships](GROUPS.md) and SMB/NTFS permissions to open the folder.
+
 ## What happens if a file disappears?
 
 The recovery design includes [Shadow Copies / Previous Versions](services/VSS.md) and [Windows Server Backup](services/BACKUPS.md). The incident exercises proved a deleted file could be restored after a backup-target failure was repaired.
