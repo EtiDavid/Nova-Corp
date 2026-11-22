@@ -1,0 +1,51 @@
+name: Deploy Nova Corp World Explorer (owner-approved)
+
+# Deliberately manual. A merge into main does NOT publish the site.
+# Launch only after the master-spec release gates and owner approval.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout approved main branch
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        working-directory: site
+        run: npm install --no-audit --no-fund
+      - name: Validate data, type-check and build for custom domain
+        working-directory: site
+        env:
+          PUBLIC_BASE_PATH: /
+        run: |
+          npm run validate
+          npm run check
+          npm run build
+          npm run test:links
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Upload generated site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+      - name: Deploy approved website
+        id: deployment
+        uses: actions/deploy-pages@v4
