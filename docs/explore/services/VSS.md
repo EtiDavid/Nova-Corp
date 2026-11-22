@@ -20,7 +20,7 @@ VSS may be stopped when idle because it uses an on-demand service model; a stopp
 
 ## Related tests
 
-An earlier-version test saved a Shadow Copy of a file, changed the live version, then retrieved the earlier content from the snapshot. The earlier version's SHA-256 matched the original while the changed live file's hash did not. [See the detailed validation](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+An earlier-version test saved a Shadow Copy of a file, changed the live version, then retrieved the earlier content from the snapshot. The earlier version's SHA-256 matched the original while the changed live file's hash did not. [Explore the actual previous-version recovery](../files/SHADOW_COPY_RECOVERY.md).
 
 In a separate [backup incident](../incidents/backup-target-disappears.md), Windows Server Backup lost its target disk, recovered after the disk returned, and restored a deleted file. That result must not be confused with the Shadow Copy test.
 
