@@ -1,0 +1,39 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { zones, rulesForZone, networkEvidence, type Zone } from "../../../data/network";
+import { getSystem } from "../../../data/model";
+export function getStaticPaths(){return zones.map(zone=>({params:{slug:zone.slug},props:{zone}}));}
+interface Props {zone:Zone}
+const {zone}=Astro.props;
+const base=import.meta.env.BASE_URL;
+const rules=rulesForZone(zone.slug);
+const isVpn=zone.slug==="vpn_remote";
+const isClient=zone.slug==="client";
+---
+<BaseLayout title={zone.name+" network"} description={"Explore the actual "+zone.name+" network, its connected systems and ordered firewall rules."} breadcrumbs={[{label:"Network Gatehouse",href:"network/"},{label:zone.name}]}>
+<section class="page-head"><div class="container">
+ <div class="eyebrow">{zone.kind} / Network area</div><h1>{zone.name}</h1><p class="lead" style="margin-top:17px">{zone.purpose}</p>
+</div></section>
+<section class="section compact"><div class="container grid-main"><div>
+  <section class="content-section">
+    <h2>Firewall rules on this incoming interface</h2>
+    <p class="muted" style="margin:13px 0 18px">Rules are displayed in their documented order for this interface. A rule's configured action is not a live packet log; earlier blocks may override a broader later allow.</p>
+    <ol class="rule-stack">{rules.map(rule=><li class="rule-step">
+      <a href={base+"network/rules/"+rule.id+"/"} class="rule-entry">
+        <span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span>
+        <span><strong>{rule.description}</strong><small>{rule.protocol} · {rule.destination} · {rule.ports}</small></span>
+        <span aria-hidden="true">↗</span>
+      </a></li>)}</ol>
+  </section>
+  <section class="content-section">
+   <h2>Which systems are related?</h2>
+   <div class="card-list">{zone.devices.map(id=>{const system=getSystem(id);return system?<a class="system-card" href={base+"systems/"+system.slug+"/"}><small>{system.category}</small><h3>{system.name}</h3><p>{system.summary}</p><span class="readmore">Open system →</span></a>:null})}</div>
+  </section>
+  {isClient&&<section class="content-section"><div class="paper panel"><h2>Follow an employee request</h2><p class="muted" style="margin:12px 0 18px">The workstation enters CLIENT. Two ordered rules block access to pfSense web management and the management network, followed by an allow for other traffic. The controlled management-denial test also preserved required business services.</p><a class="btn small" href={base+"network/rules/1795199640/"}>Start with the first block →</a><p style="margin-top:15px"><a href={base+"files/"}>Then follow a permitted company file request →</a></p></div></section>}
+  {isVpn&&<div class="note warning"><strong>Remote access is not the same as a VLAN.</strong> This is a WireGuard tunnel with explicit DC-service permissions. Outside-network validation and privileged-admin access remain deferred; the saved rule configuration does not constitute an external end-to-end PASS.</div>}
+ </div><aside>
+   <div class="sidebox"><h3>Zone profile</h3><dl class="fact-list"><div><dt>Kind</dt><dd>{zone.kind}</dd></div><div><dt>Documented subnet</dt><dd>{zone.address}</dd></div><div><dt>Gateway</dt><dd>{zone.gateway}</dd></div><div><dt>Explicit rules</dt><dd>{rules.length}</dd></div></dl></div>
+   <div class="sidebox"><h3>Source</h3><p class="muted">Saved rule configuration and previous specific connection tests are distinct kinds of evidence.</p><a class="evidence-link" href={networkEvidence.zone(zone.slug)}>Open network profile ↗</a></div>
+   <div class="sidebox"><a href={base+"network/"}>← All network areas</a><p style="margin-top:12px"><a href={base+"network/rules/"}>All firewall rules →</a></p></div>
+ </aside></div></section>
+</BaseLayout>
