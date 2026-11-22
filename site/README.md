@@ -1,6 +1,6 @@
 # Nova Corp World Explorer — development
 
-**Status: Source-reviewed directory, file access and network explorers implemented on a feature branch. The full site is not deployed, published or approved for launch.**
+**Status: 127-page code build now covers directory, computers, file access, network and seven Group Policies. Automated static validation passed. The public site is NOT deployed or approved for launch.**
 
 This is the public-safe site project in the existing Nova-Corp repository. The separate private engineering repository remains the authority for unpublished source inventories, tests and launch decisions. Raw exports must never be copied here.
 
@@ -17,6 +17,8 @@ Requires Node.js 20.11+ and npm.
     npm run test:links
     npm run test:coverage
     npm run test:sources
+    npm run test:evidence
+    npm run test:acls
     npm run preview
 
 Astro generates a static site into site/dist. This feature branch is for review and should not be merged or deployed until privacy, link, accessibility and actual-browser QA passes.
@@ -40,13 +42,19 @@ These paths were reconstructed from the existing approved public engineering sou
 
 - `/directory/`: all **16 actual OUs**, the built-in Users container correctly separated from OUs, and all **20 typed directory accounts** (including service, built-in and disabled identities).
 - `/groups/`: the **11 company-created access groups**, direct membership from the directory source and resource permission nesting. The 51 built-in/default groups remain in the technical source, not mislabeled as custom company groups.
-- `/files/`: **five departmental SMB share profiles**, DFS namespace with five online referrals, independent SMB vs NTFS permission explanations, Finance's broader management authorization path, and links to actual previous access tests.
-- `/network/`: **eight network areas** (five VLANs, WAN, LAN and a separate WireGuard tunnel), **17 ordered firewall rule profiles**, **five approved aliases**, and explicit differences between configured traffic and real tests.
+- `/files/`: **five departmental SMB share profiles**, five DFS referrals, independent SMB vs NTFS permission explanations, Finance's broader management authorization path, and historical access tests. `/files/permissions/technical/` exposes **all 27 SMB + 73 NTFS ACL entries** from the existing public Markdown evidence, in searchable HTML with exact principal, rights and inherited/propagation fields. Scope: **11 shares, 14 folder scopes, NOT a recursive audit**.
+- `/network/`: **eight network areas** (five VLANs, WAN, LAN and a separate WireGuard tunnel), **17 ordered firewall rules**, **five approved aliases**, and explicit differences between configured traffic and real tests.
+- `/policies/`: **all seven GPOs** with actual links, important stored settings, subject matter, security filter, and evidence class (configured, linked, processed, tested). Six enabled, non-enforced links and one empty/unlinked keyboard GPO. Current domain password maximum age **180 days**; DC policy LDAP signing set to **None**, not an effective-signing test. Contractor `gpresult` processing is not an actual physical USB denial proof.
+- `/computers/`: all **four actual AD computer objects** with their OU links, VM/system links and limited verified policy scope. A computer object is not a VM or service.
 - Existing: eight company area entrances, six system profiles, guided tour, initial graph, two incident narratives, recovery options, search and glossary.
 
 The six initial system entity records and their twelve graph edges remain a **small reviewed slice**; linked cross-category HTML routes exist but a complete privacy-reviewed private-to-public entity graph is not yet built.
 
-**Still required under the master specification:** complete GPO/OU targeting and applied-evidence browsers, all published built-in group profiles and remaining technical ACL records, more incident routes, curated real screenshots with proof metadata, advanced graph navigation and search, live browser/mobile/keyboard testing, performance/security review and deployment. None is marked complete prematurely.
+**Real screenshot assets:** the site now copies only **five images already published in this repository's GPO engineering journal** into its own static `/evidence/` at build time, verifying PNG signatures and producing a SHA-256 provenance manifest. The five screenshots carry captions explaining what they show and do **not** claim newer tests. This is not the full screenshot-proof library; all other original evidence needs separate curation/privacy QA.
+
+**Continuous checks:** `npm run test:links`, `test:coverage`, `test:sources`, `test:evidence` and `test:acls` require source-backed routes, real public source files, existing original PNGs, and **100-of-100 exact ACL data parity**. Branch Actions may also capture desktop/mobile Chromium screenshots of the homepage, policy detail and ACL explorer to an internal CI artifact, not a production page.
+
+**Still required under the master specification:** complete settings-level GPO audit (especially all 24 DC rights/principal assignments), recent client-side effective-policy proof, 51 built-in group profiles, remaining 16 incident routes, 30 VSS/backup object views, expanded verified object graph, the remaining real screenshot galleries, manual browser/mobile/keyboard/screen-reader review, performance/security/privacy review and approved deployment. No configured-only evidence is presented as an end-to-end test.
 
 ## Hosting and custom domain (DNS verified, site not deployed)
 
@@ -69,4 +77,4 @@ A public feature branch is still public. Do not commit raw AD records, pfSense c
 
 ## Next checkpoint
 
-Test the expanded three-area explorer in a real browser, fix usability and accessibility defects, then add source-reviewed policy profiles and curated sanitized real evidence with source/published-asset SHA-256 and captions. Complete privacy and launch acceptance before merging or deploying. CR-016 remains on hold.
+Review the actual desktop/mobile browser screenshots and manually test interactive behavior, keyboard navigation and responsive layouts. Expand the Incident Lab, full GPO rights/principal matrix and other verified records; curate the remaining real screenshots with redaction, source/published SHA-256 and claim-specific captions. Complete privacy and release acceptance before merging/deploying. CR-016 remains on hold.
