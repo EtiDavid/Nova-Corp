@@ -25,14 +25,26 @@ A successful backup job does not mean a file can actually be recovered. Nova Cor
 
 **AD:** DC01 System State protection was configured to capture directory-aware recovery material. A complete System State restore is **not** documented as tested. The backup schedule shown below is historical, not a live schedule dashboard.
 
-## Schedule documented during the backup change
+## When the company backs up its systems
 
-| Workload | Historical daily backup schedule |
-| --- | --- |
-| FILES01 | 22:00 |
-| DC01 System State | 23:00 |
+The latest documented check on **22 November 2026** confirmed these Windows backup settings. These are recorded configurations and available restore points, not a live dashboard.
 
-The original backup project included freshness and capacity monitoring checks. Continuous centralized observability is separate future work.
+| Protected system | What is backed up | Daily schedule | Available recovery points at last check |
+| --- | --- | --- | ---: |
+| [Company file server](../systems/NOVA-FILES01.md) | Company documents on **D:**, backed up to **B:** | **22:00** | **20** |
+| [Directory server](../systems/NOVA-DC01.md) | **Active Directory System State**, backed up to its own **B:** drive | **23:00** | **3** |
+
+Both systems recorded a successful backup completion on 22 November. FILES01's backup destination was healthy with approximately 98% free space; DC01's dedicated destination was healthy with approximately 46% free.
+
+**Recovery points are not the same as completed restore tests.** The company's file-recovery and earlier-version tests are described below; a complete Domain Controller System State restoration has **not** been demonstrated. Backups are inside the nested home lab, not independently stored off-site.
+
+<details><summary>Technical note — backup monitoring</summary>
+
+The file server's Windows Backup job succeeded at the last recorded check. Its **separate backup-health monitoring task** had returned a nonzero result at its last execution, so that monitoring outcome still requires investigation. A successful backup job alone does not prove every surrounding monitoring check has passed.
+
+</details>
+
+The lab includes backup freshness and capacity checks. Continuous centralized observability is separate future work.
 
 ## The strongest restore proof
 
