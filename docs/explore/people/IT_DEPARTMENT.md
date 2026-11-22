@@ -20,6 +20,12 @@ The original directory exercise placed David and Moyo here. The **22 November 20
 
 [Domain Controllers](../SYSTEMS.md) · [PowerShell administration](../AUTOMATION.md) · [Group Policy](../POLICIES.md) · [File services](../FILE_SERVICES.md) · [Incident investigations](../TESTS_AND_RECOVERY.md)
 
+## Which user policies reach this department?
+
+The **Nova Users** parent OU has the [corporate wallpaper](../policies/WALLPAPER.md) and [department drive mapping](../policies/DRIVE_MAPPING.md) links. These can be inherited by child departments such as IT when Windows processes policies for the user.
+
+The domain root also links the [password and Kerberos policy](../policies/DOMAIN_PASSWORD.md).
+
 ## Example: employee needs the IT share
 
 1. Sign in using a domain account.
