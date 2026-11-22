@@ -39,6 +39,39 @@ jobs:
         run: npm run test:evidence
       - name: Verify all 100 ACL records against reviewed source
         run: npm run test:acls
+      - name: Capture real browser desktop and mobile screenshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHROME="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          if [ -z "$CHROME" ]; then echo "No Chromium browser found on runner"; exit 1; fi
+          mkdir -p qa-snapshots
+          npm run preview -- --host 127.0.0.1 --port 4321 >/tmp/novacorp-preview.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          READY=0
+          for i in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:4321/ >/dev/null; then READY=1; break; fi
+            sleep 1
+          done
+          if [ "$READY" -ne 1 ]; then cat /tmp/novacorp-preview.log; exit 1; fi
+          for ENTRY in "home:/" "policy:/policies/contractor-usb/" "acls:/files/permissions/technical/"; do
+            NAME="${ENTRY%%:*}"
+            PAGE="${ENTRY#*:}"
+            for VIEW in "desktop:1440,900" "mobile:390,844"; do
+              VIEW_NAME="${VIEW%%:*}"
+              SIZE="${VIEW#*:}"
+              "$CHROME" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --hide-scrollbars --virtual-time-budget=1800 --window-size="$SIZE" --screenshot="qa-snapshots/${NAME}-${VIEW_NAME}.png" "http://127.0.0.1:4321${PAGE}" >/dev/null 2>&1
+              test -s "qa-snapshots/${NAME}-${VIEW_NAME}.png"
+            done
+          done
+          echo "Real Chromium captured six 1440px/390px screenshots on the built static preview. Visual acceptance remains manual."
+      - name: Keep actual browser screenshots for visual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: world-explorer-browser-snapshots
+          path: site/qa-snapshots/
+          retention-days: 7
       - name: Keep site preview artifact for QA
         uses: actions/upload-artifact@v4
         with:
