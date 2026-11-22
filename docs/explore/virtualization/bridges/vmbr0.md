@@ -16,6 +16,6 @@ The **MGMT VLAN 10** exists inside pfSense, but **Proxmox management is currentl
 
 ## Prove it
 
-The 22 November Proxmox inventory shows `vmbr0` UP, `192.168.178.26/24` and VM100's `net0` using this bridge. CR-015 separately validated the management location and corrected the architecture registry.
+The Proxmox configuration shows `vmbr0` UP, `192.168.178.26/24` and VM100's `net0` using this bridge. CR-015 separately validated the management location and corrected the architecture registry.
 
 [Host overview](../README.md) · [pfSense WAN](../../network/zones/WAN.md) · [Firewall](../../systems/NOVA-FW01.md) · [Incident: gateway failure](../../incidents/proxmox-default-gateway.md).
