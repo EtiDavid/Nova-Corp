@@ -50,11 +50,16 @@ const isIdentitySide = area.id === "identity-office";
         <p class="muted">Browse all seven current GPOs, their exact link targets and saved settings, and see why a policy being linked is not proof that a test device applied it.</p>
         <a class="btn small" style="margin-top:18px" href={base+"policies/"}>Explore seven Group Policies →</a>
       </div></section>}
-      <section class="content-section">
+      {isIncident && <section class="content-section"><div class="paper panel">
+        <p class="kicker">Incident investigations</p><h2 style="margin:12px 0">Explore the actual case studies.</h2>
+        <p class="muted" style="margin:12px 0 19px">Follow the symptom, competing explanations, tests, repair and outcome. Deferred tests are marked separately from completed investigations.</p>
+        <a class="btn small" href={base+"incidents/"}>Open the Incident Lab →</a>
+      </div></section>}
+      {selected.length>0 && <section class="content-section">
         <h2>{isControlRoom?"Open a system profile":"Connected systems"}</h2>
         <p class="muted" style="margin:12px 0 20px">{isControlRoom?"Every card opens the actual documented purpose, relationships and source evidence.":"These systems have documented roles in this area. Their profiles are available now; some deeper browsers are planned for later site stages."}</p>
         <div class="card-list">{selected.map(system=><SystemCard system={system} />)}</div>
-      </section>
+      </section>}
       {isRecovery && <section class="content-section">
         <h2>Two recoveries that were really tested</h2>
         <div class="paper panel">
@@ -66,9 +71,10 @@ const isIdentitySide = area.id === "identity-office";
         </div>
       </section>}
       {isIncident && <section class="content-section">
-        <h2>Start with the symptom</h2>
+        <h2>Featured investigations</h2>
         <div class="card-list">
           <a class="system-card" href={base+"incidents/dc01-outage/"}><small>Identity resilience</small><h3>DC01 went offline</h3><p>See how DC02 took over services during a controlled outage.</p><span class="readmore">Open story →</span></a>
+          <a class="system-card" href={base+"incidents/dns-client-outage/"}><small>DNS diagnosis</small><h3>The file server looked down</h3><p>See how a failed hostname lookup was separated from working SMB connectivity.</p><span class="readmore">Open story →</span></a>
           <a class="system-card" href={base+"incidents/backup-target-unavailable/"}><small>Backup recovery</small><h3>The backup disk disappeared</h3><p>See the failure, repair and byte-matched file restore.</p><span class="readmore">Open story →</span></a>
         </div>
       </section>}
