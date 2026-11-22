@@ -1,6 +1,6 @@
 # pfSense management web ports
 
-**Exact alias:** `NOVA_PFSENSE_GUI_PORT` · **Type:** port · **Source:** pfSense configuration, 22 November 2026.
+**Exact alias:** `NOVA_PFSENSE_GUI_PORT` · **Type:** port
 
 ## Why it exists
 
