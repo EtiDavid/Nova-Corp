@@ -1,6 +1,6 @@
 # Approved Active Directory TCP services
 
-**Exact alias:** `NOVA_AD_TCP_PORTS` · **Type:** port · **Source:** pfSense configuration, 22 November 2026.
+**Exact alias:** `NOVA_AD_TCP_PORTS` · **Type:** port
 
 ## Why it exists
 
