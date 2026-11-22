@@ -11,6 +11,7 @@ You can explore those parts of the company here. Every highlighted system, servi
 | Area | What you'll find |
 | --- | --- |
 | 🖥️ **[IT Control Room — Servers and computers](explore/SYSTEMS.md)** | The firewall, hypervisor, two Domain Controllers, file server and workstation. |
+| 🏢 **[Virtual Data Centre — Proxmox](explore/virtualization/README.md)** | Six VMs, virtual switches, storage, backups and rollback snapshots. |
 | 🔑 **[Identity Office — Active Directory](explore/services/ACTIVE_DIRECTORY.md)** | Login, DNS, Kerberos, LDAP, directory objects, replication and recovery. |
 | 🧑‍💼 **[People and Departments](explore/PEOPLE_AND_DEPARTMENTS.md)** | The company’s organizational units, staff/test identities and groups. |
 | 🌐 **[Network Gatehouse — pfSense](explore/NETWORK.md)** | Network zones, routing, VPN, firewall paths and tested restrictions. |
@@ -18,7 +19,7 @@ You can explore those parts of the company here. Every highlighted system, servi
 | 🛡️ **[Workstation Rules — Group Policy](explore/POLICIES.md)** | Domain password controls, wallpaper, USB restrictions, workstation security and validation. |
 | ⚙️ **[Administration Toolkit](explore/AUTOMATION.md)** | Eight PowerShell scripts that automate user and computer administration. |
 | ♻️ **[Backup & Recovery Center](explore/services/BACKUPS.md)** | What is backed up, where recovery copies go, and what restoring a file proved. |
-| 🧪 **[Incident Lab — Tests & Failures](explore/TESTS_AND_RECOVERY.md)** | DNS, GPO, permissions, backup, DC and firewall mistakes with repairs. |
+| 🧪 **[Incident Lab — 16 interactive-ready investigations](explore/TESTS_AND_RECOVERY.md)** | Click any problem to see actual commands, expectations, results, root causes and repairs. |
 | 📋 **[Operations Room](explore/OPERATIONS.md)** | How the environment is checked, recovered and maintained. |
 
 **[Browse the current company directory — every user, OU, company group and registered computer](explore/DIRECTORY_SNAPSHOT_2026-11-22.md)**
@@ -42,7 +43,7 @@ flowchart LR
 
 A second path explores an outage:
 
-[DC01](explore/systems/NOVA-DC01.md) → [DC02](explore/systems/NOVA-DC02.md) → [DNS](explore/services/DNS.md) → [Kerberos](explore/services/KERBEROS.md) → [Failover test](explore/TESTS_AND_RECOVERY.md).
+[DC01](explore/systems/NOVA-DC01.md) → [DC02](explore/systems/NOVA-DC02.md) → [DNS](explore/services/DNS.md) → [Kerberos](explore/services/KERBEROS.md) → [Failover test](explore/incidents/domain-controller-outage.md).
 
 ## See how it all fits together
 
