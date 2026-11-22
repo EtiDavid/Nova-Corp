@@ -53,4 +53,4 @@ The [actual backup-and-restore incident](../incidents/backup-target-disappears.m
 
 Shadow Copies depend on the same Windows server and its storage. They are not an independent off-site backup. For full recovery, Nova Corp separately uses Windows Backup on **B:** and Proxmox VM archives for selected VMs.
 
-[Windows storage](VOLUMES.md) · [Windows Backup](../services/BACKUPS.md) · [VSS engineering journal](../../Documentation/Change-Requests/Journal-CR-010.md) · [All shared folders](SHARES.md).
+[Windows storage](VOLUMES.md) · [Windows Backup](../services/BACKUPS.md) · [VSS engineering journal](../../Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf) · [All shared folders](SHARES.md).
