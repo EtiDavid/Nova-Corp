@@ -13,7 +13,8 @@ const scopes=[
  {label:"5 departmental shared-folder profiles",path:"files/shares",count:5},
  {label:"8 configured network areas including WAN/LAN/VPN",path:"network/zones",count:8},
  {label:"17 ordered pfSense rules",path:"network/rules",count:17},
- {label:"5 pfSense aliases",path:"network/aliases",count:5}
+ {label:"5 pfSense aliases",path:"network/aliases",count:5},
+ {label:"7 recorded GPO objects",path:"policies",count:7}
 ];
 const errors=[];
 for (const scope of scopes){
@@ -34,10 +35,13 @@ const required=[
 "files/shares/it/index.html","files/shares/finance/index.html",
 "network/index.html","network/rules/index.html","network/zones/client/index.html",
 "network/rules/1795199640/index.html","network/rules/1782219813/index.html",
-"network/aliases/index.html","network/aliases/nova-domain-controllers/index.html"
+"network/aliases/index.html","network/aliases/nova-domain-controllers/index.html",
+"policies/index.html","policies/contractor-usb/index.html","policies/keyboard/index.html",
+"policies/drive-mapping/index.html","policies/workstation-baseline/index.html",
+"directory/ous/contractors/index.html","people/john-shaw/index.html"
 ];
 for(const page of required){
  if(!existsSync(join(dist,page)))errors.push("Missing critical user-journey page: "+page);
 }
 if(errors.length){console.error(errors.join("\n"));process.exit(1);}
-console.log("Public catalog route coverage PASS; employee→file and CLIENT→firewall paths are routable.");
+console.log("Public catalog route coverage PASS; employee→file, CLIENT→firewall and OU→GPO paths are routable.");
