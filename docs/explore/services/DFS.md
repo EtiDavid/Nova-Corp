@@ -17,6 +17,8 @@ Employee
 
 A namespace makes paths easier to manage; it does not by itself replicate file data.
 
+**[Open all five actual DFS links and their target folders](../files/DFS_PATHS.md)**.
+
 ## Related systems
 
 [File server](../systems/NOVA-FILES01.md) · [SMB](SMB.md) · [DNS](DNS.md) · [Active Directory](ACTIVE_DIRECTORY.md) · [Recovery](BACKUPS.md).

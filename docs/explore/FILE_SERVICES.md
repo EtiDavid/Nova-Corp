@@ -1,61 +1,49 @@
 # File & Records Room — Shared files and who may open them
 
-Nova Corp stores departmental folders on **[NOVA-FILES01](systems/NOVA-FILES01.md)**. Employee access is based on domain identity and the combination of SMB and NTFS permissions.
+Employees at Nova Corp keep documents on [NOVA-FILES01](systems/NOVA-FILES01.md), not scattered across individual computers. **Five departmental folders** use Active Directory groups, SMB share rules and NTFS file permissions to protect their contents.
 
-## Department folders
+## Choose a company folder
 
-| Folder | Who it is for | What we know from testing |
-| --- | --- | --- |
-| <a id="it"></a>**IT** | IT staff | Moyo was **allowed**; `DL_FS_IT_Modify` matched SMB and NTFS |
-| <a id="finance"></a>**Finance** | Finance staff | Moyo was **denied**; Finance Domain Local permission groups were reviewed |
-| **HR** | Human Resources | Departmental group and file-sharing work documented |
-| **Sales** | Sales | Departmental group and drive-access work documented |
-| **Management** | Management | Departmental access model and permissions documented |
+| Department | What happens here? |
+| --- | --- |
+| [**IT**](files/it.md) | Shared technical and support files |
+| [**Finance**](files/finance.md) | Finance documents, with special management access |
+| [**HR**](files/hr.md) | Human Resources documents |
+| [**Management**](files/management.md) | Management's department files |
+| [**Sales**](files/sales.md) | Sales department documents |
 
-## Follow the IT access chain
+[**All shares and how they connect**](files/SHARES.md) · [Who has which permissions?](files/PERMISSIONS.md) · [Technical ACL details](files/TECHNICAL_ACL_DETAILS.md)
+
+## Follow an employee opening a file
 
 ```mermaid
 flowchart LR
-    MO["Moyo · IT"] --> GG["IT_Users"]
-    GG --> DL["DL_FS_IT_Modify"]
-    DL --> ACL["SMB share + NTFS"]
-    ACL --> F["IT folder"]
+    A["Moyo in IT"] --> G["IT_Users"]
+    G --> L["DL_FS_IT_Modify"]
+    L --> DFS["\\nova.corp\shares\IT"]
+    DFS --> SMB["NOVA-FILES01 SMB share"]
+    SMB --> NTFS["NTFS folder permissions"]
+    NTFS --> OK["Open IT folder"]
 ```
 
-[Open Moyo's profile](people/MOYO.md) → [security groups](GROUPS.md) → [how SMB works](services/SMB.md) → [file server](systems/NOVA-FILES01.md).
+The group's permissions are checked at **both** the SMB share and the folder. A working network connection isn't enough if an account lacks permission.
 
-An **OU** organizes users; it does not itself grant a folder permission. The actual resource access depends on the user's groups and the access rules at the share and filesystem.
+[Open Moyo's profile](people/MOYO.md) → [IT group](GROUPS.md#it_users) → [IT folder](files/it.md) → [actual access-denial investigation](incidents/file-permission-denial.md).
 
-## The file path
+## One company address for five departments
 
-Employees can use the DFS Namespace path:
+The DFS namespace `\\nova.corp\shares` points employees to departmental folders without asking them to remember the individual server address.
 
-`\\nova.corp\shares`
+[Open all five DFS targets](files/DFS_PATHS.md) · [How DFS works](services/DFS.md) · [Drive-mapping Group Policy](policies/DRIVE_MAPPING.md).
 
-[Learn about DFS](services/DFS.md).
+## Recovering files and earlier versions
 
-## How network drives appear
+The file server has **30 Shadow Copy points**, a dedicated Windows Backup volume, and a completed incident where a deleted file was restored with the **same SHA-256 hash**.
 
-Nova Corp also configured a [department drive-mapping Group Policy](policies/DRIVE_MAPPING.md) on **Nova Users**. Its logon script is stored under the `NETLOGON` path.
+[Shadow Copies](files/VSS.md) · [Disk space and backup target](files/VOLUMES.md) · [Restore incident, command by command](incidents/backup-target-disappears.md).
 
-A mapped drive only provides a convenient path. The employee still needs the correct [security-group memberships](GROUPS.md) and SMB/NTFS permissions to open the folder.
+## Go deeper
 
-## What happens if a file disappears?
-
-The recovery design includes [Shadow Copies / Previous Versions](services/VSS.md) and [Windows Server Backup](services/BACKUPS.md). The incident exercises proved a deleted file could be restored after a backup-target failure was repaired.
-
-## Tests
-
-**Allowed:** Moyo opened IT successfully.
-
-**Denied:** the same IT identity did not receive Finance access.
-
-**Resilience:** the file-share problem was distinguished from DNS and user authorization during later investigations.
-
-[Tests and recovery](TESTS_AND_RECOVERY.md)
-
-## Original engineering records
-
-[File server deployment PDF](../Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf) · [Shares & drive mapping PDF](../Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) · [DFS & Shadow Copies PDF](../Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf) · [Access script and real-user tests](../Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md).
+[Deployment journal](../Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf) · [Share/permission journal](../Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) · [DFS/VSS journal](../Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf).
 
 [← Company map](../EXPLORE_NOVACORP.md)

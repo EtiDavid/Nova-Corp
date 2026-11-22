@@ -2,7 +2,7 @@
 
 [← Directory tree](DIRECTORY.md) · [People](PEOPLE_AND_DEPARTMENTS.md) · [Files](FILE_SERVICES.md) · [Group Policy](POLICIES.md)
 
-At the **22 November 2026** snapshot, the domain contained **62 security groups**, including **11 groups created for Nova Corp's departmental access model**. [See every current direct member and resource group](DIRECTORY_SNAPSHOT_2026-11-22.md).
+The documented domain has **62 security groups**, including **11 groups created for Nova Corp's departmental access model**. [See direct group memberships and resource groups](DIRECTORY_SNAPSHOT_2026-11-22.md).
 
 A **security group** collects accounts that share a responsibility. Instead of granting a folder permission separately to each employee, Nova Corp assigns permission to a group.
 
@@ -33,7 +33,7 @@ The file-access and automation journals give concrete Domain Local group example
 | `DL_FS_Management_Modify` | Management folder modification | `Management_Users` nesting |
 | `DL_FS_Sales_Modify` | Sales folder modification | `Sales_Users` nesting |
 
-These permissions connect to [NOVA-FILES01](systems/NOVA-FILES01.md).
+These permissions connect to [NOVA-FILES01](systems/NOVA-FILES01.md). [Explore the full five-department SMB and NTFS permission matrix](files/PERMISSIONS.md).
 
 ## Why two group layers?
 

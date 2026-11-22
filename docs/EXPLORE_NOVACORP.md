@@ -15,14 +15,14 @@ You can explore those parts of the company here. Every highlighted system, servi
 | 🔑 **[Identity Office — Active Directory](explore/services/ACTIVE_DIRECTORY.md)** | Login, DNS, Kerberos, LDAP, directory objects, replication and recovery. |
 | 🧑‍💼 **[People and Departments](explore/PEOPLE_AND_DEPARTMENTS.md)** | The company’s organizational units, staff/test identities and groups. |
 | 🌐 **[Network Gatehouse — pfSense](explore/NETWORK.md)** | Network zones, routing, VPN, firewall paths and tested restrictions. |
-| 📁 **[File & Records Room](explore/FILE_SERVICES.md)** | Department folders, SMB/NTFS access, DFS and file recovery. |
+| 📁 **[File & Records Room](explore/files/SHARES.md)** | Department folders, SMB/NTFS access, DFS and file recovery. |
 | 🛡️ **[Workstation Rules — Group Policy](explore/POLICIES.md)** | Domain password controls, wallpaper, USB restrictions, workstation security and validation. |
 | ⚙️ **[Administration Toolkit](explore/AUTOMATION.md)** | Eight PowerShell scripts that automate user and computer administration. |
 | ♻️ **[Backup & Recovery Center](explore/services/BACKUPS.md)** | What is backed up, where recovery copies go, and what restoring a file proved. |
-| 🧪 **[Incident Lab — 16 interactive-ready investigations](explore/TESTS_AND_RECOVERY.md)** | Click any problem to see actual commands, expectations, results, root causes and repairs. |
+| 🧪 **[Incident Lab — 16 investigations](explore/TESTS_AND_RECOVERY.md)** | Click any problem to see actual commands, expectations, results, root causes and repairs. |
 | 📋 **[Operations Room](explore/OPERATIONS.md)** | How the environment is checked, recovered and maintained. |
 
-**[Browse the current company directory — every user, OU, company group and registered computer](explore/DIRECTORY_SNAPSHOT_2026-11-22.md)**
+**[Browse the company directory — every user, OU, company group and registered computer](explore/DIRECTORY_SNAPSHOT_2026-11-22.md)**
 
 ## Take one connected journey
 
@@ -39,7 +39,7 @@ flowchart LR
     SMB --> OK["IT share: allowed"]
 ```
 
-**Follow it:** [Moyo](explore/people/MOYO.md) → [Active Directory](explore/services/ACTIVE_DIRECTORY.md) → [IT_Users](explore/GROUPS.md#it_users) → [SMB and NTFS](explore/services/SMB.md) → [IT share](explore/FILE_SERVICES.md#it) → [Verified access test](explore/TESTS_AND_RECOVERY.md).
+**Follow it:** [Moyo](explore/people/MOYO.md) → [Active Directory](explore/services/ACTIVE_DIRECTORY.md) → [IT_Users](explore/GROUPS.md#it_users) → [SMB and NTFS](explore/services/SMB.md) → [IT share](explore/files/it.md) → [Verified access test](explore/TESTS_AND_RECOVERY.md).
 
 A second path explores an outage:
 

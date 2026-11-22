@@ -29,7 +29,7 @@ For the IT user **Moyo**, the access analysis showed:
 
 The result was then checked from a real user session, not just predicted from an administrative script.
 
-[Follow Moyo's access path](../people/MOYO.md) · [Departmental shares](../FILE_SERVICES.md) · [Groups](../GROUPS.md).
+[Follow Moyo's access path](../people/MOYO.md) · [Five company shares](../files/SHARES.md) · [All 27 SMB permission entries](../files/TECHNICAL_ACL_DETAILS.md) · [Groups](../GROUPS.md).
 
 ## Troubleshooting
 

@@ -12,11 +12,11 @@ Access depends on the user's identity and group membership, plus both **SMB shar
 
 | Open | Purpose |
 | --- | --- |
-| [SMB shares](../services/SMB.md) | Makes folders available over the network. |
-| [Department access](../FILE_SERVICES.md) | Which groups can access which resources. |
-| [DFS Namespace](../services/DFS.md) | Offers a stable, domain-based path. |
-| [Shadow Copies](../services/VSS.md) | Supports earlier-version recovery. |
-| [Windows Server Backup](../services/BACKUPS.md) | Copies recoverable data to the dedicated backup disk. |
+| [Explore all five departmental shares](../files/SHARES.md) | Opens real share paths, linked people and permissions. |
+| [Department access matrix](../files/PERMISSIONS.md) | Which groups can access each resource, including Finance's extra permission. |
+| [Five DFS link targets](../files/DFS_PATHS.md) | The company path and where each link really points. |
+| [30 Shadow Copy objects](../files/VSS.md) | Earlier file versions and their limitations. |
+| [Windows volumes](../files/VOLUMES.md) | D: company data, B: backup destination and available space. |
 
 ## Technical profile
 

@@ -10,6 +10,8 @@ Nova Corp uses Shadow Copies for file-service recovery alongside Windows Server 
 
 **"The file is gone or the earlier version isn't available."** Use the Windows Server Backup recovery path.
 
+**[View the 30 recorded Shadow Copy points](../files/VSS.md)**. They are recorded across two Windows volume identifiers; their existence alone is not a full-restore test.
+
 ## Where it runs
 
 [NOVA-FILES01](../systems/NOVA-FILES01.md).

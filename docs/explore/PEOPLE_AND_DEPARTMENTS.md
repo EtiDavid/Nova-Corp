@@ -8,7 +8,7 @@ The directory includes **Finance, Human Resources, IT, Management and Sales**, p
 
 [Finance](people/DEPARTMENTS.md#finance) · [Human Resources](people/DEPARTMENTS.md#human-resources) · [IT](people/IT_DEPARTMENT.md) · [Management](people/DEPARTMENTS.md#management) · [Sales](people/DEPARTMENTS.md#sales) · [Contractors](people/DEPARTMENTS.md#contractors)
 
-**[Explore the full directory snapshot — all 20 accounts, 16 OUs, groups and computers](DIRECTORY_SNAPSHOT_2026-11-22.md)**
+**[Explore all 20 directory accounts, 16 OUs, groups and computers](DIRECTORY_SNAPSHOT_2026-11-22.md)**
 
 ## Meet lab identities
 
@@ -46,8 +46,8 @@ Accounts created for scripting and incident exercises are part of the lab histor
 
 [Moyo](people/MOYO.md) belongs to [IT_Users](GROUPS.md#it_users), and the documented authorization path includes `DL_FS_IT_Modify`. That allowed the IT folder but did not grant access to Finance.
 
-[Follow the full access chain](FILE_SERVICES.md) · [Explore Group Policy](POLICIES.md).
+[Follow the full access chain](files/PERMISSIONS.md) · [Explore Group Policy](POLICIES.md).
 
-*Account status and group relationships shown in the directory snapshot were collected on 22 November 2026.*
+*Accounts and group memberships reflect the last documented directory check.*
 
 [← Company map](../EXPLORE_NOVACORP.md)
