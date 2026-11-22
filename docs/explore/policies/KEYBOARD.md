@@ -3,7 +3,6 @@
 **GPO:** `Nova Corp - Keyboard`  
 **Current link:** None  
 **Configured settings:** None reported  
-**Captured:** 22 November 2026
 
 ## What is a keyboard policy for?
 

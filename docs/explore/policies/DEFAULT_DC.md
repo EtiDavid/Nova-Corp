@@ -6,7 +6,6 @@ When Nova Corp's Domain Controllers run Windows, they also need their own securi
 **Linked to:** `nova.corp/Domain Controllers`  
 **Link:** Enabled; not enforced  
 **Policy security filter:** Authenticated Users (Apply Group Policy)  
-**Captured:** 22 November 2026
 
 ## Which systems are connected?
 
@@ -27,7 +26,7 @@ The LDAP signing value is important: it is something an engineer should verify a
 
 <details><summary><strong>See all 24 user rights configured in this GPO</strong></summary>
 
-These are the Windows privilege/rights names from the 22 November policy report:
+These are the Windows privilege/rights names from the policy settings:
 
 - Replace a process-level token — `SeAssignPrimaryTokenPrivilege`
 - Generate security audits — `SeAuditPrivilege`

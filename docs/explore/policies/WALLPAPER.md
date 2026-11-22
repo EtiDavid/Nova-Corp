@@ -5,7 +5,6 @@ A company wallpaper is a simple way to demonstrate central user settings. Instea
 **Exact GPO name:** `Nova Corp - Coperate wallpaper`  
 **Linked to:** `nova.corp/Nova Users`  
 **Link:** Enabled, not enforced  
-**Captured:** 22 November 2026
 
 The spelling **Coperate** is the actual GPO name in the directory.
 
@@ -28,7 +27,7 @@ The contractor test identity [John Shaw](../people/JOHN_SHAW.md) had the wallpap
 
 ![John Shaw's gpresult showing the wallpaper and contractor GPOs](../../Documentation/Change-Requests/evidence/03-contractor-user-gpresult.png)
 
-That image supports **policy processing**. The GPO report also gives the configured wallpaper path, but it does not by itself prove the image file was accessible during every login.
+That image supports **policy processing**. The policy settings also gives the configured wallpaper path, but it does not by itself prove the image file was accessible during every login.
 
 ## Connected systems
 

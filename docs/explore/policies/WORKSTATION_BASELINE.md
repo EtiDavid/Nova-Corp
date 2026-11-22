@@ -3,7 +3,6 @@
 **GPO:** `NOVA-SEC-Workstation-Baseline`  
 **Linked to:** `nova.corp/Nova-Computers/Workstations`  
 **Link:** Enabled, not enforced  
-**Captured:** 22 November 2026
 
 ## Why it exists
 

@@ -6,7 +6,6 @@ A file share is easier to use when employees don't need to remember server addre
 **Linked to:** `nova.corp/Nova Users`  
 **Link:** Enabled, not enforced  
 **Configured as:** User logon script  
-**Captured:** 22 November 2026
 
 ## What happens at sign-in?
 

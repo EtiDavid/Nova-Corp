@@ -3,7 +3,6 @@
 **GPO:** `NOVA-sec-deny-usb-contractors`  
 **Linked to:** `nova.corp/Nova Users/Contractors`  
 **Link:** Enabled, not enforced  
-**Captured:** 22 November 2026
 
 ## Why Nova Corp created it
 
@@ -16,7 +15,7 @@ Two user-side policy settings are enabled:
 1. **All Removable Storage classes: Deny all access.**
 2. **Removable Disks: Deny write access.**
 
-The broad deny-all setting takes precedence over individual removable-storage class settings. Both remain visible in the exported configuration.
+The broad deny-all setting takes precedence over individual removable-storage class settings. Both remain visible in the configured settings.
 
 ### Where the policy is linked
 

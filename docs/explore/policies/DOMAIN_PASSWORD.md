@@ -3,7 +3,6 @@
 **GPO:** `Default Domain Policy`  
 **Linked to:** the entire `nova.corp` domain  
 **Link:** Enabled, not enforced  
-**Captured:** 22 November 2026
 
 ## Why it exists
 
@@ -22,7 +21,7 @@ A company needs consistent password requirements and a predictable response to r
 | Account lockout threshold | **5 failed attempts** |
 | Lockout duration | 15 minutes |
 | Reset failed-attempt counter | 15 minutes |
-| Administrator account lockout | Enabled in the exported policy |
+| Administrator account lockout | Enabled in the configured policy |
 
 The **180-day** value comes directly from the November 2026 GPO report. This describes the configured domain policy; a separate fine-grained password policy, where present, may affect individual users differently.
 
