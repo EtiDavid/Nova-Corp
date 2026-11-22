@@ -2,7 +2,7 @@
 
 Proxmox can archive a whole VM using `vzdump`. A VM snapshot is different: it stays dependent on the live VM storage pool. Nova Corp uses both, for different recovery situations.
 
-## The current configured backup job
+## Which virtual machines are included in the backup schedule?
 
 Proxmox has **one recorded backup job**:
 
@@ -16,7 +16,7 @@ Proxmox has **one recorded backup job**:
 | Compression | `zstd` |
 | Retention | `keep-last=30` |
 
-**Schedule note:** A legacy `vzdump.cron` configuration also exists. The Datacenter Backup screen must be checked before treating the monthly setting as the only active schedule.
+**Schedule verified on 22 November 2026:** A direct read-only check of the Proxmox backup configuration confirmed this enabled monthly job. An older scheduler file exists, but its noncomment content was just a system PATH setting—**no second active backup schedule was present in that file**. The next configured run was **1 December 2026 at 00:00 Belgian time**. A scheduled job is not proof the future backup will complete.
 
 A configured snapshot-mode job does **not** mean every archive was captured while the VM was running. The separately recorded pfSense backup on 21 November ran in **stop mode** because the VM was stopped, even though its command requested snapshot mode.
 
