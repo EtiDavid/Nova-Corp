@@ -1,52 +1,66 @@
-# Network Gatehouse — pfSense and network zones
+# Network Gatehouse — How Nova Corp stays connected
 
-Nova Corp uses [pfSense](systems/NOVA-FW01.md) as its firewall and gateway between several networks. Separating networks means employees can reach what they need without automatically receiving access to every management interface.
+Nova Corp uses a **pfSense firewall** to connect the company's networks. Staff, servers, management tools and remote laptops are placed in different network areas. Each area has its own gateway, and firewall rules decide which traffic can cross.
 
-## Select a network
+**[Open the pfSense firewall](systems/NOVA-FW01.md)** · **[Inspect every firewall rule](network/RULES.md)** · **[See the five aliases](network/ALIASES.md)**
 
-| Area | Subnet | Gateway | What lives there |
+## Choose a network area
+
+| Network | Address / gateway | What it is used for | Explore |
 | --- | --- | --- | --- |
-| **Upstream host** | `192.168.178.0/24` | `192.168.178.1` | Proxmox management; pfSense WAN |
-| **Legacy LAN** | `10.99.99.0/24` | `10.99.99.1` | Legacy internal segment |
-| **MGMT / VLAN 10** | `10.10.10.0/24` | `10.10.10.1` | Firewall management interface |
-| **INFRA / VLAN 20** | `10.10.20.0/24` | `10.10.20.1` | [DC01](systems/NOVA-DC01.md), [DC02](systems/NOVA-DC02.md), [FILES01](systems/NOVA-FILES01.md) |
-| **APP / VLAN 30** | `10.10.30.0/24` | `10.10.30.1` | Reserved application segment |
-| **CLIENT / VLAN 40** | `10.10.40.0/24` | `10.10.40.1` | [NOVA-CLIENT](systems/NOVA-CLIENT.md) |
-| **DMZ / VLAN 50** | `10.10.50.0/24` | `10.10.50.1` | Reserved public-service segment |
-| **VPN_REMOTE / VLAN 60** | `10.10.60.0/24` | `10.10.60.1` | Remote WireGuard peers |
+| WAN | DHCP on `vtnet0` | Connection to the upstream router | [WAN](network/zones/WAN.md) |
+| LAN | `10.99.99.0/24` / `10.99.99.1` | Original internal network | [LAN](network/zones/LAN.md) |
+| MGMT · VLAN 10 | `10.10.10.0/24` / `10.10.10.1` | Management interface area | [MGMT](network/zones/MGMT.md) |
+| INFRA · VLAN 20 | `10.10.20.0/24` / `10.10.20.1` | Domain Controllers and file server | [INFRA](network/zones/INFRA.md) |
+| APP · VLAN 30 | `10.10.30.0/24` / `10.10.30.1` | Application network for future workloads | [APP](network/zones/APP.md) |
+| CLIENT · VLAN 40 | `10.10.40.0/24` / `10.10.40.1` | Employee test workstation | [CLIENT](network/zones/CLIENT.md) |
+| DMZ · VLAN 50 | `10.10.50.0/24` / `10.10.50.1` | Network for future public services | [DMZ](network/zones/DMZ.md) |
+| VPN_REMOTE · WireGuard | `10.10.60.0/24` / `10.10.60.1` | Remote-access laptop | [VPN_REMOTE](network/zones/VPN_REMOTE.md) |
 
-## How routing and firewall policy work
+The export confirms **five actual 802.1Q VLANs (10–50)**. VPN_REMOTE is a **WireGuard tunnel**, not an 802.1Q VLAN.
+
+## Follow an employee request
 
 ```mermaid
 flowchart LR
-    PC["Employee workstation"] --> V40["CLIENT VLAN 40"]
-    V40 --> FW["pfSense firewall"]
-    FW -->|approved AD/DNS/SMB traffic| V20["INFRA VLAN 20"]
-    FW -.->|management restriction| MGMT["MGMT VLAN 10"]
-    V20 --> DC["Domain Controllers"]
-    V20 --> FS["File server"]
+    PC["NOVA-CLIENT"] --> CLIENT["CLIENT VLAN 40"]
+    CLIENT --> FW["pfSense rules"]
+    FW -->|DNS, AD, SMB| INFRA["INFRA VLAN 20"]
+    INFRA --> DC["DC01 / DC02"]
+    INFRA --> FS["FILES01"]
+    CLIENT -.->|management blocks| MGMT["MGMT VLAN 10"]
 ```
 
-## Open the parts of the firewall
+The two CLIENT block rules come before a more general CLIENT allow rule. [See their exact order and settings](network/RULES.md#client).
 
-[pfSense server profile](systems/NOVA-FW01.md) · [Firewall rules explained](services/FIREWALL.md) · [WireGuard VPN](services/WIREGUARD.md) · [DNS Resolver](services/DNS.md).
+## What is configured?
 
-## What was tested
+The pfSense configuration exported **22 November 2026** contains:
 
-**Firewall and VLAN foundation:** Routing, gateways, DHCP, WAN and firewall rules were configured and validated.
+| Component | Count / configuration |
+| --- | --- |
+| Interfaces | **8** |
+| VLAN subinterfaces | **5** |
+| Explicit firewall filter rules | **17: 13 pass, 4 block** |
+| Aliases | **5** |
+| DHCP scopes | **6**, configured enabled |
+| WireGuard | **1 enabled tunnel, 1 enabled remote peer** |
+| DNS Resolver | Enabled; `nova.corp` override → DC01 |
+| NAT | Automatic outbound NAT; no manual port-forward rule inside this pfSense export |
+| Web administration | HTTPS |
 
-**VPN:** A failed WireGuard handshake was traced through packet arrival, firewall counters and peer authentication before being repaired.
+These are exported **configuration facts**, not proof that every connection succeeds or that every VLAN is fully isolated. For example, INFRA, APP and DMZ each have a broad outbound allow rule. Stronger management separation is the next security milestone.
 
-**Management isolation:** Final validation found and corrected a management interface path reachable by an ordinary client. The repair was tested against blocked management traffic and required application traffic.
+## Explore the working parts
 
-**Unfinished security work:** Proxmox management is still on the upstream host network; the dedicated privileged-admin VPN is the next security milestone.
+[Firewall rule order](network/RULES.md) · [Network aliases](network/ALIASES.md) · [DHCP](network/DHCP.md) · [NAT and gateways](network/NAT_AND_GATEWAYS.md) · [DNS Resolver](services/DNS.md) · [Remote WireGuard VPN](services/WIREGUARD.md).
 
-## Visual explanation
+## What happened during testing?
 
-![Packet path through network layers](../Documentation/Change-Requests/cr007_assets/02_packet_journey.png)
+The VPN initially received packets but failed to complete a handshake; the peer configuration was corrected and retested. Later, a normal workstation reached management paths more broadly than intended. CR-015 introduced more specific block rules, followed by allowed/denied regression checks.
 
-*The connection must pass several network and policy layers before an internal service can respond.*
+[View all incidents](TESTS_AND_RECOVERY.md) · [Full VPN journal](../Documentation/Change-Requests/Journal-CR-007.md) · [Phase 2 closure](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
 
-**Engineering depth:** [Network foundation](../Documentation/Change-Requests/Journal-CR-002.md) · [VPN and firewall packet journey](../Documentation/Change-Requests/Journal-CR-007.md) · [Management validation](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+*Inventory based on the configuration exported 22 November 2026. Rule contents can change when a new security change is implemented.*
 
-[← Company map](../EXPLORE_NOVACORP.md)
+[← Enter Nova Corp](../EXPLORE_NOVACORP.md)
