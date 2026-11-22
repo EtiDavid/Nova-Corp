@@ -48,7 +48,7 @@ During incident testing:
 
 This is stronger than a screenshot of a green backup-job status.
 
-**Earlier-file versions were tested separately:** a file was changed after a Shadow Copy was taken, and the stored earlier version matched the original SHA-256. [Explore Shadow Copies](VSS.md) · [Read the original validation evidence](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+**Earlier-file versions were tested separately:** a file was changed after a Shadow Copy was taken, and the stored earlier version matched the original SHA-256. [Explore Shadow Copies](VSS.md) · [See the earlier-version recovery test](../files/SHADOW_COPY_RECOVERY.md).
 
 ## What can still fail
 
