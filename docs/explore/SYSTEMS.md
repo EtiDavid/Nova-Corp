@@ -1,6 +1,6 @@
 # IT Control Room — Computers and servers
 
-Nova Corp runs multiple virtual machines, each with a different job. Select one to see the services inside it, its network connection and the tests involving it.
+Nova Corp runs **six Proxmox virtual machines** at the 22 November 2026 inventory: five running company VMs and one stopped, unassigned VM201. Choose a machine to see the services inside it, its network connection, disks and tests. Select one to see the services inside it, its network connection and the tests involving it.
 
 | Machine | What it does | Open |
 | --- | --- | --- |
@@ -10,6 +10,9 @@ Nova Corp runs multiple virtual machines, each with a different job. Select one 
 | **NOVA-CLIENT** | Windows workstation for user-facing tests | [Explore workstation](systems/NOVA-CLIENT.md) |
 | **nova-fw01** | pfSense firewall, router and VPN | [Explore firewall](systems/NOVA-FW01.md) |
 | **nova-prox01** | Proxmox hypervisor hosting VMs | [Explore hypervisor](systems/NOVA-PROX01.md) |
+| **VM201** | Stopped/unassigned Windows VM configuration | [Open VM201 inventory](virtualization/vms/201.md) |
+
+**[View the virtualization floor — all six VMs, two bridges and three storage backends](virtualization/README.md)**
 
 ## How the machines connect
 
@@ -37,6 +40,6 @@ The arrows distinguish the outer hosting relationship from pfSense's traffic-rou
 
 ## Choose a test
 
-[DC failover](TESTS_AND_RECOVERY.md) · [File permissions](FILE_SERVICES.md) · [Management firewall hardening](NETWORK.md) · [Restore proof](services/BACKUPS.md).
+[DC failover](incidents/domain-controller-outage.md) · [File permissions](FILE_SERVICES.md) · [Management firewall hardening](NETWORK.md) · [Restore proof](services/BACKUPS.md).
 
 [← Company map](../EXPLORE_NOVACORP.md)
