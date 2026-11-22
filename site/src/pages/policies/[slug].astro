@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
- companyPolicies,policySourceIndex,policyImageUrl,policyImageSource,
+ companyPolicies,policySourceIndex,policyImageSource,
  type CompanyPolicy
 } from "../../data/policies";
 import { organizationalUnits, identities } from "../../data/directory";
@@ -75,7 +75,7 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
  <p class="muted" style="margin:10px 0 19px">These images already appear in the published engineering records. Each caption states what that image supports. They are not representations of a new test.</p>
  <div class="card-list">{policy.evidenceImages.map(img=><figure class="paper evidence-figure">
    <a href={policyImageSource(img.filename)} target="_blank" rel="noopener noreferrer" aria-label={"Open the original evidence image: "+img.caption}>
-    <img src={policyImageUrl(img.filename)} loading="lazy" alt={img.alt} decoding="async" />
+    <img src={base+"evidence/"+img.filename} loading="lazy" alt={img.alt} decoding="async" />
    </a>
    <figcaption><strong>{img.caption}</strong><small>Supports: {img.proves}</small><a class="evidence-link" href={policyImageSource(img.filename)}>Open original image ↗</a></figcaption>
  </figure>)}</div>

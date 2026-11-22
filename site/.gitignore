@@ -5,3 +5,6 @@ dist/
 !.env.example
 playwright-report/
 test-results/
+
+# Generated copies of already-public, reviewed GPO evidence
+public/evidence/
