@@ -29,7 +29,7 @@ The actual exported pfSense configuration records **eight interfaces**, **five V
 - Internal ports: LAN `vtnet1`, VLAN interfaces `vtnet1.10` through `vtnet1.50`.
 - Remote VPN: `tun_wg0` with gateway `10.10.60.1`, **not an 802.1Q VLAN**.
 - DNS Resolver: enabled; `nova.corp` forwarded to DC01 (`10.10.20.10`).
-- Explicit pfSense port-forward NAT rules: **zero** in this export; upstream router port forwarding is separate.
+- Configured pfSense port-forward NAT rules: **none**. Port forwarding on the upstream router is a separate configuration.
 
 ## What it does
 
