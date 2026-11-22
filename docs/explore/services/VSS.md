@@ -20,6 +20,8 @@ VSS may be stopped when idle because it uses an on-demand service model; a stopp
 
 ## Related tests
 
-Earlier-version recovery and file restores were validated in file-service/backup work. The later recovery incident deliberately lost access to the backup target and proved restoration after repair.
+An earlier-version test saved a Shadow Copy of a file, changed the live version, then retrieved the earlier content from the snapshot. The earlier version's SHA-256 matched the original while the changed live file's hash did not. [See the detailed validation](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
+
+In a separate [backup incident](../incidents/backup-target-disappears.md), Windows Server Backup lost its target disk, recovered after the disk returned, and restored a deleted file. That result must not be confused with the Shadow Copy test.
 
 [Read DFS/Shadow Copies PDF](../../Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf) · [Backup and restore](BACKUPS.md).
