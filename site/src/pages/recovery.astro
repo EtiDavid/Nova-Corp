@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const base=import.meta.env.BASE_URL;
+const options=[
+{title:"A deleted document",kind:"Recovery tested",copy:"Windows Server Backup restored a disposable file after a controlled target failure. The original and recovered fingerprints matched.",href:base+"incidents/backup-target-unavailable/",label:"Read the tested file restore"},
+{title:"An earlier document version",kind:"Recovery tested",copy:"A Shadow Copy preserved the earlier contents even after the live file changed. The fingerprints matched in this one test.",href:"https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/files/SHADOW_COPY_RECOVERY.md",label:"Read the earlier-version test"},
+{title:"A deleted directory account",kind:"Recovery tested",copy:"Active Directory Recycle Bin restored disposable objects with their original identity information preserved.",href:"https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-DC01.md",label:"Explore directory recovery"},
+{title:"A Domain Controller backup",kind:"Backup configured",copy:"DC01 has a daily System State backup and three available recovery versions at the November check. A complete System State restore has not been demonstrated.",href:base+"systems/nova-dc01/",label:"Open DC01"},
+{title:"An entire virtual machine",kind:"Archive available",copy:"Six Proxmox archive files exist for two machines. Their presence does not prove a complete virtual-machine restoration.",href:"https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/virtualization/BACKUPS.md",label:"Inspect backup coverage"},
+{title:"A firewall configuration change",kind:"Rollback artifacts",copy:"A known-good snapshot, a separate VM archive and a configuration export were recorded. These are different kinds of rollback evidence.",href:base+"systems/nova-fw01/",label:"Open firewall profile"}
+];
+---
+<BaseLayout title="Recovery Centre" description="Explore what Nova Corp actually tested, what is configured and what is not yet proven." breadcrumbs={[{label:"Explore",href:"explore/"},{label:"Recovery Centre"}]}>
+ <section class="page-head"><div class="container"><div class="eyebrow">Recovering company services</div><h1>What do you need to recover?</h1><p class="lead" style="margin-top:17px">Not every backup is a proven restoration. Choose a situation below to see the exact level of evidence.</p></div></section>
+ <section class="section compact"><div class="container">
+   <div class="area-grid">{options.map(o=><a class="area-card" style="--accent:#0F766E" href={o.href}><div class="number"><span>{o.kind}</span><span aria-hidden="true">↗</span></div><h3>{o.title}</h3><p>{o.copy}</p><span class="arrow-label">{o.label} →</span></a>)}</div>
+   <div class="note warning" style="margin-top:25px"><strong>Important boundary:</strong> All current backups are inside a nested home lab with a shared outer physical host. The site does not claim independent off-site disaster recovery, a fully restored Domain Controller, or a restored complete VM.</div>
+ </div></section>
+</BaseLayout>

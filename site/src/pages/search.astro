@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { systems } from "../data/model";
+import { areas } from "../data/areas";
+const base=import.meta.env.BASE_URL;
+const index=[
+...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"areas/"+item.id+"/"})),
+...systems.map(item=>({name:item.name,kind:item.category,description:item.summary,url:base+"systems/"+item.slug+"/"})),
+{name:"Backup disk disappears",kind:"Investigated incident",description:"A real file restore after a deliberately unavailable backup target.",url:base+"incidents/backup-target-unavailable/"},
+{name:"Identity server goes offline",kind:"Investigated incident",description:"A controlled outage tested directory resilience.",url:base+"incidents/dc01-outage/"},
+{name:"Recovery options",kind:"Recovery guide",description:"What has been tested and what remains configured-only.",url:base+"recovery/"}
+];
+---
+<BaseLayout title="Search Nova Corp" description="Find a company area, virtual server, investigation or recovery test." breadcrumbs={[{label:"Search"}]}>
+<section class="page-head"><div class="container"><div class="eyebrow">Find your way</div><h1>Search the company atlas.</h1><p class="lead" style="margin-top:15px">Look up a system by name or search a word like “backup”, “identity”, or “network”. All entries are still linked below if JavaScript is unavailable.</p></div></section>
+<section class="section compact"><div class="container">
+  <label for="atlas-search" style="font-weight:750">Search systems and company areas</label>
+  <div class="searchbox"><span aria-hidden="true">⌕</span><input data-search id="atlas-search" type="search" autocomplete="off" placeholder="Try Domain Controller, backup, file server..." /></div>
+  <p class="search-count" role="status" aria-live="polite" data-count>{index.length} entries</p>
+  <div class="card-list" data-results>
+  {index.map(item=><a class="system-card" data-search-item data-search-text={(item.name+" "+item.kind+" "+item.description).toLowerCase()} href={item.url}><small>{item.kind}</small><h3>{item.name}</h3><p>{item.description}</p><span class="readmore">Open →</span></a>)}
+  </div>
+  <p data-empty class="empty" hidden>No matches. Try a broader term or open the <a href={base+"explore/"}>company map</a>.</p>
+</div></section>
+<script>
+const input = document.querySelector<HTMLInputElement>("[data-search]");
+const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-search-item]"));
+const count = document.querySelector<HTMLElement>("[data-count]");
+const empty = document.querySelector<HTMLElement>("[data-empty]");
+input?.addEventListener("input", () => {
+  const query = input.value.toLowerCase().trim();
+  let visible = 0;
+  for (const card of cards) {
+    const match = (card.dataset.searchText || "").includes(query);
+    card.hidden = !match;
+    if (match) visible++;
+  }
+  if (count) count.textContent = visible + (visible===1 ? " entry" : " entries");
+  if (empty) empty.hidden = visible !== 0;
+});
+</script>
+</BaseLayout>

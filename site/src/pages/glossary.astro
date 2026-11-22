@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+const terms=[
+{word:"Active Directory",meaning:"The directory that records company accounts, computers, groups and their organization."},
+{word:"Domain Controller",meaning:"A server that helps computers find the directory and verifies company logins."},
+{word:"DNS",meaning:"The service that helps a computer find another system by name."},
+{word:"Firewall",meaning:"A system that filters which network connections are allowed or denied."},
+{word:"VLAN",meaning:"A way of logically separating networks that can share physical networking equipment."},
+{word:"Group Policy",meaning:"A central way of configuring rules for Windows users and computers. A link alone does not prove the rule applied."},
+{word:"SMB and NTFS permissions",meaning:"Two different checks that control access to shared Windows folders."},
+{word:"DFS namespace",meaning:"A friendly, stable path that directs staff to departmental folders without memorizing individual server names."},
+{word:"Shadow Copy",meaning:"An earlier point-in-time copy that may help recover a changed file. It is not a substitute for an independent backup."},
+{word:"System State",meaning:"Windows server recovery data including system components; its availability is not the same as a tested complete restore."},
+{word:"Proxmox",meaning:"A virtualization platform that runs virtual computers and their storage."},
+{word:"Evidence status",meaning:"Whether a claim is configured, observed, historically tested, planned or deferred; the labels are deliberately different."}
+];
+---
+<BaseLayout title="Plain-English glossary" description="Short, approachable explanations of Nova Corp's infrastructure terms." breadcrumbs={[{label:"Glossary"}]}>
+<section class="page-head"><div class="container"><div class="eyebrow">No jargon required</div><h1>What do these terms mean?</h1><p class="lead" style="margin-top:17px">Short explanations, with enough precision to understand the company before opening the technical details.</p></div></section>
+<section class="section compact"><div class="container reading">
+  {terms.map(item=><div style="padding:22px 0;border-bottom:1px solid #E2E8F0"><h3>{item.word}</h3><p class="muted" style="margin-top:8px">{item.meaning}</p></div>)}
+</div></section>
+</BaseLayout>

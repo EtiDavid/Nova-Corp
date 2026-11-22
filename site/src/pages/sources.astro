@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { systems } from "../data/model";
+const docs="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/";
+const records=[
+ {name:"Identity failover",why:"DC01 outage, service discovery and replication after recovery.",url:docs+"explore/incidents/domain-controller-outage.md"},
+ {name:"Deleted-file restoration",why:"Backup target failure, repair, recovery and matching file fingerprints.",url:docs+"explore/incidents/backup-target-disappears.md"},
+ {name:"Earlier-version recovery",why:"One Shadow Copy test with a matching original fingerprint.",url:docs+"explore/files/SHADOW_COPY_RECOVERY.md"},
+ {name:"Network configuration",why:"Five VLANs, remote tunnel and documented firewall settings.",url:docs+"explore/NETWORK.md"},
+ {name:"File access and permissions",why:"Departments, share access and NTFS permissions.",url:docs+"explore/FILE_SERVICES.md"},
+ {name:"Proxmox archives",why:"VM archive coverage, monthly schedule and limitations.",url:docs+"explore/virtualization/BACKUPS.md"}
+];
+---
+<BaseLayout title="Engineering evidence" description="Public original engineering records behind Nova Corp's infrastructure and recovery claims." breadcrumbs={[{label:"Engineering evidence"}]}>
+<section class="page-head"><div class="container"><div class="eyebrow">Proof before claims</div><h1>Read the engineering record.</h1><p class="lead" style="margin-top:17px">These links lead to published, reviewed descriptions and journals. The private raw inventories and management configurations are not part of the website.</p></div></section>
+<section class="section compact"><div class="container">
+ <h2 style="margin-bottom:22px">Featured investigations</h2>
+ <div class="card-list">{records.map(r=><a class="system-card" href={r.url} target="_blank" rel="noopener noreferrer"><small>Source evidence ↗</small><h3>{r.name}</h3><p>{r.why}</p><span class="readmore">Open original record ↗</span></a>)}</div>
+ <h2 style="margin:48px 0 18px">System-specific documents</h2>
+ <div class="card-list">{systems.map(system=><a class="system-card" href={system.sourceUrl} target="_blank" rel="noopener noreferrer"><small>{system.category}</small><h3>{system.name}</h3><p>{system.summary}</p><span class="readmore">Read source ↗</span></a>)}</div>
+ <div class="note" style="margin-top:24px">The date attached to each system profile reflects the latest documented source reviewed for the first website slice. This is not real-time production monitoring.</div>
+</div></section>
+</BaseLayout>
