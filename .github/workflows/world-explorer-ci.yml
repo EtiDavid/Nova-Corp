@@ -33,6 +33,8 @@ jobs:
         run: npm run test:links
       - name: Verify full first-slice catalog and user journeys
         run: npm run test:coverage
+      - name: Verify outbound public engineering source files exist
+        run: npm run test:sources
       - name: Keep site preview artifact for QA
         uses: actions/upload-artifact@v4
         with:

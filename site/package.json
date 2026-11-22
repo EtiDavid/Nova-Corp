@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "test:links": "node scripts/check-built-links.mjs",
-    "test:coverage": "node scripts/check-public-catalog.mjs"
+    "test:coverage": "node scripts/check-public-catalog.mjs",
+    "test:sources": "node scripts/check-public-sources.mjs"
   },
   "dependencies": {
     "astro": "^5.16.0",
