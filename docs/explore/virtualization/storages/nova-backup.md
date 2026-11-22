@@ -1,6 +1,6 @@
 # nova-backup — Backup archive and VM disk storage
 
-**Backend:** directory (`dir`) · **Path:** `/mnt/nova-backup` · **Filesystem:** ext4 on `sda1` · **Used:** 22.30% at capture.
+**Backend:** directory (`dir`) · **Path:** `/mnt/nova-backup` · **Filesystem:** ext4 on `sda1` · **Free space (last check):** 77.70%.
 
 ## Why was it created?
 
@@ -8,7 +8,7 @@ To keep standalone Proxmox VM backup archives away from the `local-lvm` thin poo
 
 ## What is actually on it?
 
-The B02 inventory found **six vzdump archives**, four for pfSense VM100 and two for DC01 VM101.
+Nova Corp stores **six vzdump archives**, four for pfSense VM100 and two for DC01 VM101.
 
 It also found **two attached live qcow2 VM disks**, which are *not* the same thing as archived backups:
 
