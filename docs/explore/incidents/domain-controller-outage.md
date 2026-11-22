@@ -100,11 +100,11 @@ Bring DC01 online, validate services and all five replication naming contexts, p
 
 FSMO roles remained on DC02. No seizure, demotion, metadata cleanup or DNS surgery was required. The journal distinguishes the meaning of repadmin /syncall NOVA-DC01 /AdeP (push) from final bidirectional health.
 
-## What proves this outcome?
+## Original tests and evidence
 
 The full illustrated [incident engineering journal (PDF)](../../Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf) contains the execution evidence, screenshots, exact command history and troubleshooting decisions. The brief [public incident-exercise overview](../../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) explains the wider exercise.
 
-Source evidence identifiers (see the full journal): `image(20261118-135518).png`; `image(20261118-141845).png`; `image(20261118-144655).png`; `image(20261118-150447).png`.
+The linked engineering journal identifies the original screenshots and preserves the command-by-command results.
 
 ## Explore connected services
 
