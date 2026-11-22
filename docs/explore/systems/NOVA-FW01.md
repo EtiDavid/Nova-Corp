@@ -17,17 +17,32 @@ The firewall decides which network areas can communicate. The goal is to let emp
 - CLIENT gateway: `10.10.40.1`
 - VPN_REMOTE gateway: `10.10.60.1`
 
-[Open all network zones](../NETWORK.md)
+**[Open all eight interfaces and network zones](../NETWORK.md)** · [Every rule](../network/RULES.md) · [All aliases](../network/ALIASES.md) · [NAT/gateways](../network/NAT_AND_GATEWAYS.md)
+
+## Verified configuration snapshot — 22 November 2026
+
+The actual exported pfSense configuration records **eight interfaces**, **five VLANs**, **17 filter rules (13 pass, four block)**, **five aliases**, **six DHCP scopes**, **automatic outbound NAT** and **one active WireGuard tunnel with one configured peer**.
+
+- pfSense hostname: `pfSense.home.arpa`.
+- Web interface protocol: **HTTPS**.
+- WAN interface: `vtnet0`, DHCP (historical runtime address `192.168.178.71`).
+- Internal ports: LAN `vtnet1`, VLAN interfaces `vtnet1.10` through `vtnet1.50`.
+- Remote VPN: `tun_wg0` with gateway `10.10.60.1`, **not an 802.1Q VLAN**.
+- DNS Resolver: enabled; `nova.corp` forwarded to DC01 (`10.10.20.10`).
+- Explicit pfSense port-forward NAT rules: **zero** in this export; upstream router port forwarding is separate.
 
 ## What it does
 
 | Feature | Open |
 | --- | --- |
 | VLAN interfaces and routing | [Network map](../NETWORK.md) |
-| Stateful firewall / rule ordering | [Firewall concepts and tested paths](../services/FIREWALL.md) |
+| Stateful firewall / rule ordering | [All 17 individual firewall rules](../network/RULES.md) |
 | DNS Resolver | [DNS](../services/DNS.md) |
 | Remote access | [WireGuard](../services/WIREGUARD.md) |
 | Snapshot, VM backup, configuration recovery | [Recovery](../services/BACKUPS.md) |
+| Address assignment | [Six DHCP scopes](../network/DHCP.md) |
+| Rule aliases | [Five named alias objects](../network/ALIASES.md) |
+| NAT and routing | [Automatic outbound NAT and gateways](../network/NAT_AND_GATEWAYS.md) |
 
 ## Failure and improvement
 
