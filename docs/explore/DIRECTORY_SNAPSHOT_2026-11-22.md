@@ -1,6 +1,6 @@
 # Inside Nova Corp's Active Directory — November 2026
 
-This is a snapshot of the actual **`nova.corp` directory** collected from NOVA-DC01 on **22 November 2026**. Open an OU, person, group or computer to follow how the lab works.
+Explore the **`nova.corp` company directory**. Open an organizational unit, person, group or computer to follow how the systems work together.
 
 The directory contains **16 Organizational Units**, **20 user accounts** (including system, service and test accounts), **62 security groups**, and **4 computer objects**. Of the 20 user accounts, 16 were enabled and four disabled at capture time.
 
@@ -8,7 +8,7 @@ The directory contains **16 Organizational Units**, **20 user accounts** (includ
 
 <details open><summary><strong>Nova Users — Employees, contractors and test identities</strong></summary>
 
-| Department OU | Accounts in this snapshot | Group |
+| Department OU | Accounts | Group |
 | --- | --- | --- |
 | **IT** | [David Eti](people/DAVID.md), [Moyo Agunbiade](people/MOYO.md), [Isaac Technology](people/accounts/cr011-it.md) | [IT_Users](GROUPS.md#it_users) |
 | **Finance** | [Alice Finance](people/accounts/cr011-fin.md), [Finance Test](people/accounts/fin-test.md) | [Finance_Users](GROUPS.md#finance_users) |
@@ -68,7 +68,7 @@ A service account existing in AD does not by itself mean a service is currently 
 
 ## Which Group Policies are connected to this directory?
 
-The Group Policy inventory collected from NOVA-DC01 later on **22 November 2026** shows these current links:
+These Group Policies are linked to the company directory:
 
 | Directory location | Linked policy |
 | --- | --- |
@@ -119,4 +119,4 @@ These are the **11 company-created security groups**, including department group
 
 [Read about Active Directory](services/ACTIVE_DIRECTORY.md) · [Group Policy](POLICIES.md) · [Original directory setup journal](../Documentation/Change-Requests/Journal-CR-005.md).
 
-*This page records the directory on 22 November 2026, not the live state of the lab at every future date.*
+*Account and policy details reflect the last documented check, not a live directory connection.*

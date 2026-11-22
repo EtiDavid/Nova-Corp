@@ -1,6 +1,6 @@
 # Every firewall rule at Nova Corp
 
-The **22 November 2026 pfSense configuration** contains **17 explicit filter rules: 13 PASS and 4 BLOCK**. Select a rule to see its actual tracker ID, interface, order, source, destination, protocol, services and related lab evidence.
+Nova Corp's firewall has **17 explicit filter rules: 13 PASS and 4 BLOCK**. Select a rule to see its actual tracker ID, interface, order, source, destination, protocol, services and related lab evidence.
 
 ## How to read this page
 
@@ -89,15 +89,15 @@ Rules are shown in their saved **order on each incoming interface**. Earlier blo
 
 **Broader permit areas:** MGMT, INFRA, APP and DMZ still include permissive rules. Building a VLAN is useful isolation groundwork, but doesn't establish least-privilege access without suitable firewall restrictions.
 
-**IPv6 note:** the legacy LAN's IPv6 allow rule remains in the export, while IPv6 gateway entries are disabled. These are different configuration layers.
+**IPv6 note:** the legacy LAN still has an IPv6 allow rule saved, while IPv6 gateway entries are disabled. These are different configuration layers.
 
 ## Open the supporting services
 
 [Aliases and their members](ALIASES.md) · [NAT and gateways](NAT_AND_GATEWAYS.md) · [DHCP pools](DHCP.md) · [pfSense profile](../systems/NOVA-FW01.md).
 
-## How it was verified
+## How the rules behave
 
-The rules were extracted from an actual pfSense configuration XML exported on **22 November 2026**. The original source is stored separately; this public view contains no raw credentials or cryptographic keys.
+The settings below describe explicit firewall rules. To see what actually happened when a connection was allowed or blocked, open the linked network and incident tests.
 
 [Original firewall setup journal](../../Documentation/Change-Requests/Journal-CR-002.md) · [VPN investigation](../../Documentation/Change-Requests/Journal-CR-007.md) · [Final management-hardening work](../../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
 

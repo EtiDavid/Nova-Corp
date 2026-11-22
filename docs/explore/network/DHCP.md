@@ -2,7 +2,7 @@
 
 DHCP automatically offers an IP address to clients joining a network. Each enabled scope has a range from which addresses can be assigned.
 
-The **22 November 2026** pfSense configuration contains six enabled DHCP scopes:
+Nova Corp's pfSense firewall has six enabled DHCP address pools:
 
 | Network | Address pool |
 | --- | --- |

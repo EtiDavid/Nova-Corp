@@ -1,6 +1,6 @@
 # Inside the Nova Corp directory
 
-**[Open the complete verified directory inventory (22 November 2026)](DIRECTORY_SNAPSHOT_2026-11-22.md)**
+**[Open every directory account, group and computer](DIRECTORY_SNAPSHOT_2026-11-22.md)**
 
 [← Active Directory](services/ACTIVE_DIRECTORY.md) · [Meet the people](PEOPLE_AND_DEPARTMENTS.md) · [Security groups](GROUPS.md) · [Group Policy](POLICIES.md)
 
@@ -71,7 +71,7 @@ Domain Controllers remain in the built-in AD organizational unit rather than the
 - **Contractors:** [USB/removable-storage restriction](policies/CONTRACTOR_USB.md).
 - **Nova-Computers / Workstations:** [Workstation security baseline](policies/WORKSTATION_BASELINE.md).
 
-These are the six **enabled GPO links** shown by the 22 November 2026 report. [All seven policy objects](POLICIES.md) include an unlinked keyboard GPO.
+These are the six **enabled Group Policy links** in Nova Corp. [All seven policy objects](POLICIES.md) include an unlinked keyboard GPO.
 
 ## How OUs, groups and policies relate
 
@@ -95,4 +95,4 @@ OU location organizes. A group membership can authorize a resource or help filte
 
 **How the directory was organized:** [Original OU, user and group journal](../Documentation/Change-Requests/Journal-CR-005.md).
 
-*The structure and current account placement were cross-checked against the read-only inventory collected on 22 November 2026.*
+*Account placements reflect the last documented directory check.*

@@ -2,7 +2,7 @@
 
 Windows computers at Nova Corp don't need to be configured one at a time. **Group Policy** lets IT define settings once and deliver them to the right users or computers through Active Directory.
 
-The company has **seven Group Policy Objects (GPOs)** in the inventory captured from NOVA-DC01 on **22 November 2026**. Six have active links to the domain or an OU; one is an unused, empty GPO.
+The company has **seven Group Policy Objects (GPOs)**. Six have active links to the domain or an OU; one is an unused, empty GPO.
 
 ## Explore the seven policies
 
@@ -40,18 +40,18 @@ A GPO link proves where IT has **assigned** a setting. To prove it actually **ap
 
 The drive-mapping policy also connects to [SMB and file access](FILE_SERVICES.md). The workstation baseline connects to [NOVA-CLIENT](systems/NOVA-CLIENT.md), and the Domain Controllers policy connects to [DC01](systems/NOVA-DC01.md) and [DC02](systems/NOVA-DC02.md).
 
-## What the November inventory clarified
+## What we discovered during configuration review
 
 - The configured maximum password age is **180 days**, not the earlier 90-day figure.
 - The actual wallpaper GPO is named **`Nova Corp - Coperate wallpaper`**, including the typo.
 - **`Nova Corp - Keyboard`** currently has no link or settings; keyboard-layout preferences actually appear in the Default Domain Controllers Policy.
 - The department drive-mapping GPO executes a script from `NETLOGON`.
-- Domain Controller LDAP signing in the exported policy is set to **None**; this is a separate security-hardening item to verify and address.
+- Domain Controller LDAP signing is configured as **None**; this is a separate security-hardening item to verify and address.
 
 ## See how it was implemented and tested
 
 [Group Policy build journal](../Documentation/Change-Requests/Journal-CR-006.md) · [Department share mapping](../Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf) · [GPO incident exercises](../Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md) · [Final baseline export](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
 
-*This is the configuration reported on 22 November 2026. Client-side effective policy and successful script execution are separate test results.*
+*These are the last documented policy settings. Client-side application and script execution are covered by separate tests.*
 
 [← Explore Nova Corp](../EXPLORE_NOVACORP.md)

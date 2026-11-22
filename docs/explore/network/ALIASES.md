@@ -1,6 +1,6 @@
 # pfSense aliases — Reusable network objects
 
-An **alias** is a named list of hosts, networks or ports. Nova Corp's firewall uses five aliases, verified from its 22 November 2026 configuration export.
+An **alias** is a named list of hosts, networks or ports. Nova Corp's firewall uses five aliases:
 
 | Alias | What it represents | Where it is used |
 | --- | --- | --- |

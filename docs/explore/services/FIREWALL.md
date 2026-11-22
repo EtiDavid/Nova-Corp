@@ -2,7 +2,7 @@
 
 A firewall checks traffic against ordered rules. When a Windows workstation connects to a server, that connection may cross the pfSense router and be allowed or blocked by the rules on its incoming network interface.
 
-Nova Corp currently has **17 explicitly configured filter rules** in its 22 November 2026 export: **13 allow and 4 block**.
+Nova Corp's firewall has **17 filter rules**: **13 allow and 4 block**.
 
 ## Start with the rules
 
@@ -28,9 +28,9 @@ The first two are checked before the broader third rule.
 
 [Open the WireGuard connection](WIREGUARD.md) · [Open port and host aliases](../network/ALIASES.md).
 
-## What was actually verified?
+## Seeing the rules in action
 
-The export proves how the explicit pfSense rules are **configured**. Earlier incident exercises separately proved blocked management paths and required DNS/AD/SMB/Internet traffic after the CR-015 firewall correction.
+The listed rules describe how the firewall is configured. Nova Corp also tested that ordinary workstations cannot reach protected management paths, while DNS, Active Directory, file sharing and Internet access still work.
 
 The presence of a separate VLAN doesn't, by itself, guarantee strict isolation. Some of our zones intentionally retain broad pass rules, and stronger privileged management isolation is future work.
 
