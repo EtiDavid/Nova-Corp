@@ -17,7 +17,7 @@ Nova Corp uses a **pfSense firewall** to connect the company's networks. Staff, 
 | DMZ · VLAN 50 | `10.10.50.0/24` / `10.10.50.1` | Network for future public services | [DMZ](network/zones/DMZ.md) |
 | VPN_REMOTE · WireGuard | `10.10.60.0/24` / `10.10.60.1` | Remote-access laptop | [VPN_REMOTE](network/zones/VPN_REMOTE.md) |
 
-The export confirms **five actual 802.1Q VLANs (10–50)**. VPN_REMOTE is a **WireGuard tunnel**, not an 802.1Q VLAN.
+Nova Corp has **five VLANs (10–50)**. The remote-access network is a **WireGuard VPN tunnel**, rather than a sixth VLAN.
 
 ## Follow an employee request
 
@@ -33,9 +33,9 @@ flowchart LR
 
 The two CLIENT block rules come before a more general CLIENT allow rule. [See their exact order and settings](network/RULES.md#client).
 
-## What is configured?
+## Inside the firewall
 
-The pfSense configuration exported **22 November 2026** contains:
+Here's what makes Nova Corp's network run:
 
 | Component | Count / configuration |
 | --- | --- |
@@ -46,10 +46,10 @@ The pfSense configuration exported **22 November 2026** contains:
 | DHCP scopes | **6**, configured enabled |
 | WireGuard | **1 enabled tunnel, 1 enabled remote peer** |
 | DNS Resolver | Enabled; `nova.corp` override → DC01 |
-| NAT | Automatic outbound NAT; no manual port-forward rule inside this pfSense export |
+| NAT | Automatic outbound NAT; no locally configured pfSense port-forward rule |
 | Web administration | HTTPS |
 
-These are exported **configuration facts**, not proof that every connection succeeds or that every VLAN is fully isolated. For example, INFRA, APP and DMZ each have a broad outbound allow rule. Stronger management separation is the next security milestone.
+VLANs separate network areas, but firewall rules determine which connections are allowed. INFRA, APP and DMZ still have broad allow rules; tighter access controls are part of the next security stage. [See a tested example](incidents/pfsense-management-exposure.md).
 
 ## Explore the working parts
 
@@ -57,10 +57,10 @@ These are exported **configuration facts**, not proof that every connection succ
 
 ## What happened during testing?
 
-The VPN initially received packets but failed to complete a handshake; the peer configuration was corrected and retested. Later, a normal workstation reached management paths more broadly than intended. CR-015 introduced more specific block rules, followed by allowed/denied regression checks.
+The VPN initially received packets but failed to complete a handshake; the peer configuration was corrected and retested. Later, a normal workstation reached management paths more broadly than intended. The security review introduced more specific block rules, followed by tests proving both blocked management access and working business services.
 
 [View all incidents](TESTS_AND_RECOVERY.md) · [Full VPN journal](../Documentation/Change-Requests/Journal-CR-007.md) · [Phase 2 closure](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md).
 
-*Inventory based on the configuration exported 22 November 2026. Rule contents can change when a new security change is implemented.*
+*This page shows Nova Corp's latest documented network setup; it is not a live firewall dashboard.*
 
 [← Enter Nova Corp](../EXPLORE_NOVACORP.md)
