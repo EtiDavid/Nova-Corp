@@ -65,11 +65,11 @@ C:\CR015-VSS-Mount\NovaData\IT\CR015-VSSTest\CR015-VSS-Recovery-Proof.txt
 
 That copy still contained `ORIGINAL-VERSION`, while the live file contained `MODIFIED-LIVE-VERSION`. SHA-256 checks produced the values shown above. The temporary mount and disposable test directory were then removed. The snapshot itself was retained in the historical record.
 
-The detailed original execution and screenshots are preserved in the **private engineering journal** for the final infrastructure validation. This public case study reproduces the recorded test findings; it does **not** claim to embed those private screenshots or repeat the test now.
+This walkthrough uses the saved results of the earlier infrastructure test. The commands, file contents and fingerprints above describe that recorded exercise; no new test was performed to create this page.
 
 </details>
 
-## What this proves — and what it doesn't
+## What we learned — and the limits
 
 The test proved that **one specific earlier-file version was recoverable** from a Shadow Copy, despite the live file being modified. Nova Corp separately recorded **30 Shadow Copy objects**; this test did **not** restore every one of those 30 copies.
 
