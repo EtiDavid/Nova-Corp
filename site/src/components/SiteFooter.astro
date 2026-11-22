@@ -1,0 +1,19 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href={base}><span class="brand-mark" aria-hidden="true">N/</span><span>Nova Corp<small>Enterprise Lab Atlas</small></span></a>
+        <p>A fictional company, built as a real home-lab engineering exercise. This website documents tested infrastructure and clearly labels its limits.</p>
+      </div>
+      <div class="footer-links">
+        <a href={base+"explore/"}>Company map</a>
+        <a href={base+"sources/"}>Engineering evidence</a>
+        <a href="https://github.com/EtiDavid/Nova-Corp">GitHub portfolio ↗</a>
+      </div>
+    </div>
+    <p class="site-note">Documented configuration snapshot · November 2026 · No live connection to company lab services</p>
+  </div>
+</footer>

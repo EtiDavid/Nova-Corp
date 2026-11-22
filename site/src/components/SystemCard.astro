@@ -1,0 +1,12 @@
+---
+import type { Entity } from "../data/model";
+interface Props { system: Entity }
+const {system} = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<a href={base+"systems/"+system.slug+"/"} class="system-card">
+  <small>{system.category}</small>
+  <h3>{system.name}</h3>
+  <p>{system.summary}</p>
+  <span class="readmore">Explore system <span aria-hidden="true">↗</span></span>
+</a>

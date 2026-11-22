@@ -1,0 +1,22 @@
+---
+const base = import.meta.env.BASE_URL;
+const current = Astro.url.pathname.replace(base, "/");
+const nav = [
+  {label:"Explore",href:"explore/"},
+  {label:"Guided tour",href:"tour/"},
+  {label:"Evidence",href:"sources/"},
+  {label:"Glossary",href:"glossary/"}
+];
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={base} aria-label="Nova Corp, home">
+      <span class="brand-mark" aria-hidden="true">N<span style="font-size:.6em;align-self:end;padding-bottom:5px">/</span></span>
+      <span>Nova Corp<small>Enterprise Lab Atlas</small></span>
+    </a>
+    <nav class="topnav" aria-label="Primary navigation">
+      {nav.map(item => <a href={base + item.href} aria-current={current.startsWith("/"+item.href)?"page":undefined}>{item.label}</a>)}
+    </nav>
+    <a href={base+"search/"} class="btn ghost small header-action">Search the atlas <span aria-hidden="true">⌕</span></a>
+  </div>
+</header>
