@@ -23,7 +23,7 @@ A successful backup job does not mean a file can actually be recovered. Nova Cor
 
 **Windows Server:** FILES01 uses a dedicated backup disk (drive `B:`), Windows Server Backup and a scheduled health-check policy.
 
-**AD:** DC01 System State protection was configured to capture directory-aware recovery material.
+**AD:** DC01 System State protection was configured to capture directory-aware recovery material. A complete System State restore is **not** documented as tested. The backup schedule shown below is historical, not a live schedule dashboard.
 
 ## Schedule documented during the backup change
 
