@@ -63,6 +63,16 @@ Domain Controllers remain in the built-in AD organizational unit rather than the
 
 </details>
 
+## Current policies attached to this tree
+
+- **Domain root:** [Password and Kerberos settings](policies/DOMAIN_PASSWORD.md).
+- **Domain Controllers:** [Domain Controller security policy](policies/DEFAULT_DC.md).
+- **Nova Users (parent):** [Wallpaper](policies/WALLPAPER.md) and [drive-mapping logon script](policies/DRIVE_MAPPING.md).
+- **Contractors:** [USB/removable-storage restriction](policies/CONTRACTOR_USB.md).
+- **Nova-Computers / Workstations:** [Workstation security baseline](policies/WORKSTATION_BASELINE.md).
+
+These are the six **enabled GPO links** shown by the 22 November 2026 report. [All seven policy objects](POLICIES.md) include an unlinked keyboard GPO.
+
 ## How OUs, groups and policies relate
 
 ```mermaid
