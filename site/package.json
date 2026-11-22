@@ -1,0 +1,31 @@
+{
+  "name": "novacorp-world-explorer",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "validate": "node scripts/validate-graph.mjs",
+    "build": "npm run validate && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^5.16.0",
+    "@astrojs/react": "^4.4.0",
+    "@xyflow/react": "^12.9.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.5",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.0"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}
