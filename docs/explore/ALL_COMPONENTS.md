@@ -31,9 +31,9 @@ The lab grew through fifteen recorded engineering changes. Instead of making you
 | APP / VLAN 30 | Network reserved for future apps | [Network](NETWORK.md) | [Architecture](../ARCHITECTURE.md) |
 | CLIENT / VLAN 40 | Workstation network | [NOVA-CLIENT](systems/NOVA-CLIENT.md) | [Client baseline](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md) |
 | DMZ / VLAN 50 | Network reserved for future public services | [Network](NETWORK.md) | [Architecture](../ARCHITECTURE.md) |
-| VPN_REMOTE / VLAN 60 | Remote WireGuard peer area | [VPN](services/WIREGUARD.md) | [Remote-access journal](../Documentation/Change-Requests/Journal-CR-007.md) |
-| DHCP, gateways, routing and NAT | Lets clients find routes to required services | [Network](NETWORK.md) | [pfSense journal](../Documentation/Change-Requests/Journal-CR-002.md) |
-| Firewall rule order/aliases | Controls allowed/denied traffic | [Firewall rules](services/FIREWALL.md) | [VPN/firewall tests](../Documentation/Change-Requests/Journal-CR-007.md) |
+| VPN_REMOTE / WireGuard tunnel | Remote peer network, not an 802.1Q VLAN | [VPN_REMOTE](network/zones/VPN_REMOTE.md) | [Remote-access journal](../Documentation/Change-Requests/Journal-CR-007.md) |
+| DHCP, gateways, routing and NAT | Six enabled DHCP pools, automatic outbound NAT, dynamic WAN gateway | [DHCP](network/DHCP.md) · [NAT/gateways](network/NAT_AND_GATEWAYS.md) | [pfSense journal](../Documentation/Change-Requests/Journal-CR-002.md) |
+| Firewall rule order/aliases | 17 individual filter rules and 5 named aliases | [Every rule](network/RULES.md) · [All aliases](network/ALIASES.md) | [VPN/firewall tests](../Documentation/Change-Requests/Journal-CR-007.md) |
 | WireGuard peer/authentication | Encrypts remote traffic and authenticates peers | [VPN](services/WIREGUARD.md) | [Handshake failure/repair](../Documentation/Change-Requests/Journal-CR-007.md) |
 | DNS Resolver / domain forwarding | Connects pfSense DNS behavior with company DNS | [DNS](services/DNS.md) | [DNS setup](../Documentation/Change-Requests/Journal-CR-003.md) |
 | Management-page hardening | Normal client can no longer access forbidden management path | [Firewall](services/FIREWALL.md) | [Closure evidence](../Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md) |
