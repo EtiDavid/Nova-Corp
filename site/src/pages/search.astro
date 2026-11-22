@@ -2,17 +2,24 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { systems } from "../data/model";
 import { areas } from "../data/areas";
+import { shares } from "../data/fileCentre";
+import { identities, organizationalUnits } from "../data/directory";
+import { accessGroups } from "../data/groups";
 const base=import.meta.env.BASE_URL;
 const index=[
 ...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"areas/"+item.id+"/"})),
 ...systems.map(item=>({name:item.name,kind:item.category,description:item.summary,url:base+"systems/"+item.slug+"/"})),
+...shares.map(item=>({name:item.name+" department share",kind:"Shared folder",description:item.purpose,url:base+"files/shares/"+item.id+"/"})),
+...organizationalUnits.map(item=>({name:item.name,kind:"Organizational Unit",description:item.meaning,url:base+"directory/ous/"+item.slug+"/"})),
+...identities.map(item=>({name:item.name,kind:item.category.replace("-"," ")+" directory account",description:item.location+" · "+item.logon,url:base+"people/"+item.slug+"/"})),
+...accessGroups.map(item=>({name:item.name,kind:item.kind,description:item.description,url:base+"groups/"+item.slug+"/"})),
 {name:"Backup disk disappears",kind:"Investigated incident",description:"A real file restore after a deliberately unavailable backup target.",url:base+"incidents/backup-target-unavailable/"},
 {name:"Identity server goes offline",kind:"Investigated incident",description:"A controlled outage tested directory resilience.",url:base+"incidents/dc01-outage/"},
 {name:"Recovery options",kind:"Recovery guide",description:"What has been tested and what remains configured-only.",url:base+"recovery/"}
 ];
 ---
-<BaseLayout title="Search Nova Corp" description="Find a company area, virtual server, investigation or recovery test." breadcrumbs={[{label:"Search"}]}>
-<section class="page-head"><div class="container"><div class="eyebrow">Find your way</div><h1>Search the company atlas.</h1><p class="lead" style="margin-top:15px">Look up a system by name or search a word like “backup”, “identity”, or “network”. All entries are still linked below if JavaScript is unavailable.</p></div></section>
+<BaseLayout title="Search Nova Corp" description="Find a company area, OU, directory account, group, shared folder, server or recovery test." breadcrumbs={[{label:"Search"}]}>
+<section class="page-head"><div class="container"><div class="eyebrow">Find your way</div><h1>Search the company atlas.</h1><p class="lead" style="margin-top:15px">Look up a system, person, group or department, or search a word like “backup”, “Finance”, or “permissions”. All entries are still linked below if JavaScript is unavailable.</p></div></section>
 <section class="section compact"><div class="container">
   <label for="atlas-search" style="font-weight:750">Search systems and company areas</label>
   <div class="searchbox"><span aria-hidden="true">⌕</span><input data-search id="atlas-search" type="search" autocomplete="off" placeholder="Try Domain Controller, backup, file server..." /></div>

@@ -34,7 +34,7 @@ export const areas: Area[] = [
     description: "See how fictional departments connect to identities, groups and files.",
     accent: "purple", systemIds: ["nova-dc01", "nova-files01"],
     facts: ["The lab models IT, Finance, HR, Management and Sales.", "Access follows directory groups and file permissions.", "Only source-approved fictional identities belong on public pages."],
-    sourceUrl: docs + "PEOPLE.md"
+    sourceUrl: docs + "PEOPLE_AND_DEPARTMENTS.md"
   },
   {
     id: "network-gatehouse", number: "04", name: "Network Gatehouse", shortName: "Network",

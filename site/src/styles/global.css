@@ -198,3 +198,21 @@ p { margin: 0; }
   html { scroll-behavior:auto; }
   *,*::before,*::after { animation-duration:.001ms!important; transition-duration:.001ms!important; }
 }
+
+/* Static-first file/identity navigation: links are usable without JavaScript. */
+[hidden] { display: none !important; }
+.data-table { width:100%; border-collapse:collapse; border-spacing:0; text-align:left; font-size:.89rem; }
+.data-table caption { text-align:left; padding:18px 21px; font-size:.78rem; color:#64748B; }
+.data-table thead { background:#F1F5F9; }
+.data-table th,.data-table td { padding:15px 16px; border-bottom:1px solid #E2E8F0; vertical-align:top; overflow-wrap:anywhere; }
+.data-table th { font-weight:800; font-size:.81rem; }
+.data-table tbody tr:hover { background:#EFF6FF; }
+.data-table tbody tr:last-child td,.data-table tbody tr:last-child th { border-bottom:0; }
+.directory-tree { display:grid; gap:8px; }
+.ou-branch { border-left:3px solid #D9E6FF; padding-left:13px; }
+.tree-item { display:flex; justify-content:space-between; gap:12px; padding:8px 12px; color:#1E293B; text-decoration:none; border-radius:9px; font-size:.89rem; }
+.tree-item:hover { background:#EFF6FF; color:var(--blue); }
+.tree-children { margin-left:16px; border-left:1px dashed #CBD5E1; padding-left:14px; }
+.directory-tree details { padding:10px; border-radius:10px; background:#F8FAFC; }
+.directory-tree summary { cursor:pointer; }
+.data-table a,.tree-item a { overflow-wrap:anywhere; }

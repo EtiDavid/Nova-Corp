@@ -13,6 +13,8 @@ const base = import.meta.env.BASE_URL;
 const selected = systems.filter(system => area.systemIds.includes(system.id));
 const isControlRoom = area.id === "control-room";
 const isRecovery = area.id === "recovery-centre";
+const isIdentity = area.id === "identity-office" || area.id === "department-offices";
+const isFiles = area.id === "file-records";
 const isIncident = area.id === "incident-lab";
 ---
 <BaseLayout title={area.name} description={area.description} breadcrumbs={[{label:"Explore",href:"explore/"},{label:area.name}]}>
@@ -29,6 +31,17 @@ const isIncident = area.id === "incident-lab";
         <p class="muted" style="margin-bottom:17px">Select any server to open its profile. The diagram is a bounded overview of documented relationships; it does not show live traffic.</p>
         <div class="layout-graph"><ExplorerGraph client:visible items={selected.map(s => ({id:s.id,name:s.name,category:s.category,slug:s.slug}))} links={edges} base={base} /></div>
         <div class="note" style="margin-top:15px">Prefer a keyboard or screen reader? All systems and their destinations are linked in the list below. The diagram is optional.</div>
+      </section>}
+      {(isIdentity || isFiles) && <section class="content-section">
+        <div class="paper panel">
+          <p class="kicker">Follow the company relationships</p>
+          <h2 style="margin:13px 0">{isFiles?"Explore real department access":"Browse the real company directory"}</h2>
+          <p class="muted" style="margin:11px 0 20px">{isFiles?"Five departmental shares connect DFS referrals, direct group membership, domain-local group nesting and two distinct Windows permission layers. Finance includes an additional management authorization path.":"Open all 16 Organizational Units, 20 typed lab accounts and the 11 company-created groups. Follow a directory object into the file permissions and recorded tests."}</p>
+          <div class="button-row">
+            {isFiles?<a class="btn" href={base+"files/"}>Enter the File Centre →</a>:<a class="btn" href={base+"directory/"}>Open the directory →</a>}
+            <a class="btn ghost" href={base+(isFiles?"files/permissions/":"groups/")}>{isFiles?"Compare permissions":"Explore access groups"}</a>
+          </div>
+        </div>
       </section>}
       <section class="content-section">
         <h2>{isControlRoom?"Open a system profile":"Connected systems"}</h2>
