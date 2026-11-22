@@ -1,6 +1,6 @@
 # Nova Corp World Explorer — development
 
-**Status: 127-page code build now covers directory, computers, file access, network and seven Group Policies. Automated static validation passed. The public site is NOT deployed or approved for launch.**
+**Status: PUBLIC REVIEW PREVIEW LIVE at https://novacorp.davideti.dev/ — 135 source-backed static pages, GitHub Pages deploy and external HTTPS/deep-link tests PASS. This is not final owner acceptance; full master specification and security/visual QA work continues.**
 
 This is the public-safe site project in the existing Nova-Corp repository. The separate private engineering repository remains the authority for unpublished source inventories, tests and launch decisions. Raw exports must never be copied here.
 
@@ -19,9 +19,10 @@ Requires Node.js 20.11+ and npm.
     npm run test:sources
     npm run test:evidence
     npm run test:acls
+    npm run test:browser
     npm run preview
 
-Astro generates a static site into site/dist. This feature branch is for review and should not be merged or deployed until privacy, link, accessibility and actual-browser QA passes.
+Astro generates a static site into site/dist. The feature branch currently publishes an **owner-authorized first public review preview** after source and browser checks, without merging the draft PR into main. Full owner acceptance and final privacy/accessibility checks remain separate release gates.
 
 ## Architecture
 
@@ -46,30 +47,30 @@ These paths were reconstructed from the existing approved public engineering sou
 - `/network/`: **eight network areas** (five VLANs, WAN, LAN and a separate WireGuard tunnel), **17 ordered firewall rules**, **five approved aliases**, and explicit differences between configured traffic and real tests.
 - `/policies/`: **all seven GPOs** with actual links, important stored settings, subject matter, security filter, and evidence class (configured, linked, processed, tested). Six enabled, non-enforced links and one empty/unlinked keyboard GPO. Current domain password maximum age **180 days**; DC policy LDAP signing set to **None**, not an effective-signing test. Contractor `gpresult` processing is not an actual physical USB denial proof.
 - `/computers/`: all **four actual AD computer objects** with their OU links, VM/system links and limited verified policy scope. A computer object is not a VM or service.
-- Existing: eight company area entrances, six system profiles, guided tour, initial graph, two incident narratives, recovery options, search and glossary.
+- Existing: eight company area entrances, six system profiles, an eight-stop guided tour, initial graph, **eight curated incident narratives (seven recorded tests and one explicitly deferred)**, 404 page, recovery options, search and glossary. The complete 16-record technical incident archive remains linked for deeper research.
 
 The six initial system entity records and their twelve graph edges remain a **small reviewed slice**; linked cross-category HTML routes exist but a complete privacy-reviewed private-to-public entity graph is not yet built.
 
 **Real screenshot assets:** the site now copies only **five images already published in this repository's GPO engineering journal** into its own static `/evidence/` at build time, verifying PNG signatures and producing a SHA-256 provenance manifest. The five screenshots carry captions explaining what they show and do **not** claim newer tests. This is not the full screenshot-proof library; all other original evidence needs separate curation/privacy QA.
 
-**Continuous checks:** `npm run test:links`, `test:coverage`, `test:sources`, `test:evidence` and `test:acls` require source-backed routes, real public source files, existing original PNGs, and **100-of-100 exact ACL data parity**. Branch Actions may also capture desktop/mobile Chromium screenshots of the homepage, policy detail and ACL explorer to an internal CI artifact, not a production page.
+**Continuous checks:** `npm run test:links`, `test:coverage`, `test:sources`, `test:evidence` and `test:acls` require source-backed routes, real public source files, existing original PNGs, and **100-of-100 exact ACL data parity**. Branch Actions additionally run **Playwright/Chromium behavioral smoke checks** covering mobile menu, accessible skip link, core company request, React Flow hydration, incident navigation and policy/ACL/search filtering. Separate CI artifacts capture desktop/mobile screenshots; the public site remains static and read-only.
 
-**Still required under the master specification:** complete settings-level GPO audit (especially all 24 DC rights/principal assignments), recent client-side effective-policy proof, 51 built-in group profiles, remaining 16 incident routes, 30 VSS/backup object views, expanded verified object graph, the remaining real screenshot galleries, manual browser/mobile/keyboard/screen-reader review, performance/security/privacy review and approved deployment. No configured-only evidence is presented as an end-to-end test.
+**Still required under the master specification:** complete settings-level GPO audit (especially all 24 DC rights/principal assignments), recent client-side effective-policy proof, 51 built-in group profiles, remaining 8 original source investigations as curated HTML cases, 30 VSS/backup object views, expanded verified object graph, the remaining real screenshot galleries, manual browser/mobile/keyboard/screen-reader review, performance/security/privacy review and final owner-approved release. No configured-only evidence is presented as an end-to-end test.
 
-## Hosting and custom domain (DNS verified, site not deployed)
+## Hosting and custom domain (public review preview deployed)
 
-**Chosen target:** `https://novacorp.davideti.dev`, hosted on **GitHub Pages** using this repository. The existing personal site at `https://davideti.dev` remains unchanged. The alternative spelling `etidavid.dev` has not been confirmed as an owned/working domain.
+**Live preview URL:** `https://novacorp.davideti.dev`, hosted on **GitHub Pages** using this repository. The existing personal site at `https://davideti.dev` remains unchanged. The alternative spelling `etidavid.dev` has not been confirmed as an owned/working domain.
 
-- `site/public/CNAME` contains `novacorp.davideti.dev`. GitHub Pages has accepted the custom domain, and its DNS check is successful; this file still does **not** publish site content.
-- `.github/workflows/deploy-world-explorer-pages.yml` compiles the static Astro site at **root base path `/`** and deploys to the `github-pages` environment. It runs **only by manual dispatch from `main`**, after approval; an unreviewed feature-branch push or PR cannot launch the public site.
-- Developer CI for this branch continues building **without deployment**, validating entity data, type-checks, the static build and generated internal links.
-- GitHub Pages custom domain `novacorp.davideti.dev` is already saved and its DNS check has passed. GitHub's TLS provisioning showed certificate activation progressing. **Enforce HTTPS was still unavailable at the last owner screenshot**; enable only when offered and confirm anonymously over HTTPS after deployment.
+- `site/public/CNAME` contains `novacorp.davideti.dev`, and GitHub Pages has accepted the domain. The separate GitHub Pages Actions workflow has **published the static site** successfully.
+- `.github/workflows/deploy-world-explorer-pages.yml` builds the static Astro site at base `/` and publishes a **public review preview from `feature/world-explorer-site`** using the `world-explorer-preview` environment. Each relevant push triggers validation, full Astro build, evidence/source parity and Playwright browser checks **before** publication. A final owner-approved main-branch release is a separate decision.
+- Developer CI separately validates and retains browser screenshots. This project's draft PR #2 remains UNMERGED despite the functioning preview.
+- External [Actions verification 45085438485](https://github.com/EtiDavid/Nova-Corp/actions/runs/45085438485) fetched **HTTP 200** and **HTTPS 200 with valid TLS** and confirmed the real homepage, policy, Incident Lab, ACL pages and an original PNG. Because HTTP also returns **200**, an enforced HTTP-to-HTTPS redirect has not yet been observed. Enable **Enforce HTTPS** under GitHub Pages settings when available.
 - DNS for `novacorp` already returns `etidavid.github.io` through both Cloudflare and Google resolvers. **Do not create a second record or alter** existing apex, `www`, MX or other records for `davideti.dev`.
 - GitHub recommends verifying ownership of the domain with a DNS TXT record under account Settings → Pages before activating the custom domain, to reduce takeover risk.
 
 If a temporary repository-path build is needed before the custom domain, use `PUBLIC_BASE_PATH=/Nova-Corp/`. **Production custom-domain builds must use `/`**, never `/Nova-Corp/`.
 
-DNS resolving correctly is **not** evidence that the World Explorer is deployed or that its HTTPS behavior has passed final acceptance.
+Actual GitHub Pages deployment and external HTTPS content checks **have passed**, but these are not a substitute for complete human UX, accessibility, privacy, performance and final owner acceptance.
 
 ## Repository boundary
 
