@@ -38,8 +38,21 @@ try {
   const nav=await desktop.locator(".v4-nav a").allInnerTexts();
   assert.deepEqual(nav,["Explore","Investigations","Guided tour","Roadmap","About David"]);
   assert(!(body.includes("on hold")));
-  const mainLinks=await desktop.locator("main a").count();
-  assert(mainLinks<=14,"main content links: "+mainLinks);
+  assert.equal(await desktop.locator(".exp-hero .button-row a").count(),2,"two primary first-screen actions");
+  assert(await desktop.locator("#hx-explorer").isVisible(),"architecture explorer visible on homepage");
+  assert(await desktop.locator(".exp-hero h1").isVisible(),"main engineering statement visible");
+ });
+ await step("Homepage sandbox: highlight documented paths and inspect a real component",async()=>{
+  await desktop.goto(host+"/",{waitUntil:"networkidle"});
+  const explorer=desktop.locator("#hx-explorer");
+  await explorer.getByRole("button",{name:"Identity path"}).click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/employees sign in/i);
+  assert((await explorer.locator(".hx-path.is-active").count())>=3);
+  await explorer.locator('.hx-node[data-id="nova-dc01"]').click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/identity and DNS/i);
+  assert((await explorer.locator("#hx-case").getAttribute("href")).includes("incidents/dc01-outage/"));
+  await explorer.getByRole("button",{name:"File access"}).click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/shared files/i);
  });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
@@ -117,6 +130,10 @@ try {
   mobile.on("pageerror",e=>errors.push(e.message));
   await step(width+"px: menu hit target, navigation, no side scroll, explorer list and back",async()=>{
    await mobile.goto(host+"/",{waitUntil:"networkidle"});
+   const mini=mobile.locator("#hx-explorer .hx-mobile-list");
+   assert(await mini.isVisible(),"mobile provides accessible node list instead of tiny SVG");
+   await mini.locator('[data-id="nova-files01"]').click();
+   assert.match(await mobile.locator("#hx-title").innerText(),/shared files and recovery/i);
    const summary=mobile.locator(".v4-menu summary");
    assert(await summary.isVisible());
    const box=await summary.boundingBox();
