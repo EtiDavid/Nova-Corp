@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import EngineeringSourceEmbed from "../../../components/EngineeringSourceEmbed.astro";
 import { shares, type Share } from "../../../data/fileCentre";
 import { findGroupByName } from "../../../data/groups";
 import { identities } from "../../../data/directory";
@@ -46,6 +47,7 @@ const encode=(slug:string)=>base+"groups/"+slug+"/";
     </ol>
     <div class="note warning" style="margin-top:20px">DFS routing and group membership alone are not a claim that any particular file operation succeeds. Selected allowed and denied outcomes were tested historically; the present page represents the recorded share/root configuration.</div>
   </section>
+  <EngineeringSourceEmbed sourcePath={"docs/explore/files/"+share.id+".md"} title="Complete departmental file-share explanation" />
   {share.exception && <section class="content-section">
     <div class="paper panel">
       <div class="eyebrow">An additional authorized path</div>
