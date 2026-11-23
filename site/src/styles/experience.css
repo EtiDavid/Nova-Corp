@@ -256,3 +256,17 @@ pre,.cmd { background:#08131F; color:#E7F6F2; border:1px solid #2D4359; }
 .empty { border-color:#49627B; color:#AABFD2; }
 .rule-action.pass { color:#B9F6D9; background:#1D4D3C; }
 .rule-action.block { color:#FFD0D1; background:#52282D; }
+
+/* Screenshot QA: never put near-white type on light statistic panels. */
+.stats-strip { background:#15263A; border-color:#36516B; }
+.stat { color:#EFF7FB; border-color:#36516B; }
+.stat b { color:#F4FCFE; }
+.stat span { color:#ABC4D6; }
+/* Bring the historical replay into view earlier without hiding context. */
+.incident-head { padding-top:30px; padding-bottom:16px; }
+.incident-head h1 { max-width:23ch; font-size:clamp(2.15rem,4vw,3.1rem); }
+.incident-head + .section.compact { padding-top:0; padding-bottom:22px; }
+@media(max-width:760px) {
+  .incident-head { padding-top:26px; padding-bottom:8px; }
+  .incident-head h1 { font-size:clamp(2rem,7vw,2.8rem); }
+}
