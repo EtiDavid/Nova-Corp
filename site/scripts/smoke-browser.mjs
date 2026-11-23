@@ -30,7 +30,7 @@ try {
  await step("Homepage names the builder, the job target and contact actions",async()=>{
   const response=await desktop.goto(host+"/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
-  assert.match((await desktop.locator("h1").innerText()),/small company's IT infrastructure/i);
+  assert.match((await desktop.locator("h1").innerText()),/built the infrastructure/i);
   const body=await desktop.locator("body").innerText();
   assert(body.includes("David Eti")); assert(body.includes("Belgium and the Netherlands"));
   assert(body.includes("Nova Corp is fictional"));
