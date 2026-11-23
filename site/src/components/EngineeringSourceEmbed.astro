@@ -10,7 +10,7 @@ const id=sourcePath.replace(/^docs\//,"").replace(/\.md$/i,"");
 const entry=await getEntry("reference",id);
 if(!entry)throw Error("Missing source document for public profile: "+sourcePath);
 const {Content,headings}=await render(entry);
-const jumps:Array<{depth:number;text:string;slug:string}>=headings.filter(h=>h.depth<=3).slice(0,30);
+const jumps:Array<{depth:number;text:string;slug:string}>=headings.filter((h:{depth:number;text:string;slug:string})=>h.depth<=3).slice(0,30);
 const base=import.meta.env.BASE_URL;
 ---
 <section class="content-section engineer-source-section" aria-label={title}>
