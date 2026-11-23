@@ -30,7 +30,7 @@ try {
  await step("Homepage names the builder, the job target and contact actions",async()=>{
   const response=await desktop.goto(host+"/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
-  assert.match((await desktop.locator("h1").innerText()),/one machine/i);
+  assert.match((await desktop.locator("h1").innerText()),/built the infrastructure/i);
   const body=await desktop.locator("body").innerText();
   assert(body.includes("David Eti")); assert(body.includes("Belgium and the Netherlands"));
   assert(body.includes("Nova Corp is a fictional company"));
@@ -42,45 +42,64 @@ try {
   assert(await desktop.locator("#hx-explorer").isVisible(),"architecture explorer visible on homepage");
   assert(await desktop.locator(".exp-hero h1").isVisible(),"main engineering statement visible");
  });
- await step("Physical-first illustration, original graphic, click-through and scroll reveal",async()=>{
+ await step("Scrollable lab sandbox: branded topology, internal scroll, deep inspection, accessible mode",async()=>{
   await desktop.goto(host+"/",{waitUntil:"networkidle"});
   const scene=desktop.locator("#hx-explorer");
-  assert(await scene.locator(".atlas-tower-art").isVisible(),"physical Windows host illustration is immediately available");
-  assert.match(await scene.innerText(),/VMware Workstation/);
-  assert.match(await scene.innerText(),/Proxmox VE/);
-  assert.equal(await scene.locator(".atlas-service-grid .hx-node").count(),5);
-  assert.equal(await scene.locator(".atlas-prox").count(),1);
-  assert.equal(await scene.locator(".hx-node").count(),8);
-  await scene.locator('.atlas-tower-hit[data-id="host-windows"]').click();
-  assert.match(await scene.locator("#hx-title").innerText(),/physical Windows host/i);
+  const port=scene.locator("#lab-scrollport");
+  assert(await scene.isVisible());
+  const initial=await port.evaluate(el=>({height:el.clientHeight,full:el.scrollHeight,top:el.scrollTop}));
+  assert(initial.full>initial.height+350,"diagram must have internal vertical scroll");
+  assert.equal(await scene.locator(".hx-node[data-id]").count(),6);
+  assert.equal(await scene.locator(".sb-guest-grid .sb-guest").count(),4);
+  assert.equal(await scene.locator('img[src$="brands/proxmox.svg"]').count(),1);
+  assert.equal(await scene.locator('img[src$="brands/pfsense.svg"]').count(),1);
+  assert.equal(await scene.locator('img[src$="brands/vmware.svg"]').count(),1);
+  assert((await port.locator(".sb-section").allInnerTexts()).join(" ").indexOf("NOVA-PROX01") < (await port.locator(".sb-section").allInnerTexts()).join(" ").indexOf("NOVA-FW01"),"Proxmox is above pfSense");
+  await scene.locator(".atlas-prox").click();
+  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-PROX01/);
   assert((await scene.locator("#hx-record").getAttribute("href")).includes("/systems/nova-prox01/"));
-  await scene.locator('.atlas-virtual-badge[data-id="vmware-workstation"]').click();
-  assert.match(await scene.locator("#hx-title").innerText(),/outer hypervisor layer/i);
-  await scene.locator('.atlas-prox[data-id="nova-prox01"]').click();
-  assert.match(await scene.locator("#hx-title").innerText(),/virtualization foundation/i);
-  assert((await scene.locator("#hx-record").getAttribute("href")).includes("/systems/nova-prox01/"));
+  await scene.locator('[data-jump="guests"]').click();
+  await desktop.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>300);
+  assert.equal(await scene.locator('.sb-guest[data-id="nova-dc01"]').count(),1);
+  await scene.locator('.sb-guest[data-id="nova-files01"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-FILES01/);
+  assert.match(await scene.locator("#sb-facts").innerText(),/backup|share|operating system/i);
+  assert((await scene.locator("#hx-case").getAttribute("href")).includes("/incidents/backup-target-unavailable/"));
+  assert(/system=nova-files01/.test(desktop.url()),"selected component is deep-linkable");
+  assert.equal(await scene.locator(".sb-node.is-selected").count(),1);
+  await scene.locator('[data-mode="identity"]').click();
+  assert.equal(await scene.locator(".sb-node.is-muted").count(),2,"only non-identity nodes muted");
+  await scene.locator('.sb-guest[data-id="nova-files01"]').click();
+  assert.equal(await scene.locator('[data-mode="all"]').getAttribute("aria-pressed"),"true","selecting excluded node clears stale path filter");
+  assert.equal(await scene.locator(".sb-node.is-muted").count(),0,"selected file server must not be dimmed");
+  assert((await scene.locator("#sb-related-buttons button").count())>=2,"inspector exposes linked lab systems");
+  await scene.locator('[data-rel-to="nova-client"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-CLIENT/,"user can walk between documented systems");
+  assert(/system=nova-client/.test(desktop.url()));
+  await scene.locator('[data-rel-to="nova-files01"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-FILES01/);
+
+
+  await scene.locator('[data-mode="files"]').click();
+  assert.equal(await scene.locator(".sb-node.is-muted").count(),2,"file-access view selects four relevant systems");
+  await scene.locator('[data-mode="all"]').click();
+  assert.equal(await scene.locator(".sb-node.is-muted").count(),0);
+  await desktop.goto(host+"/?system=nova-dc02",{waitUntil:"networkidle"});
+  assert.match(await desktop.locator("#hx-title").innerText(),/NOVA-DC02/,"component deep link opens inspector");
+  const brand=await desktop.request.get(host+"/brands/proxmox.svg");
+  assert.equal(brand.status(),200,"local Proxmox mark is served");
   const palette=await desktop.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue("--bg").trim());
   assert.equal(palette,"#111210");
   const reducedContext=await browser.newContext({reducedMotion:"reduce",viewport:{width:1440,height:900}});
-  const reduce=await reducedContext.newPage();
-  await reduce.goto(host+"/",{waitUntil:"networkidle"});
-  assert(!await reduce.evaluate(()=>document.documentElement.classList.contains("motion-ready")),"reduced motion does not hide reveals");
+  const reduced=await reducedContext.newPage();
+  await reduced.goto(host+"/",{waitUntil:"networkidle"});
+  assert(!await reduced.evaluate(()=>document.documentElement.classList.contains("motion-ready")));
+  await reduced.locator('[data-jump="guests"]').click();
+  assert((await reduced.locator("#lab-scrollport").evaluate(el=>el.scrollTop))>200);
   await reducedContext.close();
   await desktop.locator(".atlas-editorial").scrollIntoViewIfNeeded();
   await desktop.waitForTimeout(350);
-  assert(await desktop.locator(".atlas-editorial").evaluate(el=>el.classList.contains("is-in-view")),"editorial section reveals on scroll");
- });
- await step("Homepage sandbox: highlight documented paths and inspect a real component",async()=>{
-  await desktop.goto(host+"/",{waitUntil:"networkidle"});
-  const explorer=desktop.locator("#hx-explorer");
-  await explorer.locator('[data-mode="identity"]').click();
-  assert.match(await explorer.locator("#hx-title").innerText(),/workstation to internal DNS and identity/i);
-  assert((await explorer.locator(".hx-path.is-active").count())>=3);
-  await explorer.locator('.hx-node[data-id="nova-dc01"]').click();
-  assert.match(await explorer.locator("#hx-title").innerText(),/identity and DNS/i);
-  assert((await explorer.locator("#hx-case").getAttribute("href")).includes("incidents/dc01-outage/"));
-  await explorer.locator('[data-mode="files"]').click();
-  assert.match(await explorer.locator("#hx-title").innerText(),/company share/i);
+  assert(await desktop.locator(".atlas-editorial").evaluate(el=>el.classList.contains("is-in-view")));
  });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
@@ -204,10 +223,19 @@ try {
   mobile.on("pageerror",e=>errors.push(e.message));
   await step(width+"px: menu hit target, navigation, no side scroll, explorer list and back",async()=>{
    await mobile.goto(host+"/",{waitUntil:"networkidle"});
-   const mini=mobile.locator("#hx-explorer .hx-mobile-list");
-   assert(await mini.isVisible(),"mobile provides accessible node list instead of tiny SVG");
-   await mini.locator('[data-id="nova-files01"]').click();
-   assert.match(await mobile.locator("#hx-title").innerText(),/shared files and tested recovery/i);
+   const map=mobile.locator("#lab-scrollport");
+   assert(await map.isVisible(),"scrollable diagram exists on mobile");
+   assert(await map.evaluate(el=>el.scrollHeight>el.clientHeight+200),"mobile diagram must be internally scrollable");
+   await mobile.locator('[data-jump="guests"]').click();
+   await mobile.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
+   await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
+   assert.match(await mobile.locator("#hx-title").innerText(),/NOVA-FILES01/);
+   assert((await mobile.locator("#hx-record").getAttribute("href")).includes("/systems/nova-files01/"));
+   await mobile.waitForFunction(()=>{const b=document.getElementById("sb-inspector")?.getBoundingClientRect();return b&&b.top<220&&b.bottom>220;});
+   assert(await mobile.locator("#sb-back-to-map").isVisible(),"mobile visitors can return from details");
+   await mobile.locator("#sb-back-to-map").click();
+   await mobile.waitForFunction(()=>document.getElementById("hx-explorer").getBoundingClientRect().top<220);
+
    const summary=mobile.locator(".v4-menu summary");
    assert(await summary.isVisible());
    const box=await summary.boundingBox();

@@ -15,6 +15,11 @@ try {
   await desktop.locator("#hx-explorer").screenshot({path:out+"/physical-lab-inspector-desktop.png"});
   await desktop.locator('[data-mode="identity"]').click();
   await desktop.locator("#hx-explorer").screenshot({path:out+"/physical-lab-identity-path-desktop.png"});
+  await desktop.locator('[data-jump="guests"]').click();
+  await desktop.waitForTimeout(650);
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-scrolled-to-guest-systems-desktop.png"});
+  await desktop.locator('.sb-guest[data-id="nova-files01"]').click();
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-fileserver-inspector-desktop.png"});
   await desktop.locator(".atlas-editorial").scrollIntoViewIfNeeded();
   await desktop.waitForTimeout(850);
   await desktop.locator(".atlas-editorial").screenshot({path:out+"/scroll-revealed-outcomes-desktop.png"});
@@ -32,8 +37,14 @@ try {
   await mobile.goto(host+"/",{waitUntil:"networkidle"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator(".atlas-home").screenshot({path:out+"/physical-lab-home-mobile.png"});
-  await mobile.locator('.hx-mobile-list [data-id="nova-files01"]').click();
+  await mobile.locator('[data-jump="guests"]').click();
+  await mobile.waitForTimeout(450);
+  await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-scrolled-mobile.png"});
+  await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
   await mobile.locator("#hx-explorer").screenshot({path:out+"/physical-lab-selected-mobile.png"});
+  await mobile.waitForTimeout(620);
+  await mobile.locator("#sb-inspector").screenshot({path:out+"/lab-server-details-mobile.png"});
+
   await mobile.goto(host+"/company/?workflow=security",{waitUntil:"networkidle"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator("#workflow-lab").screenshot({path:out+"/workflow-security-mobile.png"});
@@ -47,7 +58,7 @@ try {
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator('#step-1 .r-challenge [data-choice="1"]').click();
   await mobile.locator("#replay").screenshot({path:out+"/dns-diagnostic-mobile.png"});
-  console.log("Captured twelve real Chromium interaction, scrolling and mobile QA screenshots.");
+  console.log("Captured sixteen real Chromium interaction, diagram-scroll, and mobile QA screenshots.");
 } finally {
   await browser.close();
 }
