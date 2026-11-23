@@ -5,39 +5,41 @@ const base = import.meta.env.BASE_URL;
 const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
 ---
 <BaseLayout title="Home" description="Explore the enterprise infrastructure David Eti built, validated and deliberately tested through real troubleshooting investigations.">
-  <section class="exp-hero" aria-labelledby="exp-headline">
-    <div class="container exp-hero-grid">
-      <div class="exp-copy">
-        <div class="exp-eyebrow">Nova Corp / Enterprise infrastructure lab</div>
-        <h1 id="exp-headline">I built the infrastructure. <em>Then I tested what happens when it fails.</em></h1>
-        <p class="exp-subtitle">A small fictional company. Real servers, network boundaries, identity systems and recovery tests from my home lab. Explore the architecture, then follow the evidence.</p>
-        <div class="button-row">
-          <a class="btn" href={base + "company/"}>Explore the infrastructure <span aria-hidden="true">↗</span></a>
-          <a class="btn ghost" href={base + "incidents/dns-client-outage/"}>Replay a failure <span aria-hidden="true">→</span></a>
+  <section class="exp-hero atlas-home" aria-labelledby="exp-headline">
+    <div class="container atlas-intro" data-reveal>
+      <div class="atlas-intro-top">
+        <span class="exp-eyebrow">Nova Corp / A real infrastructure home lab</span>
+        <span class="atlas-portfolio-mark">BUILT · BROKEN · RECOVERED</span>
+      </div>
+      <div class="atlas-intro-layout">
+        <div>
+          <h1 id="exp-headline">It starts with <em>one machine.</em></h1>
+          <p class="exp-subtitle">Explore how I built an enterprise-style environment inside a single physical host — from nested virtualization to networking, Active Directory and tested recovery.</p>
         </div>
-        <p class="exp-role"><strong>Built and tested by David Eti</strong><br/>Seeking system administrator, infrastructure and DevOps opportunities in Belgium and the Netherlands.</p>
-        <div class="exp-contact" aria-label="Professional links">
-          <a href={cv}>Download CV ↗</a>
-          <a href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
-          <a href="mailto:etidavid26@gmail.com">Email ↗</a>
-          <a href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
-        </div>
-        <p class="exp-honesty">Nova Corp is fictional; the infrastructure and recorded tests are real home-lab work. This is a dated architectural snapshot, not a live monitoring console.</p>
-        <div class="exp-proofband" aria-label="Technologies demonstrated">
-          <span>Windows Server + Active Directory</span>
-          <span>Proxmox + pfSense</span>
-          <span>PowerShell automation</span>
-          <span>Verified restore tests</span>
+        <div class="atlas-intro-aside">
+          <p class="exp-role"><strong>David Eti</strong> · Infrastructure &amp; systems engineering<br/>Documented, tested and explained through real home-lab incidents.<br/>Seeking infrastructure, system administration and DevOps opportunities in Belgium and the Netherlands.</p>
+          <div class="button-row">
+            <a class="btn" href={base+"company/"}>Explore the infrastructure <span aria-hidden="true">↗</span></a>
+            <a class="btn ghost" href={base+"incidents/dns-client-outage/"}>Replay a real failure <span aria-hidden="true">→</span></a>
+          </div>
         </div>
       </div>
-      <div class="exp-lab-side">
-        <HeroLabExplorer />
-        <p class="exp-lab-deep">Go further: <a href={base+"company/#workflow-lab"}>Trace file access, DC failover, firewall decisions and file recovery ↗</a></p>
+    </div>
+    <div class="atlas-wide" data-reveal>
+      <HeroLabExplorer />
+    </div>
+    <div class="container atlas-after" data-reveal>
+      <p class="atlas-honesty">Nova Corp is a fictional company. The lab, configurations, failure tests and original engineering documentation are real. This is a dated architecture illustration, not live monitoring.</p>
+      <div class="exp-contact" aria-label="Professional links">
+        <a href={cv}>Download CV ↗</a>
+        <a href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
+        <a href="mailto:etidavid26@gmail.com">Email ↗</a>
+        <a href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
       </div>
     </div>
   </section>
 
-  <section class="exp-block" aria-labelledby="exp-outcomes">
+  <section class="exp-block atlas-editorial" aria-labelledby="exp-outcomes" data-reveal>
     <div class="container">
       <div class="exp-section-heading">
         <div class="exp-eyebrow">01 / Documented outcomes</div>
@@ -45,7 +47,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
         <p>Every example below is tied to an actual investigation, observed behavior and the scope of what the test proves.</p>
       </div>
       <div class="exp-stories">
-        <article class="exp-story">
+        <article class="exp-story" data-reveal>
           <small>IDENTITY / CONTROLLED OUTAGE</small>
           <h3>One Domain Controller went offline.</h3>
           <p>DC01 was deliberately taken down to test whether the other Domain Controller could continue serving the environment.</p>
@@ -70,7 +72,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     </div>
   </section>
 
-  <section class="exp-block" aria-labelledby="exp-investigation">
+  <section class="exp-block atlas-investigation" aria-labelledby="exp-investigation" data-reveal>
     <div class="container exp-case">
       <div>
         <div class="exp-eyebrow">02 / Investigate the failure</div>
@@ -94,7 +96,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     </div>
   </section>
 
-  <section class="exp-block" aria-labelledby="exp-next">
+  <section class="exp-block atlas-final" aria-labelledby="exp-next" data-reveal>
     <div class="container exp-last">
       <div>
         <div class="exp-eyebrow">03 / Go deeper</div>
