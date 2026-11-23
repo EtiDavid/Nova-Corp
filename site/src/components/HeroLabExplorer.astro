@@ -157,6 +157,7 @@ const descriptions: Record<string,{ title:string; description:string; incident:s
 .hx-path.hx-support { stroke-dasharray:6 6; }
 .hx-path.is-muted { opacity:.12; }
 .hx-path.is-active { stroke:#80E8D9; stroke-width:3.4; opacity:1; stroke-dasharray:8 11; animation:hx-flow 3s linear infinite; }
+.hx-path[data-path="client-fw"]:not(.is-active):not(.is-muted) { stroke:#6FCFC4; stroke-dasharray:5 12; animation:hx-flow 9s linear infinite; opacity:.86; }
 @keyframes hx-flow { to { stroke-dashoffset:-38; } }
 .hx-edge-note { fill:#88A5BD; font:700 10.5px var(--font-mono); letter-spacing:.08em; }
 .hx-node { cursor:pointer; text-decoration:none; }
@@ -199,7 +200,7 @@ const descriptions: Record<string,{ title:string; description:string; incident:s
   .hx-bottom { padding:16px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .hx-path.is-active { animation:none; stroke-dasharray:none; }
+  .hx-path.is-active,.hx-path[data-path="client-fw"]:not(.is-active):not(.is-muted) { animation:none; stroke-dasharray:none; }
   .hx-node-rect { transition:none; }
 }
 </style>
