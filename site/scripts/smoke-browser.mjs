@@ -117,13 +117,13 @@ try {
   assert(await docLink.isVisible(),"public source crosslinks stay inside website");
   await docLink.click();
   await desktop.waitForURL(/\/reference\/explore\/network\/RULES\/$/);
-  assert.match(await desktop.locator("h1").innerText(),/Every firewall rule/i);
+  assert.match(await desktop.locator(".page-head h1").innerText(),/Every firewall rule/i);
   assert((await desktop.locator(".reference-content").innerText()).includes("17 explicit filter rules"));
   await desktop.goto(host+"/reference/explore/systems/NOVA-FW01/",{waitUntil:"networkidle"});
-  assert.match(await desktop.locator("h1").innerText(),/pfSense Firewall/i);
+  assert.match(await desktop.locator(".page-head h1").innerText(),/pfSense Firewall/i);
   assert((await desktop.locator(".reference-content").innerText()).includes("DNS Resolver"));
   await desktop.goto(host+"/reference/Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal/",{waitUntil:"networkidle"});
-  assert.match(await desktop.locator("h1").innerText(),/Secondary Domain Controller/i);
+  assert.match(await desktop.locator(".page-head h1").innerText(),/Secondary Domain Controller/i);
   assert((await desktop.locator(".reference-content").innerText()).includes("dcdiag"));
   await desktop.goto(host+"/reference/",{waitUntil:"networkidle"});
   assert.equal(await desktop.locator("[data-ref-doc]").count(),161);
