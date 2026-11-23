@@ -113,3 +113,14 @@
  .sb-section.is-entered .sb-flow-dot,.sb-guests.is-entered .sb-branch::after{animation:none;}
  .sb-node,.sb-node::after{transition:none;}
 }
+
+/* On phones, a node tap goes directly to its own detailed profile. Avoid
+   duplicating a tall inspector under the scroll box, which pushes the
+   incident library several screens farther down. Desktop retains hover/focus
+   preview, evidence and connected-system navigation. */
+@media(max-width:600px){
+  .sb-inspector{display:none;}
+  .sb-map-panel{border-bottom:0;}
+  .sb-scroll-foot span:first-child{font-size:.62rem;}
+  .sb-heading p{max-width:40ch;}
+}
