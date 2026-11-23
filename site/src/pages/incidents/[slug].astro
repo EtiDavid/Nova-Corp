@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DnsReplay from "../../components/DnsReplay.astro";
+import EvidencePanel from "../../components/EvidencePanel.astro";
+import { labStories } from "../../data/labStories";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 interface Props { entry: CollectionEntry<"incidents">; }
 export async function getStaticPaths() {
@@ -10,19 +12,21 @@ export async function getStaticPaths() {
 const {entry} = Astro.props;
 const {Content} = await render(entry);
 const base=import.meta.env.BASE_URL;
+const className=labStories.find(s=>s.slug===entry.id)?.kind||"controlled";
+const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-target-unavailable","replication-divergence","firewall-management-exposure","file-permission-denial","proxmox-storage-pressure","gpo-link-disabled"]);
 ---
 <BaseLayout title={entry.data.title} description={entry.data.summary} breadcrumbs={[{label:"Investigations",href:"incidents/"},{label:entry.data.title}]}>
 <section class="page-head incident-head"><div class="container">
  <div class="eyebrow">Investigation</div>
  <h1>{entry.data.title}</h1>
  <p class="lead" style="margin-top:16px">{entry.data.summary}</p>
- <div class="incident-meta" style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{entry.data.status==="tested"?"Recorded test":"Deferred"}</span><span class="muted" style="font-size:.82rem">{entry.data.date} · {entry.data.outcome}</span></div>
+ <div class="incident-meta" style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{className==="deferred"?"Not performed":className==="controlled"?"Controlled test":"Issue investigated"}</span><span class="muted" style="font-size:.82rem">{entry.data.outcome}</span></div>
 </div></section>
 <section class="section compact"><div class="container">{entry.id==="dns-client-outage" && <DnsReplay />}</div></section>
 <section class="section compact"><div class="container grid-main">
-  <article class="prose"><Content /></article>
+  <article class="prose"><Content />{evidenceRequested.has(entry.id)&&<div class="incident-proof-slot"><h2>Evidence image</h2><EvidencePanel subject={entry.data.title} requested={"A redacted screenshot from the "+entry.data.title+" journal, showing the relevant system state or observed validation result. Please publish only after review."}/></div>}</article>
   <aside>
-   <div class="sidebox"><h3>Original evidence</h3><p class="muted" style="font-size:.9rem">Open the published engineering investigation for exact commands, expected and actual results, and supporting journal references.</p><a class="evidence-link" href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Open full source ↗</a></div>
+   <div class="sidebox"><h3>Original evidence</h3><p class="muted" style="font-size:.9rem">Open the published engineering investigation for exact commands, expected and actual results, and supporting journal references.</p><a class="evidence-link" href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Read the full Markdown journal on GitHub ↗</a></div>
    <div class="sidebox"><h3>Continue exploring</h3>{entry.data.systems.map((slug:string)=><p style="margin-bottom:12px"><a href={base+"systems/"+slug+"/"}>{slug.toUpperCase()} →</a></p>)}<a href={base+"incidents/"}>← All investigations</a></div>
   </aside>
 </div></section>

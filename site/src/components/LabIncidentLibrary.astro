@@ -1,0 +1,59 @@
+---
+/** Homepage incident index: all reviewed public failure records, grouped by how they arose. */
+import { getCollection, type CollectionEntry } from "astro:content";
+import { labStories, type Story } from "../data/labStories";
+const base=import.meta.env.BASE_URL;
+const all:CollectionEntry<"incidents">[]=await getCollection("incidents");
+const indexed:Map<string,CollectionEntry<"incidents">>=new Map(all.map(e=>[e.id,e]));
+for(const story of labStories){if(!indexed.has(story.slug))throw Error("No public incident page for "+story.slug);}
+const controlled=labStories.filter(e=>e.kind==="controlled");
+const unplanned=labStories.filter(e=>e.kind==="unplanned");
+const deferred=labStories.find(e=>e.kind==="deferred");
+const intro:Record<string,{label:string;subtitle:string}> = {
+  controlled:{label:"Controlled failure tests",subtitle:"Failures I introduced deliberately to measure resilience and verify recovery."},
+  unplanned:{label:"Unexpected incidents & defects",subtitle:"Problems discovered while building, migrating, automating or validating the environment."}
+};
+const groups=[{id:"controlled",items:controlled},{id:"unplanned",items:unplanned}];
+---
+<section class="il" aria-labelledby="il-heading" id="incident-library">
+  <div class="container">
+    <header class="il-header">
+      <span class="exp-eyebrow">Engineering evidence / incident library</span>
+      <h2 id="il-heading">What broke. Why. What the tests proved.</h2>
+      <p>These are real documented lab exercises and problems—not imaginary production incidents. Start with the concise summaries, then open any investigation for the full story and its original Markdown journal.</p>
+    </header>
+    <div class="il-groups">
+      {groups.map(({id,items})=><section class="il-group" aria-labelledby={"il-"+id}>
+        <div class="il-group-heading">
+          <div class="il-group-name"><span class={"il-dot il-dot-"+id} aria-hidden="true"></span><div><h3 id={"il-"+id}>{intro[id].label}</h3><p>{intro[id].subtitle}</p></div></div>
+          <span class="il-count">{items.length} documented</span>
+        </div>
+        <ul class="il-list">
+          {items.slice(0,4).map((story:Story,i:number)=>{
+            const entry=indexed.get(story.slug)!;
+            return <li class="il-item">
+              <div class="il-bullet" aria-hidden="true">{String(i+1).padStart(2,"0")}</div>
+              <div class="il-text"><span class="il-topic">{story.topic}</span><h4>{entry.data.title}</h4><p>{story.short}</p></div>
+              <a href={base+"incidents/"+story.slug+"/"} aria-label={"Read investigation: "+entry.data.title}>Read investigation <span aria-hidden="true">↗</span></a>
+            </li>;
+          })}
+        </ul>
+        {items.length>4&&<details class="il-more" id={"il-more-"+id}>
+          <summary>Show {items.length-4} more {id==="controlled"?"controlled tests":"documented incidents"} <span aria-hidden="true">⌄</span></summary>
+          <ul class="il-list il-rest">
+            {items.slice(4).map((story:Story,i:number)=>{
+              const entry=indexed.get(story.slug)!;
+              return <li class="il-item">
+                <div class="il-bullet" aria-hidden="true">{String(i+5).padStart(2,"0")}</div>
+                <div class="il-text"><span class="il-topic">{story.topic}</span><h4>{entry.data.title}</h4><p>{story.short}</p></div>
+                <a href={base+"incidents/"+story.slug+"/"} aria-label={"Read investigation: "+entry.data.title}>Read investigation <span aria-hidden="true">↗</span></a>
+              </li>;
+            })}
+          </ul>
+        </details>}
+        {id==="controlled"&&deferred&&<p class="il-deferred">Not counted as a completed test: <a href={base+"incidents/"+deferred.slug+"/"}>Independent external VPN validation was deferred ↗</a></p>}
+      </section>)}
+    </div>
+    <p class="il-archive">Every page links to its public original engineering Markdown record. <a href={base+"incidents/"}>Browse all investigation pages ↗</a></p>
+  </div>
+</section>

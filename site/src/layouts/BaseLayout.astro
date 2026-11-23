@@ -4,6 +4,9 @@ import "../styles/v4.css";
 import "../styles/experience.css";
 import "../styles/atelier.css";
 import "../styles/sandbox.css";
+import "../styles/home-refresh.css";
+import "../styles/learning.css";
+import TechnicalTermAutolinks from "../components/TechnicalTermAutolinks.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 type Crumb = { label: string; href?: string };
@@ -40,6 +43,7 @@ const fullTitle = title === "Home" ? "Nova Corp — an enterprise infrastructure
       <slot />
     </main>
     <SiteFooter />
+    <TechnicalTermAutolinks />
     <div class="atlas-scroll-progress" aria-hidden="true"></div>
     <script is:inline>
       (function(){

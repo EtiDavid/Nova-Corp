@@ -10,19 +10,24 @@ try {
   const desktop=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});
   await desktop.goto(host+"/",{waitUntil:"networkidle"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
-  await desktop.locator(".atlas-home").screenshot({path:out+"/physical-lab-home-desktop.png"});
-  await desktop.locator(".atlas-prox").click();
-  await desktop.locator("#hx-explorer").screenshot({path:out+"/physical-lab-inspector-desktop.png"});
+  await desktop.locator(".atlas-home").screenshot({path:out+"/home-lab-refined-desktop.png"});
+  await desktop.locator(".atlas-prox").hover();
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-inspector-hover-desktop.png"});
   await desktop.locator('[data-mode="identity"]').click();
-  await desktop.locator("#hx-explorer").screenshot({path:out+"/physical-lab-identity-path-desktop.png"});
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-identity-highlight-desktop.png"});
   await desktop.locator('[data-jump="guests"]').click();
   await desktop.waitForTimeout(650);
-  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-scrolled-to-guest-systems-desktop.png"});
-  await desktop.locator('.sb-guest[data-id="nova-files01"]').click();
-  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-fileserver-inspector-desktop.png"});
-  await desktop.locator(".atlas-editorial").scrollIntoViewIfNeeded();
-  await desktop.waitForTimeout(850);
-  await desktop.locator(".atlas-editorial").screenshot({path:out+"/scroll-revealed-outcomes-desktop.png"});
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-scrolled-to-guests-desktop.png"});
+  await desktop.locator('.sb-guest[data-id="nova-files01"]').hover();
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-fileserver-preview-desktop.png"});
+  await desktop.locator('.sb-guest[data-id="nova-dc01"]').click();
+  await desktop.locator(".system-evidence-section").screenshot({path:out+"/dc01-evidence-placeholder-desktop.png"});
+  await desktop.goto(host+"/",{waitUntil:"networkidle"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.locator(".il").screenshot({path:out+"/incident-library-collapsed-desktop.png"});
+  await desktop.locator("#il-more-controlled summary").click();
+  await desktop.locator("#il-more-unplanned summary").click();
+  await desktop.locator(".il").screenshot({path:out+"/incident-library-expanded-desktop.png"});
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   const lab=desktop.locator("#workflow-lab");
@@ -36,15 +41,14 @@ try {
   const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1});
   await mobile.goto(host+"/",{waitUntil:"networkidle"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
-  await mobile.locator(".atlas-home").screenshot({path:out+"/physical-lab-home-mobile.png"});
+  await mobile.locator(".atlas-home").screenshot({path:out+"/home-lab-refined-mobile.png"});
   await mobile.locator('[data-jump="guests"]').click();
-  await mobile.waitForTimeout(450);
+  await mobile.waitForTimeout(500);
   await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-scrolled-mobile.png"});
+  await mobile.locator('.sb-guest[data-id="nova-files01"]').focus();
+  await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-focused-guest-mobile.png"});
   await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
-  await mobile.locator("#hx-explorer").screenshot({path:out+"/physical-lab-selected-mobile.png"});
-  await mobile.waitForTimeout(620);
-  await mobile.locator("#sb-inspector").screenshot({path:out+"/lab-server-details-mobile.png"});
-
+  await mobile.locator(".system-evidence-section").screenshot({path:out+"/fileserver-evidence-placeholder-mobile.png"});
   await mobile.goto(host+"/company/?workflow=security",{waitUntil:"networkidle"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator("#workflow-lab").screenshot({path:out+"/workflow-security-mobile.png"});
@@ -58,7 +62,7 @@ try {
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator('#step-1 .r-challenge [data-choice="1"]').click();
   await mobile.locator("#replay").screenshot({path:out+"/dns-diagnostic-mobile.png"});
-  console.log("Captured sixteen real Chromium interaction, diagram-scroll, and mobile QA screenshots.");
+  console.log("Captured revised desktop/mobile screenshots for diagrams, system profiles, evidence placeholders and both incident groups.");
 } finally {
   await browser.close();
 }

@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ScrollableLabSandbox from "../components/ScrollableLabSandbox.astro";
+import LabIncidentLibrary from "../components/LabIncidentLibrary.astro";
 const base = import.meta.env.BASE_URL;
-const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
 ---
 <BaseLayout title="Home" description="Explore the enterprise infrastructure David Eti built, validated and deliberately tested through real troubleshooting investigations.">
   <section class="exp-hero atlas-home" aria-labelledby="exp-headline">
@@ -17,10 +17,9 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
           <p class="exp-subtitle">Explore how I built an enterprise-style environment inside a single physical host — from nested virtualization to networking, Active Directory and tested recovery.</p>
         </div>
         <div class="atlas-intro-aside">
-          <p class="exp-role"><strong>David Eti</strong> · Infrastructure &amp; systems engineering<br/>Documented, tested and explained through real home-lab incidents.<br/>Seeking infrastructure, system administration and DevOps opportunities in Belgium and the Netherlands.</p>
-          <div class="button-row">
-            <a class="btn" href={base+"company/"}>Explore the infrastructure <span aria-hidden="true">↗</span></a>
-            <a class="btn ghost" href={base+"incidents/dns-client-outage/"}>Replay a real failure <span aria-hidden="true">→</span></a>
+          <div class="button-row" aria-label="Start exploring the Nova Corp lab">
+            <a class="btn" href="#hx-explorer">Explore the infrastructure <span aria-hidden="true">↘</span></a>
+            <a class="btn ghost" href={base+"tour/"}>Take the guided tour <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </div>
@@ -28,91 +27,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     <div class="atlas-wide">
       <ScrollableLabSandbox />
     </div>
-    <div class="container atlas-after" data-reveal>
-      <p class="atlas-honesty">Nova Corp is a fictional company. The lab, configurations, failure tests and original engineering documentation are real. This is a dated architecture illustration, not live monitoring.</p>
-      <div class="exp-contact" aria-label="Professional links">
-        <a href={cv}>Download CV ↗</a>
-        <a href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
-        <a href="mailto:etidavid26@gmail.com">Email ↗</a>
-        <a href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
-      </div>
-    </div>
   </section>
 
-  <section class="exp-block atlas-editorial" aria-labelledby="exp-outcomes" data-reveal>
-    <div class="container">
-      <div class="exp-section-heading">
-        <div class="exp-eyebrow">01 / Documented outcomes</div>
-        <h2 id="exp-outcomes">I don't just configure systems. I test their failure modes.</h2>
-        <p>Every example below is tied to an actual investigation, observed behavior and the scope of what the test proves.</p>
-      </div>
-      <div class="exp-stories">
-        <article class="exp-story" data-reveal>
-          <small>IDENTITY / CONTROLLED OUTAGE</small>
-          <h3>One Domain Controller went offline.</h3>
-          <p>DC01 was deliberately taken down to test whether the other Domain Controller could continue serving the environment.</p>
-          <p class="result">DC02 handled the documented checks. Replication was checked after DC01 returned.</p>
-          <a href={base + "incidents/dc01-outage/"}>Inspect the evidence ↗</a>
-        </article>
-        <article class="exp-story">
-          <small>RECOVERY / FILE-LEVEL RESTORE</small>
-          <h3>A file was deleted. Then restored, byte for byte.</h3>
-          <p>A deliberately missing backup destination caused a failure. After repair, a disposable test file was restored.</p>
-          <p class="result">Original and restored SHA-256 fingerprints matched.</p>
-          <a href={base + "incidents/backup-target-unavailable/"}>Inspect the recovery ↗</a>
-        </article>
-        <article class="exp-story">
-          <small>SECURITY / MANAGEMENT ACCESS</small>
-          <h3>An employee network could reach firewall administration.</h3>
-          <p>The firewall management path was accessible when it should not have been. Specific block rules were added ahead of the broad pass.</p>
-          <p class="result">Management was blocked while required business access continued.</p>
-          <a href={base + "incidents/firewall-management-exposure/"}>Inspect the investigation ↗</a>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <section class="exp-block atlas-investigation" aria-labelledby="exp-investigation" data-reveal>
-    <div class="container exp-case">
-      <div>
-        <div class="exp-eyebrow">02 / Investigate the failure</div>
-        <h2 id="exp-investigation">“The IT folder won't open.”</h2>
-        <p>A shared folder failed by name. It would have been easy to blame the file server. Instead, I separated DNS resolution from basic network reachability to find out what was actually broken.</p>
-        <p style="margin-top:17px">Follow five recorded diagnostic steps. Reveal each result, see what it proves and watch the relevant path change on the diagram.</p>
-        <a href={base + "incidents/dns-client-outage/"} class="btn">Start the five-step investigation <span aria-hidden="true">↗</span></a>
-      </div>
-      <div class="exp-case-visual" aria-label="A real recorded diagnostic command and outcome">
-        <div class="exp-case-top"><span>INCIDENT REPLAY / DNS CLIENT</span><span>RECORDED TEST · NOV 2026</span></div>
-        <div class="exp-case-content">
-          <span class="exp-flag">SYMPTOM · SHARE FAILED BY NAME</span>
-          <div class="exp-cmd"><span style="color:#7896B0">PS&gt;</span> Test-NetConnection 10.10.20.20 -Port 445<br/><br/><b>TcpTestSucceeded: True</b></div>
-          <div class="exp-case-note">
-            <span aria-hidden="true">↳</span>
-            <span><b>What it established:</b> The file server answered on SMB port 445. The next checks focused on the workstation's name resolution rather than rebuilding the server.</span>
-          </div>
-          <p style="font-size:.74rem;color:#97ADC2;margin-top:15px">Recorded journal summary, not a live command or fabricated terminal screenshot.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="exp-block atlas-final" aria-labelledby="exp-next" data-reveal>
-    <div class="container exp-last">
-      <div>
-        <div class="exp-eyebrow">03 / Go deeper</div>
-        <h2 id="exp-next">See the systems. Follow the decisions. Verify the work.</h2>
-        <p class="lead">Start with the clickable infrastructure. Then explore the failure investigations, the change requests and the underlying engineering records. The details stay available without dominating the first impression.</p>
-        <div class="button-row" style="margin-top:22px">
-          <a class="btn" href={base + "tour/"}>Take the guided tour ↗</a>
-          <a class="btn ghost" href={base + "sources/"}>View engineering evidence ↗</a>
-        </div>
-      </div>
-      <aside class="planned">
-        <div class="exp-eyebrow">Next security milestone</div>
-        <h3 style="margin-top:12px">CR-016 / Privileged administration</h3>
-        <p>Separate administrative VPN access and stronger management-plane isolation. This is planned work, not a completed control.</p>
-        <a href={base + "roadmap/"}>View completed and planned work ↗</a>
-      </aside>
-    </div>
-  </section>
+  <LabIncidentLibrary />
 </BaseLayout>
