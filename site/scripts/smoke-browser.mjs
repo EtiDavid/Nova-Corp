@@ -30,7 +30,7 @@ try {
  await step("Homepage names the builder, the job target and contact actions",async()=>{
   const response=await desktop.goto(host+"/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
-  assert.match((await desktop.locator("h1").innerText()),/small company's IT infrastructure/i);
+  assert.match((await desktop.locator("h1").innerText()),/built the infrastructure/i);
   const body=await desktop.locator("body").innerText();
   assert(body.includes("David Eti")); assert(body.includes("Belgium and the Netherlands"));
   assert(body.includes("Nova Corp is fictional"));
@@ -38,8 +38,21 @@ try {
   const nav=await desktop.locator(".v4-nav a").allInnerTexts();
   assert.deepEqual(nav,["Explore","Investigations","Guided tour","Roadmap","About David"]);
   assert(!(body.includes("on hold")));
-  const mainLinks=await desktop.locator("main a").count();
-  assert(mainLinks<=14,"main content links: "+mainLinks);
+  assert.equal(await desktop.locator(".exp-hero .button-row a").count(),2,"two primary first-screen actions");
+  assert(await desktop.locator("#hx-explorer").isVisible(),"architecture explorer visible on homepage");
+  assert(await desktop.locator(".exp-hero h1").isVisible(),"main engineering statement visible");
+ });
+ await step("Homepage sandbox: highlight documented paths and inspect a real component",async()=>{
+  await desktop.goto(host+"/",{waitUntil:"networkidle"});
+  const explorer=desktop.locator("#hx-explorer");
+  await explorer.getByRole("button",{name:"Identity path"}).click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/employees sign in/i);
+  assert((await explorer.locator(".hx-path.is-active").count())>=3);
+  await explorer.locator('.hx-node[data-id="nova-dc01"]').click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/identity and DNS/i);
+  assert((await explorer.locator("#hx-case").getAttribute("href")).includes("incidents/dc01-outage/"));
+  await explorer.getByRole("button",{name:"File access"}).click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/shared files/i);
  });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
@@ -52,10 +65,51 @@ try {
   await desktop.keyboard.press("Escape");
   assert(!/focus=/.test(desktop.url()));
   assert.equal(await desktop.evaluate(()=>document.activeElement?.getAttribute("data-id")),"nova-dc01");
-  await desktop.getByRole("button",{name:"Network"}).click();
+  await desktop.locator('#tabs button[data-view="network"]').click();
   await desktop.waitForURL(/view=network/);
   await desktop.goto(host+"/company/?view=files&focus=nova-files01",{waitUntil:"networkidle"});
   assert(await desktop.locator("#sys-nova-files01").isVisible());
+ });
+ await step("Historical fault switch: DC01 outage and wrong client resolver display real limits",async()=>{
+  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
+  await desktop.locator('[data-scenario="dc01-outage"]').click();
+  assert(/scenario=dc01-outage/.test(desktop.url()));
+  assert.equal(await desktop.locator('.node.scenario-outage').count(),1);
+  assert.equal(await desktop.locator('.node.scenario-alternate').count(),1);
+  assert(/client selected DC02/i.test(await desktop.locator("#sim-text").innerText()));
+  await desktop.locator('[data-scenario="client-dns-fault"]').click();
+  assert(/scenario=client-dns-fault/.test(desktop.url()));
+  assert.equal(await desktop.locator('.node.scenario-misconfigured').count(),1);
+  assert(/192\.0\.2\.53/.test(await desktop.locator("#sim-text").innerText()));
+  await desktop.locator('#tabs button[data-view="overview"]').click();
+  assert(!/scenario=/.test(desktop.url()));
+  assert.equal(await desktop.locator('.node.scenario-outage').count(),0);
+ });
+ await step("Workflow lab traces four recorded routes and updates architecture focus",async()=>{
+  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
+  const lab=desktop.locator("#workflow-lab");
+  assert(await lab.isVisible());
+  assert.equal(await lab.locator("[data-flow-tab]").count(),4);
+  assert(await lab.locator('[data-flow="files"]').isVisible());
+  await lab.locator('[data-flow="files"] [data-next]').click();
+  assert((await lab.locator('[data-flow="files"] .wl-progress').innerText()).includes("Step 2 of 5"));
+  await lab.locator('[data-flow="files"] .wl-step.is-active [data-show-map]').click();
+  assert(/view=identity/.test(desktop.url()),"map view follows DNS path stage");
+  assert(/focus=nova-dc01/.test(desktop.url()),"map focuses the correct DNS server");
+  assert(await desktop.locator("#sys-nova-dc01").isVisible());
+  await lab.locator('[data-flow-tab="identity"]').click();
+  assert(await lab.locator('[data-flow="identity"]').isVisible());
+  assert(!(await lab.locator('[data-flow="files"]').isVisible()));
+  assert((await lab.locator('[data-flow="identity"] .wl-progress').innerText()).includes("Step 1 of 4"));
+  await lab.locator('[data-flow-tab="security"]').click();
+  assert(await lab.locator('[data-flow="security"]').isVisible());
+  await lab.locator('[data-flow-tab="recovery"]').click();
+  assert(await lab.locator('[data-flow="recovery"]').isVisible());
+  assert.equal(await desktop.locator(".exp-evidence-gallery img").count(),3);
+  for(const img of await desktop.locator(".exp-evidence-gallery img").all()){
+    assert((await img.getAttribute("alt")).length>18,"source screenshot requires descriptive alt");
+    assert((await img.getAttribute("src")).startsWith("/evidence/"));
+  }
  });
  await step("Investigations index filters; DNS replay steps and reveals recorded results",async()=>{
   await desktop.goto(host+"/incidents/",{waitUntil:"networkidle"});
@@ -66,8 +120,13 @@ try {
   await desktop.goto(host+"/incidents/dns-client-outage/",{waitUntil:"networkidle"});
   assert((await desktop.locator("#step-count").innerText()).includes("Step 1 of 5"));
   assert(!(await desktop.locator("#step-1 .reveal-target").isVisible()));
+  await desktop.locator('#step-1 .r-challenge [data-choice="0"]').click();
+  assert(/try a narrower diagnostic step/i.test(await desktop.locator('#step-1 .r-answer').innerText()));
+  await desktop.locator('#step-1 .r-challenge [data-choice="1"]').click();
+  assert(/best next check/i.test(await desktop.locator('#step-1 .r-answer').innerText()));
   await desktop.locator("#r-reveal").click();
   assert((await desktop.locator("#step-1").innerText()).includes("ERROR_TIMEOUT"));
+  assert(/server reachability is still unknown/i.test(await desktop.locator("#r-signal").innerText()));
   await desktop.locator("#r-next").click();
   assert((await desktop.locator("#step-count").innerText()).includes("Step 2 of 5"));
   assert(/step=2/.test(desktop.url()));
@@ -117,6 +176,10 @@ try {
   mobile.on("pageerror",e=>errors.push(e.message));
   await step(width+"px: menu hit target, navigation, no side scroll, explorer list and back",async()=>{
    await mobile.goto(host+"/",{waitUntil:"networkidle"});
+   const mini=mobile.locator("#hx-explorer .hx-mobile-list");
+   assert(await mini.isVisible(),"mobile provides accessible node list instead of tiny SVG");
+   await mini.locator('[data-id="nova-files01"]').click();
+   assert.match(await mobile.locator("#hx-title").innerText(),/shared files and recovery/i);
    const summary=mobile.locator(".v4-menu summary");
    assert(await summary.isVisible());
    const box=await summary.boundingBox();
@@ -130,6 +193,10 @@ try {
    assert(await mobile.locator("#sys-nova-files01").isVisible());
    await mobile.locator("#back-btn").click();
    assert(!(await mobile.locator("#sys-nova-files01").isVisible()));
+   const workflow=mobile.locator("#workflow-lab");
+   assert(await workflow.isVisible(),"guided workflow available on mobile");
+   await workflow.locator('[data-flow-tab="identity"]').click();
+   assert(await workflow.locator('[data-flow="identity"]').isVisible());
    const dimensions=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert(dimensions.scroll<=dimensions.inner+2,JSON.stringify(dimensions));
   });

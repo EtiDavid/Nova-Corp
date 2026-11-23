@@ -1,0 +1,206 @@
+---
+/** A source-backed, deliberately small architecture explorer.
+ *  It is a recorded snapshot, never a live infrastructure console.
+ */
+const base = import.meta.env.BASE_URL;
+const nodes = [
+  { id:"nova-client", name:"NOVA-CLIENT", role:"Employee workstation", number:"01", x:60, y:235, w:210, h:95, slug:"nova-client", tag:"CLIENT" },
+  { id:"nova-fw01", name:"NOVA-FW01", role:"pfSense / network boundary", number:"02", x:365, y:235, w:190, h:95, slug:"nova-fw01", tag:"FIREWALL" },
+  { id:"nova-dc01", name:"NOVA-DC01", role:"Directory + DNS", number:"03", x:690, y:100, w:225, h:90, slug:"nova-dc01", tag:"IDENTITY" },
+  { id:"nova-dc02", name:"NOVA-DC02", role:"Second directory + DNS", number:"04", x:690, y:235, w:225, h:90, slug:"nova-dc02", tag:"IDENTITY" },
+  { id:"nova-files01", name:"NOVA-FILES01", role:"Departmental file server", number:"05", x:690, y:365, w:225, h:90, slug:"nova-files01", tag:"STORAGE" },
+  { id:"nova-prox01", name:"NOVA-PROX01", role:"Proxmox VE host · nested in VMware", number:"06", x:185, y:510, w:625, h:62, slug:"nova-prox01", tag:"HOST" }
+];
+const paths = [
+  { id:"client-fw", d:"M270 283 H365", kind:"transit" },
+  { id:"fw-dc01", d:"M555 260 C625 260 625 145 690 145", kind:"identity" },
+  { id:"fw-dc02", d:"M555 282 H690", kind:"identity" },
+  { id:"fw-files", d:"M555 307 C625 307 625 410 690 410", kind:"files" },
+  { id:"dc-repl", d:"M802 190 V235", kind:"identity" },
+  { id:"files-dc", d:"M915 410 H946 V145 H915", kind:"support" }
+];
+const descriptions: Record<string,{ title:string; description:string; incident:string; caseUrl:string; record:string }> = {
+  "nova-client": { title:"The employee's workstation", description:"This Windows client was used to test domain logons, Group Policy, shared folders and restricted management access.", incident:"Follow the DNS investigation", caseUrl:"incidents/dns-client-outage/", record:"systems/nova-client/" },
+  "nova-fw01": { title:"The network boundary", description:"pfSense routes and filters traffic between documented network zones. Its administrative access was tested and tightened; the dedicated privileged-admin gate remains planned.", incident:"See the firewall investigation", caseUrl:"incidents/firewall-management-exposure/", record:"systems/nova-fw01/" },
+  "nova-dc01": { title:"Primary identity and DNS services", description:"NOVA-DC01 provides Active Directory and internal DNS. A controlled outage tested whether the remaining Domain Controller could keep essential services available.", incident:"Replay the DC01 outage", caseUrl:"incidents/dc01-outage/", record:"systems/nova-dc01/" },
+  "nova-dc02": { title:"The second Domain Controller", description:"NOVA-DC02 provided directory services during the controlled DC01 outage, and replication was checked after DC01 returned.", incident:"See the resilience evidence", caseUrl:"incidents/dc01-outage/", record:"systems/nova-dc02/" },
+  "nova-files01": { title:"Shared files and recovery", description:"NOVA-FILES01 provides departmental SMB shares with group-based access. A file-level restore was verified by matching SHA-256 fingerprints.", incident:"Explore a verified file restore", caseUrl:"incidents/backup-target-unavailable/", record:"systems/nova-files01/" },
+  "nova-prox01": { title:"The virtualization foundation", description:"Proxmox VE hosts the five depicted virtual machines in a nested VMware Workstation lab. All workloads share one physical host failure domain.", incident:"Investigate Proxmox storage pressure", caseUrl:"incidents/proxmox-storage-pressure/", record:"systems/nova-prox01/" }
+};
+---
+<div class="hx" id="hx-explorer" data-base={base} aria-label="Nova Corp interactive infrastructure preview">
+  <div class="hx-top">
+    <div class="hx-topline"><span class="hx-led" aria-hidden="true"></span><span>INFRASTRUCTURE / EXPLORE</span></div>
+    <span class="hx-snapshot">RECORDED SNAPSHOT · 22 NOV 2026</span>
+  </div>
+  <div class="hx-actions" role="group" aria-label="Highlight infrastructure paths">
+    <button class="hx-mode is-current" type="button" data-mode="all" aria-pressed="true">All systems</button>
+    <button class="hx-mode" type="button" data-mode="identity" aria-pressed="false">Identity path</button>
+    <button class="hx-mode" type="button" data-mode="files" aria-pressed="false">File access</button>
+  </div>
+  <div class="hx-visual">
+    <svg id="hx-map" viewBox="0 0 1000 600" role="group" aria-label="Select a workstation, firewall, Domain Controller, file server or Proxmox host to learn about its role.">
+      <defs>
+        <pattern id="hx-dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#33546E" opacity=".52"/></pattern>
+        <marker id="hx-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10Z" fill="#6B8BA4"/></marker>
+      </defs>
+      <rect x="0" y="0" width="1000" height="600" fill="url(#hx-dots)"/>
+      <rect x="25" y="47" width="950" height="431" rx="17" fill="#0C1929" fill-opacity=".25" stroke="#37506A" stroke-dasharray="7 8"/>
+      <text class="hx-group-label" x="48" y="76">VIRTUAL MACHINES / DOCUMENTED SYSTEMS</text>
+      {paths.map(p => <path class={"hx-path hx-" + p.kind} data-path={p.id} d={p.d} marker-end="url(#hx-arrow)"/>)}
+      <text class="hx-edge-note" x="291" y="269">ROUTED</text>
+      <text class="hx-edge-note" x="605" y="123">DNS / AD</text>
+      <text class="hx-edge-note" x="607" y="396">SMB</text>
+      {nodes.map(n => (
+        <a class="hx-node" data-id={n.id} href={base + "systems/" + n.slug + "/"} aria-label={"Inspect " + n.name + ", " + n.role}>
+          <g transform={"translate(" + n.x + "," + n.y + ")"}>
+            <rect class="hx-node-rect" width={n.w} height={n.h} rx="13"/>
+            <rect class="hx-node-accent" x="0" y="0" width="3" height={n.h} rx="1.5"/>
+            <text class="hx-node-number" x="17" y={n.id === "nova-prox01" ? 22 : 23}>{n.number} / {n.tag}</text>
+            <text class="hx-node-name" x="17" y={n.id === "nova-prox01" ? 42 : 52}>{n.name}</text>
+            <text class="hx-node-role" x="17" y={n.id === "nova-prox01" ? 56 : 73}>{n.role}</text>
+            <circle class="hx-port" cx={n.w - 20} cy="22" r="4"/>
+          </g>
+        </a>
+      ))}
+    </svg>
+    <div class="hx-mobile-list" aria-label="Select a documented system">
+      {nodes.map(n => <a href={base + "systems/" + n.slug + "/"} data-id={n.id}><span>{n.name}</span><small>{n.role}</small><span class="hx-marrow" aria-hidden="true">↗</span></a>)}
+    </div>
+  </div>
+  <div class="hx-bottom">
+    <div class="hx-readout" aria-live="polite" aria-atomic="true">
+      <span class="hx-readout-label" id="hx-label">SELECT A COMPONENT</span>
+      <strong id="hx-title">Explore the systems behind the company.</strong>
+      <p id="hx-description">Choose a node above, or highlight an identity or file-access path to see how the documented services connect.</p>
+    </div>
+    <div class="hx-readout-actions">
+      <a id="hx-case" class="hx-case" href={base + "company/"}>Open interactive map <span aria-hidden="true">↗</span></a>
+      <a id="hx-record" class="hx-record" href={base + "sources/"}>Source evidence ↗</a>
+    </div>
+  </div>
+  <noscript><p class="hx-noscript">The diagram's system labels and links work without JavaScript. Select any system to open its evidence-backed page.</p></noscript>
+  <script is:inline type="application/json" id="hx-data" set:html={JSON.stringify(descriptions)}></script>
+</div>
+
+<script is:inline>
+(function(){
+  var root = document.getElementById('hx-explorer');
+  if(!root) return;
+  var base = root.dataset.base;
+  var descriptions = JSON.parse(document.getElementById('hx-data').textContent);
+  var buttons = Array.prototype.slice.call(root.querySelectorAll('[data-mode]'));
+  var nodes = Array.prototype.slice.call(root.querySelectorAll('[data-id]'));
+  var paths = Array.prototype.slice.call(root.querySelectorAll('[data-path]'));
+  var title = document.getElementById('hx-title');
+  var description = document.getElementById('hx-description');
+  var label = document.getElementById('hx-label');
+  var caseLink = document.getElementById('hx-case');
+  var recordLink = document.getElementById('hx-record');
+  var mode='all', selected=null;
+  var modes = {
+    all:{title:'Explore the systems behind the company.',text:'Choose a node above, or highlight an identity or file-access path to see how the documented services connect.',url:'company/',link:'Open interactive map',paths:[],nodes:[]},
+    identity:{title:'How do employees sign in?',text:'The workstation queries internal DNS and relies on Active Directory. Two Domain Controllers were used in a controlled resilience test.',url:'company/?view=identity',link:'Explore identity relationships',paths:['client-fw','fw-dc01','fw-dc02','dc-repl'],nodes:['nova-client','nova-fw01','nova-dc01','nova-dc02']},
+    files:{title:'How do employees reach shared files?',text:'Name resolution and authentication are distinct from the SMB connection to NOVA-FILES01. Department access also depends on group and folder permissions.',url:'company/?view=files',link:'Explore the file-access path',paths:['client-fw','fw-dc01','fw-files','files-dc'],nodes:['nova-client','nova-fw01','nova-dc01','nova-files01']}
+  };
+  function render(){
+    var active=modes[mode];
+    buttons.forEach(function(b){
+      var is=b.dataset.mode===mode;b.classList.toggle('is-current',is);b.setAttribute('aria-pressed',String(is));
+    });
+    nodes.forEach(function(n){
+      var id=n.dataset.id; n.classList.toggle('is-selected',id===selected);
+      n.classList.toggle('is-muted',!selected&&active.nodes.length>0&&active.nodes.indexOf(id)===-1);
+    });
+    paths.forEach(function(p){
+      p.classList.toggle('is-active',active.paths.indexOf(p.dataset.path)!==-1);
+      p.classList.toggle('is-muted',active.paths.length>0&&active.paths.indexOf(p.dataset.path)===-1);
+    });
+    if(selected){
+      var d=descriptions[selected];
+      label.textContent='SELECTED / '+selected.toUpperCase();
+      title.textContent=d.title;description.textContent=d.description;
+      caseLink.href=base+d.caseUrl;caseLink.firstChild.textContent=d.incident+' ';
+      recordLink.href=base+d.record;recordLink.textContent='Full system record ↗';
+    }else{
+      label.textContent=mode==='all'?'SELECT A COMPONENT':'PATH / '+mode.toUpperCase();
+      title.textContent=active.title;description.textContent=active.text;
+      caseLink.href=base+active.url;caseLink.firstChild.textContent=active.link+' ';
+      recordLink.href=base+'sources/';recordLink.textContent='Source evidence ↗';
+    }
+  }
+  buttons.forEach(function(b){b.addEventListener('click',function(){mode=b.dataset.mode;selected=null;render();});});
+  nodes.forEach(function(n){n.addEventListener('click',function(e){
+    if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button!==0) return;
+    e.preventDefault();selected=n.dataset.id;render();
+  });});
+  render();
+})();
+</script>
+
+<style>
+.hx { color:#E9F3FC; background:linear-gradient(145deg,#122235,#0C1827 66%); border:1px solid #344D67; border-radius:22px; box-shadow:0 36px 90px #0007, inset 0 1px #ffffff0a; overflow:hidden; min-width:0; }
+.hx-top { padding:19px 21px 14px; border-bottom:1px solid #304258; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.hx-topline { display:flex; gap:10px; align-items:center; color:#D0E6F3; font:750 .72rem/1.4 var(--font-mono); letter-spacing:.1em; }
+.hx-led { width:8px;height:8px;border-radius:50%;background:#65D7CA;box-shadow:0 0 18px #4DCDC455; }
+.hx-snapshot { color:#91A6BE; font:650 .62rem/1.4 var(--font-mono); letter-spacing:.04em; }
+.hx-actions { display:flex; flex-wrap:wrap; gap:7px; padding:14px 20px 0; }
+.hx-mode { border:1px solid #3A5068; border-radius:8px; background:#17283B; color:#AEC4D9; min-height:38px; padding:7px 11px; font:650 .73rem var(--font-ui); }
+.hx-mode:hover { border-color:#77BDB4; color:#E4FFF9; }
+.hx-mode.is-current { color:#0C2426; background:#7CE4D7; border-color:#7CE4D7; }
+.hx-visual { position:relative; padding:0 8px; }
+.hx svg { width:100%; height:auto; display:block; }
+.hx-group-label { font:700 13px var(--font-mono); letter-spacing:.09em; fill:#8AA6BF; }
+.hx-path { stroke:#5B788E; stroke-width:2.4; fill:none; opacity:.72; transition:opacity .3s,stroke .3s,stroke-width .3s; }
+.hx-path.hx-identity { stroke:#AA9AE5; }
+.hx-path.hx-files { stroke:#58C9B9; }
+.hx-path.hx-support { stroke-dasharray:6 6; }
+.hx-path.is-muted { opacity:.12; }
+.hx-path.is-active { stroke:#80E8D9; stroke-width:3.4; opacity:1; stroke-dasharray:8 11; animation:hx-flow 3s linear infinite; }
+.hx-path[data-path="client-fw"]:not(.is-active):not(.is-muted) { stroke:#6FCFC4; stroke-dasharray:5 12; animation:hx-flow 9s linear infinite; opacity:.86; }
+@keyframes hx-flow { to { stroke-dashoffset:-38; } }
+.hx-edge-note { fill:#88A5BD; font:700 10.5px var(--font-mono); letter-spacing:.08em; }
+.hx-node { cursor:pointer; text-decoration:none; }
+.hx-node-rect { fill:#15273A; stroke:#47647C; stroke-width:1.5; transition:fill .2s,stroke .2s; }
+.hx-node-accent { fill:#47747F; }
+.hx-node-number { fill:#82CFC6; font:700 11px var(--font-mono); letter-spacing:.03em; }
+.hx-node-name { fill:#F1F7FC; font:750 19px var(--font-ui); letter-spacing:-.02em; }
+.hx-node-role { fill:#A4BED1; font:500 12px var(--font-ui); }
+.hx-port { fill:#69D8CB; opacity:.84; }
+.hx-node:hover .hx-node-rect,.hx-node:focus-visible .hx-node-rect,.hx-node.is-selected .hx-node-rect { fill:#203F4A; stroke:#81EBDD; stroke-width:2.4; }
+.hx-node:focus-visible { outline:none; }
+.hx-node.is-selected .hx-node-accent { fill:#80E8D9; }
+.hx-node.is-muted { opacity:.23; }
+.hx-node:focus-visible .hx-node-name { text-decoration:underline; }
+.hx-bottom { border-top:1px solid #31475E; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; padding:18px 22px 21px; align-items:center; min-height:145px; background:#111F30; }
+.hx-readout-label { display:block; color:#7ED9CD; font:750 .65rem var(--font-mono); letter-spacing:.13em; margin-bottom:8px; }
+.hx-readout strong { font-size:1.03rem; line-height:1.35; display:block; }
+.hx-readout p { color:#A9BFD2; font-size:.78rem; margin-top:6px; line-height:1.55; max-width:58ch; }
+.hx-readout-actions { display:flex; flex-direction:column; align-items:flex-start; gap:10px; min-width:160px; font-size:.75rem; }
+.hx-case { color:#80EEE1; font-weight:750; text-decoration:none; }
+.hx-record { color:#9DB4C9; }
+.hx-case:hover,.hx-record:hover { color:#E7FFFB; }
+.hx-mobile-list { display:none; }
+.hx-noscript { padding:12px 20px; color:#B9CCDE; }
+@media(max-width:750px) {
+  .hx-bottom { grid-template-columns:1fr; gap:13px; }
+  .hx-readout-actions { flex-direction:row; flex-wrap:wrap; }
+}
+@media(max-width:560px) {
+  .hx-top { padding:15px; }
+  .hx-actions { padding:12px 14px 0; }
+  .hx-mode { font-size:.7rem; padding:6px 10px; }
+  .hx svg { display:none; }
+  .hx-mobile-list { display:grid; grid-template-columns:1fr 1fr; gap:9px; padding:15px; }
+  .hx-mobile-list a { background:#17283B; border:1px solid #39526A; border-radius:10px; min-width:0; display:grid; gap:3px; padding:12px; text-decoration:none; position:relative; }
+  .hx-mobile-list a span:first-child { color:#E9F7F9; font:700 .73rem var(--font-mono); }
+  .hx-mobile-list a small { color:#A8BED1; font-size:.7rem; line-height:1.3; max-width:17ch; }
+  .hx-mobile-list a.is-selected { border-color:#80E8D9; background:#1B3B3E; }
+  .hx-mobile-list a .hx-marrow { position:absolute; right:9px; top:7px; color:#8CECE2; }
+  .hx-bottom { padding:16px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .hx-path.is-active,.hx-path[data-path="client-fw"]:not(.is-active):not(.is-muted) { animation:none; stroke-dasharray:none; }
+  .hx-node-rect { transition:none; }
+}
+</style>
