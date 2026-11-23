@@ -15,7 +15,7 @@ const incidents = defineCollection({
 });
 
 const reference = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "./src/content/reference" }),
+  loader: glob({ pattern: "**/*.md", base: "./src/content/reference", generateId: ({entry}) => entry.replace(/\.md$/i, "") }),
   schema: z.object({
     title: z.string(),
     sourcePath: z.string(),
