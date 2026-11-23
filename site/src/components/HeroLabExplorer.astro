@@ -105,7 +105,7 @@ const titles:Record<string,string>={
       </div>
       <p class="atlas-vm-note">Documented guests hosted inside Proxmox · select any system</p>
       <div class="hx-mobile-list" aria-label="Select a documented system on a mobile device">
-      {[systems.find(s=>s.id==="nova-prox01"),...cards].filter(Boolean).map(s=><a href={base+"systems/"+s!.slug+"/"} data-id={s!.id}><span>{s!.name.toUpperCase()}</span><small>{s!.category}</small><span class="hx-marrow" aria-hidden="true">↗</span></a>)}
+      {cards.map(s=><a href={base+"systems/"+s.slug+"/"} data-id={s.id}><span>{s.name.toUpperCase()}</span><small>{s.category}</small><span class="hx-marrow" aria-hidden="true">↗</span></a>)}
     </div>
     </div>
   </div>
