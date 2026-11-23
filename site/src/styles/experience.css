@@ -205,3 +205,54 @@ pre,.cmd { background:#08131F; color:#E7F6F2; border:1px solid #2D4359; }
   .exp-block { padding:52px 0; }
   .exp-case-content { padding:17px; }
 }
+
+
+/* Deep-documentation surfaces must inherit the dark reading experience.
+   Screenshots themselves remain untouched and retain accurate contrast. */
+.note,.note.warning,.detail-disclosure,.searchbox,.layout-graph,.directory-tree details,
+.acl-group,.journey,.incident-card,.rule-entry,.proof-grid > div {
+  color:var(--ink); background:#142236; border-color:#34495F;
+}
+.note { color:#C8D9E8; }
+.note.warning { background:#352B20; border-color:#846544; color:#FFE8CB; }
+.detail-disclosure summary,.search-label,.tree-item,.proof-grid strong,
+.acl-group > summary strong,.rule-entry strong { color:#E7F2FB; }
+.detail-disclosure summary:hover { color:#8BEDE3; }
+.source-line,.fact-list dt,.data-table caption,.proof-grid p,.evidence-figure figcaption small,
+.acl-group > summary small,.rule-entry small { color:#A7BCD0; }
+.searchbox:focus-within { outline:2px solid #72DCCF; }
+.searchbox input { color:#F5FBFF; }
+.searchbox input::placeholder { color:#94A8BF; }
+.prose blockquote { background:#182B3C; color:#E4F0F5; }
+.data-table { color:#E5F0F8; }
+.data-table thead { background:#1D3045; }
+.data-table th,.data-table td { border-color:#34495F; }
+.data-table tbody tr:hover { background:#203B45; }
+.data-table a,.tree-item a { color:#8BEDE3; }
+.tree-item { color:#E1EDF7; }
+.tree-item:hover { color:#ABFFF2; background:#1D3848; }
+.tree-children { border-color:#405D74; }
+.ou-branch { border-color:#416E79; }
+.rule-entry:hover,.journey:hover,.incident-card:hover { background:#1D3244; border-color:#72DCCF; color:var(--ink); }
+.rule-entry .rule-action.pass { color:#A5F3D5; background:#1B483B; }
+.rule-entry .rule-action.block { color:#FFC3C5; background:#4B2831; }
+.proof-grid p { color:#B5C9DB; }
+.proof-grid.vertical .proof-item { border-color:#55C8BA; }
+.mini-badge { color:#99F2E5; background:#1C3B3A; }
+.evidence-figure a:first-child { background:#1D3045; }
+.acl-group > summary:hover,.acl-group[open] > summary { background:#1B3043; }
+.acl-group > summary > span:last-child { color:#8DEAE0; }
+.acl-table-wrap tr:target { background:#174947; outline-color:#5DDCCE; }
+.journey-number,.incident-card .readmore,.journey .readmore { color:#8DEAE0; }
+.incident-chip { color:#A5EFD1; background:#1B4439; }
+.incident-chip.pending { color:#FFD4A0; background:#49351F; }
+.feature-band { background:#101D2E; border-color:#2B425A; }
+.credit-band { border-color:#2B425A; }
+.header-search,.mobile-nav summary,.mobile-nav nav { background:#142236; border-color:#395069; color:#E5F2FB; }
+.header-search:hover,.mobile-nav[open] summary { background:#1C3B43; }
+.mobile-nav nav a { color:#DCEAF5; }
+.mobile-nav nav a:hover,.mobile-nav nav a[aria-current="page"] { color:#A3F2E9; background:#1F3A47; }
+.footer p { color:#B3C4D6; }
+.empty { border-color:#49627B; color:#AABFD2; }
+.rule-action.pass { color:#B9F6D9; background:#1D4D3C; }
+.rule-action.block { color:#FFD0D1; background:#52282D; }
