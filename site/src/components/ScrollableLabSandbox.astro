@@ -8,13 +8,13 @@
 import { systems } from "../data/model";
 const base=import.meta.env.BASE_URL;
 const ids=["nova-prox01","nova-fw01","nova-dc01","nova-dc02","nova-client","nova-files01"];
-const display:Record<string,{name:string;role:string;service:string;icon:string;zone:string;incident:string;incidentPath:string}> = {
-  "nova-prox01":{name:"NOVA-PROX01",role:"Virtualization",service:"Proxmox VE 9.2.2",icon:"proxmox",zone:"NESTED HYPERVISOR",incident:"Investigate storage pressure",incidentPath:"incidents/proxmox-storage-pressure/"},
-  "nova-fw01":{name:"NOVA-FW01",role:"Routing & security",service:"pfSense CE 2.8.1",icon:"pfsense",zone:"NETWORK / VLAN BOUNDARY",incident:"Review the firewall hardening test",incidentPath:"incidents/firewall-management-exposure/"},
-  "nova-dc01":{name:"NOVA-DC01",role:"Identity & DNS",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Investigate a controlled DC outage",incidentPath:"incidents/dc01-outage/"},
-  "nova-dc02":{name:"NOVA-DC02",role:"Resilient identity",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Review DC02's failover evidence",incidentPath:"incidents/dc01-outage/"},
-  "nova-client":{name:"NOVA-CLIENT",role:"Employee workstation",service:"Windows client",icon:"windows",zone:"CLIENT · VLAN 40",incident:"Diagnose the DNS share failure",incidentPath:"incidents/dns-client-outage/"},
-  "nova-files01":{name:"NOVA-FILES01",role:"File services",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Inspect the tested file recovery",incidentPath:"incidents/backup-target-unavailable/"}
+const display:Record<string,{name:string;role:string;service:string;icon:string;zone:string;incident:string;incidentPath:string;address:string}> = {
+  "nova-prox01":{name:"NOVA-PROX01",role:"Virtualization",service:"Proxmox VE 9.2.2",icon:"proxmox",zone:"NESTED HYPERVISOR",incident:"Investigate storage pressure",incidentPath:"incidents/proxmox-storage-pressure/",address:"192.168.178.26 / Management"},
+  "nova-fw01":{name:"NOVA-FW01",role:"Routing & security",service:"pfSense CE 2.8.1",icon:"pfsense",zone:"NETWORK / VLAN BOUNDARY",incident:"Review the firewall hardening test",incidentPath:"incidents/firewall-management-exposure/",address:"192.168.178.71 / WAN · 10.10.10.1 / MGMT"},
+  "nova-dc01":{name:"NOVA-DC01",role:"Identity & DNS",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Investigate a controlled DC outage",incidentPath:"incidents/dc01-outage/",address:"10.10.20.10"},
+  "nova-dc02":{name:"NOVA-DC02",role:"Resilient identity",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Review DC02's failover evidence",incidentPath:"incidents/dc01-outage/",address:"10.10.20.11"},
+  "nova-client":{name:"NOVA-CLIENT",role:"Employee workstation",service:"Windows client",icon:"windows",zone:"CLIENT · VLAN 40",incident:"Diagnose the DNS share failure",incidentPath:"incidents/dns-client-outage/",address:"10.10.40.100"},
+  "nova-files01":{name:"NOVA-FILES01",role:"File services",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Inspect the tested file recovery",incidentPath:"incidents/backup-target-unavailable/",address:"10.10.20.20"}
 };
 const info:Record<string,any>={};
 for(const id of ids){
@@ -35,16 +35,16 @@ for(const id of ids){
  };
 }
 const nodes=ids.map(id=>({id,...display[id]}));
-const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
+const iconURL=(slug:string)=>base+"brands/"+slug+"-color.svg";
 ---
 <section class="sb" id="hx-explorer" data-base={base} aria-label="Scrollable Nova Corp infrastructure sandbox">
   <header class="sb-head">
     <div class="sb-heading">
       <span class="sb-kicker"><span aria-hidden="true" class="sb-kicker-pip"></span> INTERACTIVE LAB / BUILD MAP</span>
-      <h2>Step inside the infrastructure.</h2>
-      <p>Scroll within the diagram. Select a server to inspect its real configuration, relationships and engineering evidence.</p>
+      <h2>Explore the homelab, layer by layer.</h2>
+      <p>Scroll through the virtual infrastructure. Open any server to see its profile, configuration and original engineering records.</p>
     </div>
-    <div class="sb-facts"><span>6 SYSTEMS IN THE MAP</span><strong>22 NOV 2026</strong><small>Documented snapshot · not live telemetry</small></div>
+    <div class="sb-facts sb-facts-refined"><img src={base+"brands/server-corner.svg"} width="47" height="47" alt="Server rack symbol" loading="eager"/><span>THE NOVA LAB</span><small>Recorded topology · no live telemetry</small></div>
   </header>
   <div class="sb-nav" role="group" aria-label="Jump to a layer in the scrollable lab">
     <button type="button" data-jump="hypervisor" aria-pressed="true"><span>01</span> Proxmox</button>
@@ -62,7 +62,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
             <div class="sb-layer-tag">LAYER 01 <span>Virtualization platform</span></div>
             <a href={info["nova-prox01"].record} class="sb-node sb-node-main hx-node atlas-prox" data-id="nova-prox01" aria-label="Inspect NOVA-PROX01 Proxmox virtualization server">
               <span class="sb-logo sb-logo-main"><img src={iconURL("proxmox")} alt="Proxmox product logo" width="54" height="54" loading="eager"/></span>
-              <span class="sb-node-copy"><span class="sb-mini">HYPERVISOR / NESTED IN VMWARE</span><strong>NOVA-PROX01</strong><span>Proxmox Virtual Environment</span><span class="sb-micro">Hosts the five virtual machines shown below</span></span>
+              <span class="sb-node-copy"><span class="sb-mini">HYPERVISOR / NESTED IN VMWARE</span><strong>NOVA-PROX01</strong><span>Proxmox Virtual Environment</span><span class="sb-micro">192.168.178.26 · Management IP</span><span class="sb-micro">Hosts the five illustrated virtual machines</span></span>
               <span class="sb-node-arrow" aria-hidden="true">↗</span>
             </a>
             <div class="sb-spine sb-spine-first" aria-hidden="true"><span></span></div>
@@ -72,7 +72,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
             <div class="sb-layer-tag">LAYER 02 <span>Routing &amp; security</span></div>
             <a href={info["nova-fw01"].record} class="sb-node sb-node-main hx-node" data-id="nova-fw01" aria-label="Inspect NOVA-FW01 pfSense firewall">
               <span class="sb-logo sb-logo-main"><img src={iconURL("pfsense")} alt="pfSense product logo" width="54" height="54" loading="eager"/></span>
-              <span class="sb-node-copy"><span class="sb-mini">PFSENSE / NETWORK BOUNDARY</span><strong>NOVA-FW01</strong><span>pfSense CE 2.8.1</span><span class="sb-micro">Routes approved traffic between network zones</span></span>
+              <span class="sb-node-copy"><span class="sb-mini">PFSENSE / NETWORK BOUNDARY</span><strong>NOVA-FW01</strong><span>pfSense CE 2.8.1</span><span class="sb-micro">WAN 192.168.178.71 · MGMT 10.10.10.1</span><span class="sb-micro">Routes approved traffic between network zones</span></span>
               <span class="sb-node-arrow" aria-hidden="true">↗</span>
             </a>
             <div class="sb-spine sb-spine-second" aria-hidden="true"><span></span></div>
@@ -86,10 +86,8 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
                 {nodes.slice(2).map((n,i)=><a href={info[n.id].record} class="sb-node sb-guest hx-node" data-id={n.id} aria-label={"Inspect "+n.name+", "+n.role}>
                   <span class="sb-guest-top"><span class="sb-system-number">0{i+1}</span><span class="sb-zone">{n.zone}</span></span>
                   <span class="sb-guest-content">
-                    <span class="sb-logo sb-logo-windows" aria-label={n.service+" operating system"}>
-                      <svg viewBox="0 0 48 48" role="img" aria-label="Four-pane Windows operating system icon"><path d="M5 8 L22 5 V22 H5Z M26 4 L43 1 V22 H26Z M5 26 H22 V43 L5 40Z M26 26 H43 V47 L26 44Z" fill="currentColor"/></svg>
-                    </span>
-                    <span><strong class="sb-system-name">{n.name}</strong><span class="sb-system-purpose">{n.role}</span><span class="sb-system-os">{n.service}</span></span>
+                    <span class="sb-logo sb-logo-windows"><img src={iconURL("windows-server")} alt="Windows Server product-family mark" width="90" height="34" loading="lazy"/></span>
+                    <span><strong class="sb-system-name">{n.name}</strong><span class="sb-system-purpose">{n.role}</span><span class="sb-system-os">{n.service}</span><span class="sb-system-ip">{n.address}</span></span>
                   </span>
                   <span class="sb-node-arrow" aria-hidden="true">↗</span>
                 </a>)}
@@ -127,7 +125,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
         <a href={base+"company/"} id="hx-case">Explore architecture relationships ↗</a>
         <a href={base+"sources/"} id="sb-source">Original source document ↗</a>
       </div>
-      <p class="sb-inspector-note">The inspector presents dated documentation, not live VM status or remote access.</p>
+      <p class="sb-inspector-note">Hover or focus to preview a system; click its card for the complete profile. The content is documented, not live telemetry.</p>
     </aside>
   </div>
   <footer class="sb-footer">
@@ -137,7 +135,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
       <button type="button" class="hx-mode" data-mode="identity" aria-pressed="false">Identity / DNS</button>
       <button type="button" class="hx-mode" data-mode="files" aria-pressed="false">File access</button>
     </div>
-    <p>Original vector illustration + product logos · Six documented systems · Proxmox hosts the five depicted guests · <a href={base+"company/"}>Open the full interactive company explorer ↗</a></p>
+    <p>Illustrative connection animation, not live traffic · Recorded addresses, not current reachability · Proxmox hosts the five depicted guests · <a href={base+"company/"}>Open the full interactive company explorer ↗</a></p>
   </footer>
   <noscript><p class="sb-noscript">The lab diagram is scrollable using a keyboard, trackpad or touch, and each server links to its documentation. Interactive in-place inspection requires JavaScript.</p></noscript>
   <script id="sb-data" type="application/json" set:html={JSON.stringify(info).replace(/</g,"\\u003c")}></script>
@@ -175,7 +173,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
    label.textContent="SELECTED / "+id.toUpperCase();
    title.textContent=d.name+" · "+d.role;
    description.textContent=d.summary;
-   asOf.textContent="AS OF "+d.asOf;
+   asOf.textContent="DOCUMENTED RECORD";
    facts.replaceChildren();
    d.facts.forEach(function(item){var dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=item.label;dd.textContent=item.value;facts.append(dt,dd);});
    limits.replaceChildren();
@@ -198,6 +196,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
    });
    record.href=d.record;caseLink.href=d.incidentUrl;source.href=d.sourceUrl;
    record.textContent="Open "+d.name+" profile ↗";
+   document.dispatchEvent(new CustomEvent("novacorp:content-updated",{detail:{root:document.getElementById("sb-inspector")}}));
    caseLink.textContent=d.incident+" ↗";
    if(updateURL&&window.history){
      var u=new URL(location.href);u.searchParams.set("system",id);
@@ -210,13 +209,12 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
    root.dataset.mode=mode;
  }
  modes.forEach(function(button){button.addEventListener("click",function(){mode=button.dataset.mode;renderMode();if(mode!=="all"){var node=root.querySelector('.sb-node[data-id="'+(mode==="identity"?"nova-dc01":"nova-files01")+'"]');if(node){var top=node.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-165;scrollport.scrollTo({top:Math.max(0,top),behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}}});});
- nodes.forEach(function(node){node.addEventListener("click",function(e){
-   if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button!==0)return;
-   e.preventDefault();select(node.dataset.id,true);
-   if(window.matchMedia("(max-width: 780px)").matches){
-     document.getElementById("sb-inspector").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
-   }
- });});
+ nodes.forEach(function(node){
+   // A server card is a genuine link; click/Enter goes to its profile.
+   // Preview on hover/focus remains available without hijacking navigation.
+   node.addEventListener("mouseenter",function(){select(node.dataset.id,false);});
+   node.addEventListener("focus",function(){select(node.dataset.id,false);});
+ });
  function jump(target){
    var el=root.querySelector('[data-layer="'+target+'"]');if(!el)return;
    var top=el.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-18;
