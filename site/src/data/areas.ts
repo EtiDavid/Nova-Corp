@@ -13,7 +13,7 @@ export type Area = {
 const docs = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/";
 export const areas: Area[] = [
   {
-    id: "control-room", number: "01", name: "IT Control Room", shortName: "Systems",
+    id: "control-room", number: "01", name: "Systems", shortName: "Systems",
     question: "What keeps the company running?",
     description: "Explore the virtual servers behind sign-ins, shared files and the company firewall.",
     accent: "blue", systemIds: ["nova-prox01", "nova-fw01", "nova-dc01", "nova-dc02", "nova-files01", "nova-client"],
@@ -21,7 +21,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "virtualization/README.md"
   },
   {
-    id: "identity-office", number: "02", name: "Identity Office", shortName: "Identity",
+    id: "identity-office", number: "02", name: "Identity", shortName: "Identity",
     question: "How do employees sign in?",
     description: "Meet the directory services, accounts and rules that control access.",
     accent: "teal", systemIds: ["nova-dc01", "nova-dc02", "nova-client"],
@@ -29,7 +29,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "DIRECTORY.md"
   },
   {
-    id: "department-offices", number: "03", name: "Department Offices", shortName: "People",
+    id: "department-offices", number: "03", name: "People and access", shortName: "People",
     question: "Who needs access to company resources?",
     description: "See how fictional departments connect to identities, groups and files.",
     accent: "purple", systemIds: ["nova-dc01", "nova-files01"],
@@ -37,7 +37,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "PEOPLE_AND_DEPARTMENTS.md"
   },
   {
-    id: "network-gatehouse", number: "04", name: "Network Gatehouse", shortName: "Network",
+    id: "network-gatehouse", number: "04", name: "Network", shortName: "Network",
     question: "How are company systems separated?",
     description: "Follow traffic through pfSense and the network areas around it.",
     accent: "blue", systemIds: ["nova-fw01", "nova-client", "nova-dc01", "nova-files01"],
@@ -45,7 +45,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "NETWORK.md"
   },
   {
-    id: "file-records", number: "05", name: "File & Records Room", shortName: "Files",
+    id: "file-records", number: "05", name: "Files", shortName: "Files",
     question: "Who can open each department folder?",
     description: "Explore shared folders, identity-based access and the company file server.",
     accent: "sky", systemIds: ["nova-files01", "nova-dc01", "nova-client"],
@@ -53,7 +53,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "FILE_SERVICES.md"
   },
   {
-    id: "recovery-centre", number: "06", name: "Recovery Centre", shortName: "Recovery",
+    id: "recovery-centre", number: "06", name: "Recovery", shortName: "Recovery",
     question: "What happens when something breaks?",
     description: "Understand the backup layers and the recovery exercises that really happened.",
     accent: "teal", systemIds: ["nova-files01", "nova-dc01", "nova-prox01"],
@@ -61,7 +61,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "services/BACKUPS.md"
   },
   {
-    id: "incident-lab", number: "07", name: "Incident Lab", shortName: "Incidents",
+    id: "incident-lab", number: "07", name: "Investigations", shortName: "Incidents",
     question: "How did we diagnose real failures?",
     description: "Start with the symptom. Follow the tests, repair and evidence.",
     accent: "amber", systemIds: ["nova-dc01", "nova-dc02", "nova-files01", "nova-fw01"],
@@ -69,7 +69,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "TESTS_AND_RECOVERY.md"
   },
   {
-    id: "roadmap-wing", number: "08", name: "Roadmap Wing", shortName: "Next",
+    id: "roadmap-wing", number: "08", name: "Roadmap", shortName: "Next",
     question: "What has not been built yet?",
     description: "See the documented boundaries and future engineering work.",
     accent: "amber", systemIds: ["nova-fw01", "nova-prox01"],

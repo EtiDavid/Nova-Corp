@@ -13,7 +13,7 @@ const hasManagementEvidence=rule.zone==="client"&&(rule.order===1||rule.order===
 <section class="page-head"><div class="container">
 <div class="eyebrow">{zone?.name} / Ordered firewall rule</div>
 <h1>{rule.description}</h1><p class="lead" style="margin-top:17px">The recorded action is <strong>{rule.action}</strong>, at position <strong>{rule.order}</strong> on the incoming {zone?.name} interface.</p>
-<div style="margin-top:19px"><span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span><span class="muted" style="margin-left:12px;font-size:.83rem">Saved and enabled at the last documented snapshot, not a live packet trace</span></div>
+<div style="margin-top:19px"><span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span><span class="muted" style="margin-left:12px;font-size:.83rem">Saved and enabled at the last review (22 Nov 2026)</span></div>
 </div></section>
 <section class="section compact"><div class="container grid-main"><div>
 <section class="content-section">
@@ -42,6 +42,6 @@ const hasManagementEvidence=rule.zone==="client"&&(rule.order===1||rule.order===
 </div><aside>
  <div class="sidebox"><h3>Position matters</h3><p class="muted">Earlier rules on the same interface are evaluated before later ones. The order here comes from the saved pfSense configuration.</p><a class="evidence-link" href={base+"network/zones/"+rule.zone+"/"}>See full {zone?.name} rule order →</a></div>
  <div class="sidebox"><h3>Engineering identifier</h3><code class="technical">{rule.id}</code><p class="muted" style="margin-top:10px">This exact tracker value is retained only in technical detail so engineers can compare it with the original rule record.</p></div>
- <div class="sidebox"><a href={base+"network/rules/"}>← All firewall rules</a><p style="margin-top:12px"><a href={base+"network/"}>Network Gatehouse →</a></p></div>
+ <div class="sidebox"><a href={base+"network/rules/"}>← All firewall rules</a><p style="margin-top:12px"><a href={base+"network/"}>Network →</a></p></div>
 </aside></div></section>
 </BaseLayout>

@@ -27,8 +27,8 @@ const rootUsers=identities.filter(i=>i.category==="built-in"||i.slug==="test-use
         <p class="muted" style="margin:13px 0 20px">Select any OU to see its documented role and direct entries. Parent-child links are real; built-in Users is a container, not a seventeenth OU.</p>
         <div class="paper panel">
           <div class="directory-tree"><p class="kicker">nova.corp / Directory root</p>
-          {roots.map(ou=><div class="ou-branch"><a class="tree-item" href={base+"directory/ous/"+ou.slug+"/"}><strong>{ou.name}</strong><span aria-hidden="true">↗</span></a>
-            {children(ou.slug).length>0 && <div class="tree-children">{children(ou.slug).map(child=><a class="tree-item" href={base+"directory/ous/"+child.slug+"/"}>{child.name}<span aria-hidden="true">↗</span></a>)}</div>}
+          {roots.map(ou=><div class="ou-branch"><a class="tree-item" href={base+"directory/ous/"+ou.slug+"/"}><strong>{ou.name}</strong><span aria-hidden="true">→</span></a>
+            {children(ou.slug).length>0 && <div class="tree-children">{children(ou.slug).map(child=><a class="tree-item" href={base+"directory/ous/"+child.slug+"/"}>{child.name}<span aria-hidden="true">→</span></a>)}</div>}
           </div>)}
           <details style="margin-top:14px"><summary><strong>Built-in Users container (CN, not an OU)</strong></summary>
             <ul class="plain-list" style="margin-top:12px">{rootUsers.map(u=><li><a href={base+"people/"+u.slug+"/"}>{u.name}</a> — {u.enabled?"enabled":"disabled"} {u.category} identity</li>)}</ul>

@@ -7,7 +7,7 @@ const empty=companyPolicies.find(p=>!p.link);
 ---
 <BaseLayout title="Company policies & Group Policy" description="Explore seven documented Windows Group Policy objects, their actual OU links, configured settings and historical tests." breadcrumbs={[{label:"Explore",href:"company/"},{label:"Workstation rules"}]}>
 <section class="page-head"><div class="container">
-<div class="eyebrow">Identity Office / Group Policy</div>
+<div class="eyebrow">Identity / Group Policy</div>
 <h1>IT sets a rule. How do we know it reached the right person?</h1>
 <p class="lead" style="margin-top:18px">Nova Corp uses Windows Group Policy to centrally configure passwords, workstations, user desktops and mapped drives. Follow the path from policy to linked directory location—and see where actual client tests exist.</p>
 <div class="button-row" style="margin-top:24px">
@@ -45,6 +45,6 @@ const empty=companyPolicies.find(p=>!p.link);
  <p class="muted">The keyboard-named Group Policy exists, but has no linked OU and no configured settings. Keyboard preferences were found instead in the Domain Controllers policy.</p>
  <a class="evidence-link" href={base+"policies/"+empty.slug+"/"}>See why it doesn't apply →</a>
 </div>}
-<div class="note" style="margin-top:26px">All seven GPOs were exported in the last documented November 2026 source review, and each has <strong>Authenticated Users</strong> with Apply Group Policy permission. The effective target still depends on link, inheritance, filtering and processing. This is a dated configuration atlas, not a live Group Policy Management Console.</div>
+<div class="note" style="margin-top:26px">All seven GPOs were exported in the last documented November 2026 source review, and each has <strong>Authenticated Users</strong> with Apply Group Policy permission. The effective target still depends on link, inheritance, filtering and processing.</div>
 </div></section>
 </BaseLayout>

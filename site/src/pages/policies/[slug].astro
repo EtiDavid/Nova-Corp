@@ -23,7 +23,7 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
 <p class="lead" style="margin-top:17px">{policy.summary}</p>
 <div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:22px">
  <span class={"rule-action "+(isUnlinked?"block":"pass")}>{isUnlinked?"Unlinked / empty":"Linked / configured"}</span>
- <span class="muted" style="font-size:.85rem">Saved settings reviewed 22 November 2026 · Not live telemetry</span>
+ <span class="muted" style="font-size:.85rem">Saved settings reviewed 22 November 2026</span>
 </div>
 </div></section>
 <section class="section compact"><div class="container grid-main">
@@ -91,7 +91,7 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
   <h3>Related company systems</h3>
   <div class="button-row" style="margin-top:14px">{policy.relatedSystemSlugs.map(slug=><a class="btn ghost small" href={base+"systems/"+slug+"/"}>{slug.toUpperCase()} →</a>)}</div>
  </div>}
- {policy.slug==="drive-mapping"&&<div class="paper panel" style="margin-top:17px"><h3>Follow the file-service handoff</h3><p class="muted" style="margin:10px 0 16px">The configured logon script points to NETLOGON. Share mapping still requires an accessible server, correct group membership and SMB/NTFS rights. The actual last-logon execution was not established by the GPO export.</p><a class="btn small" href={base+"files/"}>Explore the File Centre →</a></div>}
+ {policy.slug==="drive-mapping"&&<div class="paper panel" style="margin-top:17px"><h3>Follow the file-service handoff</h3><p class="muted" style="margin:10px 0 16px">The configured logon script points to NETLOGON. Share mapping still requires an accessible server, correct group membership and SMB/NTFS rights. The actual last-logon execution was not established by the GPO export.</p><a class="btn small" href={base+"files/"}>Explore the Files →</a></div>}
  {policy.slug==="keyboard"&&<div class="paper panel" style="margin-top:17px"><h3>Where the keyboard settings were actually found</h3><p class="muted">Two registry preferences appear in the Domain Controllers policy instead. Do not interpret that as a keyboard layout applied to all staff.</p><a class="evidence-link" href={base+"policies/domain-controllers/"}>Open the actual policy →</a></div>}
  <div class="note warning" style="margin-top:20px"><strong>Limits on this claim</strong><ul class="plain-list" style="margin-top:12px">{policy.limitations.map(limit=><li>{limit}</li>)}</ul></div>
 </section>

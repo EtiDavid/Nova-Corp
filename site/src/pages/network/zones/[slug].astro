@@ -10,7 +10,7 @@ const rules=rulesForZone(zone.slug);
 const isVpn=zone.slug==="vpn_remote";
 const isClient=zone.slug==="client";
 ---
-<BaseLayout title={zone.name+" network"} description={"Explore the actual "+zone.name+" network, its connected systems and ordered firewall rules."} breadcrumbs={[{label:"Network Gatehouse",href:"network/"},{label:zone.name}]}>
+<BaseLayout title={zone.name+" network"} description={"Explore the actual "+zone.name+" network, its connected systems and ordered firewall rules."} breadcrumbs={[{label:"Network",href:"network/"},{label:zone.name}]}>
 <section class="page-head"><div class="container">
  <div class="eyebrow">{zone.kind} / Network area</div><h1>{zone.name}</h1><p class="lead" style="margin-top:17px">{zone.purpose}</p>
 </div></section>
@@ -22,7 +22,7 @@ const isClient=zone.slug==="client";
       <a href={base+"network/rules/"+rule.id+"/"} class="rule-entry">
         <span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span>
         <span><strong>{rule.description}</strong><small>{rule.protocol} · {rule.destination} · {rule.ports}</small></span>
-        <span aria-hidden="true">↗</span>
+        <span aria-hidden="true">→</span>
       </a></li>)}</ol>
   </section>
   <section class="content-section">

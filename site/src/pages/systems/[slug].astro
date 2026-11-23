@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import SystemCard from "../../components/SystemCard.astro";
 import { getArea } from "../../data/areas";
 import { systems, connectedTo, type Entity } from "../../data/model";
 import { linksForSystem } from "../../data/policies";
@@ -15,30 +14,31 @@ const area = getArea(system.area);
 const connected = connectedTo(system.id);
 const associatedPolicies=linksForSystem(system.slug);
 const computer=getComputer(system.slug);
-const statusText = system.status === "observed-running" ? "Documented running at last check" : "Documented configuration";
+const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const [yy,mm,dd]=String(system.asOf).split("-").map(Number);
+const asOf=yy&&mm&&dd?`${dd} ${months[mm-1]} ${yy}`:String(system.asOf);
+const statusText = system.status === "observed-running" ? `Running at last check: ${asOf}` : `Configuration as of ${asOf}`;
 ---
-<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"company/"},{label:area?.name||"Systems",href:"areas/"+system.area+"/"},{label:system.name}]}>
+<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"company/"},{label:area?.name||"Systems",href:"company/"},{label:system.name}]}>
   <section class="page-head"><div class="container">
     <div class="eyebrow">{system.category}</div>
     <h1>{system.name}</h1>
     <p class="lead" style="margin-top:17px">{system.summary}</p>
     <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:19px">
       <span class="status">{statusText}</span>
-      <span class="muted" style="font-size:.8rem">Last documented: {system.asOf}</span>
     </div>
   </div></section>
   <section class="section compact"><div class="container grid-main">
     <div>
       <section class="content-section">
-        <h2>How this system fits into the company</h2>
-        <p class="lead" style="margin:15px 0 22px">Follow a connected system to see which services depend on one another. These links reflect the documented configuration and tests—not continuous monitoring.</p>
-        <div class="card-list">{connected.map(rel=>rel.other && <SystemCard system={rel.other} />)}</div>
-        <div class="note" style="margin-top:18px">
-          <strong>Relationship detail:</strong>
-          <ul class="plain-list" style="margin-top:12px">
-            {connected.map(rel=>rel.other && <li><a href={base+"systems/"+rel.other.slug+"/"}>{rel.other.name}</a> — {rel.label}</li>)}
-          </ul>
-        </div>
+        <h2>Key facts</h2>
+        <dl class="fact-list" style="margin-top:14px">{system.details.map(fact=><div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
+      </section>
+      <section class="content-section">
+        <h2>How it connects</h2>
+        <ul class="plain-list" style="margin-top:14px">
+          {connected.map(rel=>rel.other && <li><a href={base+"systems/"+rel.other.slug+"/"}>{rel.other.name.toUpperCase()}</a> — {rel.label}</li>)}
+        </ul>
       </section>
       {computer&&<section class="content-section"><div class="paper panel"><p class="kicker">Directory object / Virtual machine</p>
         <h2 style="margin:12px 0">This server also has an Active Directory computer identity.</h2>
@@ -51,24 +51,15 @@ const statusText = system.status === "observed-running" ? "Documented running at
         <div class="card-list">{associatedPolicies.map(policy=><a class="system-card" href={base+"policies/"+policy.slug+"/"}><small>{policy.side} · {policy.link?"Linked to "+policy.link.label:"Not linked"}</small><h3>{policy.name}</h3><p>{policy.summary}</p><span class="readmore">Inspect settings and verification →</span></a>)}</div>
       </section>}
       <section class="content-section">
-        <h2>Open the technical view</h2>
-        <p class="muted" style="margin:12px 0 18px">For readers who want the specific configuration. Everything shown here is already reviewed for public use; private infrastructure access is never exposed.</p>
-        <details class="detail-disclosure">
-          <summary>Technical facts and configuration</summary>
-          <dl class="fact-list">{system.details.map(fact=><div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
-        </details>
-      </section>
-      <section class="content-section">
-        <h2>Evidence and limitations</h2>
+        <h2>Not yet proven</h2>
         <div class="paper panel">
-          <p class="muted">The linked record explains the implementation and tests in greater technical detail. It is a static engineering report, not a connection to the lab.</p>
-          <a class="evidence-link" href={system.sourceUrl} target="_blank" rel="noopener noreferrer">Read the original public engineering record ↗</a>
-          <div class="note warning" style="margin-top:20px"><strong>What this page does not claim</strong><ul class="plain-list" style="margin-top:12px">{system.limitations.map(item=><li>{item}</li>)}</ul></div>
+          <a class="evidence-link" href={system.sourceUrl} target="_blank" rel="noopener noreferrer">Read the original engineering record ↗</a>
+          <ul class="plain-list">{system.limitations.map(item=><li>{item}</li>)}</ul>
         </div>
       </section>
     </div>
     <aside>
-      <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "IT Control Room"}</dd></div><div><dt>Evidence date</dt><dd>{system.asOf}</dd></div></dl></div>
+      <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "Systems"}</dd></div><div><dt>Evidence date</dt><dd>{asOf}</dd></div></dl></div>
       <div class="sidebox"><h3>Next steps</h3><a href={base+"company/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
     </aside>
   </div></section>

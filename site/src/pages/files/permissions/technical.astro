@@ -8,7 +8,7 @@ const smbFor=(name:string)=>acl.smb.filter(a=>a.share===name);
 const ntfsFor=(name:string)=>acl.ntfs.filter(a=>a.folder===name);
 const isNamespace=(name:string)=>name.startsWith("C:\\DFSRoots\\");
 ---
-<BaseLayout title="Exact file access rules" description="Browse the 27 SMB share access entries and 73 NTFS access entries recorded on 11 shares and 14 folder scopes, including inheritance." breadcrumbs={[{label:"File Centre",href:"files/"},{label:"Permissions",href:"files/permissions/"},{label:"Technical rules"}]}>
+<BaseLayout title="Exact file access rules" description="Browse the 27 SMB share access entries and 73 NTFS access entries recorded on 11 shares and 14 folder scopes, including inheritance." breadcrumbs={[{label:"Files",href:"files/"},{label:"Permissions",href:"files/permissions/"},{label:"Technical rules"}]}>
 <section class="page-head"><div class="container">
 <div class="eyebrow">Company files / Technical permission explorer</div>
 <h1>Who is actually listed in each access rule?</h1>
