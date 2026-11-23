@@ -73,7 +73,7 @@ export const areas: Area[] = [
     question: "What has not been built yet?",
     description: "See the documented boundaries and future engineering work.",
     accent: "amber", systemIds: ["nova-fw01", "nova-prox01"],
-    facts: ["Phase 2 has a documented conditional closure.", "Privileged admin VPN and management-plane isolation are not complete.", "That security change is on hold until the website is live and approved."],
+    facts: ["Phase 2 has a documented conditional closure.", "Privileged admin VPN and management-plane isolation are not complete.", "Next change: CR-016, privileged admin VPN and management-plane isolation. Not started."],
     sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/PROJECT_STATUS.md"
   }
 ];

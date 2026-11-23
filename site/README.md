@@ -78,4 +78,4 @@ A public feature branch is still public. Do not commit raw AD records, pfSense c
 
 ## Next checkpoint
 
-Review the actual desktop/mobile browser screenshots and manually test interactive behavior, keyboard navigation and responsive layouts. Expand the Incident Lab, full GPO rights/principal matrix and other verified records; curate the remaining real screenshots with redaction, source/published SHA-256 and claim-specific captions. Complete privacy and release acceptance before merging/deploying. CR-016 remains on hold.
+Review the actual desktop/mobile browser screenshots and manually test interactive behavior, keyboard navigation and responsive layouts. Expand the Incident Lab, full GPO rights/principal matrix and other verified records; curate the remaining real screenshots with redaction, source/published SHA-256 and claim-specific captions. Complete privacy and release acceptance before merging/deploying. CR-016 has not started.

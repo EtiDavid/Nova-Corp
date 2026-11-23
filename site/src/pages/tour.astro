@@ -13,7 +13,7 @@ const steps=[
 ];
 ---
 <BaseLayout title="Guided company tour" description="A short, plain-English introduction to Nova Corp and its documented infrastructure." breadcrumbs={[{label:"Guided tour"}]}>
-  <section class="page-head"><div class="container"><div class="eyebrow">Guided introduction</div><h1>From your first login to a recovered file.</h1><p class="lead" style="margin-top:16px">Six short stops through the systems that help this fictional company work. You can leave the tour and explore an object at any point.</p></div></section>
+  <section class="page-head"><div class="container"><div class="eyebrow">Guided introduction</div><h1>From your first login to a recovered file.</h1><p class="lead" style="margin-top:16px">Eight short stops through the systems that help this fictional company work. You can leave the tour and explore an object at any point.</p></div></section>
   <section class="section compact"><div class="container grid-main">
     <div class="walkthrough">{steps.map(step=><div class="walk-step"><h3>{step.title}</h3><p style="margin:10px 0 15px">{step.copy}</p><a class="text-link" href={base+step.link}>{step.label} →</a></div>)}</div>
     <aside class="sidebox"><h3>Tour guide</h3><p class="muted">This tour describes a documented snapshot, not live infrastructure status. Click any highlighted system to read the technical source and recorded test.</p><a class="evidence-link" href={base+"explore/"}>Prefer exploring freely? →</a></aside>
