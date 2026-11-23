@@ -12,7 +12,7 @@ const {Content} = await render(entry);
 const base=import.meta.env.BASE_URL;
 ---
 <BaseLayout title={entry.data.title} description={entry.data.summary} breadcrumbs={[{label:"Investigations",href:"incidents/"},{label:entry.data.title}]}>
-<section class="page-head"><div class="container">
+<section class="page-head incident-head"><div class="container">
  <div class="eyebrow">Investigation</div>
  <h1>{entry.data.title}</h1>
  <p class="lead" style="margin-top:16px">{entry.data.summary}</p>
