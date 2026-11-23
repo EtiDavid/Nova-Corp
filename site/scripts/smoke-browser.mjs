@@ -50,7 +50,12 @@ try {
   assert.match(await scene.innerText(),/Proxmox VE/);
   assert.equal(await scene.locator(".atlas-service-grid .hx-node").count(),5);
   assert.equal(await scene.locator(".atlas-prox").count(),1);
-  assert.equal(await scene.locator(".hx-node").count(),6);
+  assert.equal(await scene.locator(".hx-node").count(),8);
+  await scene.locator('.atlas-tower-hit[data-id="host-windows"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/physical Windows host/i);
+  assert((await scene.locator("#hx-record").getAttribute("href")).includes("/systems/nova-prox01/"));
+  await scene.locator('.atlas-virtual-badge[data-id="vmware-workstation"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/outer hypervisor layer/i);
   await scene.locator('.atlas-prox[data-id="nova-prox01"]').click();
   assert.match(await scene.locator("#hx-title").innerText(),/virtualization foundation/i);
   assert((await scene.locator("#hx-record").getAttribute("href")).includes("/systems/nova-prox01/"));
