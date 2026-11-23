@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { techTerms, type Term } from "../../data/techLexicon";
+import { systems } from "../../data/model";
+export function getStaticPaths(){return techTerms.map(term=>({params:{slug:term.slug},props:{term}}));}
+interface Props{term:Term}
+const {term}=Astro.props;
+const base=import.meta.env.BASE_URL;
+const related=term.related.map(id=>systems.find(s=>s.id===id)).filter(Boolean);
+const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":term.slug==="ntfs"?null:null;
+---
+<BaseLayout title={term.word+" explained"} description={term.brief} breadcrumbs={[{label:"Glossary",href:"glossary/"},{label:term.word}]}>
+  <section class="page-head term-head"><div class="container">
+    <div class="eyebrow">Plain English / the Nova Corp lab</div>
+    <h1>{term.word}</h1>
+    <p class="lead">{term.brief}</p>
+  </div></section>
+  <section class="section compact"><div class="container term-layout">
+    <article class="term-story">
+      <div class="term-block"><span class="term-num">01 / UNDERSTAND IT</span><h2>What does it actually mean?</h2><p>{term.everyday}</p></div>
+      <div class="term-block"><span class="term-num">02 / SEE IT IN THIS LAB</span><h2>An example from Nova Corp</h2><p>{term.example}</p></div>
+      <div class="term-block term-caution"><span class="term-num">03 / ENGINEERING LIMIT</span><h2>What not to assume</h2><p>{term.watch}</p></div>
+      {realImage&&<figure class="term-proof">
+        <img src={base+"evidence/"+realImage} alt="Original historical configuration screenshot showing Windows Defender Firewall policy settings in Group Policy" loading="lazy" />
+        <figcaption>Actual saved Windows Defender Firewall GPO configuration. This shows settings; it does not establish effective application on every workstation. <a href={base+"evidence/manifest.json"}>SHA-256 evidence provenance ↗</a></figcaption>
+      </figure>}
+      <p class="term-research">Want the commands and expected/actual results? Open one of the linked system records below and follow its original engineering journal.</p>
+    </article>
+    <aside class="term-aside">
+      <div class="sidebox"><h3>Where you can find it</h3>
+        <div class="term-related">{related.map(s=><a href={base+"systems/"+s!.slug+"/"}><span>{s!.name.toUpperCase()}</span><span aria-hidden="true">↗</span></a>)}</div>
+      </div>
+      <div class="sidebox"><h3>Keep exploring</h3><p><a href={base+"glossary/"}>← All technical terms</a></p><p><a href={base+"company/"}>Open the infrastructure explorer ↗</a></p></div>
+    </aside>
+  </div></section>
+</BaseLayout>
