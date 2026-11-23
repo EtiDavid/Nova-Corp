@@ -20,7 +20,7 @@ const sectionName=entry.data.section==="explore"?"Infrastructure explorer":entry
  <div class="ref-origin"><span>Canonical source: <code>{entry.data.sourcePath}</code></span><a href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">View original Markdown on GitHub ↗</a></div>
 </div></section>
 <section class="section compact"><div class="container ref-grid">
- <article class="reference-content source-document" data-no-tech-links><Content /></article>
+ <article class="reference-content source-document"><Content /></article>
  <aside class="ref-sidebar">
   <div class="sidebox"><h2>On this page</h2>
    {readableHeadings.length>0?<nav aria-label="Document table of contents"><ul class="ref-toc">{readableHeadings.filter(h=>h.depth<=3).slice(0,45).map(h=><li class={"ref-toc-level-"+h.depth}><a href={"#"+h.slug}>{h.text}</a></li>)}</ul></nav>:<p>Read the complete original document in the main column.</p>}
