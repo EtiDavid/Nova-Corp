@@ -105,7 +105,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
       <div class="sb-scroll-foot"><span>SCROLL THE BOX TO EXPLORE ↓</span><span id="sb-scroll-status" aria-live="polite">01 / 03 · HYPERVISOR</span></div>
     </div>
     <aside class="sb-inspector" id="sb-inspector" aria-label="Selected server information">
-      <div class="sb-inspector-top"><span>COMPONENT INSPECTOR</span><span class="sb-inspector-led" aria-hidden="true"></span></div>
+      <div class="sb-inspector-top"><span>COMPONENT INSPECTOR</span><button type="button" class="sb-back-to-map" id="sb-back-to-map">↑ Back to diagram</button><span class="sb-inspector-led" aria-hidden="true"></span></div>
       <div class="sb-inspector-content" aria-live="polite" aria-atomic="false">
         <span class="sb-inspector-label hx-readout-label" id="hx-label">SELECT A SERVER</span>
         <h3 id="hx-title">Start with Proxmox.</h3>
@@ -160,6 +160,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
  function select(id,updateURL){
    var d=data[id];if(!d)return;
    selected=id;
+   if(mode!=="all"&&groups[mode].indexOf(id)<0){mode="all";renderMode();}
    nodes.forEach(function(node){
      var current=node.dataset.id===id;
      node.classList.toggle("is-selected",current);
@@ -191,6 +192,9 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
  nodes.forEach(function(node){node.addEventListener("click",function(e){
    if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button!==0)return;
    e.preventDefault();select(node.dataset.id,true);
+   if(window.matchMedia("(max-width: 780px)").matches){
+     document.getElementById("sb-inspector").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+   }
  });});
  function jump(target){
    var el=root.querySelector('[data-layer="'+target+'"]');if(!el)return;
@@ -198,6 +202,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
    scrollport.scrollTo({top:top,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
  }
  jumps.forEach(function(b){b.addEventListener("click",function(){jump(b.dataset.jump);scrollport.focus({preventScroll:true});});});
+ document.getElementById("sb-back-to-map").addEventListener("click",function(){document.getElementById("hx-explorer").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});scrollport.focus({preventScroll:true});});
  function onScroll(){
    var max=Math.max(0,scrollport.scrollHeight-scrollport.clientHeight);
    var p=max?Math.round(scrollport.scrollTop/max*100):100;
