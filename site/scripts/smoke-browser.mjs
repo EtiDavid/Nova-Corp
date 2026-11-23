@@ -286,6 +286,17 @@ try {
    const dimensions=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert(dimensions.scroll<=dimensions.inner+2,JSON.stringify(dimensions));
   });
+  await step(width+"px: complete engineering profiles and full source documents stay within viewport",async()=>{
+   await mobile.goto(host+"/systems/nova-fw01/",{waitUntil:"domcontentloaded"});
+   let sizes=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
+   assert(sizes.scroll<=sizes.inner+3,"FW01 profile overflow: "+JSON.stringify(sizes));
+   await mobile.locator(".engineering-source-label").scrollIntoViewIfNeeded();
+   sizes=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
+   assert(sizes.scroll<=sizes.inner+3,"FW01 full source overflow: "+JSON.stringify(sizes));
+   await mobile.goto(host+"/reference/explore/systems/NOVA-FW01/",{waitUntil:"domcontentloaded"});
+   sizes=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
+   assert(sizes.scroll<=sizes.inner+3,"Standalone engineering source overflow: "+JSON.stringify(sizes));
+  });
   await mobile.close();
  }
  await step("Keyboard skip link is first focusable control",async()=>{
