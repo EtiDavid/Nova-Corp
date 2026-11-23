@@ -78,3 +78,18 @@
 
 .contextual-source{margin:44px auto 74px;}
 .contextual-source .engineer-source-section{max-width:100%;}
+
+/* Full journals have wide tables and PowerShell code. A CSS grid's default
+   min-content width must not make the 390px system profile horizontally scroll. */
+.grid-main>div,.grid-main>aside,.grid-main>.engineer-source-section{min-width:0;}
+.engineer-source-section,.inline-source-doc,.system-evidence-section,.evidence-placeholder{min-width:0;max-width:100%;}
+.reference-content pre{min-width:0;width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
+.reference-content table{min-width:0;width:100%;max-width:100%;overflow-x:auto;box-sizing:border-box;}
+.reference-content td,.reference-content th{overflow-wrap:break-word;}
+.reference-content :is(a,code,dd,p,li,td,th){overflow-wrap:anywhere;}
+@media(max-width:760px){
+ .grid-main{grid-template-columns:minmax(0,1fr)!important;}
+ .grid-main > div{width:100%;min-width:0;}
+ .grid-main > aside{width:100%;min-width:0;}
+ .engineer-source-section{overflow:hidden;}
+}
