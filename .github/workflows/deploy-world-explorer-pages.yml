@@ -8,6 +8,7 @@ on:
     branches: [feature/world-explorer-site]
     paths:
       - "site/**"
+      - "docs/**"
       - ".github/workflows/deploy-world-explorer-pages.yml"
   workflow_dispatch:
 
@@ -52,6 +53,8 @@ jobs:
         run: npm run test:links
       - name: Verify published object catalog routes
         run: npm run test:coverage
+      - name: Verify on-site complete public engineering documents
+        run: npm run test:references
       - name: Verify public source document targets
         run: npm run test:sources
       - name: Verify original GPO evidence images
