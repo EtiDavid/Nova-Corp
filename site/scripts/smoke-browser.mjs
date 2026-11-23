@@ -65,10 +65,36 @@ try {
   await desktop.keyboard.press("Escape");
   assert(!/focus=/.test(desktop.url()));
   assert.equal(await desktop.evaluate(()=>document.activeElement?.getAttribute("data-id")),"nova-dc01");
-  await desktop.getByRole("button",{name:"Network"}).click();
+  await desktop.locator('#tabs button[data-view="network"]').click();
   await desktop.waitForURL(/view=network/);
   await desktop.goto(host+"/company/?view=files&focus=nova-files01",{waitUntil:"networkidle"});
   assert(await desktop.locator("#sys-nova-files01").isVisible());
+ });
+ await step("Workflow lab traces four recorded routes and updates architecture focus",async()=>{
+  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
+  const lab=desktop.locator("#workflow-lab");
+  assert(await lab.isVisible());
+  assert.equal(await lab.locator("[data-flow-tab]").count(),4);
+  assert(await lab.locator('[data-flow="files"]').isVisible());
+  await lab.locator('[data-flow="files"] [data-next]').click();
+  assert((await lab.locator('[data-flow="files"] .wl-progress').innerText()).includes("Step 2 of 5"));
+  await lab.locator('[data-flow="files"] .wl-step.is-active [data-show-map]').click();
+  assert(/view=identity/.test(desktop.url()),"map view follows DNS path stage");
+  assert(/focus=nova-dc01/.test(desktop.url()),"map focuses the correct DNS server");
+  assert(await desktop.locator("#sys-nova-dc01").isVisible());
+  await lab.locator('[data-flow-tab="identity"]').click();
+  assert(await lab.locator('[data-flow="identity"]').isVisible());
+  assert(!(await lab.locator('[data-flow="files"]').isVisible()));
+  assert((await lab.locator('[data-flow="identity"] .wl-progress').innerText()).includes("Step 1 of 4"));
+  await lab.locator('[data-flow-tab="security"]').click();
+  assert(await lab.locator('[data-flow="security"]').isVisible());
+  await lab.locator('[data-flow-tab="recovery"]').click();
+  assert(await lab.locator('[data-flow="recovery"]').isVisible());
+  assert.equal(await desktop.locator(".exp-evidence-gallery img").count(),3);
+  for(const img of await desktop.locator(".exp-evidence-gallery img").all()){
+    assert((await img.getAttribute("alt")).length>18,"source screenshot requires descriptive alt");
+    assert((await img.getAttribute("src")).startsWith("/evidence/"));
+  }
  });
  await step("Investigations index filters; DNS replay steps and reveals recorded results",async()=>{
   await desktop.goto(host+"/incidents/",{waitUntil:"networkidle"});
@@ -79,8 +105,13 @@ try {
   await desktop.goto(host+"/incidents/dns-client-outage/",{waitUntil:"networkidle"});
   assert((await desktop.locator("#step-count").innerText()).includes("Step 1 of 5"));
   assert(!(await desktop.locator("#step-1 .reveal-target").isVisible()));
+  await desktop.locator('#step-1 .r-challenge [data-choice="0"]').click();
+  assert(/try a narrower diagnostic step/i.test(await desktop.locator('#step-1 .r-answer').innerText()));
+  await desktop.locator('#step-1 .r-challenge [data-choice="1"]').click();
+  assert(/best next check/i.test(await desktop.locator('#step-1 .r-answer').innerText()));
   await desktop.locator("#r-reveal").click();
   assert((await desktop.locator("#step-1").innerText()).includes("ERROR_TIMEOUT"));
+  assert(/server reachability is still unknown/i.test(await desktop.locator("#r-signal").innerText()));
   await desktop.locator("#r-next").click();
   assert((await desktop.locator("#step-count").innerText()).includes("Step 2 of 5"));
   assert(/step=2/.test(desktop.url()));
@@ -147,6 +178,10 @@ try {
    assert(await mobile.locator("#sys-nova-files01").isVisible());
    await mobile.locator("#back-btn").click();
    assert(!(await mobile.locator("#sys-nova-files01").isVisible()));
+   const workflow=mobile.locator("#workflow-lab");
+   assert(await workflow.isVisible(),"guided workflow available on mobile");
+   await workflow.locator('[data-flow-tab="identity"]').click();
+   assert(await workflow.locator('[data-flow="identity"]').isVisible());
    const dimensions=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert(dimensions.scroll<=dimensions.inner+2,JSON.stringify(dimensions));
   });
