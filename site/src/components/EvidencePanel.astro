@@ -1,0 +1,20 @@
+---
+interface Props{subject:string;filename?:string;caption?:string;requested?:string}
+const {subject,filename,caption,requested}=Astro.props;
+const base=import.meta.env.BASE_URL;
+---
+<figure class="evidence-figure" data-no-tech-links>
+  {filename ? <>
+    <a href={base+"evidence/"+filename} target="_blank" rel="noopener noreferrer" aria-label={"Open original evidence image for "+subject}>
+      <img src={base+"evidence/"+filename} loading="lazy" decoding="async" alt={"Original historical policy screenshot relevant to "+subject} />
+    </a>
+    <figcaption><span>ORIGINAL PUBLIC SCREENSHOT</span><p>{caption||"A historical source image of a configured policy. It does not prove every workstation applied it."}</p><a href={base+"evidence/manifest.json"}>Verify SHA-256 provenance ↗</a></figcaption>
+  </> : <>
+    <div class="evidence-placeholder" role="img" aria-label={"Evidence screenshot for "+subject+" has not yet been published"}>
+      <svg viewBox="0 0 80 66" width="70" height="59" aria-hidden="true"><rect x="7" y="9" width="66" height="49" rx="6" fill="none" stroke="#9EA9A1" stroke-width="2.5"/><path d="M15 47 32 29 42 39 51 31 66 46" fill="none" stroke="#BBA987" stroke-width="2.5"/><circle cx="56" cy="22" r="5" fill="#BCB09C"/><path d="M29 9 34 4h13l4 5" fill="none" stroke="#9EA9A1" stroke-width="2.5"/></svg>
+      <span>Original screenshot pending</span>
+      <small>No image has been invented or substituted for the documented test.</small>
+    </div>
+    <figcaption><span>IMAGE TO BE ADDED</span><p>{requested||"A redacted screenshot demonstrating the documented result will be added when reviewed for public release."}</p><p>The exact commands and recorded outcomes remain available through the original engineering journal.</p></figcaption>
+  </>}
+</figure>
