@@ -69,6 +69,10 @@ try {
   assert.equal(await scene.locator(".sb-node.is-selected").count(),1);
   await scene.locator('[data-mode="identity"]').click();
   assert.equal(await scene.locator(".sb-node.is-muted").count(),2,"only non-identity nodes muted");
+  await scene.locator('.sb-guest[data-id="nova-files01"]').click();
+  assert.equal(await scene.locator('[data-mode="all"]').getAttribute("aria-pressed"),"true","selecting excluded node clears stale path filter");
+  assert.equal(await scene.locator(".sb-node.is-muted").count(),0,"selected file server must not be dimmed");
+
   await scene.locator('[data-mode="files"]').click();
   assert.equal(await scene.locator(".sb-node.is-muted").count(),2,"file-access view selects four relevant systems");
   await scene.locator('[data-mode="all"]').click();
@@ -220,6 +224,11 @@ try {
    await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
    assert.match(await mobile.locator("#hx-title").innerText(),/NOVA-FILES01/);
    assert((await mobile.locator("#hx-record").getAttribute("href")).includes("/systems/nova-files01/"));
+   await mobile.waitForFunction(()=>{const b=document.getElementById("sb-inspector")?.getBoundingClientRect();return b&&b.top<220&&b.bottom>220;});
+   assert(await mobile.locator("#sb-back-to-map").isVisible(),"mobile visitors can return from details");
+   await mobile.locator("#sb-back-to-map").click();
+   await mobile.waitForFunction(()=>document.getElementById("hx-explorer").getBoundingClientRect().top<220);
+
    const summary=mobile.locator(".v4-menu summary");
    assert(await summary.isVisible());
    const box=await summary.boundingBox();
