@@ -3,7 +3,7 @@ import {existsSync,mkdirSync,readdirSync,readFileSync,rmSync,writeFileSync} from
 import {dirname,extname,join,posix,relative,resolve,sep} from "node:path";
 
 /**
- * Build-time mirror of the complete PUBLIC Markdown documentation (docs/**/*.md).
+ * Build-time mirror of the complete PUBLIC Markdown documentation below docs/.
  * Never an AI paraphrase: canonical repo docs remain the single source of truth.
  * Only link destinations and collection metadata are added to generated copies.
  * It is deliberately rebuilt before typecheck/build; no stale private docs.
