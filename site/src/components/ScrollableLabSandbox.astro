@@ -27,6 +27,7 @@ for(const id of ids){
   asOf:s.asOf,
   facts:s.details.slice(0,5),
   limitations:s.limitations.slice(0,2),
+  related:s.related.filter(other=>ids.includes(other)).map(other=>({id:other,name:display[other].name,role:display[other].role})),
   record:base+"systems/"+s.slug+"/",
   incident:display[id].incident,
   incidentUrl:base+display[id].incidentPath,
@@ -115,6 +116,10 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
           <dl id="sb-facts"></dl>
           <span class="sb-inspector-section">KNOWN LIMITS</span>
           <ul id="sb-limits"></ul>
+          <div class="sb-neighbors">
+            <span class="sb-inspector-section">EXPLORE CONNECTED SYSTEMS</span>
+            <div id="sb-related-buttons" class="sb-related-buttons" role="group" aria-label="Inspect a connected lab system"></div>
+          </div>
         </div>
       </div>
       <div class="sb-inspector-links hx-readout-actions">
@@ -150,6 +155,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
  var title=document.getElementById("hx-title"),description=document.getElementById("hx-description"),label=document.getElementById("hx-label");
  var record=document.getElementById("hx-record"),caseLink=document.getElementById("hx-case"),source=document.getElementById("sb-source");
  var facts=document.getElementById("sb-facts"),limits=document.getElementById("sb-limits"),details=document.getElementById("sb-selected-evidence"),asOf=document.getElementById("sb-asof");
+ var relatedButtons=document.getElementById("sb-related-buttons");
  var progress=document.querySelector(".sb-progress"),fill=document.getElementById("sb-progress-fill"),status=document.getElementById("sb-scroll-status");
  var selected="",mode="all";
  var groups={
@@ -175,6 +181,21 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
    limits.replaceChildren();
    d.limitations.forEach(function(item){var li=document.createElement("li");li.textContent=item;limits.append(li);});
    details.hidden=false;
+   relatedButtons.replaceChildren();
+   d.related.forEach(function(item){
+     var b=document.createElement("button");b.type="button";b.className="sb-related";
+     b.dataset.relTo=item.id;
+     b.textContent=item.name+" · "+item.role+" →";
+     b.addEventListener("click",function(){
+       select(item.id,true);
+       var target=root.querySelector('.sb-node[data-id="'+item.id+'"]');
+       if(target){
+         var top=target.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-155;
+         scrollport.scrollTo({top:Math.max(0,top),behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+       }
+     });
+     relatedButtons.appendChild(b);
+   });
    record.href=d.record;caseLink.href=d.incidentUrl;source.href=d.sourceUrl;
    record.textContent="Open "+d.name+" profile ↗";
    caseLink.textContent=d.incident+" ↗";
