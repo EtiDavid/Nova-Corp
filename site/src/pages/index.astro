@@ -1,93 +1,113 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ArchitectureSvg from "../components/ArchitectureSvg.astro";
+import HeroLabExplorer from "../components/HeroLabExplorer.astro";
 const base = import.meta.env.BASE_URL;
 const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
 ---
-<BaseLayout title="Home" description="An enterprise infrastructure lab you can explore. Built and tested by David Eti: Windows Server, Active Directory, pfSense, recovery and real troubleshooting.">
-  <section class="v4-hero"><div class="container v4-hero-grid">
-    <div>
-      <div class="byline">Built and tested by David Eti</div>
-      <h1>I built a small company's IT infrastructure — then tested what happens when it fails.</h1>
-      <p class="lead">Explore the real Windows, networking, security and recovery work behind my Nova Corp home lab. Choose a system, follow a request, or replay a troubleshooting investigation.</p>
-      <div class="button-row" style="margin-top:26px">
-        <a class="btn" href={base + "company/"}>Explore the infrastructure <span aria-hidden="true">→</span></a>
-        <a class="btn ghost" href={base + "incidents/"}>See what I fixed</a>
+<BaseLayout title="Home" description="Explore the enterprise infrastructure David Eti built, validated and deliberately tested through real troubleshooting investigations.">
+  <section class="exp-hero" aria-labelledby="exp-headline">
+    <div class="container exp-hero-grid">
+      <div class="exp-copy">
+        <div class="exp-eyebrow">Nova Corp / Enterprise infrastructure lab</div>
+        <h1 id="exp-headline">I built the infrastructure. <em>Then I tested what happens when it fails.</em></h1>
+        <p class="exp-subtitle">A small fictional company. Real servers, network boundaries, identity systems and recovery tests from my home lab. Explore the architecture, then follow the evidence.</p>
+        <div class="button-row">
+          <a class="btn" href={base + "company/"}>Explore the infrastructure <span aria-hidden="true">↗</span></a>
+          <a class="btn ghost" href={base + "incidents/dns-client-outage/"}>Replay a failure <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="exp-role"><strong>Built and tested by David Eti</strong><br/>Seeking system administrator, infrastructure and DevOps opportunities in Belgium and the Netherlands.</p>
+        <div class="exp-contact" aria-label="Professional links">
+          <a href={cv}>Download CV ↗</a>
+          <a href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
+          <a href="mailto:etidavid26@gmail.com">Email ↗</a>
+          <a href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
+        </div>
+        <p class="exp-honesty">Nova Corp is fictional; the infrastructure and recorded tests are real home-lab work. This is a dated architectural snapshot, not a live monitoring console.</p>
+        <div class="exp-proofband" aria-label="Technologies demonstrated">
+          <span>Windows Server + Active Directory</span>
+          <span>Proxmox + pfSense</span>
+          <span>PowerShell automation</span>
+          <span>Verified restore tests</span>
+        </div>
       </div>
-      <div class="contact-row">
-        <span class="who">David Eti · Seeking system administrator, infrastructure and DevOps roles in Belgium and the Netherlands</span>
+      <HeroLabExplorer />
+    </div>
+  </section>
+
+  <section class="exp-block" aria-labelledby="exp-outcomes">
+    <div class="container">
+      <div class="exp-section-heading">
+        <div class="exp-eyebrow">01 / Documented outcomes</div>
+        <h2 id="exp-outcomes">I don't just configure systems. I test their failure modes.</h2>
+        <p>Every example below is tied to an actual investigation, observed behavior and the scope of what the test proves.</p>
       </div>
-      <div class="contact-row" style="margin-top:10px">
-        <a class="btn ghost small" href={cv}>Download CV</a>
-        <a class="btn ghost small" href="mailto:etidavid26@gmail.com">Email</a>
-        <a class="btn ghost small" href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
+      <div class="exp-stories">
+        <article class="exp-story">
+          <small>IDENTITY / CONTROLLED OUTAGE</small>
+          <h3>One Domain Controller went offline.</h3>
+          <p>DC01 was deliberately taken down to test whether the other Domain Controller could continue serving the environment.</p>
+          <p class="result">DC02 handled the documented checks. Replication was checked after DC01 returned.</p>
+          <a href={base + "incidents/dc01-outage/"}>Inspect the evidence ↗</a>
+        </article>
+        <article class="exp-story">
+          <small>RECOVERY / FILE-LEVEL RESTORE</small>
+          <h3>A file was deleted. Then restored, byte for byte.</h3>
+          <p>A deliberately missing backup destination caused a failure. After repair, a disposable test file was restored.</p>
+          <p class="result">Original and restored SHA-256 fingerprints matched.</p>
+          <a href={base + "incidents/backup-target-unavailable/"}>Inspect the recovery ↗</a>
+        </article>
+        <article class="exp-story">
+          <small>SECURITY / MANAGEMENT ACCESS</small>
+          <h3>An employee network could reach firewall administration.</h3>
+          <p>The firewall management path was accessible when it should not have been. Specific block rules were added ahead of the broad pass.</p>
+          <p class="result">Management was blocked while required business access continued.</p>
+          <a href={base + "incidents/firewall-management-exposure/"}>Inspect the investigation ↗</a>
+        </article>
       </div>
-      <p class="truth">Nova Corp is fictional; the infrastructure and recorded tests are from my real home lab. This is a documented snapshot, not a live console.</p>
     </div>
-    <figure class="figure-card">
-      <ArchitectureSvg />
-      <div class="arch-legend"><span><i style="border-color:#6557A8"></i>DNS and sign-in</span><span><i style="border-color:#087F75"></i>Shared files</span></div>
-      <figcaption>Original illustration of the documented architecture.</figcaption>
-    </figure>
-  </div></section>
+  </section>
 
-  <section class="v4-section" aria-labelledby="proved"><div class="container">
-    <div class="byline">Three things I proved</div>
-    <h2 id="proved">Tested failures, with the evidence.</h2>
-    <div class="outcomes">
-      <article class="outcome">
-        <span class="chip tested">Tested</span>
-        <h3>Sign-ins survive a Domain Controller outage</h3>
-        <p class="q">Can employees still work if DC01 goes offline?</p>
-        <p class="result">I took DC01 offline in a controlled test; the workstation kept working through DC02 and replication was checked when DC01 returned.</p>
-        <a href={base + "incidents/dc01-outage/"}>Read the investigation</a>
-      </article>
-      <article class="outcome">
-        <span class="chip tested">Tested</span>
-        <h3>A deleted file came back, byte for byte</h3>
-        <p class="q">Can a lost document be recovered after backup trouble?</p>
-        <p class="result">After a deliberate backup failure and repair, a deleted file was restored with the same SHA-256 hash as the original.</p>
-        <a href={base + "incidents/backup-target-unavailable/"}>Read the investigation</a>
-      </article>
-      <article class="outcome">
-        <span class="chip tested">Tested</span>
-        <h3>An employee PC blocked from firewall admin</h3>
-        <p class="q">Why could a workstation open the firewall console?</p>
-        <p class="result">I placed specific block rules ahead of a broad allow; the management path was blocked and business access kept working.</p>
-        <a href={base + "incidents/firewall-management-exposure/"}>Read the investigation</a>
-      </article>
+  <section class="exp-block" aria-labelledby="exp-investigation">
+    <div class="container exp-case">
+      <div>
+        <div class="exp-eyebrow">02 / Investigate the failure</div>
+        <h2 id="exp-investigation">“The IT folder won't open.”</h2>
+        <p>A shared folder failed by name. It would have been easy to blame the file server. Instead, I separated DNS resolution from basic network reachability to find out what was actually broken.</p>
+        <p style="margin-top:17px">Follow five recorded diagnostic steps. Reveal each result, see what it proves and watch the relevant path change on the diagram.</p>
+        <a href={base + "incidents/dns-client-outage/"} class="btn">Start the five-step investigation <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="exp-case-visual" aria-label="A real recorded diagnostic command and outcome">
+        <div class="exp-case-top"><span>INCIDENT REPLAY / DNS CLIENT</span><span>RECORDED TEST · NOV 2026</span></div>
+        <div class="exp-case-content">
+          <span class="exp-flag">SYMPTOM · SHARE FAILED BY NAME</span>
+          <div class="exp-cmd"><span style="color:#7896B0">PS&gt;</span> Test-NetConnection 10.10.20.20 -Port 445<br/><br/><b>TcpTestSucceeded: True</b></div>
+          <div class="exp-case-note">
+            <span aria-hidden="true">↳</span>
+            <span><b>What it established:</b> The file server answered on SMB port 445. The next checks focused on the workstation's name resolution rather than rebuilding the server.</span>
+          </div>
+          <p style="font-size:.74rem;color:#97ADC2;margin-top:15px">Recorded journal summary, not a live command or fabricated terminal screenshot.</p>
+        </div>
+      </div>
     </div>
-  </div></section>
+  </section>
 
-  <section class="v4-section" aria-labelledby="works"><div class="container split">
-    <div>
-      <div class="byline">How the company works</div>
-      <h2 id="works">A workstation, a firewall, two identity servers and a file server.</h2>
-      <p class="lead">Signing in and opening a shared folder are two separate paths: one asks the Domain Controllers for DNS and identity, the other connects to the file server. Select any system on the interactive map to see what it does and the evidence behind it.</p>
-      <p style="margin-top:20px"><a class="btn" href={base + "company/"}>Open the interactive map <span aria-hidden="true">→</span></a></p>
+  <section class="exp-block" aria-labelledby="exp-next">
+    <div class="container exp-last">
+      <div>
+        <div class="exp-eyebrow">03 / Go deeper</div>
+        <h2 id="exp-next">See the systems. Follow the decisions. Verify the work.</h2>
+        <p class="lead">Start with the clickable infrastructure. Then explore the failure investigations, the change requests and the underlying engineering records. The details stay available without dominating the first impression.</p>
+        <div class="button-row" style="margin-top:22px">
+          <a class="btn" href={base + "tour/"}>Take the guided tour ↗</a>
+          <a class="btn ghost" href={base + "sources/"}>View engineering evidence ↗</a>
+        </div>
+      </div>
+      <aside class="planned">
+        <div class="exp-eyebrow">Next security milestone</div>
+        <h3 style="margin-top:12px">CR-016 / Privileged administration</h3>
+        <p>Separate administrative VPN access and stronger management-plane isolation. This is planned work, not a completed control.</p>
+        <a href={base + "roadmap/"}>View completed and planned work ↗</a>
+      </aside>
     </div>
-    <figure class="figure-card"><ArchitectureSvg /><div class="arch-legend"><span><i style="border-color:#6557A8"></i>DNS and sign-in</span><span><i style="border-color:#087F75"></i>Shared files</span></div><figcaption>Everything runs on one Proxmox host, nested in VMware Workstation.</figcaption></figure>
-  </div></section>
-
-  <section class="v4-section" aria-labelledby="featured"><div class="container">
-    <div class="byline">Featured investigation</div>
-    <h2 id="featured">"The IT folder won't open."</h2>
-    <blockquote class="ticket-quote">The file server looked down. It wasn't — a lookup by name timed out, while a direct connection to the server on port 445 succeeded.</blockquote>
-    <p class="lead">Testing DNS separately from network reachability showed the workstation was asking the wrong resolver, which avoided a needless server rebuild.</p>
-    <p style="margin-top:20px"><a class="btn" href={base + "incidents/dns-client-outage/"}>Follow the investigation <span aria-hidden="true">→</span></a></p>
-  </div></section>
-
-  <section class="v4-section" aria-labelledby="builder"><div class="container split">
-    <div>
-      <div class="byline">The engineer</div>
-      <h2 id="builder">I learn infrastructure by building it and breaking it.</h2>
-      <p class="lead">I designed, built, tested and documented every part of this lab myself. <a href={base + "about/"}>About me</a> · <a href="https://github.com/EtiDavid/Nova-Corp">Source on GitHub ↗</a></p>
-    </div>
-    <div class="outcome">
-      <span class="chip planned">Planned</span>
-      <h3>Next planned hardening</h3>
-      <p>A privileged administrative VPN and tighter management-plane firewall controls (CR-016). Planned; not started.</p>
-      <a href={base + "roadmap/"}>See the roadmap</a>
-    </div>
-  </div></section>
+  </section>
 </BaseLayout>
