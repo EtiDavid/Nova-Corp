@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
+import OriginalPublicDiagrams from "../../components/OriginalPublicDiagrams.astro";
 import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
 import { getArea } from "../../data/areas";
 import { systems, connectedTo, type Entity } from "../../data/model";
@@ -38,6 +39,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
       </section>
       <section class="content-section system-evidence-section" aria-label="Relevant engineering screenshot">
         <h2>Visual evidence</h2>
+        <OriginalPublicDiagrams systemId={system.id} />
         <p class="muted" style="margin:9px 0 15px">Only reviewed public screenshots are displayed as evidence. When the correct image is not available, this site shows a labeled placeholder instead.</p>
         {system.id==="nova-client"
           ? <EvidencePanel subject="Windows workstation Group Policy baseline" filename="05-firewall-gpo-configuration.png" caption="Actual original Windows Defender Firewall policy configuration screenshot. The image establishes the GPO setting, not proof that every workstation applied it." />
