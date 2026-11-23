@@ -112,6 +112,7 @@ try {
   assert(await card.isVisible());
   assert(/not yet proven/i.test(await card.innerText()));
   await desktop.keyboard.press("Escape");
+  await desktop.waitForFunction(() => !new URLSearchParams(window.location.search).has("focus"),null,{timeout:5000});
   assert(!/focus=/.test(desktop.url()));
   assert.equal(await desktop.evaluate(()=>document.activeElement?.getAttribute("data-id")),"nova-dc01");
   await desktop.locator('#tabs button[data-view="network"]').click();
