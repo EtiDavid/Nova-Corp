@@ -2,12 +2,13 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {getCollection, render, type CollectionEntry} from "astro:content";
 export async function getStaticPaths(){
- const docs=await getCollection("reference");
+ const docs:CollectionEntry<"reference">[]=await getCollection("reference");
  return docs.map((entry)=>({params:{slug:entry.id},props:{entry}}));
 }
 interface Props {entry:CollectionEntry<"reference">}
 const {entry}=Astro.props;
 const {Content,headings}=await render(entry);
+const readableHeadings: Array<{depth:number;slug:string;text:string}>=headings;
 const base=import.meta.env.BASE_URL;
 const sectionName=entry.data.section==="explore"?"Infrastructure explorer":entry.data.section==="Documentation"?"Engineering journals":"Project documentation";
 ---
@@ -22,7 +23,7 @@ const sectionName=entry.data.section==="explore"?"Infrastructure explorer":entry
  <article class="reference-content source-document" data-no-tech-links><Content /></article>
  <aside class="ref-sidebar">
   <div class="sidebox"><h2>On this page</h2>
-   {headings.length>0?<nav aria-label="Document table of contents"><ul class="ref-toc">{headings.filter(h=>h.depth<=3).slice(0,45).map(h=><li class={"ref-toc-level-"+h.depth}><a href={"#"+h.slug}>{h.text}</a></li>)}</ul></nav>:<p>Read the complete original document in the main column.</p>}
+   {readableHeadings.length>0?<nav aria-label="Document table of contents"><ul class="ref-toc">{readableHeadings.filter(h=>h.depth<=3).slice(0,45).map(h=><li class={"ref-toc-level-"+h.depth}><a href={"#"+h.slug}>{h.text}</a></li>)}</ul></nav>:<p>Read the complete original document in the main column.</p>}
   </div>
   <div class="sidebox"><h2>Original evidence</h2><p>This is a published historical record, not live monitoring or a claim that planned work was completed.</p>
   <p><a href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Compare with GitHub source ↗</a></p>
