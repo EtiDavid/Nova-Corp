@@ -9,6 +9,7 @@ const browser=await chromium.launch({headless:true,executablePath:chrome,args:["
 try {
   const desktop=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   const lab=desktop.locator("#workflow-lab");
   await lab.screenshot({path:out+"/workflow-files-desktop.png"});
   await lab.locator('[data-flow-tab="identity"]').click();
@@ -19,13 +20,16 @@ try {
 
   const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1});
   await mobile.goto(host+"/company/?workflow=security",{waitUntil:"networkidle"});
+  await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator("#workflow-lab").screenshot({path:out+"/workflow-security-mobile.png"});
 
   await desktop.goto(host+"/incidents/dns-client-outage/",{waitUntil:"networkidle"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   await desktop.locator('#step-1 .r-challenge [data-choice="1"]').click();
   await desktop.locator("#r-reveal").click();
   await desktop.locator("#replay").screenshot({path:out+"/dns-diagnostic-desktop.png"});
   await mobile.goto(host+"/incidents/dns-client-outage/",{waitUntil:"networkidle"});
+  await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator('#step-1 .r-challenge [data-choice="1"]').click();
   await mobile.locator("#replay").screenshot({path:out+"/dns-diagnostic-mobile.png"});
   console.log("Captured six real Chromium interaction and mobile QA screenshots.");
