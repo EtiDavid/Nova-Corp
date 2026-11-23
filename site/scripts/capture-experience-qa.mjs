@@ -8,6 +8,16 @@ const out=resolve("qa-snapshots");mkdirSync(out,{recursive:true});
 const browser=await chromium.launch({headless:true,executablePath:chrome,args:["--no-sandbox","--disable-dev-shm-usage"]});
 try {
   const desktop=await browser.newPage({viewport:{width:1440,height:1000},deviceScaleFactor:1});
+  await desktop.goto(host+"/",{waitUntil:"networkidle"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.locator(".atlas-home").screenshot({path:out+"/physical-lab-home-desktop.png"});
+  await desktop.locator(".atlas-prox").click();
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/physical-lab-inspector-desktop.png"});
+  await desktop.locator('[data-mode="identity"]').click();
+  await desktop.locator("#hx-explorer").screenshot({path:out+"/physical-lab-identity-path-desktop.png"});
+  await desktop.locator(".atlas-editorial").scrollIntoViewIfNeeded();
+  await desktop.waitForTimeout(850);
+  await desktop.locator(".atlas-editorial").screenshot({path:out+"/scroll-revealed-outcomes-desktop.png"});
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   const lab=desktop.locator("#workflow-lab");
@@ -19,6 +29,11 @@ try {
   await desktop.locator("#company-map .explorer").screenshot({path:out+"/workflow-map-focused-desktop.png"});
 
   const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:1});
+  await mobile.goto(host+"/",{waitUntil:"networkidle"});
+  await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
+  await mobile.locator(".atlas-home").screenshot({path:out+"/physical-lab-home-mobile.png"});
+  await mobile.locator('.hx-mobile-list [data-id="nova-files01"]').click();
+  await mobile.locator("#hx-explorer").screenshot({path:out+"/physical-lab-selected-mobile.png"});
   await mobile.goto(host+"/company/?workflow=security",{waitUntil:"networkidle"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator("#workflow-lab").screenshot({path:out+"/workflow-security-mobile.png"});
@@ -32,7 +47,7 @@ try {
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator('#step-1 .r-challenge [data-choice="1"]').click();
   await mobile.locator("#replay").screenshot({path:out+"/dns-diagnostic-mobile.png"});
-  console.log("Captured six real Chromium interaction and mobile QA screenshots.");
+  console.log("Captured twelve real Chromium interaction, scrolling and mobile QA screenshots.");
 } finally {
   await browser.close();
 }
