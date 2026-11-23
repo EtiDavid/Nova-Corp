@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import HeroLabExplorer from "../components/HeroLabExplorer.astro";
+import ScrollableLabSandbox from "../components/ScrollableLabSandbox.astro";
 const base = import.meta.env.BASE_URL;
 const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
 ---
@@ -13,7 +13,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
       </div>
       <div class="atlas-intro-layout">
         <div>
-          <h1 id="exp-headline">It starts with <em>one machine.</em></h1>
+          <h1 id="exp-headline">I built the infrastructure. <em>Then I tested what happens when it fails.</em></h1>
           <p class="exp-subtitle">Explore how I built an enterprise-style environment inside a single physical host — from nested virtualization to networking, Active Directory and tested recovery.</p>
         </div>
         <div class="atlas-intro-aside">
@@ -26,7 +26,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
       </div>
     </div>
     <div class="atlas-wide" data-reveal>
-      <HeroLabExplorer />
+      <ScrollableLabSandbox />
     </div>
     <div class="container atlas-after" data-reveal>
       <p class="atlas-honesty">Nova Corp is a fictional company. The lab, configurations, failure tests and original engineering documentation are real. This is a dated architecture illustration, not live monitoring.</p>
