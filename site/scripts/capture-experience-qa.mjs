@@ -42,6 +42,9 @@ try {
   await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-scrolled-mobile.png"});
   await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
   await mobile.locator("#hx-explorer").screenshot({path:out+"/physical-lab-selected-mobile.png"});
+  await mobile.waitForTimeout(620);
+  await mobile.locator("#sb-inspector").screenshot({path:out+"/lab-server-details-mobile.png"});
+
   await mobile.goto(host+"/company/?workflow=security",{waitUntil:"networkidle"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator("#workflow-lab").screenshot({path:out+"/workflow-security-mobile.png"});
