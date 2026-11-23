@@ -75,3 +75,6 @@
 @media(max-width:1050px){.ref-grid{grid-template-columns:minmax(0,1fr) 230px;gap:20px;}}
 @media(max-width:790px){.ref-grid{grid-template-columns:1fr;}.ref-sidebar{position:static;max-height:none;overflow:visible;}.ref-index-list{grid-template-columns:1fr;}}
 @media(max-width:560px){.reference-content{font-size:.89rem;}.reference-content pre{padding:14px;}.reference-content pre code{font-size:.74rem;}.reference-content th,.reference-content td{padding:9px;}.engineer-source-section{padding:15px 14px 17px;}.reference-content h1{font-size:1.5rem;}.reference-content h2{font-size:1.3rem;}.ref-hero h1{font-size:2.25rem;}.ref-origin{flex-direction:column;align-items:flex-start;}}
+
+.contextual-source{margin:44px auto 74px;}
+.contextual-source .engineer-source-section{max-width:100%;}
