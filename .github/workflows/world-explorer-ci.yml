@@ -1,7 +1,7 @@
 name: World Explorer site checks
 on:
   push:
-    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox]
+    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary]
     paths:
       - "site/**"
       - ".github/workflows/world-explorer-ci.yml"
