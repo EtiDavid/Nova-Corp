@@ -9,13 +9,18 @@ const {sourcePath,title="Complete engineering explanation"}=Astro.props;
 const id=sourcePath.replace(/^docs\//,"").replace(/\.md$/i,"");
 const entry=await getEntry("reference",id);
 if(!entry)throw Error("Missing source document for public profile: "+sourcePath);
-const {Content}=await render(entry);
+const {Content,headings}=await render(entry);
+const jumps:Array<{depth:number;text:string;slug:string}>=headings.filter(h=>h.depth<=3).slice(0,30);
 const base=import.meta.env.BASE_URL;
 ---
 <section class="content-section engineer-source-section" aria-label={title}>
 <div class="engineering-source-label"><span>ORIGINAL DOCUMENTATION / VERIFIED PUBLIC REPOSITORY SOURCE</span><span class="engineering-source-status">Complete article</span></div>
 <h2>{title}</h2>
 <p class="muted engineering-source-intro">This section uses the actual public Markdown record, not a shortened AI-generated description. It includes the documented configuration, reasons, links to related components and engineering evidence.</p>
+{jumps.length>2&&<details class="engineer-inline-toc">
+  <summary>Jump to a section in the original document <span aria-hidden="true">⌄</span></summary>
+  <nav aria-label="Original engineering document sections">{jumps.map(h=><a href={"#"+h.slug}>{h.text}</a>)}</nav>
+</details>}
 <article class="reference-content source-document inline-source-doc"><Content /></article>
 <div class="engineering-source-bottom"><a href={base+"reference/"+id+"/"}>Open this as a standalone article ↗</a><a href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Original GitHub Markdown ↗</a></div>
 </section>
