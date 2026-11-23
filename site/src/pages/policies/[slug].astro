@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
 import {
  companyPolicies,policySourceIndex,policyImageSource,
  type CompanyPolicy
@@ -55,6 +56,7 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
  </section>)}
  <p data-filter-empty hidden class="note">No setting matches this search. Try another word.</p>
 </section>
+<EngineeringSourceEmbed sourcePath={policy.sourceUrl.split("/blob/main/")[1]} title="Complete original Group Policy explanation" />
 <section class="content-section">
  <h2>Was this policy actually applied?</h2>
  <p class="muted" style="margin:12px 0 20px">A saved policy, a matching OU, <code>gpresult</code>, and an actual Windows behavior test answer different questions. The following statements describe only what was observed or configured in the original work.</p>
