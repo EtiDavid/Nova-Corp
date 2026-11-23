@@ -1,0 +1,150 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ArchitectureSvg from "../../components/ArchitectureSvg.astro";
+import { systems, edges, getSystem } from "../../data/model";
+const base = import.meta.env.BASE_URL;
+const incidentFor: Record<string, [string, string]> = {
+  "nova-dc01": ["dc01-outage", "Replay: what happened when DC01 went offline"],
+  "nova-dc02": ["dc01-outage", "Replay: what happened when DC01 went offline"],
+  "nova-client": ["dns-client-outage", "Investigation: the IT folder won't open"],
+  "nova-fw01": ["firewall-management-exposure", "Investigation: an employee PC could reach firewall admin"],
+  "nova-files01": ["backup-target-unavailable", "Investigation: the backup disk disappeared"],
+  "nova-prox01": ["proxmox-storage-pressure", "Investigation: storage pressure on the Proxmox host"]
+};
+const verbs: Record<string, [string, string]> = {
+  hosts: ["is hosted by", "hosts"], "routes-through": ["traffic passes through", "carries traffic from"],
+  "uses-service": ["uses", "is used by"], accesses: ["opens files on", "is opened by"],
+  "replicates-with": ["replicates Active Directory with", "replicates Active Directory with"],
+  "depends-on": ["uses identity and DNS from", "provides identity and DNS to"], "routes-to": ["allows approved services to", "receives approved services from"]
+};
+const connections = (id: string) => edges.filter(e => e.from === id || e.to === id).map(e => {
+  const out = e.from === id; const other = getSystem(out ? e.to : e.from);
+  return other ? `${out ? "" : ""}${verbs[e.type]?.[out ? 0 : 1] ?? e.label} ${other.name.toUpperCase()}`.replace(/^./, c => c.toUpperCase()) : "";
+}).filter(Boolean);
+const views = {
+  overview: { label: "Overview", nodes: [], edges: [], note: "Six core systems. Select one to see what it does, what it connects to, and the evidence." },
+  identity: { label: "Identity", nodes: ["nova-client", "nova-fw01", "nova-dc01", "nova-dc02", "nova-files01"], edges: ["fw-dc01", "fw-dc02", "dc-repl", "files-dc", "client-fw"], note: "Company computers ask the Domain Controllers for DNS and sign-in. DC02 keeps the directory available when DC01 is down — checked in a controlled outage." },
+  network: { label: "Network", nodes: ["nova-client", "nova-fw01", "nova-dc01", "nova-files01"], edges: ["client-fw", "fw-dc01", "fw-files"], note: "The firewall sits between the workstation network and the servers. Five VLANs are configured; WireGuard is a tunnel, not a VLAN. Broad pass rules remain on some segments." },
+  files: { label: "Files", nodes: ["nova-client", "nova-fw01", "nova-files01", "nova-dc01"], edges: ["client-fw", "fw-files", "files-dc"], note: "Opening a shared folder uses DNS and identity from the Domain Controllers plus a separate connection to the file server. Share permissions and folder permissions are both checked." },
+  recovery: { label: "Recovery", nodes: ["nova-files01", "nova-dc01", "nova-prox01"], edges: [], note: "A deleted file was restored with a matching hash, and an earlier file version was recovered from Shadow Copy. Whole-VM and complete Domain Controller restores are not claimed." }
+};
+const payload = { views, ids: systems.map(s => s.id) };
+---
+<BaseLayout title="Explore the infrastructure" description="An interactive map of the Nova Corp lab: select a system to see what it does, how it connects and the evidence behind it." breadcrumbs={[{ label: "Explore" }]}>
+  <section class="page-head tight"><div class="container">
+    <div class="byline">Explore</div>
+    <h1>How do the parts of this lab work together?</h1>
+    <p class="lead" style="margin-top:14px">Pick a focus, then select a system.</p>
+  </div></section>
+  <section class="section compact" style="padding-top:0"><div class="container">
+    <div class="tabs" role="group" aria-label="Choose a focus" id="tabs">
+      {Object.entries(views).map(([k, v]) => <button type="button" data-view={k} aria-pressed={k === "overview" ? "true" : "false"}>{v.label}</button>)}
+    </div>
+    <div class="explorer">
+      <div class="view-note-wrap">
+        <p class="view-note" id="view-note" aria-live="polite">{views.overview.note}</p>
+        <div class="canvas">
+          <ArchitectureSvg interactive />
+          <div class="legend" aria-label="Legend">
+            <span><i style="border-color:#6E83A3"></i>Recorded configuration</span>
+            <span><i style="border-color:#6557A8"></i>DNS and sign-in</span>
+            <span><i style="border-color:#087F75"></i>Shared files (SMB)</span>
+            <span><i style="border-color:#6E83A3;border-top-style:dashed"></i>Conditional / supporting</span>
+          </div>
+        </div>
+        <ul class="sys-list" id="sys-list" aria-label="All systems">
+          {systems.map(s => <li><button type="button" data-id={s.id} aria-pressed="false">{s.name.toUpperCase()}<small>{s.category}</small></button></li>)}
+        </ul>
+      </div>
+      <aside class="inspector" aria-label="Selected system" id="inspector">
+        <button type="button" class="btn ghost small back-btn" id="back-btn">← Back to overview</button>
+        <p class="inspector-empty" id="inspector-empty">Select a system on the map or in the list to see what it does, what it connects to, and the evidence.</p>
+        {systems.map(s => (
+          <article class="sys-card" id={"sys-" + s.id} data-id={s.id} tabindex="-1">
+            <h3>{s.name.toUpperCase()}</h3>
+            <p><span class="chip configured">{s.category}</span></p>
+            <h4>What it does</h4><p>{s.summary}</p>
+            <h4>What it connects to</h4>
+            <ul>{connections(s.id).map(c => <li>{c}</li>)}</ul>
+            <h4>Key facts · as of {s.asOf}</h4>
+            <ul>{s.details.map(d => <li><b>{d.label}:</b> {d.value}</li>)}</ul>
+            <h4>Not yet proven</h4>
+            <ul>{s.limitations.map(l => <li>{l}</li>)}</ul>
+            <h4>Evidence</h4>
+            <ul>
+              {incidentFor[s.id] && <li><a href={base + "incidents/" + incidentFor[s.id][0] + "/"}>{incidentFor[s.id][1]}</a></li>}
+              <li><a href={base + "systems/" + s.slug + "/"}>Open the full system record</a></li>
+              <li><a href={s.sourceUrl}>Original source on GitHub ↗</a></li>
+            </ul>
+          </article>
+        ))}
+      </aside>
+    </div>
+  </div></section>
+  <script is:inline type="application/json" id="company-data" set:html={JSON.stringify(payload)}></script>
+  <script is:inline>
+  (function () {
+    var data = JSON.parse(document.getElementById("company-data").textContent);
+    var svg = document.getElementById("arch");
+    var nodes = [].slice.call(svg.querySelectorAll(".node"));
+    var edgeEls = [].slice.call(svg.querySelectorAll(".edge-group"));
+    var cards = [].slice.call(document.querySelectorAll(".sys-card"));
+    var listBtns = [].slice.call(document.querySelectorAll("#sys-list button"));
+    var tabs = [].slice.call(document.querySelectorAll("#tabs button"));
+    var note = document.getElementById("view-note");
+    var empty = document.getElementById("inspector-empty");
+    var root = document.documentElement;
+    var state = { view: "overview", focus: null }, lastOpener = null;
+    function url() {
+      var q = new URLSearchParams();
+      if (state.view !== "overview") q.set("view", state.view);
+      if (state.focus) q.set("focus", state.focus);
+      var s = q.toString(); return location.pathname + (s ? "?" + s : "");
+    }
+    function render() {
+      var v = data.views[state.view];
+      note.textContent = v.note;
+      tabs.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.view === state.view ? "true" : "false"); });
+      nodes.forEach(function (n) {
+        var dim = v.nodes.length && v.nodes.indexOf(n.dataset.id) < 0;
+        n.classList.toggle("dim", !!dim);
+        var sel = n.dataset.id === state.focus;
+        n.classList.toggle("selected", sel);
+        n.setAttribute("aria-pressed", sel ? "true" : "false");
+      });
+      edgeEls.forEach(function (e) {
+        var on = v.edges.indexOf(e.dataset.edge) >= 0;
+        e.classList.toggle("dim", v.edges.length > 0 && !on);
+        e.querySelector(".edge").classList.toggle("on", on);
+      });
+      listBtns.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.id === state.focus ? "true" : "false"); });
+      cards.forEach(function (c) { c.classList.toggle("is-selected", c.dataset.id === state.focus); });
+      empty.classList.toggle("hidden", !!state.focus);
+      root.classList.toggle("has-focus", !!state.focus);
+    }
+    function set(next, push) {
+      var changed = next.view !== state.view || next.focus !== state.focus;
+      state = next; render();
+      if (push && changed) history.pushState(state, "", url());
+    }
+    function readUrl() {
+      var q = new URLSearchParams(location.search);
+      var view = q.get("view"); var focus = q.get("focus");
+      return { view: data.views[view] ? view : "overview", focus: data.ids.indexOf(focus) >= 0 ? focus : null };
+    }
+    function select(id, opener) { lastOpener = opener || null; set({ view: state.view, focus: id }, true);
+      var card = document.getElementById("sys-" + id); if (card && window.matchMedia("(max-width:1100px)").matches) card.focus({ preventScroll: false }); }
+    function clear() { var o = lastOpener; set({ view: state.view, focus: null }, true); if (o) o.focus(); }
+    nodes.forEach(function (n) {
+      n.addEventListener("click", function () { select(n.dataset.id, n); });
+      n.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(n.dataset.id, n); } });
+    });
+    listBtns.forEach(function (b) { b.addEventListener("click", function () { select(b.dataset.id, b); }); });
+    tabs.forEach(function (b) { b.addEventListener("click", function () { set({ view: b.dataset.view, focus: state.focus }, true); }); });
+    document.getElementById("back-btn").addEventListener("click", function () { clear(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && state.focus) clear(); });
+    window.addEventListener("popstate", function () { state = readUrl(); render(); });
+    state = readUrl(); render();
+  })();
+  </script>
+</BaseLayout>

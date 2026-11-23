@@ -1,0 +1,27 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const base = import.meta.env.BASE_URL;
+---
+<BaseLayout title="About David" description="David Eti builds, tests and documents enterprise infrastructure. Seeking system administrator, infrastructure and DevOps roles in Belgium and the Netherlands." breadcrumbs={[{ label: "About David" }]}>
+  <section class="page-head"><div class="container prose-narrow">
+    <div class="byline">About David</div>
+    <h1>I learn infrastructure by building it, testing its failures and explaining what happened.</h1>
+    <p class="lead" style="margin-top:16px">I'm David Eti, based in Roeselare, Belgium. I'm looking for system administrator, infrastructure and DevOps roles in Belgium and the Netherlands.</p>
+    <div class="contact-row">
+      <a class="btn" href={base + "David_Eti_Systems_Infrastructure_CV.pdf"}>Download CV</a>
+      <a class="btn ghost" href="mailto:etidavid26@gmail.com">Email</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
+      <a class="btn ghost" href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
+    </div>
+  </div></section>
+  <section class="v4-section"><div class="container prose-narrow">
+    <h2>What I did on Nova Corp</h2>
+    <p>I designed, built, tested and documented the whole lab myself: a nested Proxmox environment, a pfSense firewall with five VLANs, Windows Server 2025 Active Directory with two Domain Controllers, Group Policy, DFS and SMB file services, a WireGuard VPN, PowerShell administration scripts and tested recovery.</p>
+    <h2>How I work</h2>
+    <p>I change one thing at a time, write down the expected result before I test, and keep the failures in the record. When something breaks, I separate the possible causes with a test before I change anything. The <a href={base + "incidents/dns-client-outage/"}>DNS investigation</a> is a good example.</p>
+    <h2>What this project is not</h2>
+    <p>Nova Corp is a home lab, not an employer's production network. It shows Windows Server and Active Directory, pfSense and VLAN networking, virtualization, PowerShell, recovery and diagnostics. My cloud and DevOps work (Azure, Terraform, GitHub Actions) is in separate projects, such as <a href="https://github.com/EtiDavid/novapredict-devops-case-study">NovaPredict ↗</a>.</p>
+    <h2>Languages</h2>
+    <p>English: fluent. Dutch: basic, and I'm actively studying for NT2.</p>
+  </div></section>
+</BaseLayout>

@@ -1,0 +1,36 @@
+---
+// Original illustration of the documented Nova Corp architecture. Typed paths come from
+// data/relationships.json; DNS/sign-in and file (SMB) traffic are drawn as separate paths.
+interface Props { interactive?: boolean }
+const { interactive = false } = Astro.props;
+const nodes = [
+  { id: "nova-client", x: 30, y: 222, w: 170, h: 76, t: "NOVA-CLIENT", s: "Employee workstation" },
+  { id: "nova-fw01", x: 300, y: 222, w: 170, h: 76, t: "NOVA-FW01", s: "pfSense firewall" },
+  { id: "nova-dc01", x: 650, y: 50, w: 170, h: 76, t: "NOVA-DC01", s: "Identity + DNS" },
+  { id: "nova-dc02", x: 650, y: 170, w: 170, h: 76, t: "NOVA-DC02", s: "Second identity + DNS" },
+  { id: "nova-files01", x: 650, y: 330, w: 170, h: 76, t: "NOVA-FILES01", s: "File server" },
+  { id: "nova-prox01", x: 10, y: 446, w: 940, h: 58, t: "NOVA-PROX01 — Proxmox VE", s: "Nested in VMware Workstation on one Windows host; runs the five virtual machines above" }
+];
+const edges = [
+  { id: "client-fw", d: "M200,260 H300", cls: "", label: "traffic passes through", lx: 206, ly: 250 },
+  { id: "fw-dc01", d: "M470,246 C560,246 560,88 650,88", cls: "dns", label: "DNS + sign-in", lx: 520, ly: 120 },
+  { id: "fw-dc02", d: "M470,262 C560,262 560,208 650,208", cls: "dns dashed", label: "used if DC01 is down", lx: 486, ly: 232 },
+  { id: "fw-files", d: "M470,274 C560,274 560,368 650,368", cls: "smb", label: "shared files (SMB)", lx: 500, ly: 350 },
+  { id: "dc-repl", d: "M735,126 V170", cls: "", label: "replication", lx: 745, ly: 153 },
+  { id: "files-dc", d: "M820,368 H905 V88 H820", cls: "dashed", label: "identity + DNS", lx: 822, ly: 298 }
+];
+---
+<svg class={"arch-svg" + (interactive ? " interactive" : "")} viewBox="0 0 960 520" role={interactive ? "group" : "img"} aria-label="Architecture of the Nova Corp lab: an employee workstation reaches domain controllers and a file server through a pfSense firewall, all hosted on Proxmox." id={interactive ? "arch" : undefined}>
+  {!interactive && <desc>A workstation connects through a firewall to two domain controllers, which provide DNS and sign-in, and to a file server, which provides shared folders. All five virtual machines run on Proxmox.</desc>}
+  {edges.map(e => <g class={"edge-group"} data-edge={e.id}>
+    <path class={"edge " + e.cls} d={e.d} />
+    <text class="edge-label" x={e.lx} y={e.ly}>{e.label}</text>
+  </g>)}
+  {nodes.map(n => (
+    <g class={"node"} data-id={n.id} transform={`translate(${n.x},${n.y})`} {...(interactive ? { tabindex: 0, role: "button", "aria-pressed": "false", "aria-label": `Inspect ${n.t}` } : {})}>
+      <rect width={n.w} height={n.h} rx="14" />
+      <text class="t" x={n.w / 2} y={n.id === "nova-prox01" ? 24 : 34} text-anchor="middle">{n.t}</text>
+      <text class="s" x={n.w / 2} y={n.id === "nova-prox01" ? 44 : 56} text-anchor="middle">{n.s}</text>
+    </g>
+  ))}
+</svg>

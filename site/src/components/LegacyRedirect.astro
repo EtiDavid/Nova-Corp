@@ -1,0 +1,16 @@
+---
+interface Props { to: string; label: string; title?: string }
+const { to, label, title = "This page has moved" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const target = base + to;
+---
+<html lang="en"><head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title} · Nova Corp</title>
+<link rel="canonical" href={target} />
+<meta http-equiv="refresh" content={"0; url=" + target} />
+<meta name="robots" content="noindex" />
+</head><body style="font-family:system-ui,sans-serif;max-width:40rem;margin:15vh auto;padding:0 20px;line-height:1.6">
+<h1>{title}</h1>
+<p>This page now lives at <a href={target}>{label}</a>.</p>
+</body></html>

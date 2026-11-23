@@ -1,29 +1,60 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
-const base=import.meta.env.BASE_URL;
-const cases: CollectionEntry<"incidents">[]=(await getCollection("incidents")).sort((a:CollectionEntry<"incidents">,b:CollectionEntry<"incidents">)=>a.data.status===b.data.status?a.data.title.localeCompare(b.data.title):a.data.status==="tested"?-1:1);
+const base = import.meta.env.BASE_URL;
+const group: Record<string, string> = {
+  "dns-client-outage": "failure", "dc01-outage": "failure", "firewall-management-exposure": "failure",
+  "file-permission-denial": "failure", "wireguard-handshake": "failure", "proxmox-storage-pressure": "failure",
+  "backup-target-unavailable": "recovery", "vpn-validation-deferred": "deferred"
+};
+const labels: Record<string, string> = { failure: "Failure investigated", recovery: "Recovery tested", deferred: "Deferred test" };
+const all = await getCollection("incidents");
+const order = ["failure", "recovery", "deferred"];
+const cases = all.map((e: CollectionEntry<"incidents">) => ({ e, g: e.id in group ? group[e.id] : (e.data.status === "deferred" ? "deferred" : "failure") }))
+  .sort((a: {e: CollectionEntry<"incidents">; g: string}, b: {e: CollectionEntry<"incidents">; g: string}) => order.indexOf(a.g) - order.indexOf(b.g) || a.e.data.title.localeCompare(b.e.data.title));
+const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-client-outage");
 ---
-<BaseLayout title="What happened when things broke" description="Investigate real controlled failures in Nova Corp: identity, DNS, firewall rules, file permissions, VPN and backups." breadcrumbs={[{label:"Incident Lab"}]}>
-<section class="page-head"><div class="container">
-<div class="eyebrow">Inside Nova Corp / Incident Lab</div>
-<h1>When something breaks, follow the evidence.</h1>
-<p class="lead" style="margin-top:17px">These are controlled home-lab investigations, with recorded symptoms, troubleshooting steps and results. They show engineering decisions, not invented incidents at a real employer.</p>
-<div class="button-row" style="margin-top:24px"><a class="btn" href={base+"incidents/dns-client-outage/"}>Read a DNS investigation →</a><a class="btn ghost" href={base+"sources/"}>Open original journals</a></div>
-</div></section>
-<section class="section compact"><div class="container">
-<div class="section-heading"><div><div class="eyebrow">Case studies</div><h2>Start with the symptom</h2></div><span class="muted">Recorded tests, not live alerts</span></div>
-<div class="incident-grid">
-{cases.map((entry:CollectionEntry<"incidents">)=><a class="incident-card" href={base+"incidents/"+entry.id+"/"}>
- <span class={entry.data.status==="tested"?"incident-chip":"incident-chip pending"}>{entry.data.status==="tested"?"Recorded investigation":"Deferred validation"}</span>
- <h3>{entry.data.title}</h3>
- <p>{entry.data.summary}</p>
- <span class="readmore">{entry.data.status==="tested"?"Read the investigation":"Understand the limitation"} →</span>
-</a>)}
-</div>
-<div class="paper panel" style="margin-top:30px"><h3>More engineering investigations in the source archive</h3>
-<p class="muted" style="margin:12px 0 15px">The visitor case studies are curated summaries. Additional detailed investigations are available in the original technical archive; they have not all been rewritten as website case studies.</p>
-<a class="evidence-link" href="https://github.com/EtiDavid/Nova-Corp/tree/main/docs/explore/incidents" target="_blank" rel="noopener noreferrer">Open the public incident archive ↗</a>
-</div>
-</div></section>
+<BaseLayout title="Investigations" description="Replay real troubleshooting from the Nova Corp lab: DNS, Domain Controller outage, firewall rules, file permissions, VPN and recovery." breadcrumbs={[{ label: "Investigations" }]}>
+  <section class="page-head"><div class="container">
+    <div class="byline">Investigations</div>
+    <h1>When something broke, here is how I found out why.</h1>
+    <p class="lead" style="margin-top:14px">Each case starts with what an employee saw, then the checks I ran, the cause, and how I proved the fix.</p>
+  </div></section>
+  {featured && <section class="container"><div class="outcome" style="max-width:820px">
+    <span class="chip tested">Featured replay</span>
+    <h2 style="font-size:1.4rem">"The IT folder won't open."</h2>
+    <p>{featured.data.summary} Step through five recorded checks.</p>
+    <a class="btn" href={base + "incidents/dns-client-outage/"} style="width:fit-content">Follow the investigation <span aria-hidden="true">→</span></a>
+  </div></section>}
+  <section class="v4-section" style="border-top:0"><div class="container">
+    <div class="tabs" role="group" aria-label="Filter investigations" id="filters">
+      <button type="button" data-f="all" aria-pressed="true">All</button>
+      <button type="button" data-f="failure" aria-pressed="false">Failure</button>
+      <button type="button" data-f="recovery" aria-pressed="false">Recovery</button>
+      <button type="button" data-f="deferred" aria-pressed="false">Deferred</button>
+    </div>
+    <div class="outcomes" id="case-grid">
+      {cases.map(({ e, g }: {e: CollectionEntry<"incidents">; g: string}) => <article class="outcome" data-g={g}>
+        <span class={"chip " + (g === "deferred" ? "deferred" : "tested")}>{labels[g]}</span>
+        <h3>{e.data.title}</h3>
+        <p>{e.data.summary}</p>
+        <p class="result">{e.data.outcome}</p>
+        <a href={base + "incidents/" + e.id + "/"}>{g === "deferred" ? "Read what was not tested" : "Read the investigation"}</a>
+      </article>)}
+    </div>
+    <p class="muted" style="margin-top:28px">More investigations are in the <a href="https://github.com/EtiDavid/Nova-Corp/tree/main/docs/explore/incidents">public incident archive ↗</a>; they are not all rewritten as case studies yet.</p>
+  </div></section>
+  <script is:inline>
+  (function () {
+    var btns = [].slice.call(document.querySelectorAll("#filters button"));
+    var cards = [].slice.call(document.querySelectorAll("#case-grid .outcome"));
+    function apply(f) {
+      btns.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.f === f ? "true" : "false"); });
+      cards.forEach(function (c) { c.hidden = !(f === "all" || c.dataset.g === f); });
+    }
+    btns.forEach(function (b) { b.addEventListener("click", function () { apply(b.dataset.f); }); });
+    var t = new URLSearchParams(location.search).get("type");
+    apply(["failure", "recovery", "deferred"].indexOf(t) >= 0 ? t : "all");
+  })();
+  </script>
 </BaseLayout>

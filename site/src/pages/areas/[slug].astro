@@ -1,88 +1,19 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import SystemCard from "../../components/SystemCard.astro";
-import ExplorerGraph from "../../components/ExplorerGraph";
-import { areas, type Area } from "../../data/areas";
-import { systems, edges } from "../../data/model";
+import LegacyRedirect from "../../components/LegacyRedirect.astro";
+import { areas } from "../../data/areas";
 export function getStaticPaths() {
-  return areas.map((area) => ({ params: { slug: area.id }, props: { area } }));
+  const dest: Record<string, [string, string]> = {
+    "control-room": ["company/?view=overview", "Explore: systems"],
+    "identity-office": ["company/?view=identity", "Explore: identity"],
+    "department-offices": ["company/?view=identity", "Explore: identity and access"],
+    "network-gatehouse": ["company/?view=network", "Explore: network"],
+    "file-records": ["company/?view=files", "Explore: files"],
+    "recovery-centre": ["company/?view=recovery", "Explore: recovery"],
+    "incident-lab": ["incidents/", "Investigations"],
+    "roadmap-wing": ["roadmap/", "Roadmap"]
+  };
+  return areas.map(a => ({ params: { slug: a.id }, props: { to: (dest[a.id] ?? ["company/", "Explore"])[0], label: (dest[a.id] ?? ["company/", "Explore"])[1] } }));
 }
-interface Props { area: Area }
-const { area } = Astro.props;
-const base = import.meta.env.BASE_URL;
-const selected = systems.filter(system => area.systemIds.includes(system.id));
-const isControlRoom = area.id === "control-room";
-const isRecovery = area.id === "recovery-centre";
-const isIdentity = area.id === "identity-office" || area.id === "department-offices";
-const isFiles = area.id === "file-records";
-const isNetwork = area.id === "network-gatehouse";
-const isIncident = area.id === "incident-lab";
-const isIdentitySide = area.id === "identity-office";
+const { to, label } = Astro.props;
 ---
-<BaseLayout title={area.name} description={area.description} breadcrumbs={[{label:"Explore",href:"explore/"},{label:area.name}]}>
-  <section class="page-head"><div class="container">
-    <div class="eyebrow">Room {area.number} / Nova Corp</div>
-    <h1>{area.name}</h1>
-    <p class="lead" style="margin-top:18px">{area.description}</p>
-    <p class="muted" style="margin-top:18px;font-size:.9rem"><strong>{area.question}</strong></p>
-  </div></section>
-  <section class="section compact"><div class="container grid-main">
-    <div>
-      {isControlRoom && <section class="content-section">
-        <div class="section-heading"><h2>Inside the virtual data centre</h2><a class="text-link" href={base+"search/"}>Find a system ↗</a></div>
-        <p class="muted" style="margin-bottom:17px">Select any server to open its profile. The diagram is a bounded overview of documented relationships; it does not show live traffic.</p>
-        <div class="layout-graph"><ExplorerGraph client:visible items={selected.map(s => ({id:s.id,name:s.name,category:s.category,slug:s.slug}))} links={edges} base={base} /></div>
-        <div class="note" style="margin-top:15px">Prefer a keyboard or screen reader? All systems and their destinations are linked in the list below. The diagram is optional.</div>
-      </section>}
-      {(isIdentity || isFiles || isNetwork) && <section class="content-section">
-        <div class="paper panel">
-          <p class="kicker">Follow the company relationships</p>
-          <h2 style="margin:13px 0">{isFiles?"Explore real department access":isNetwork?"Follow real firewall decisions":"Browse the real company directory"}</h2>
-          <p class="muted" style="margin:11px 0 20px">{isFiles?"Five departmental shares connect DFS referrals, direct group membership, domain-local group nesting and two distinct Windows permission layers. Finance includes an additional management authorization path.":isNetwork?"Explore five VLANs and a separate remote-access tunnel. Inspect 17 ordered firewall rules and the reusable aliases behind them. Saved configurations and actual tested traffic are clearly distinguished.":"Open all 16 Organizational Units, 20 typed lab accounts and the 11 company-created groups. Follow a directory object into the file permissions and recorded tests."}</p>
-          <div class="button-row">
-            {isFiles?<a class="btn" href={base+"files/"}>Enter the File Centre →</a>:isNetwork?<a class="btn" href={base+"network/"}>Enter the Network Gatehouse →</a>:<a class="btn" href={base+"directory/"}>Open the directory →</a>}
-            <a class="btn ghost" href={base+(isFiles?"files/permissions/":isNetwork?"network/rules/":"groups/")}>{isFiles?"Compare permissions":isNetwork?"See rules in order":"Explore access groups"}</a>
-          </div>
-        </div>
-      </section>}
-      {isIdentitySide&&<section class="content-section"><div class="paper panel">
-        <p class="kicker">Rules for company devices</p><h2 style="margin:12px 0">What Group Policy is really configured?</h2>
-        <p class="muted">Browse all seven current GPOs, their exact link targets and saved settings, and see why a policy being linked is not proof that a test device applied it.</p>
-        <a class="btn small" style="margin-top:18px" href={base+"policies/"}>Explore seven Group Policies →</a>
-      </div></section>}
-      {isIncident && <section class="content-section"><div class="paper panel">
-        <p class="kicker">Incident investigations</p><h2 style="margin:12px 0">Explore the actual case studies.</h2>
-        <p class="muted" style="margin:12px 0 19px">Follow the symptom, competing explanations, tests, repair and outcome. Deferred tests are marked separately from completed investigations.</p>
-        <a class="btn small" href={base+"incidents/"}>Open the Incident Lab →</a>
-      </div></section>}
-      {selected.length>0 && <section class="content-section">
-        <h2>{isControlRoom?"Open a system profile":"Connected systems"}</h2>
-        <p class="muted" style="margin:12px 0 20px">{isControlRoom?"Every card opens the actual documented purpose, relationships and source evidence.":"These systems have documented roles in this area. Their profiles are available now; some deeper browsers are planned for later site stages."}</p>
-        <div class="card-list">{selected.map(system=><SystemCard system={system} />)}</div>
-      </section>}
-      {isRecovery && <section class="content-section">
-        <h2>Two recoveries that were really tested</h2>
-        <div class="paper panel">
-          <h3>Recover a deleted file</h3><p class="muted" style="margin:10px 0 18px">A deliberate Windows Backup failure was repaired, then a disposable file was restored with its original fingerprint.</p>
-          <a href={base+"incidents/backup-target-unavailable/"}>Read the investigation →</a>
-          <hr style="border:0;border-top:1px solid #E2E8F0;margin:26px 0" />
-          <h3>Recover an earlier version</h3><p class="muted" style="margin:10px 0 18px">A separate Shadow Copy test retrieved the original contents after the live file had changed.</p>
-          <a href="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/files/SHADOW_COPY_RECOVERY.md">Read the source-backed recovery story ↗</a>
-        </div>
-      </section>}
-      {isIncident && <section class="content-section">
-        <h2>Featured investigations</h2>
-        <div class="card-list">
-          <a class="system-card" href={base+"incidents/dc01-outage/"}><small>Identity resilience</small><h3>DC01 went offline</h3><p>See how DC02 took over services during a controlled outage.</p><span class="readmore">Open story →</span></a>
-          <a class="system-card" href={base+"incidents/dns-client-outage/"}><small>DNS diagnosis</small><h3>The file server looked down</h3><p>See how a failed hostname lookup was separated from working SMB connectivity.</p><span class="readmore">Open story →</span></a>
-          <a class="system-card" href={base+"incidents/backup-target-unavailable/"}><small>Backup recovery</small><h3>The backup disk disappeared</h3><p>See the failure, repair and byte-matched file restore.</p><span class="readmore">Open story →</span></a>
-        </div>
-      </section>}
-    </div>
-    <aside>
-      <div class="sidebox"><h3>What is documented here?</h3><ul>{area.facts.map(fact=><li>{fact}</li>)}</ul></div>
-      <div class="sidebox"><h3>Go further</h3><p class="muted" style="font-size:.9rem">Open the existing public engineering record for this part of the company. Technical depth is optional.</p><a class="evidence-link" href={area.sourceUrl} target="_blank" rel="noopener noreferrer">View original documented area ↗</a></div>
-      <div class="sidebox"><h3>Keep exploring</h3><a href={base+"explore/"}>← Back to the company map</a><p style="margin-top:14px"><a href={base+"tour/"}>Take the guided tour →</a></p></div>
-    </aside>
-  </div></section>
-</BaseLayout>
+<LegacyRedirect to={to} label={label} />

@@ -14,7 +14,7 @@ An employee workstation could not open the IT shared folder by server name. It w
 
 ## Separate the possible causes
 
-The investigation tested **name resolution** and **network reachability** independently.
+I tested **name resolution** and **network reachability** independently.
 
 - The ordinary file-share path check returned **False**.
 - A lookup of the file server's name timed out.
@@ -29,7 +29,7 @@ The workstation had a deliberately incorrect DNS server configured for this exer
 
 ## The repair and proof
 
-The correct pair of internal DNS servers was restored. The investigator cleared the client resolver cache, checked Active Directory service discovery, and repeated the original shared-folder test.
+The correct pair of internal DNS servers was restored. I cleared the client resolver cache, checked Active Directory service discovery, and repeated the original shared-folder test.
 
 **The shared folder opened again.** This was a client-side DNS configuration incident, not a damaged file server or failed SMB service.
 

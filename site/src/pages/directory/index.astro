@@ -6,7 +6,7 @@ const roots=organizationalUnits.filter(o=>!o.parent);
 const children=(slug:string)=>organizationalUnits.filter(o=>o.parent===slug);
 const rootUsers=identities.filter(i=>i.category==="built-in"||i.slug==="test-user");
 ---
-<BaseLayout title="People and company directory" description="Explore Nova Corp's actual directory structure: 16 OUs, 20 lab identities, 11 custom groups and tested access paths." breadcrumbs={[{label:"Explore",href:"explore/"},{label:"Company directory"}]}>
+<BaseLayout title="People and company directory" description="Explore Nova Corp's actual directory structure: 16 OUs, 20 lab identities, 11 custom groups and tested access paths." breadcrumbs={[{label:"Explore",href:"company/"},{label:"Company directory"}]}>
 <section class="page-head"><div class="container">
 <div class="eyebrow">People & Identity / Company directory</div>
 <h1>How the company organizes identities.</h1>
