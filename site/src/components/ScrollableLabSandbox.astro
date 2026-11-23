@@ -187,7 +187,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
    nodes.forEach(function(node){node.classList.toggle("is-muted",groups[mode].length>0&&groups[mode].indexOf(node.dataset.id)<0);});
    root.dataset.mode=mode;
  }
- modes.forEach(function(button){button.addEventListener("click",function(){mode=button.dataset.mode;renderMode();if(mode!=="all"){var node=root.querySelector('.sb-node[data-id="'+(mode==="identity"?"nova-dc01":"nova-files01")+'"]');if(node){scrollport.scrollTo({top:node.offsetTop-190,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}}});});
+ modes.forEach(function(button){button.addEventListener("click",function(){mode=button.dataset.mode;renderMode();if(mode!=="all"){var node=root.querySelector('.sb-node[data-id="'+(mode==="identity"?"nova-dc01":"nova-files01")+'"]');if(node){var top=node.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-165;scrollport.scrollTo({top:Math.max(0,top),behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}}});});
  nodes.forEach(function(node){node.addEventListener("click",function(e){
    if(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button!==0)return;
    e.preventDefault();select(node.dataset.id,true);
@@ -210,7 +210,11 @@ const iconURL=(slug:string)=>base+"brands/"+slug+".svg";
  scrollport.addEventListener("scroll",onScroll,{passive:true});
  window.addEventListener("resize",onScroll,{passive:true});
  var url=new URL(location.href),start=url.searchParams.get("system");
- if(start&&data[start]){select(start,false);}else{select("nova-prox01",false);}
+ if(start&&data[start]){
+   select(start,false);
+   var target=root.querySelector('.sb-node[data-id="'+start+'"]');
+   if(target&&target.dataset.id!=="nova-prox01")requestAnimationFrame(function(){var top=target.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-170;scrollport.scrollTop=Math.max(0,top);onScroll();});
+ }else{select("nova-prox01",false);}
  renderMode();onScroll();
 })();
 </script>
