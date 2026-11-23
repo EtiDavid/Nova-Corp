@@ -193,3 +193,20 @@
 .exp-hero.atlas-home .atlas-wide{margin-top:10px}
 @media(max-width:1000px){.exp-hero.atlas-home h1{max-width:22ch}}
 @media(max-width:600px){.exp-hero.atlas-home h1{font-size:clamp(2.2rem,9vw,3.35rem);max-width:19ch}}
+
+/* Visual QA corrections: guest VLAN labels must not collide with corner arrows.
+   Keep inspector actions immediately available while allowing its facts to scroll. */
+.sb-guest .sb-node-arrow{top:auto;bottom:10px;right:13px}
+.sb-node.is-selected{opacity:1!important}
+.sb-inspector{overflow:hidden}
+.sb-inspector-content{min-height:0;overflow-y:auto;scrollbar-color:#646458 #282A24;scrollbar-width:thin}
+.sb-inspector-links{flex:0 0 auto;background:#22241F;box-shadow:0 -7px 18px rgba(0,0,0,.12)}
+.sb-inspector-note{flex:0 0 auto;padding-top:0;background:#22241F}
+.sb-back-to-map{display:none;border:1px solid #655F51;background:#302B23;color:#E2C495;border-radius:5px;padding:7px 9px;font:700 .72rem var(--font-ui);cursor:pointer}
+@media(max-width:780px){
+ .sb-inspector{height:auto;max-height:none;overflow:visible;scroll-margin-top:78px}
+ .sb-inspector-content{overflow:visible}
+ .sb-back-to-map{display:inline-flex;margin-left:auto}
+ .sb-inspector-led{display:none}
+ .sb-inspector-links{box-shadow:none}
+}
