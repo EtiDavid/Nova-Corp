@@ -111,8 +111,10 @@ const hypotheses = [
   <div class="proof-note"><h3>Not yet proven</h3>
     <p>The results above are the incident journal's recorded summaries, not verbatim terminal output. The exact test date is not yet reconciled. The deliberately wrong DNS server was a lab exercise, not a production outage.</p>
     <p><a href={journal}>Full engineering journal (PDF) ↗</a> · <a href={record}>Original incident record ↗</a></p></div>
+  <script is:inline type="application/json" id="r-diagnostic-data" set:html={JSON.stringify(hypotheses)}></script>
   <script is:inline>
   (function () {
+    var hypotheses = JSON.parse(document.getElementById("r-diagnostic-data").textContent);
     var root = document.getElementById("replay");
     var steps = [].slice.call(root.querySelectorAll(".replay-step"));
     var total = steps.length, cur = 1, revealed = {};
