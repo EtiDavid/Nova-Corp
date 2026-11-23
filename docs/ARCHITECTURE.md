@@ -37,13 +37,13 @@ flowchart TB
 | Zone | Subnet | Gateway | State |
 | --- | --- | --- | --- |
 | Upstream | `192.168.178.0/24` | `192.168.178.1` | Proxmox management and firewall WAN |
-| Legacy LAN | `10.99.99.0/24` | `10.99.99.1` | Configured older segment |
+| Legacy LAN | `10.99.99.0/24` | `10.99.99.1` | Configured older segment. TODO(David): state why it still exists and when it will be removed. |
 | MGMT / VLAN 10 | `10.10.10.0/24` | `10.10.10.1` | Firewall management |
 | INFRA / VLAN 20 | `10.10.20.0/24` | `10.10.20.1` | Domain Controllers and file server |
 | APP / VLAN 30 | `10.10.30.0/24` | `10.10.30.1` | Reserved segment |
 | CLIENT / VLAN 40 | `10.10.40.0/24` | `10.10.40.1` | Domain workstation |
 | DMZ / VLAN 50 | `10.10.50.0/24` | `10.10.50.1` | Reserved segment |
-| VPN_REMOTE / VLAN 60 | `10.10.60.0/24` | `10.10.60.1` | WireGuard peer network |
+| VPN_REMOTE (WireGuard tunnel, not a VLAN) | `10.10.60.0/24` | `10.10.60.1` | WireGuard peer network |
 
 [Explore the network in plain English](explore/NETWORK.md).
 
@@ -68,7 +68,7 @@ Nova Corp uses several recovery paths: a second Domain Controller, AD Recycle Bi
 
 ## What is still a lab limitation?
 
-Proxmox is actually managed on the upstream host network, not yet inside the final privileged-management VLAN design. The dedicated admin VPN and wider management-plane security change are next. The environment also shares one outer physical host failure domain.
+Proxmox is actually managed on the upstream host network, not yet inside the final privileged-management VLAN design. The dedicated admin VPN and wider management-plane security change are next. The MGMT, INFRA, APP and DMZ zones still have broad pass rules, so segmentation exists but least privilege does not yet (planned in CR-016). The environment also shares one outer physical host failure domain.
 
 **Documented state:** 20 November 2026 asset/network validation, with Phase 2 closure on 21 November 2026.
 

@@ -1,0 +1,14 @@
+# Nova Corp facts (single source of truth)
+
+The website and the README must match this table. Change it here first.
+
+| Fact | Value |
+| --- | --- |
+| Scope | Windows infrastructure foundation complete (CR-001 to CR-015). Linux, Microsoft 365 and monitoring are planned. |
+| WireGuard | Encrypted tunnel, not a VLAN |
+| VLANs | Five: MGMT 10, INFRA 20, APP 30, CLIENT 40, DMZ 50 |
+| Hypervisor | Proxmox VE nested on VMware Workstation, on a single Windows 11 host |
+| Next change | CR-016, privileged admin VPN and management-plane isolation (not started) |
+| Phase naming | TODO(David): choose one scheme. Recommended: "Phase 2" for the completed Windows foundation everywhere, matching `PHASE-2-OPERATIONS-RUNBOOK.md`. |
+| Last evidence date | 22 Nov 2026 (TODO(David): confirm) |
+| Sign-off | 21 Nov 2026, conditionally accepted. TODO(David): state the conditions. |
