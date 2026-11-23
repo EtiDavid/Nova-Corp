@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/stage-source-docs.mjs && npm run stage:evidence",
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-graph.mjs",
@@ -16,7 +17,9 @@
     "test:evidence": "node scripts/check-published-evidence.mjs",
     "test:acls": "node scripts/validate-public-acls.mjs",
     "stage:evidence": "node scripts/stage-public-evidence.mjs",
-    "predev": "npm run stage:evidence",
+    "precheck": "node scripts/stage-source-docs.mjs",
+    "prebuild": "node scripts/stage-source-docs.mjs",
+    "test:references": "node scripts/check-source-mirror.mjs",
     "test:browser": "node scripts/smoke-browser.mjs"
   },
   "dependencies": {
