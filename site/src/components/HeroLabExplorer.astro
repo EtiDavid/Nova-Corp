@@ -58,7 +58,7 @@ const descriptions: Record<string,{ title:string; description:string; incident:s
             <rect class="hx-node-accent" x="0" y="0" width="3" height={n.h} rx="1.5"/>
             <text class="hx-node-number" x="17" y={n.id === "nova-prox01" ? 22 : 23}>{n.number} / {n.tag}</text>
             <text class="hx-node-name" x="17" y={n.id === "nova-prox01" ? 42 : 52}>{n.name}</text>
-            <text class="hx-node-role" x="17" y="73">{n.role}</text>
+            <text class="hx-node-role" x="17" y={n.id === "nova-prox01" ? 56 : 73}>{n.role}</text>
             <circle class="hx-port" cx={n.w - 20} cy="22" r="4"/>
           </g>
         </a>
@@ -80,7 +80,7 @@ const descriptions: Record<string,{ title:string; description:string; incident:s
     </div>
   </div>
   <noscript><p class="hx-noscript">The diagram's system labels and links work without JavaScript. Select any system to open its evidence-backed page.</p></noscript>
-  <script type="application/json" id="hx-data" set:html={JSON.stringify(descriptions)}></script>
+  <script is:inline type="application/json" id="hx-data" set:html={JSON.stringify(descriptions)}></script>
 </div>
 
 <script is:inline>
