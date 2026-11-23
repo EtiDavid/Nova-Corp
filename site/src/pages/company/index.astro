@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ArchitectureSvg from "../../components/ArchitectureSvg.astro";
+import WorkflowLab from "../../components/WorkflowLab.astro";
 import { systems, edges, getSystem } from "../../data/model";
 const base = import.meta.env.BASE_URL;
 const incidentFor: Record<string, [string, string]> = {
@@ -34,9 +35,10 @@ const payload = { views, ids: systems.map(s => s.id) };
   <section class="page-head tight"><div class="container">
     <div class="byline">Explore</div>
     <h1>How do the parts of this lab work together?</h1>
-    <p class="lead" style="margin-top:14px">Pick a focus, then select a system.</p>
+    <p class="lead" style="margin-top:14px">Choose a system to inspect its relationships and evidence, or trace a documented request through multiple components.</p>
+    <div class="button-row" style="margin-top:18px"><a class="btn ghost small" href="#workflow-lab">Trace a request or outage ↓</a><a class="btn ghost small" href={base+"incidents/dns-client-outage/"}>Investigate the DNS failure ↗</a></div>
   </div></section>
-  <section class="section compact" style="padding-top:0"><div class="container">
+  <section id="company-map" class="section compact" style="padding-top:0;scroll-margin-top:95px"><div class="container">
     <div class="tabs" role="group" aria-label="Choose a focus" id="tabs">
       {Object.entries(views).map(([k, v]) => <button type="button" data-view={k} aria-pressed={k === "overview" ? "true" : "false"}>{v.label}</button>)}
     </div>
@@ -81,6 +83,39 @@ const payload = { views, ids: systems.map(s => s.id) };
       </aside>
     </div>
   </div></section>
+  <div class="container">
+    <WorkflowLab />
+  </div>
+  <section class="exp-block" aria-labelledby="company-proof" style="padding-top:68px">
+    <div class="container">
+      <div class="exp-section-heading">
+        <div class="exp-eyebrow">Real engineering screenshots / original public evidence</div>
+        <h2 id="company-proof">See the actual work behind the diagrams.</h2>
+        <p>The interactive diagrams explain relationships. These three unchanged screenshots document specific Group Policy configuration and processing. They do not represent live monitoring or new test results.</p>
+      </div>
+      <div class="exp-evidence-gallery">
+        <figure class="exp-evidence-item">
+          <a href={base+"evidence/02-usb-deny-all-removable-storage-enabled.png"} target="_blank" rel="noopener noreferrer" aria-label="Open full original screenshot of configured removable storage policy">
+            <img src={base+"evidence/02-usb-deny-all-removable-storage-enabled.png"} alt="Original Group Policy Management screenshot showing the configured Deny all removable storage setting" loading="lazy" decoding="async" />
+          </a>
+          <figcaption><span>01 / CONFIGURATION</span><strong>Contractor removable-storage policy</strong><p>The saved deny-removable-storage GPO setting, not proof that every client received it.</p><a href={base+"policies/contractor-usb/"}>Review the GPO scope and results ↗</a></figcaption>
+        </figure>
+        <figure class="exp-evidence-item">
+          <a href={base+"evidence/03-contractor-user-gpresult.png"} target="_blank" rel="noopener noreferrer" aria-label="Open full original screenshot of historical Group Policy processing">
+            <img src={base+"evidence/03-contractor-user-gpresult.png"} alt="Original historical Windows gpresult screenshot showing processed policy information from a test session" loading="lazy" decoding="async" />
+          </a>
+          <figcaption><span>02 / CLIENT PROCESSING</span><strong>Historical gpresult evidence</strong><p>A real client-side processing result. It does not establish effective policy for every company account.</p><a href={base+"policies/corporate-wallpaper/"}>Examine the verified observation ↗</a></figcaption>
+        </figure>
+        <figure class="exp-evidence-item">
+          <a href={base+"evidence/05-firewall-gpo-configuration.png"} target="_blank" rel="noopener noreferrer" aria-label="Open full original screenshot of configured Windows Defender Firewall policy">
+            <img src={base+"evidence/05-firewall-gpo-configuration.png"} alt="Original Windows Group Policy screenshot showing configured Windows Defender Firewall policy settings" loading="lazy" decoding="async" />
+          </a>
+          <figcaption><span>03 / CONFIGURATION</span><strong>Workstation firewall baseline</strong><p>Recorded Windows Defender Firewall settings inside a GPO, separate from pfSense management filtering.</p><a href={base+"policies/workstation-baseline/"}>Review the saved policy ↗</a></figcaption>
+        </figure>
+      </div>
+      <p class="exp-gallery-note">Screenshots are byte-identical copies of images already in the public engineering repository. <a href={base+"evidence/manifest.json"}>Review the SHA-256 provenance manifest ↗</a> · <a href={base+"sources/"}>All original source records ↗</a>.</p>
+    </div>
+  </section>
   <script is:inline type="application/json" id="company-data" set:html={JSON.stringify(payload)}></script>
   <script is:inline>
   (function () {
@@ -143,6 +178,12 @@ const payload = { views, ids: systems.map(s => s.id) };
     tabs.forEach(function (b) { b.addEventListener("click", function () { set({ view: b.dataset.view, focus: state.focus }, true); }); });
     document.getElementById("back-btn").addEventListener("click", function () { clear(); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape" && state.focus) clear(); });
+    window.addEventListener("novacorp:trace",function(e){
+      var detail=e.detail||{};
+      var v=data.views[detail.view]?detail.view:"overview";
+      var f=data.ids.indexOf(detail.focus)>=0?detail.focus:null;
+      lastOpener=null;set({view:v,focus:f},true);
+    });
     window.addEventListener("popstate", function () { state = readUrl(); render(); });
     state = readUrl(); render();
   })();
