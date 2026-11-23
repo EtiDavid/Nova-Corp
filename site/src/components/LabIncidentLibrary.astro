@@ -17,7 +17,7 @@ const groups=[{id:"controlled",items:controlled},{id:"unplanned",items:unplanned
 ---
 <section class="il" aria-labelledby="il-heading" id="incident-library">
   <div class="container">
-    <header class="il-header" data-reveal>
+    <header class="il-header">
       <span class="exp-eyebrow">Engineering evidence / incident library</span>
       <h2 id="il-heading">What broke. Why. What the tests proved.</h2>
       <p>These are real documented lab exercises and problems—not imaginary production incidents. Start with the concise summaries, then open any investigation for the full story and its original Markdown journal.</p>
@@ -31,7 +31,7 @@ const groups=[{id:"controlled",items:controlled},{id:"unplanned",items:unplanned
         <ul class="il-list">
           {items.slice(0,4).map((story:Story,i:number)=>{
             const entry=indexed.get(story.slug)!;
-            return <li class="il-item" data-reveal>
+            return <li class="il-item">
               <div class="il-bullet" aria-hidden="true">{String(i+1).padStart(2,"0")}</div>
               <div class="il-text"><span class="il-topic">{story.topic}</span><h4>{entry.data.title}</h4><p>{story.short}</p></div>
               <a href={base+"incidents/"+story.slug+"/"} aria-label={"Read investigation: "+entry.data.title}>Read investigation <span aria-hidden="true">↗</span></a>
