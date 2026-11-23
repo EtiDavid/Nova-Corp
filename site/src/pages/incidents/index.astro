@@ -15,7 +15,7 @@ const cases = all.map((e: CollectionEntry<"incidents">) => ({ e, g: e.id in grou
 const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-client-outage");
 ---
 <BaseLayout title="Investigations" description="Replay real troubleshooting from the Nova Corp lab: DNS, Domain Controller outage, firewall rules, file permissions, VPN and recovery." breadcrumbs={[{ label: "Investigations" }]}>
-  <section class="page-head"><div class="container">
+  <section class="page-head tight"><div class="container">
     <div class="byline">Investigations</div>
     <h1>When something broke, here is how I found out why.</h1>
     <p class="lead" style="margin-top:14px">Each case starts with what an employee saw, then the checks I ran, the cause, and how I proved the fix.</p>
