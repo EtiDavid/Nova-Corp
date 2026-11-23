@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
+import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
 import { getArea } from "../../data/areas";
 import { systems, connectedTo, type Entity } from "../../data/model";
 import { linksForSystem } from "../../data/policies";
@@ -35,6 +36,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
         <h2>Key facts</h2>
         <dl class="fact-list" style="margin-top:14px">{system.details.map(fact=><div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
       </section>
+      <EngineeringSourceEmbed sourcePath={"docs/explore/systems/"+system.name.toUpperCase()+".md"} title={"How "+system.name.toUpperCase()+" actually works"} />
       <section class="content-section system-evidence-section" aria-label="Relevant engineering screenshot">
         <h2>Visual evidence</h2>
         <p class="muted" style="margin:9px 0 15px">Only reviewed public screenshots are displayed as evidence. When the correct image is not available, this site shows a labeled placeholder instead.</p>
