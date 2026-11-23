@@ -315,3 +315,9 @@ pre,.cmd { background:#08131F; color:#E7F6F2; border:1px solid #2D4359; }
 @keyframes sim-route {to{stroke-dashoffset:-32;}}
 @media(max-width:680px){.sim-title{flex:1 0 100%;}.sim-bar{padding:11px;}.sim-bar button{font-size:.74rem;padding:8px 10px;}.sim-summary{gap:8px;}}
 @media(prefers-reduced-motion:reduce){.arch-svg .edge-group.scenario-surviving .edge,.arch-svg .edge-group.scenario-reachable .edge{animation:none;stroke-dasharray:none;}}
+
+/* PowerShell investigation commands stay complete on narrow screens instead of
+   requiring hidden horizontal scrolling to read the diagnostic evidence. */
+@media(max-width:700px){
+  .replay .cmd { white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;font-size:.79rem;line-height:1.62; }
+}
