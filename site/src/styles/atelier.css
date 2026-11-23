@@ -228,3 +228,22 @@ html.motion-ready .exp-stories .exp-story:nth-child(3){transition-delay:.23s;}
  .hx.atlas .hx-node,.atlas-service-arrow{transition:none;}
  .atlas-scroll-progress{display:none;}
 }
+
+/* Hardware + outer VMware layer are first-class selectable subjects. */
+.hx.atlas .atlas-tower-hit{
+ display:flex;flex:1;flex-direction:column;align-items:stretch;min-width:0;
+ border:1px solid transparent;border-radius:7px;background:transparent;color:#ECE9DF;
+ text-decoration:none;cursor:pointer;transition:border-color .25s ease,background .25s ease;
+}
+.hx.atlas .atlas-tower-hit:hover,.hx.atlas .atlas-tower-hit:focus-visible{
+ transform:none;background:rgba(192,165,122,.035);border-color:#9B876A;
+}
+.hx.atlas .atlas-tower-hit.is-selected{background:rgba(190,156,109,.055);border-color:#D1A979;box-shadow:none;}
+.hx.atlas .atlas-tower-hit .atlas-tower-art{flex:1;}
+.hx.atlas .atlas-tower-hit .atlas-tower-caption{padding:13px 6px 4px;}
+.hx.atlas .atlas-tower-hit svg{transition:transform .32s ease;}
+.hx.atlas .atlas-tower-hit:hover svg{transform:translateY(-4px);}
+.hx.atlas .atlas-virtual-badge{text-decoration:none;cursor:pointer;transition:background .25s ease,border-color .25s ease;}
+.hx.atlas .atlas-virtual-badge:hover{background:#31302A;border-color:#CBA977;transform:none;}
+.hx.atlas .atlas-virtual-badge.is-selected{background:#3B3327;border-color:#D1B084;}
+@media(prefers-reduced-motion:reduce){.hx.atlas .atlas-tower-hit svg{transition:none;}.hx.atlas .atlas-tower-hit:hover svg{transform:none;}}
