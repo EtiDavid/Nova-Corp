@@ -14,4 +14,14 @@ const incidents = defineCollection({
   })
 });
 
-export const collections = { incidents };
+const reference = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/reference" }),
+  schema: z.object({
+    title: z.string(),
+    sourcePath: z.string(),
+    sourceUrl: z.string().url(),
+    section: z.string()
+  })
+});
+
+export const collections = { incidents, reference };
