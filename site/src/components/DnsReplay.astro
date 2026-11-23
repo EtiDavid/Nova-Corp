@@ -27,11 +27,40 @@ const steps = [
     recorded: "DC01 and DC02 were advertised, nltest selected DC01, and Test-Path returned True. ipconfig /all confirmed the restored DNS servers.", bad: false,
     meaning: "The original request works again. This was a client DNS configuration fault, not a damaged file server or failed SMB service." }
 ];
+const challenges: Record<number,{question:string;answers:{text:string;why:string;best?:boolean}[]}> = {
+  1:{
+    question:"If the share fails by name, which check best separates server reachability from DNS?",
+    answers:[
+      {text:"Rebuild the file server",why:"A failed name-based path does not establish a server failure. This would change too much before isolating the problem."},
+      {text:"Test TCP port 445 using the server IP",why:"Correct. Connecting directly by IP tests the SMB network path without requiring the workstation to resolve a hostname.",best:true},
+      {text:"Remove the share's NTFS ACLs",why:"Permissions should not be changed until the connection and name-resolution path are understood."}
+    ]
+  },
+  3:{
+    question:"DC01 answers correctly when queried directly, but ordinary resolution still times out. What next?",
+    answers:[
+      {text:"Inspect the workstation's configured DNS addresses",why:"Correct. The internal server answers correctly, so check which resolver the workstation normally queries.",best:true},
+      {text:"Delete the good DNS A record",why:"The direct authoritative lookup already returned the expected address. Removing it would create a separate fault."},
+      {text:"Reboot both Domain Controllers",why:"A correct direct lookup is evidence against blaming both Domain Controllers. Client configuration is the narrower next check."}
+    ]
+  }
+};
+const hypotheses = [
+  "The path fails by name. Server reachability is still unknown.",
+  "SMB responds by IP. Investigate the name-resolution path.",
+  "The internal DNS answer is correct. Check the client's resolver.",
+  "Wrong client resolver found: 192.0.2.53.",
+  "Correct DNS restored; the original shared-folder test passes."
+];
 ---
 <section class="replay" id="replay" aria-labelledby="replay-title" data-total={steps.length}>
   <div class="byline">Investigation replay · historical test, November 2026</div>
   <h2 id="replay-title">The IT folder won't open</h2>
   <p class="muted">A replay of recorded checks. Nothing here runs live commands against the lab.</p>
+  <div class="r-signal" role="status" aria-live="polite" aria-atomic="true">
+    <span class="r-signal-kicker">DIAGNOSTIC STATE / HISTORICAL EVIDENCE</span>
+    <strong id="r-signal">Result not yet revealed. Choose a test and inspect the finding.</strong>
+  </div>
   <div class="replay-grid">
     <div>
       <p class="step-count" id="step-count" aria-live="polite"></p>
@@ -44,6 +73,14 @@ const steps = [
             <p><b>What I checked</b></p>
             <pre class="cmd">{st.cmd}</pre>
             <p class="muted">Expected: {st.expected}</p>
+            {challenges[i+1] && <div class="r-challenge" data-challenge={i+1}>
+              <span class="r-challenge-label">VISITOR CHALLENGE · NOT A HISTORIC COMMAND SELECTION</span>
+              <h4>{challenges[i+1].question}</h4>
+              <div class="r-options" role="group" aria-label="Pick the best diagnostic next move">
+                {challenges[i+1].answers.map((answer,j)=><button type="button" data-choice={j} data-best={answer.best?"true":"false"} data-why={answer.why} aria-pressed="false">{answer.text}</button>)}
+              </div>
+              <p class="r-answer" role="status" aria-live="polite" hidden></p>
+            </div>}
             <div class="reveal-target">
               <div class={"recorded" + (st.bad ? " bad" : "")}><b>Recorded result:</b> {st.recorded}</div>
               <p><b>What it means:</b> {st.meaning}</p>
@@ -92,6 +129,7 @@ const steps = [
       root.querySelectorAll(".replay-svg .h").forEach(function (g) {
         g.classList.toggle("show", !!revealed[cur] && g.classList.contains("h-" + cur));
       });
+      document.getElementById("r-signal").textContent = revealed[cur] ? hypotheses[cur-1] : "Result not yet revealed. Choose a test and inspect the finding.";
       count.textContent = "Step " + cur + " of " + total;
       prev.disabled = cur === 1; next.disabled = cur === total;
       reveal.textContent = revealed[cur] ? "Hide recorded result" : "Show recorded result";
@@ -99,6 +137,18 @@ const steps = [
     }
     function url() { var u = new URL(location.href); u.searchParams.set("step", cur); return u.pathname + u.search; }
     function go(n, push) { cur = Math.min(total, Math.max(1, n)); render(); if (push) history.replaceState(null, "", url()); }
+
+    root.querySelectorAll(".r-challenge").forEach(function(box){
+      var feedback=box.querySelector(".r-answer");
+      box.querySelectorAll("[data-choice]").forEach(function(b){
+        b.addEventListener("click",function(){
+          box.querySelectorAll("[data-choice]").forEach(function(other){other.setAttribute("aria-pressed",String(other===b));});
+          feedback.hidden=false;
+          feedback.textContent=(b.dataset.best==="true"?"Best next check. ":"Try a narrower diagnostic step. ")+b.dataset.why;
+          feedback.classList.toggle("is-best",b.dataset.best==="true");
+        });
+      });
+    });
     prev.onclick = function () { go(cur - 1, true); };
     next.onclick = function () { go(cur + 1, true); };
     reveal.onclick = function () { revealed[cur] = !revealed[cur]; render(); };
@@ -107,4 +157,20 @@ const steps = [
     go(q >= 1 && q <= total ? q : 1, false);
   })();
   </script>
+
+<style>
+.r-signal { display:flex;flex-direction:column;gap:5px;margin:16px 0 23px;padding:13px 18px;border:1px solid #437C71;background:#17352F;border-radius:10px; }
+.r-signal-kicker {font:750 .7rem var(--font-mono);color:#92E2D2;letter-spacing:.065em;}
+.r-signal strong { font-size:.94rem;font-weight:650;color:#E7F9F3;}
+.r-challenge {border:1px solid #51667F;border-radius:12px;background:#172637;padding:18px;margin:17px 0;}
+.r-challenge-label {font:750 .65rem var(--font-mono);color:#EAC58C;letter-spacing:.065em;}
+.r-challenge h4 {font-size:.97rem;margin:10px 0 14px;color:#EFF6FD;}
+.r-options {display:flex;flex-direction:column;gap:8px;}
+.r-options button {min-height:43px;text-align:left;cursor:pointer;border:1px solid #3C566D;border-radius:8px;background:#1E3449;color:#D8E8F4;padding:10px 12px;font:650 .87rem var(--font-ui);}
+.r-options button:hover,.r-options button:focus-visible {border-color:#8EDFD6;}
+.r-options button[aria-pressed="true"] {border-color:#84DDCE;background:#1F4948;color:#F1FCFA;}
+.r-answer {border-left:3px solid #F2B66D;padding:10px 14px;background:#352B20;color:#FFE4BE;font-size:.84rem;border-radius:0 8px 8px 0;margin-top:13px;}
+.r-answer.is-best {border-color:#6EDAC6;background:#194038;color:#DFFBF0;}
+@media(max-width:600px){.r-challenge {padding:14px;}.r-options button{font-size:.83rem;}}
+</style>
 </section>
