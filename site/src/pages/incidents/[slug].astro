@@ -16,7 +16,7 @@ const base=import.meta.env.BASE_URL;
  <div class="eyebrow">Investigation</div>
  <h1>{entry.data.title}</h1>
  <p class="lead" style="margin-top:16px">{entry.data.summary}</p>
- <div style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{entry.data.status==="tested"?"Recorded test":"Deferred"}</span><span class="muted" style="font-size:.82rem">{entry.data.date} · {entry.data.outcome}</span></div>
+ <div class="incident-meta" style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{entry.data.status==="tested"?"Recorded test":"Deferred"}</span><span class="muted" style="font-size:.82rem">{entry.data.date} · {entry.data.outcome}</span></div>
 </div></section>
 <section class="section compact"><div class="container">{entry.id==="dns-client-outage" && <DnsReplay />}</div></section>
 <section class="section compact"><div class="container grid-main">
