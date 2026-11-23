@@ -68,7 +68,8 @@ jobs:
               test -s "qa-snapshots/${NAME}-${VIEW_NAME}.png"
             done
           done
-          echo "Real Chromium captured ten desktop/mobile screenshots across five representative routes. Visual acceptance remains manual."
+          CHROME_PATH="$CHROME" node scripts/capture-experience-qa.mjs
+          echo "Real Chromium captured ten standard screenshots and six interaction-focused screenshots. Visual acceptance remains manual."
       - name: Keep actual browser screenshots for visual review
         uses: actions/upload-artifact@v4
         with:
