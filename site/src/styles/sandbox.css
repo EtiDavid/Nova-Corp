@@ -183,3 +183,13 @@
  .sb-node,.sb-progress span{transition:none}
  .sb-scrollport{scroll-behavior:auto!important}
 }
+
+/* Restore the earlier stronger engineering headline at a scale that still
+   introduces the interactive lab within the first viewport. */
+.exp-hero.atlas-home .atlas-intro{padding-top:30px;padding-bottom:16px}
+.exp-hero.atlas-home h1{font-size:clamp(2.65rem,4.25vw,4.75rem);max-width:21.5ch;line-height:1.02;margin:14px 0 14px}
+.exp-hero.atlas-home h1 em{color:#D9BC93}
+.exp-hero.atlas-home .exp-subtitle{max-width:66ch}
+.exp-hero.atlas-home .atlas-wide{margin-top:10px}
+@media(max-width:1000px){.exp-hero.atlas-home h1{max-width:22ch}}
+@media(max-width:600px){.exp-hero.atlas-home h1{font-size:clamp(2.2rem,9vw,3.35rem);max-width:19ch}}
