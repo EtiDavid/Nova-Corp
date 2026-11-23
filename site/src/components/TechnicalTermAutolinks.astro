@@ -1,0 +1,51 @@
+---
+import { techTerms } from "../data/techLexicon";
+import { systems } from "../data/model";
+const base=import.meta.env.BASE_URL;
+const aliases:Array<{text:string;href:string}>=[];
+for(const s of systems){aliases.push({text:s.name.toUpperCase(),href:base+"systems/"+s.slug+"/"});}
+aliases.push({text:"NOVA-CLIENT01",href:base+"systems/nova-client/"});
+for(const term of techTerms){for(const text of term.aliases){aliases.push({text,href:base+"learn/"+term.slug+"/"});}}
+const seen=new Set<string>();
+const unique=aliases.filter(x=>{const k=x.text.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;}).sort((a,b)=>b.text.length-a.text.length);
+---
+<script is:inline type="application/json" id="novacorp-link-targets" set:html={JSON.stringify(unique).replace(/</g,"\\u003c")}></script>
+<script is:inline>
+(function(){
+ var item=document.getElementById("novacorp-link-targets");if(!item)return;
+ var aliases=JSON.parse(item.textContent);
+ var lookup=Object.create(null);
+ aliases.forEach(function(v){lookup[v.text.toLowerCase()]=v.href;});
+ function escape(s){return s.replace(/[.*+?^$\u007b\u007d()|[\]\\]/g,"\\$&");}
+ // The regex operates on individual text nodes, never on raw HTML strings.
+ var rx=new RegExp("(?<![A-Za-z0-9])("+aliases.map(function(a){return escape(a.text);}).join("|")+")(?![A-Za-z0-9])","gi");
+ function eligible(node){
+   if(!node.nodeValue||!node.nodeValue.trim())return false;
+   var el=node.parentElement;
+   if(!el||el.closest("a,button,summary,pre,code,script,style,textarea,option,select,svg,[data-no-tech-links]"))return false;
+   if(!el.closest("main"))return false;
+   return true;
+ }
+ function linkify(root){
+   var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+   var candidates=[],node;
+   while(node=walker.nextNode()){if(eligible(node))candidates.push(node);}
+   candidates.forEach(function(t){
+     var raw=t.nodeValue;if(!raw)return;
+     rx.lastIndex=0;var match,at=0,fragment=document.createDocumentFragment(),found=false;
+     while((match=rx.exec(raw))){
+       var url=lookup[match[0].toLowerCase()];if(!url)continue;
+       if(match.index>at)fragment.append(document.createTextNode(raw.slice(at,match.index)));
+       var a=document.createElement("a");a.href=url;a.className="technical-link";
+       a.textContent=match[0];a.setAttribute("title","Open the explanation or documented system profile for "+match[0]);
+       fragment.append(a);at=rx.lastIndex;found=true;
+     }
+     if(!found)return;
+     if(at<raw.length)fragment.append(document.createTextNode(raw.slice(at)));
+     t.replaceWith(fragment);
+   });
+ }
+ linkify(document.getElementById("main"));
+ document.addEventListener("novacorp:content-updated",function(e){if(e.detail&&e.detail.root)linkify(e.detail.root);});
+})();
+</script>
