@@ -23,6 +23,7 @@ try {
   await desktop.locator('.sb-guest[data-id="nova-dc01"]').click();
   await desktop.locator(".system-evidence-section").screenshot({path:out+"/dc01-evidence-placeholder-desktop.png"});
   await desktop.goto(host+"/",{waitUntil:"networkidle"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   await desktop.locator(".il").screenshot({path:out+"/incident-library-collapsed-desktop.png"});
   await desktop.locator("#il-more-controlled summary").click();
   await desktop.locator("#il-more-unplanned summary").click();
