@@ -168,3 +168,4 @@ html:not(.js) .replay-svg-wrap { display:none; }
 .arch-strip li.host { background:#EAF0FA; border-style:dashed; }
 @media (max-width:640px) { .arch-svg:not(.interactive) { display:none; } .arch-strip { display:flex; } .arch-legend { display:none; } }
 .arch-svg:not(.interactive) .node .t { font-size:23px; }
+.prose-narrow h2 { margin-top:38px; } .prose-narrow h2:first-child { margin-top:0; }

@@ -7,7 +7,7 @@ const later = road.planned.slice(1);
 const journals = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/README.md";
 ---
 <BaseLayout title="Roadmap" description="What is done, what is next and what is planned in the Nova Corp lab." breadcrumbs={[{ label: "Roadmap" }]}>
-  <section class="page-head"><div class="container prose-narrow">
+  <section class="page-head tight"><div class="container prose-narrow">
     <div class="byline">Roadmap</div>
     <h1>The foundation I've completed, and the security work that comes next.</h1>
     <p class="lead" style="margin-top:14px">The Windows infrastructure foundation (CR-001 to CR-015) was signed off on 21 November 2026. Items below the foundation are planned, not built.</p>
@@ -28,7 +28,7 @@ const journals = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documenta
   <section class="container prose-narrow road-group" style="margin-bottom:40px">
     <span class="chip planned">Planned</span>
     <ul class="road-list">
-      {later.map(p => <li class="road-item planned"><b>{p.id}</b><div><strong>{p.title}</strong><p>Planned in {p.id}.</p></div></li>)}
+      {later.map(p => <li class="road-item planned"><b>{p.id}</b><div><strong>{p.title}</strong><p><em>Planned goal:</em> {(p.goal ?? "").split(/(?<=\.)\s/)[0]}</p></div></li>)}
     </ul>
   </section>
 </BaseLayout>
