@@ -1,0 +1,21 @@
+---
+import EngineeringSourceEmbed from "./EngineeringSourceEmbed.astro";
+const route=Astro.url.pathname.replace(/^\/+|\/+$/g,"");
+const docsByRoute:Record<string,{file:string;title:string}>={
+ "directory":{file:"docs/explore/DIRECTORY.md",title:"Complete directory design and configuration"},
+ "network":{file:"docs/explore/NETWORK.md",title:"Full network topology and routing explanation"},
+ "network/rules":{file:"docs/explore/network/RULES.md",title:"Every documented firewall rule and its meaning"},
+ "network/aliases":{file:"docs/explore/network/ALIASES.md",title:"All configured firewall aliases explained"},
+ "files":{file:"docs/explore/FILE_SERVICES.md",title:"Full file-server services and operations"},
+ "files/dfs":{file:"docs/explore/files/DFS_PATHS.md",title:"Full DFS namespace and target design"},
+ "files/permissions":{file:"docs/explore/files/PERMISSIONS.md",title:"Access control and departmental authorization explained"},
+ "files/permissions/technical":{file:"docs/explore/files/TECHNICAL_ACL_DETAILS.md",title:"Full original SMB and NTFS permissions detail"},
+ "groups":{file:"docs/explore/GROUPS.md",title:"Active Directory group model and memberships"},
+ "people":{file:"docs/explore/PEOPLE_AND_DEPARTMENTS.md",title:"Complete company people and department model"},
+ "computers":{file:"docs/explore/DIRECTORY_SNAPSHOT_2026-11-22.md",title:"Original directory computer-object snapshot"},
+ "policies":{file:"docs/explore/POLICIES.md",title:"Full Group Policy inventory and purpose"},
+ "recovery":{file:"docs/explore/TESTS_AND_RECOVERY.md",title:"Recorded failure tests, recovery and limitations"}
+};
+const selected=docsByRoute[route];
+---
+{selected&&<div class="container contextual-source"><EngineeringSourceEmbed sourcePath={selected.file} title={selected.title} /></div>}

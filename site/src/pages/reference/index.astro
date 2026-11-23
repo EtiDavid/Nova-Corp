@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {getCollection, type CollectionEntry} from "astro:content";
+const entries:CollectionEntry<"reference">[]=await getCollection("reference");
+const all=entries.sort((a,b)=>a.data.title.localeCompare(b.data.title));
+const groups=new Map<string,typeof all>();
+for(const d of all){const group=d.data.sourcePath.startsWith("docs/explore/")? "Infrastructure and configuration":d.data.sourcePath.startsWith("docs/Documentation/")?"Change requests and original journals":"Architecture, status and how-tos";const arr=groups.get(group)||[];arr.push(d);groups.set(group,arr);}
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Complete engineering documentation" description="The entire public Nova Corp Markdown documentation rendered as fully linked website articles, with original source provenance." breadcrumbs={[{label:"Engineering library"}]}>
+<section class="page-head ref-hero"><div class="container">
+<div class="eyebrow">Original reports / Configurations / Recorded tests</div>
+<h1>Explore the complete engineering library.</h1>
+<p class="lead">The original Markdown documentation belongs on this website—not just as a link that sends you away. Each article below is rendered from the repository's public source, including real configuration detail, tests, troubleshooting and limitations.</p>
+<p class="ref-intro-tag">Published Markdown articles: <strong>{all.length}</strong> · Original PDFs remain linked from the relevant journals where Markdown has not yet been published.</p>
+</div></section>
+<section class="section compact"><div class="container">
+<label class="search-label" for="ref-search">Find a system, service, test or document</label>
+<div class="searchbox ref-search"><span aria-hidden="true">⌕</span><input id="ref-search" type="search" placeholder="Find pfSense, CR-013, DHCP, permissions, backups…" data-ref-search /></div>
+<p class="muted" data-ref-count role="status" aria-live="polite">Showing {all.length} public engineering documents</p>
+{[...groups.entries()].map(([name,docs])=><section class="ref-index-section" data-ref-section>
+<h2>{name} <small>{docs.length} documents</small></h2>
+<div class="ref-index-list">{docs.map(d=><a href={base+"reference/"+d.id+"/"} data-ref-doc data-ref-terms={(d.data.title+" "+d.data.sourcePath).toLowerCase()}>
+<span>{d.data.sourcePath.replace("docs/","")}</span><strong>{d.data.title}</strong><span aria-hidden="true">↗</span></a>)}</div>
+</section>)}
+<p class="note" data-ref-empty hidden>No matching document. Try a machine name, service, change request or technical term.</p>
+</div></section>
+<script is:inline>
+(function(){
+var input=document.querySelector("[data-ref-search]"),counter=document.querySelector("[data-ref-count]");
+if(!input)return;
+var rows=Array.from(document.querySelectorAll("[data-ref-doc]"));
+function filter(){
+ var q=input.value.toLocaleLowerCase().trim();var shown=0;
+ rows.forEach(function(a){var yes=!q||a.dataset.refTerms.includes(q);a.hidden=!yes;if(yes)shown++;});
+ document.querySelectorAll("[data-ref-section]").forEach(function(sec){sec.hidden=!Array.from(sec.querySelectorAll("[data-ref-doc]")).some(function(a){return !a.hidden;});});
+ counter.textContent="Showing "+shown+" of "+rows.length+" published Markdown documents";
+ document.querySelector("[data-ref-empty]").hidden=shown>0;
+}
+input.addEventListener("input",filter);
+})();
+</script>
+</BaseLayout>

@@ -26,7 +26,13 @@ function walk(dir){
    const alt=tag.match(/\balt="([^"]*)"/)?.[1];
    if(!src)errors.push(relative(dist,p)+": image missing src");
    if(!alt)errors.push(relative(dist,p)+": image missing descriptive alt");
-   const match=src?.match(/\/evidence\/([A-Za-z0-9._-]+\.png)(?:[?#].*)?$/);
+   // The source-faithful Markdown mirror can cite other already-public GitHub
+   // images via raw.githubusercontent.com. These are NOT local, owner-reviewed
+   // evidence assets, so do not call them missing locally or claim SHA parity.
+   // Only /evidence/... hosted by this website is part of the five-image
+   // independently hash-verified subset.
+   const localSrc=src&&src.startsWith("/")&&!src.startsWith("//");
+   const match=localSrc?src.match(/\/evidence\/([A-Za-z0-9._-]+\.png)(?:[?#].*)?$/):null;
    if(!match)continue;
    const name=match[1];
    const original=join(source,name),published=join(dist,"evidence",name);

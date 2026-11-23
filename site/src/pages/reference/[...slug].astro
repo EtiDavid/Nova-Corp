@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {getCollection, render, type CollectionEntry} from "astro:content";
+export async function getStaticPaths(){
+ const docs:CollectionEntry<"reference">[]=await getCollection("reference");
+ return docs.map((entry)=>({params:{slug:entry.id},props:{entry}}));
+}
+interface Props {entry:CollectionEntry<"reference">}
+const {entry}=Astro.props;
+const {Content,headings}=await render(entry);
+const readableHeadings: Array<{depth:number;slug:string;text:string}>=headings;
+const base=import.meta.env.BASE_URL;
+const sectionName=entry.data.section==="explore"?"Infrastructure explorer":entry.data.section==="Documentation"?"Engineering journals":"Project documentation";
+---
+<BaseLayout title={entry.data.title} description={"Full published engineering documentation: "+entry.data.title} breadcrumbs={[{label:"Engineering library",href:"reference/"},{label:entry.data.title}]}>
+<section class="page-head ref-hero"><div class="container">
+ <div class="eyebrow">Original engineering source / {sectionName}</div>
+ <h1>{entry.data.title}</h1>
+ <p class="lead">The full public engineering explanation, rendered as a readable website page. Headings, tables, recorded commands and source links are retained from the GitHub Markdown.</p>
+ <div class="ref-origin"><span>Canonical source: <code>{entry.data.sourcePath}</code></span><a href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">View original Markdown on GitHub ↗</a></div>
+</div></section>
+<section class="section compact"><div class="container ref-grid">
+ <article class="reference-content source-document"><Content /></article>
+ <aside class="ref-sidebar">
+  <div class="sidebox"><h2>On this page</h2>
+   {readableHeadings.length>0?<nav aria-label="Document table of contents"><ul class="ref-toc">{readableHeadings.filter(h=>h.depth<=3).slice(0,45).map(h=><li class={"ref-toc-level-"+h.depth}><a href={"#"+h.slug}>{h.text}</a></li>)}</ul></nav>:<p>Read the complete original document in the main column.</p>}
+  </div>
+  <div class="sidebox"><h2>Original evidence</h2><p>This is a published historical record, not live monitoring or a claim that planned work was completed.</p>
+  <p><a href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Compare with GitHub source ↗</a></p>
+  <p><a href={base+"reference/"}>← Browse all documentation</a></p></div>
+ </aside>
+</div></section>
+</BaseLayout>

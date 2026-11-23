@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
+import OriginalPublicDiagrams from "../../components/OriginalPublicDiagrams.astro";
+import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
 import { getArea } from "../../data/areas";
 import { systems, connectedTo, type Entity } from "../../data/model";
 import { linksForSystem } from "../../data/policies";
@@ -29,7 +31,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
       <span class="status">{statusText}</span>
     </div>
   </div></section>
-  <section class="section compact"><div class="container grid-main">
+  <section class="section compact"><div class="container grid-main deep-system-profile">
     <div>
       <section class="content-section">
         <h2>Key facts</h2>
@@ -37,12 +39,14 @@ const statusText = system.status === "observed-running" ? `Running at last check
       </section>
       <section class="content-section system-evidence-section" aria-label="Relevant engineering screenshot">
         <h2>Visual evidence</h2>
+        <OriginalPublicDiagrams systemId={system.id} />
         <p class="muted" style="margin:9px 0 15px">Only reviewed public screenshots are displayed as evidence. When the correct image is not available, this site shows a labeled placeholder instead.</p>
         {system.id==="nova-client"
           ? <EvidencePanel subject="Windows workstation Group Policy baseline" filename="05-firewall-gpo-configuration.png" caption="Actual original Windows Defender Firewall policy configuration screenshot. The image establishes the GPO setting, not proof that every workstation applied it." />
           : <EvidencePanel subject={system.name.toUpperCase()+" engineering verification"} requested={"A real redacted screenshot from the "+system.name.toUpperCase()+" system or validation journal. Exact image not present in the current reviewed public evidence set."} />
         }
       </section>
+      <EngineeringSourceEmbed sourcePath={"docs/explore/systems/"+system.name.toUpperCase()+".md"} title={"How "+system.name.toUpperCase()+" actually works"} />
       <section class="content-section">
         <h2>How it connects</h2>
         <ul class="plain-list" style="margin-top:14px">

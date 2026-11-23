@@ -1,9 +1,10 @@
 name: World Explorer site checks
 on:
   push:
-    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary]
+    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library]
     paths:
       - "site/**"
+      - "docs/**"
       - ".github/workflows/world-explorer-ci.yml"
   pull_request:
     branches: [main]
@@ -33,6 +34,8 @@ jobs:
         run: npm run test:links
       - name: Verify full first-slice catalog and user journeys
         run: npm run test:coverage
+      - name: Prove all canonical Markdown pages and in-site depth match source
+        run: npm run test:references
       - name: Verify outbound public engineering source files exist
         run: npm run test:sources
       - name: Verify reused public screenshots and accessibility text

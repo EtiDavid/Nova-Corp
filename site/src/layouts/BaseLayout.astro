@@ -6,7 +6,9 @@ import "../styles/atelier.css";
 import "../styles/sandbox.css";
 import "../styles/home-refresh.css";
 import "../styles/learning.css";
+import "../styles/reference-library.css";
 import TechnicalTermAutolinks from "../components/TechnicalTermAutolinks.astro";
+import ContextualDocsEmbed from "../components/ContextualDocsEmbed.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 type Crumb = { label: string; href?: string };
@@ -41,6 +43,7 @@ const fullTitle = title === "Home" ? "Nova Corp — an enterprise infrastructure
         </nav>
       </div>}
       <slot />
+      <ContextualDocsEmbed />
     </main>
     <SiteFooter />
     <TechnicalTermAutolinks />

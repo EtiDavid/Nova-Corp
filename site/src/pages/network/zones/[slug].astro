@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import EngineeringSourceEmbed from "../../../components/EngineeringSourceEmbed.astro";
 import { zones, rulesForZone, networkEvidence, type Zone } from "../../../data/network";
 import { getSystem } from "../../../data/model";
 export function getStaticPaths(){return zones.map(zone=>({params:{slug:zone.slug},props:{zone}}));}
@@ -25,6 +26,7 @@ const isClient=zone.slug==="client";
         <span aria-hidden="true">→</span>
       </a></li>)}</ol>
   </section>
+  <EngineeringSourceEmbed sourcePath={"docs/explore/network/zones/"+zone.slug.toUpperCase()+".md"} title="Complete network-zone documentation" />
   <section class="content-section">
    <h2>Which systems are related?</h2>
    <div class="card-list">{zone.devices.map(id=>{const system=getSystem(id);return system?<a class="system-card" href={base+"systems/"+system.slug+"/"}><small>{system.category}</small><h3>{system.name}</h3><p>{system.summary}</p><span class="readmore">Open system →</span></a>:null})}</div>
