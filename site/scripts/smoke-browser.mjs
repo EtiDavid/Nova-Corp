@@ -33,7 +33,7 @@ try {
   assert.match((await desktop.locator("h1").innerText()),/one machine/i);
   const body=await desktop.locator("body").innerText();
   assert(body.includes("David Eti")); assert(body.includes("Belgium and the Netherlands"));
-  assert(body.includes("Nova Corp is fictional"));
+  assert(body.includes("Nova Corp is a fictional company"));
   for(const name of ["Download CV","Email","LinkedIn"]) assert((await desktop.getByRole("link",{name:new RegExp(name)}).count())>0,name);
   const nav=await desktop.locator(".v4-nav a").allInnerTexts();
   assert.deepEqual(nav,["Explore","Investigations","Guided tour","Roadmap","About David"]);
