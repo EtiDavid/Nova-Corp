@@ -135,7 +135,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+"-color.svg";
       <button type="button" class="hx-mode" data-mode="identity" aria-pressed="false">Identity / DNS</button>
       <button type="button" class="hx-mode" data-mode="files" aria-pressed="false">File access</button>
     </div>
-    <p>Illustrative connection animation, not live traffic · Recorded addresses, not current reachability · Proxmox hosts the five depicted guests · <a href={base+"company/"}>Open the full interactive company explorer ↗</a></p>
+    <p>Nova Corp is a fictional company; the configurations and tests are real. Line animations are illustrative, not live traffic. IP addresses are recorded snapshots, not current reachability. All depicted VMs run in nested Proxmox; pfSense routes applicable traffic but does not host the other VMs. <a href={base+"company/"}>Open the full interactive company explorer ↗</a></p>
   </footer>
   <noscript><p class="sb-noscript">The lab diagram is scrollable using a keyboard, trackpad or touch, and each server links to its documentation. Interactive in-place inspection requires JavaScript.</p></noscript>
   <script id="sb-data" type="application/json" set:html={JSON.stringify(info).replace(/</g,"\\u003c")}></script>
