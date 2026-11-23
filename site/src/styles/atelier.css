@@ -247,3 +247,12 @@ html.motion-ready .exp-stories .exp-story:nth-child(3){transition-delay:.23s;}
 .hx.atlas .atlas-virtual-badge:hover{background:#31302A;border-color:#CBA977;transform:none;}
 .hx.atlas .atlas-virtual-badge.is-selected{background:#3B3327;border-color:#D1B084;}
 @media(prefers-reduced-motion:reduce){.hx.atlas .atlas-tower-hit svg{transition:none;}.hx.atlas .atlas-tower-hit:hover svg{transform:none;}}
+
+/* Neutral proof states: muted olive for recorded/configured, brass for pending.
+   Keep failure states legible; avoid unrelated neon success colors. */
+.rule-action.pass,.status.tested,.chip.tested,.chip.configured,.incident-chip:not(.pending) {
+ background:#293429;color:#CEDBC2;border-color:#52634D;
+}
+.rule-action.block,.status.deferred,.chip.deferred,.chip.planned,.incident-chip.pending {
+ background:#393024;color:#E4C398;border-color:#665542;
+}
