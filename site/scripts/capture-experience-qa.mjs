@@ -46,7 +46,7 @@ try {
   await mobile.waitForTimeout(500);
   await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-scrolled-mobile.png"});
   await mobile.locator('.sb-guest[data-id="nova-files01"]').focus();
-  await mobile.locator("#sb-inspector").screenshot({path:out+"/lab-preview-panel-mobile.png"});
+  await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-focused-guest-mobile.png"});
   await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
   await mobile.locator(".system-evidence-section").screenshot({path:out+"/fileserver-evidence-placeholder-mobile.png"});
   await mobile.goto(host+"/company/?workflow=security",{waitUntil:"networkidle"});
