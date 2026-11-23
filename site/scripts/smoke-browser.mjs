@@ -70,6 +70,21 @@ try {
   await desktop.goto(host+"/company/?view=files&focus=nova-files01",{waitUntil:"networkidle"});
   assert(await desktop.locator("#sys-nova-files01").isVisible());
  });
+ await step("Historical fault switch: DC01 outage and wrong client resolver display real limits",async()=>{
+  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
+  await desktop.locator('[data-scenario="dc01-outage"]').click();
+  assert(/scenario=dc01-outage/.test(desktop.url()));
+  assert.equal(await desktop.locator('.node.scenario-outage').count(),1);
+  assert.equal(await desktop.locator('.node.scenario-alternate').count(),1);
+  assert(/client selected DC02/i.test(await desktop.locator("#sim-text").innerText()));
+  await desktop.locator('[data-scenario="client-dns-fault"]').click();
+  assert(/scenario=client-dns-fault/.test(desktop.url()));
+  assert.equal(await desktop.locator('.node.scenario-misconfigured').count(),1);
+  assert(/192\.0\.2\.53/.test(await desktop.locator("#sim-text").innerText()));
+  await desktop.locator('#tabs button[data-view="overview"]').click();
+  assert(!/scenario=/.test(desktop.url()));
+  assert.equal(await desktop.locator('.node.scenario-outage').count(),0);
+ });
  await step("Workflow lab traces four recorded routes and updates architecture focus",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
   const lab=desktop.locator("#workflow-lab");
