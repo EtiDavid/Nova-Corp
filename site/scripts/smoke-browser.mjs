@@ -56,11 +56,11 @@ try {
   assert((await scene.locator("#hx-record").getAttribute("href")).includes("/systems/nova-prox01/"));
   const palette=await desktop.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue("--bg").trim());
   assert.equal(palette,"#111210");
-  const reduce=await desktop.context().newPage();
-  await reduce.emulateMedia({reducedMotion:"reduce"});
+  const reducedContext=await browser.newContext({reducedMotion:"reduce",viewport:{width:1440,height:900}});
+  const reduce=await reducedContext.newPage();
   await reduce.goto(host+"/",{waitUntil:"networkidle"});
   assert(!await reduce.evaluate(()=>document.documentElement.classList.contains("motion-ready")),"reduced motion does not hide reveals");
-  await reduce.close();
+  await reducedContext.close();
   await desktop.locator(".atlas-editorial").scrollIntoViewIfNeeded();
   await desktop.waitForTimeout(350);
   assert(await desktop.locator(".atlas-editorial").evaluate(el=>el.classList.contains("is-in-view")),"editorial section reveals on scroll");
