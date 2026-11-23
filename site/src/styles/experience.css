@@ -289,3 +289,8 @@ pre,.cmd { background:#08131F; color:#E7F6F2; border:1px solid #2D4359; }
 #company-map {scroll-margin-top:98px;}
 @media(max-width:900px){.exp-evidence-gallery{grid-template-columns:1fr 1fr;}}
 @media(max-width:620px){.exp-evidence-gallery{grid-template-columns:1fr;}.exp-evidence-item>a{height:220px;}}
+
+.exp-lab-side { min-width:0; }
+.exp-lab-deep { text-align:right;color:#A2B8CC;font-size:.79rem;margin:12px 6px 0; }
+.exp-lab-deep a { color:#9AF1E5;font-weight:750; }
+@media(max-width:1180px){.exp-lab-deep{text-align:left;}}
