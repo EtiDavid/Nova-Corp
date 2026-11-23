@@ -26,6 +26,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     </div>
     <figure class="figure-card">
       <ArchitectureSvg />
+      <div class="arch-legend"><span><i style="border-color:#6557A8"></i>DNS and sign-in</span><span><i style="border-color:#087F75"></i>Shared files</span></div>
       <figcaption>Original illustration of the documented architecture.</figcaption>
     </figure>
   </div></section>
@@ -65,7 +66,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
       <p class="lead">Signing in and opening a shared folder are two separate paths: one asks the Domain Controllers for DNS and identity, the other connects to the file server. Select any system on the interactive map to see what it does and the evidence behind it.</p>
       <p style="margin-top:20px"><a class="btn" href={base + "company/"}>Open the interactive map <span aria-hidden="true">→</span></a></p>
     </div>
-    <figure class="figure-card"><ArchitectureSvg /><figcaption>Everything runs on one Proxmox host, nested in VMware Workstation.</figcaption></figure>
+    <figure class="figure-card"><ArchitectureSvg /><div class="arch-legend"><span><i style="border-color:#6557A8"></i>DNS and sign-in</span><span><i style="border-color:#087F75"></i>Shared files</span></div><figcaption>Everything runs on one Proxmox host, nested in VMware Workstation.</figcaption></figure>
   </div></section>
 
   <section class="v4-section" aria-labelledby="featured"><div class="container">
