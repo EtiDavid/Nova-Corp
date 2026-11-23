@@ -103,6 +103,36 @@ try {
   await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
   assert.equal(await desktop.locator(".term-index > a").count(),18);
  });
+ await step("Published engineering docs: original pfSense depth and cross-linked journals",async()=>{
+  const response=await desktop.goto(host+"/systems/nova-fw01/",{waitUntil:"networkidle"});
+  assert.equal(response?.status(),200);
+  const source=desktop.locator(".inline-source-doc");
+  assert(await source.isVisible());
+  const copy=await source.innerText();
+  for(const phrase of ["eight interfaces","five VLANs","17 filter rules","five aliases","six DHCP scopes","one active WireGuard tunnel","automatic outbound NAT"]){
+    assert(copy.toLowerCase().includes(phrase.toLowerCase()),"missing actual pfSense source fact: "+phrase);
+  }
+  assert((await desktop.locator(".evidence-placeholder").count())>0,"visual evidence placeholder still present");
+  const docLink=desktop.locator('a[href$="/reference/explore/network/RULES/"]').first();
+  assert(await docLink.isVisible(),"public source crosslinks stay inside website");
+  await docLink.click();
+  await desktop.waitForURL(/\/reference\/explore\/network\/RULES\/$/);
+  assert.match(await desktop.locator("h1").innerText(),/Every firewall rule/i);
+  assert((await desktop.locator(".reference-content").innerText()).includes("17 explicit filter rules"));
+  await desktop.goto(host+"/reference/explore/systems/NOVA-FW01/",{waitUntil:"networkidle"});
+  assert.match(await desktop.locator("h1").innerText(),/pfSense Firewall/i);
+  assert((await desktop.locator(".reference-content").innerText()).includes("DNS Resolver"));
+  await desktop.goto(host+"/reference/Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal/",{waitUntil:"networkidle"});
+  assert.match(await desktop.locator("h1").innerText(),/Secondary Domain Controller/i);
+  assert((await desktop.locator(".reference-content").innerText()).includes("dcdiag"));
+  await desktop.goto(host+"/reference/",{waitUntil:"networkidle"});
+  assert.equal(await desktop.locator("[data-ref-doc]").count(),161);
+  await desktop.locator("[data-ref-search]").fill("NOVA-FW01");
+  assert((await desktop.locator("[data-ref-doc]:visible").count())>0);
+  assert((await desktop.locator("[data-ref-doc]:visible").count())<161);
+  const sizes=await desktop.evaluate(()=>({inner:innerWidth,width:document.documentElement.scrollWidth}));
+  assert(sizes.width<=sizes.inner+3,"engineering library overflow "+JSON.stringify(sizes));
+ });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
   const node=desktop.locator('.node[data-id="nova-dc01"]');
