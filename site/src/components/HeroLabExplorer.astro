@@ -100,6 +100,9 @@ const titles:Record<string,string>={
         </a>)}
       </div>
       <p class="atlas-vm-note">Documented guests hosted inside Proxmox · select any system</p>
+      <div class="hx-mobile-list" aria-label="Select a documented system on a mobile device">
+      {[systems.find(s=>s.id==="nova-prox01"),...cards].filter(Boolean).map(s=><a href={base+"systems/"+s!.slug+"/"} data-id={s!.id}><span>{s!.name.toUpperCase()}</span><small>{s!.category}</small><span class="hx-marrow" aria-hidden="true">↗</span></a>)}
+    </div>
     </div>
   </div>
   <div class="atlas-bottom">
@@ -122,9 +125,7 @@ const titles:Record<string,string>={
         <a id="hx-record" href={base+"sources/"}>Read the original sources ↗</a>
       </div>
     </div>
-    <div class="hx-mobile-list" aria-label="Select a documented system on a mobile device">
-      {[systems.find(s=>s.id==="nova-prox01"),...cards].filter(Boolean).map(s=><a href={base+"systems/"+s!.slug+"/"} data-id={s!.id}><span>{s!.name.toUpperCase()}</span><small>{s!.category}</small><span class="hx-marrow" aria-hidden="true">↗</span></a>)}
-    </div>
+
     <p class="atlas-integrity">Original illustration, not a photograph · Paths are architectural relationships, not live traffic · Snapshot 22 November 2026 · <a href={base+"company/#workflow-lab"}>Follow a real incident trace →</a></p>
   </div>
   <noscript><p class="atlas-integrity">Each labeled machine links directly to its documented system page. JavaScript adds in-place inspection.</p></noscript>
