@@ -1,10 +1,10 @@
 ---
 /** Homepage incident index: all reviewed public failure records, grouped by how they arose. */
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import { labStories, type Story } from "../data/labStories";
 const base=import.meta.env.BASE_URL;
-const all=await getCollection("incidents");
-const indexed=new Map(all.map(e=>[e.id,e]));
+const all:CollectionEntry<"incidents">[]=await getCollection("incidents");
+const indexed:Map<string,CollectionEntry<"incidents">>=new Map(all.map(e=>[e.id,e]));
 for(const story of labStories){if(!indexed.has(story.slug))throw Error("No public incident page for "+story.slug);}
 const controlled=labStories.filter(e=>e.kind==="controlled");
 const unplanned=labStories.filter(e=>e.kind==="unplanned");
