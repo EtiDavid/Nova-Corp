@@ -30,7 +30,7 @@ try {
  await step("Homepage names the builder, the job target and contact actions",async()=>{
   const response=await desktop.goto(host+"/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
-  assert.match((await desktop.locator("h1").innerText()),/built the infrastructure/i);
+  assert.match((await desktop.locator("h1").innerText()),/one machine/i);
   const body=await desktop.locator("body").innerText();
   assert(body.includes("David Eti")); assert(body.includes("Belgium and the Netherlands"));
   assert(body.includes("Nova Corp is fictional"));
@@ -42,17 +42,40 @@ try {
   assert(await desktop.locator("#hx-explorer").isVisible(),"architecture explorer visible on homepage");
   assert(await desktop.locator(".exp-hero h1").isVisible(),"main engineering statement visible");
  });
+ await step("Physical-first illustration, original graphic, click-through and scroll reveal",async()=>{
+  await desktop.goto(host+"/",{waitUntil:"networkidle"});
+  const scene=desktop.locator("#hx-explorer");
+  assert(await scene.locator(".atlas-tower-art").isVisible(),"physical Windows host illustration is immediately available");
+  assert.match(await scene.innerText(),/VMware Workstation/);
+  assert.match(await scene.innerText(),/Proxmox VE/);
+  assert.equal(await scene.locator(".atlas-service-grid .hx-node").count(),5);
+  assert.equal(await scene.locator(".atlas-prox").count(),1);
+  assert.equal(await scene.locator(".hx-node").count(),6);
+  await scene.locator('.atlas-prox[data-id="nova-prox01"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/virtualization foundation/i);
+  assert((await scene.locator("#hx-record").getAttribute("href")).includes("/systems/nova-prox01/"));
+  const palette=await desktop.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue("--bg").trim());
+  assert.equal(palette,"#111210");
+  const reduce=await desktop.context().newPage();
+  await reduce.emulateMedia({reducedMotion:"reduce"});
+  await reduce.goto(host+"/",{waitUntil:"networkidle"});
+  assert(!await reduce.evaluate(()=>document.documentElement.classList.contains("motion-ready")),"reduced motion does not hide reveals");
+  await reduce.close();
+  await desktop.locator(".atlas-editorial").scrollIntoViewIfNeeded();
+  await desktop.waitForTimeout(350);
+  assert(await desktop.locator(".atlas-editorial").evaluate(el=>el.classList.contains("is-in-view")),"editorial section reveals on scroll");
+ });
  await step("Homepage sandbox: highlight documented paths and inspect a real component",async()=>{
   await desktop.goto(host+"/",{waitUntil:"networkidle"});
   const explorer=desktop.locator("#hx-explorer");
-  await explorer.getByRole("button",{name:"Identity path"}).click();
-  assert.match(await explorer.locator("#hx-title").innerText(),/employees sign in/i);
+  await explorer.locator('[data-mode="identity"]').click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/workstation to internal DNS and identity/i);
   assert((await explorer.locator(".hx-path.is-active").count())>=3);
   await explorer.locator('.hx-node[data-id="nova-dc01"]').click();
   assert.match(await explorer.locator("#hx-title").innerText(),/identity and DNS/i);
   assert((await explorer.locator("#hx-case").getAttribute("href")).includes("incidents/dc01-outage/"));
-  await explorer.getByRole("button",{name:"File access"}).click();
-  assert.match(await explorer.locator("#hx-title").innerText(),/shared files/i);
+  await explorer.locator('[data-mode="files"]').click();
+  assert.match(await explorer.locator("#hx-title").innerText(),/company share/i);
  });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
@@ -179,7 +202,7 @@ try {
    const mini=mobile.locator("#hx-explorer .hx-mobile-list");
    assert(await mini.isVisible(),"mobile provides accessible node list instead of tiny SVG");
    await mini.locator('[data-id="nova-files01"]').click();
-   assert.match(await mobile.locator("#hx-title").innerText(),/shared files and recovery/i);
+   assert.match(await mobile.locator("#hx-title").innerText(),/shared files and tested recovery/i);
    const summary=mobile.locator(".v4-menu summary");
    assert(await summary.isVisible());
    const box=await summary.boundingBox();
