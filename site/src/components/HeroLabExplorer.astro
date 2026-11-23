@@ -10,6 +10,8 @@ const base=import.meta.env.BASE_URL;
 const serverIds=["nova-fw01","nova-dc01","nova-dc02","nova-files01","nova-client"];
 const cards=serverIds.map(id=>systems.find(s=>s.id===id)).filter((s):s is NonNullable<typeof s>=>!!s);
 const inspect:Record<string,{title:string;description:string;incident:string;caseUrl:string;record:string}>={
+  "host-windows":{title:"The physical Windows host",description:"The outer Windows machine runs VMware Workstation. It is the single physical failure domain for this nested lab. The illustration is generic and does not assert a brand or hardware specifications.",incident:"Explore the documented virtualization host",caseUrl:"systems/nova-prox01/",record:"systems/nova-prox01/"},
+  "vmware-workstation":{title:"The outer hypervisor layer",description:"VMware Workstation runs the nested Proxmox guest on the physical Windows host. The Proxmox virtual machine then hosts the illustrated pfSense, Windows Server and client guests.",incident:"Inspect the nested lab topology",caseUrl:"systems/nova-prox01/",record:"systems/nova-prox01/"},
   "nova-prox01":{title:"The virtualization foundation",description:"One physical Windows host runs VMware Workstation, with NOVA-PROX01 nested inside it. Proxmox hosts the five shown guests; all share the outer machine's failure domain.",incident:"See a storage-pressure investigation",caseUrl:"incidents/proxmox-storage-pressure/",record:"systems/nova-prox01/"},
   "nova-fw01":{title:"The network boundary",description:"pfSense routes and filters traffic between the documented VLANs. Employee-to-management access was tested and corrected; privileged VPN isolation is still planned.",incident:"Inspect the firewall investigation",caseUrl:"incidents/firewall-management-exposure/",record:"systems/nova-fw01/"},
   "nova-dc01":{title:"Identity and DNS",description:"NOVA-DC01 serves Active Directory and DNS. During a controlled outage, the second Domain Controller served the documented client checks.",incident:"Replay the DC01 outage",caseUrl:"incidents/dc01-outage/",record:"systems/nova-dc01/"},
@@ -39,6 +41,7 @@ const titles:Record<string,string>={
     </svg>
     <div class="atlas-hardware">
       <p class="atlas-step-label"><span>01</span> / THE MACHINE</p>
+      <a class="atlas-tower-hit hx-node" data-id="host-windows" href={base+"systems/nova-prox01/"} aria-label="Inspect the physical Windows host and VMware Workstation architecture">
       <div class="atlas-tower-art" role="img" aria-label="Original conceptual illustration of a generic Windows workstation-style tower, not a photograph of the owner's equipment">
         <svg viewBox="0 0 360 480" aria-hidden="true">
           <defs>
@@ -74,11 +77,12 @@ const titles:Record<string,string>={
         <strong>Windows host</strong>
         <small>VMware Workstation</small>
       </div>
+      </a>
     </div>
     <div class="atlas-hypervisor">
       <p class="atlas-step-label"><span>02</span> / VIRTUALIZATION</p>
       <div class="atlas-host-stack" aria-label="Nested virtualization stack">
-        <div class="atlas-virtual-badge">VMware Workstation <span>OUTER</span></div>
+        <a class="atlas-virtual-badge hx-node" data-id="vmware-workstation" href={base+"systems/nova-prox01/"} aria-label="Inspect VMware Workstation outer virtualization layer">VMware Workstation <span>OUTER ↗</span></a>
         <a class="hx-node atlas-prox" data-id="nova-prox01" href={base+"systems/nova-prox01/"} aria-label="Inspect NOVA-PROX01 and the documented Proxmox VE host">
           <span class="atlas-prox-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
           <span class="atlas-system-overline">NESTED HYPERVISOR</span>
