@@ -1,0 +1,411 @@
+{
+ "source": "Nova_Corp_Master_Roadmap_v3.html",
+ "done": [
+  {
+   "id": "CR-001",
+   "title": "Deploy Proxmox Virtual Environment",
+   "gain": "A platform to run every company server on."
+  },
+  {
+   "id": "CR-002",
+   "title": "Deploy pfSense firewall and network foundation",
+   "gain": "Separate networks with a default-deny firewall between them."
+  },
+  {
+   "id": "CR-003",
+   "title": "Deploy Active Directory and enterprise DNS",
+   "gain": "One company login and company DNS (nova.corp)."
+  },
+  {
+   "id": "CR-004",
+   "title": "Additional domain controller and high availability",
+   "gain": "Logins keep working when one domain controller is down."
+  },
+  {
+   "id": "CR-005",
+   "title": "AD organisational structure and identity management",
+   "gain": "Departments, OUs and AGDLP access groups."
+  },
+  {
+   "id": "CR-006",
+   "title": "Group Policy and workstation security",
+   "gain": "Workstation rules applied centrally."
+  },
+  {
+   "id": "CR-007",
+   "title": "Remote access VPN with WireGuard",
+   "gain": "Staff can work from home."
+  },
+  {
+   "id": "CR-008",
+   "title": "File server deployment",
+   "gain": "Central file storage on NOVA-FILES01."
+  },
+  {
+   "id": "CR-009",
+   "title": "Departmental shares and drive mapping",
+   "gain": "Each department has its own private folder."
+  },
+  {
+   "id": "CR-010",
+   "title": "DFS and Shadow Copies",
+   "gain": "One path to all shares; users can restore their own files."
+  },
+  {
+   "id": "CR-011",
+   "title": "PowerShell administration toolkit",
+   "gain": "Repeatable scripts for joiners, movers and leavers."
+  },
+  {
+   "id": "CR-012",
+   "title": "Windows Server Backup and recovery",
+   "gain": "Backups on a separate disk, with a hash-verified restore."
+  },
+  {
+   "id": "CR-013",
+   "title": "Secondary domain controller and AD resilience",
+   "gain": "A tested failover and repair procedure for identity."
+  },
+  {
+   "id": "CR-014",
+   "title": "Phase incident exercises",
+   "gain": "Practised cross-service incident response."
+  },
+  {
+   "id": "CR-015",
+   "title": "Validation and closure",
+   "gain": "A signed-off Windows foundation and an operations runbook."
+  }
+ ],
+ "planned": [
+  {
+   "id": "CR-016",
+   "title": "Privileged admin VPN and management-plane isolation",
+   "time": "1–2 weeks",
+   "tier": "core",
+   "goal": "Proxmox, pfSense and server administration can only be reached through a separate admin tunnel used by David’s admin identity; staff VPN users and workstations cannot reach any management interface.",
+   "ok": [
+    "David on the admin tunnel opens Proxmox (8006) and the pfSense web UI.",
+    "David can RDP to DC01 and DC02 from the admin tunnel.",
+    "Staff VPN users still reach their department shares."
+   ],
+   "deny": [
+    "Moyo on the staff VPN cannot reach Proxmox, pfSense or RDP on any server (port scan shows closed or filtered).",
+    "Mike on NOVA-CLIENT in the client VLAN cannot reach any management port.",
+    "The staff VPN key cannot connect to the admin tunnel."
+   ]
+  },
+  {
+   "id": "CR-017",
+   "title": "Active Directory hardening and tiered admin accounts",
+   "time": "2 weeks",
+   "tier": "core",
+   "goal": "No daily account has admin rights, domain admin accounts can only sign in to domain controllers, every computer has a unique rotating local admin password, and an independent AD security scan shows a measurable improvement.",
+   "ok": [
+    "adm-t0-david signs in to DC01 and DC02.",
+    "An authorised admin retrieves the LAPS password for NOVA-CLIENT and it rotates after use.",
+    "David’s daily account works for normal tasks."
+   ],
+   "deny": [
+    "adm-t0-david cannot sign in to NOVA-CLIENT.",
+    "David’s daily account cannot open AD admin tools with rights or join a computer to the domain.",
+    "Moyo and a helpdesk test account cannot read server LAPS passwords."
+   ]
+  },
+  {
+   "id": "CR-018",
+   "title": "Server patching with WSUS",
+   "time": "1 week",
+   "tier": "core",
+   "goal": "Every Windows server receives approved updates on a monthly schedule, a pilot server goes first, domain controllers are patched one at a time, and compliance is reported.",
+   "ok": [
+    "All servers report to WSUS with a recent check-in.",
+    "DC02 is patched and restarted while users keep signing in through DC01.",
+    "The compliance report shows approved updates installed."
+   ],
+   "deny": [
+    "An unapproved update does not install anywhere.",
+    "No server restarts outside the maintenance window."
+   ]
+  },
+  {
+   "id": "CR-019",
+   "title": "Automated tests for the PowerShell toolkit",
+   "time": "2–3 evenings",
+   "tier": "core",
+   "goal": "Every change to the scripts in the repo is checked by a GitHub Actions pipeline with PSScriptAnalyzer and Pester, and a failing check blocks the merge.",
+   "ok": [
+    "A clean pull request passes and can be merged.",
+    "The README shows the passing status badge."
+   ],
+   "deny": [
+    "A pull request with a lint error or failing test cannot be merged.",
+    "A commit containing a test password is flagged."
+   ]
+  },
+  {
+   "id": "CR-020",
+   "title": "Service desk: Jira, SLAs and the hiring wave",
+   "time": "2–3 weeks",
+   "tier": "core",
+   "goal": "IT runs through a ticket system with request types, approvals and SLAs, and the ten new employees (E004 to E013) are onboarded through it with working logins and correct access.",
+   "ok": [
+    "Each new hire signs in and opens their own department share.",
+    "Jonas resets Moyo’s password through a ticket.",
+    "Every hire ticket closes within its SLA."
+   ],
+   "deny": [
+    "Each new hire is denied another department’s share.",
+    "Jonas cannot reset an admin account or change a privileged group."
+   ]
+  },
+  {
+   "id": "CR-021",
+   "title": "Linux foundation: intranet and Engineering build server",
+   "time": "2–3 weeks",
+   "tier": "core",
+   "goal": "Two Ubuntu servers run real company services: an intranet with the staff handbook and IT knowledge base, and a build server for the developers, both administered the way a Linux admin would in real life.",
+   "ok": [
+    "Staff open the intranet from the client VLAN.",
+    "Developers SSH to the build server with keys and restart the build service.",
+    "A database dump restores into a test instance."
+   ],
+   "deny": [
+    "Password SSH and root login are refused.",
+    "Eva cannot run any other command with sudo.",
+    "The client VLAN cannot SSH to web01."
+   ]
+  },
+  {
+   "id": "CR-022",
+   "title": "Internal certificate authority (AD CS)",
+   "time": "2 weeks",
+   "tier": "core",
+   "goal": "Nova Corp has its own two-tier certificate authority, the intranet loads without warnings on every domain computer, and the domain controllers serve LDAPS for the Linux servers.",
+   "ok": [
+    "The intranet opens without a warning on NOVA-CLIENT.",
+    "LDAPS works from a Linux server with full chain validation."
+   ],
+   "deny": [
+    "A normal user cannot enrol a web server certificate.",
+    "A revoked certificate is rejected."
+   ]
+  },
+  {
+   "id": "CR-023",
+   "title": "Ansible configuration as code and AD logins on Linux",
+   "time": "3 weeks",
+   "tier": "core",
+   "goal": "Linux servers are built and configured from Ansible playbooks, engineers sign in with their AD accounts, one Windows role is managed by Ansible too, and a server can be rebuilt from code.",
+   "ok": [
+    "Eva signs in to the build server with her AD account.",
+    "Running the playbooks a second time changes nothing.",
+    "web01 is rebuilt and serves the restored intranet."
+   ],
+   "deny": [
+    "Sarah (HR) is refused SSH even though her AD account is valid.",
+    "A manual change on a server is reverted on the next playbook run."
+   ]
+  },
+  {
+   "id": "CR-024",
+   "title": "Microsoft 365 and Entra ID hybrid identity",
+   "time": "3 weeks",
+   "tier": "core",
+   "goal": "Staff sign in to Microsoft 365 with their existing AD account and MFA, admin accounts are not synced, and Mike’s promotion is processed in AD and in the cloud with only the approved new access.",
+   "ok": [
+    "Moyo signs in to the portal with her AD password and completes MFA.",
+    "Mike opens the Support reporting folder."
+   ],
+   "deny": [
+    "adm-t0-david does not exist in Entra ID.",
+    "Mike has no admin rights after the promotion.",
+    "An unlicensed test user cannot open Outlook on the web."
+   ]
+  },
+  {
+   "id": "CR-025",
+   "title": "Microsoft 365 workloads: Exchange, Teams, SharePoint and OneDrive",
+   "time": "2–3 weeks",
+   "tier": "core",
+   "goal": "Every employee has a mailbox, departments have Teams and SharePoint sites with the same access boundaries as on the file server, and one department share is migrated to SharePoint.",
+   "ok": [
+    "Moyo, Amira and Luca send as the Finance mailbox.",
+    "HR opens migrated files in SharePoint with the same access as before."
+   ],
+   "deny": [
+    "Eva and Nora cannot open the Finance mailbox or site.",
+    "External sharing from the Finance site is blocked.",
+    "The contractor loses access on the expiry date."
+   ]
+  },
+  {
+   "id": "CR-026",
+   "title": "Intune: managed devices from enrolment to retirement",
+   "time": "3–4 weeks",
+   "tier": "core",
+   "goal": "Windows 11 devices enrol automatically, receive apps, settings and compliance policies, and Nora’s laptop is ready without manual setup.",
+   "ok": [
+    "Nora’s device shows as compliant and has all apps after first sign-in."
+   ],
+   "deny": [
+    "A non-compliant device is reported and flagged.",
+    "Nora cannot install unapproved software as a standard user."
+   ]
+  },
+  {
+   "id": "CR-027",
+   "title": "Endpoint security: Defender, BitLocker and the lost laptop",
+   "time": "2 weeks",
+   "tier": "core",
+   "goal": "Devices are protected by Defender policies and disk encryption, access depends on device compliance, and a lost laptop can be contained within an agreed time.",
+   "ok": [
+    "The benign test alert appears and is investigated end to end.",
+    "Nora signs in on a replacement device."
+   ],
+   "deny": [
+    "The lost device’s sessions are revoked and it cannot reach company data.",
+    "Jonas cannot read BitLocker keys unless delegated."
+   ]
+  },
+  {
+   "id": "CR-028",
+   "title": "Rocky Linux: the Finance reporting service",
+   "time": "2 weeks",
+   "tier": "core",
+   "goal": "A hardened Rocky Linux server, built with Ansible, runs a reporting application that Finance owns, with SELinux enforcing and storage that can grow without downtime.",
+   "ok": [
+    "Moyo opens the monthly report over HTTPS.",
+    "The data volume grows online with lvextend."
+   ],
+   "deny": [
+    "Nora cannot reach the reporting application.",
+    "No one has SSH access except through the admin path."
+   ]
+  },
+  {
+   "id": "CR-029",
+   "title": "Monitoring that opens tickets",
+   "time": "3 weeks",
+   "tier": "core",
+   "goal": "One monitoring stack watches Windows, Linux, network and business services, and real problems become Jira tickets before an employee calls.",
+   "ok": [
+    "Stopping the file server opens a ticket within minutes, before the simulated user report."
+   ],
+   "deny": [
+    "Routine noise does not create tickets.",
+    "Staff cannot open the monitoring interface."
+   ]
+  },
+  {
+   "id": "CR-030",
+   "title": "Enterprise backup and disaster recovery",
+   "time": "2–3 weeks",
+   "tier": "core",
+   "goal": "Company data has a copy off the physical host, a copy that cannot be changed, and measured restore times, and a simulated ransomware event on a test share is fully recovered.",
+   "ok": [
+    "Finance files restored with matching hashes, time recorded.",
+    "A full VM or agent-level restore works."
+   ],
+   "deny": [
+    "Staff and Jonas cannot delete backups.",
+    "The backup repository is not reachable from the client VLAN."
+   ]
+  },
+  {
+   "id": "CR-031",
+   "title": "Patching at scale and software updates",
+   "time": "2 weeks",
+   "tier": "core",
+   "goal": "Workstations, Linux servers and applications are updated in rings with approval and rollback, extending the server process from CR-018.",
+   "ok": [
+    "Pilot and broad rings behave differently and the report shows it."
+   ],
+   "deny": [
+    "No change reaches the reporting server without Moyo’s approval in the ticket."
+   ]
+  },
+  {
+   "id": "CR-032",
+   "title": "Remote monitoring and management: MSP-style support",
+   "time": "2 weeks",
+   "tier": "core",
+   "goal": "Nova Corp IT supports two simulated customer organisations with an RMM tool, scripted fixes and strictly separated customer data.",
+   "ok": [
+    "Jonas fixes a slow-PC ticket for customer A with an approved script."
+   ],
+   "deny": [
+    "Jonas cannot see or touch customer B’s devices.",
+    "Remote shell needs approval."
+   ]
+  },
+  {
+   "id": "CR-033",
+   "title": "Leavers, access reviews and lifecycle at scale",
+   "time": "2 weeks",
+   "tier": "core",
+   "goal": "A leaver loses access everywhere on their last day while their business data is kept and handed over, and a quarterly access review proves everyone has exactly the access they should.",
+   "ok": [
+    "The leaver’s files and mailbox are available to their manager."
+   ],
+   "deny": [
+    "The leaver cannot sign in to AD, Microsoft 365, Linux or the VPN.",
+    "Their device is retired."
+   ]
+  },
+  {
+   "id": "CR-034",
+   "title": "Branch office and site-to-site VPN",
+   "time": "2–3 weeks",
+   "tier": "stretch",
+   "goal": "A second site connects to headquarters over a site-to-site VPN and reaches only the services it needs; three branch employees (E014 to E016) are onboarded after the network is validated.",
+   "ok": [
+    "Branch users sign in and open their files."
+   ],
+   "deny": [
+    "Branch users cannot reach the MGMT zone or other departments’ data."
+   ]
+  },
+  {
+   "id": "CR-035",
+   "title": "Hyper-V and vSphere familiarisation",
+   "time": "1–2 weeks",
+   "tier": "optional",
+   "goal": "Basic confidence with Hyper-V and vSphere consoles by translating Proxmox concepts, without building a second company.",
+   "ok": [
+    "One VM operated on each platform."
+   ],
+   "deny": [
+    "This never blocks final closure."
+   ]
+  },
+  {
+   "id": "CR-036",
+   "title": "Incident campaign and timed rebuild",
+   "time": "3–4 weeks",
+   "tier": "core",
+   "goal": "Nova Corp keeps operating through a day of simultaneous, unscripted faults, and one Windows and one Linux server are rebuilt from code and backup within a measured time.",
+   "ok": [
+    "Every incident restored and reported.",
+    "Rebuilds completed and timed."
+   ],
+   "deny": [
+    "A leaver’s account cannot file a ticket.",
+    "No shortcut weakens security to restore service faster."
+   ]
+  },
+  {
+   "id": "CR-037",
+   "title": "Final validation and handover",
+   "time": "1–2 weeks",
+   "tier": "core",
+   "goal": "Someone else can operate Nova Corp from the documentation alone, and the public portfolio claims only what has been tested.",
+   "ok": [
+    "The other person completes the tasks."
+   ],
+   "deny": [
+    "No planned work is presented as done anywhere."
+   ]
+  }
+ ]
+}

@@ -26,36 +26,67 @@ try {
  const desktop=await browser.newPage({viewport:{width:1440,height:900}});
  const errors=[];
  desktop.on("pageerror",e=>errors.push(e.message));
- await step("Homepage title, visitor text, two journeys and source transparency", async()=>{
+
+ await step("Homepage names the builder, the job target and contact actions",async()=>{
   const response=await desktop.goto(host+"/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
-  assert.match((await desktop.locator("h1").innerText()),/Explore Nova Corp/i);
-  assert.equal(await desktop.locator(".journey").count(),3);
-  assert(await desktop.getByRole("link",{name:/Explore the company/i}).count()>0);
-  assert((await desktop.locator("body").innerText()).includes("David Eti"));
-  assert((await desktop.locator("body").innerText()).includes("Fictional company"));
+  assert.match((await desktop.locator("h1").innerText()),/small company's IT infrastructure/i);
+  const body=await desktop.locator("body").innerText();
+  assert(body.includes("David Eti")); assert(body.includes("Belgium and the Netherlands"));
+  assert(body.includes("Nova Corp is fictional"));
+  for(const name of ["Download CV","Email","LinkedIn"]) assert((await desktop.getByRole("link",{name:new RegExp(name)}).count())>0,name);
+  const nav=await desktop.locator(".v4-nav a").allInnerTexts();
+  assert.deepEqual(nav,["Explore","Investigations","Guided tour","Roadmap","About David"]);
+  assert(!(body.includes("on hold")));
+  const mainLinks=await desktop.locator("main a").count();
+  assert(mainLinks<=14,"main content links: "+mainLinks);
  });
- await step("Home → engineer journey",async()=>{
-  await desktop.locator(".journey").first().click();
-  await desktop.waitForURL(/\/people\/moyo\/$/);
-  assert((await desktop.locator("body").innerText()).includes("IT_Users"));
-  await desktop.getByRole("link",{name:"IT_Users",exact:true}).first().click();
-  await desktop.waitForURL(/\/groups\/it-users\/$/);
-  assert((await desktop.locator("body").innerText()).includes("DL_FS_IT_Modify"));
+ await step("Company explorer: select, deep link, Escape and focus return",async()=>{
+  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
+  const node=desktop.locator('.node[data-id="nova-dc01"]');
+  await node.focus(); await desktop.keyboard.press("Enter");
+  await desktop.waitForURL(/focus=nova-dc01/);
+  const card=desktop.locator("#sys-nova-dc01");
+  assert(await card.isVisible());
+  assert(/not yet proven/i.test(await card.innerText()));
+  await desktop.keyboard.press("Escape");
+  assert(!/focus=/.test(desktop.url()));
+  assert.equal(await desktop.evaluate(()=>document.activeElement?.getAttribute("data-id")),"nova-dc01");
+  await desktop.getByRole("button",{name:"Network"}).click();
+  await desktop.waitForURL(/view=network/);
+  await desktop.goto(host+"/company/?view=files&focus=nova-files01",{waitUntil:"networkidle"});
+  assert(await desktop.locator("#sys-nova-files01").isVisible());
  });
- await step("Incident Lab has working investigation links and truthful deferred status",async()=>{
-  await desktop.goto(host+"/incidents/",{waitUntil:"domcontentloaded"});
-  assert.equal(await desktop.locator(".incident-card").count(),8);
-  assert.equal(await desktop.locator(".incident-chip.pending").count(),1);
-  await desktop.locator('a[href$="/incidents/dns-client-outage/"]').first().click();
-  await desktop.waitForURL(/dns-client-outage\/$/);
-  assert((await desktop.locator("article").innerText()).includes("port 445"));
+ await step("Investigations index filters; DNS replay steps and reveals recorded results",async()=>{
+  await desktop.goto(host+"/incidents/",{waitUntil:"networkidle"});
+  assert.equal(await desktop.locator("#case-grid .outcome").count(),8);
+  assert.equal(await desktop.locator(".chip.deferred").count(),1);
+  await desktop.getByRole("button",{name:"Recovery"}).click();
+  assert.equal(await desktop.locator("#case-grid .outcome:visible").count(),1);
+  await desktop.goto(host+"/incidents/dns-client-outage/",{waitUntil:"networkidle"});
+  assert((await desktop.locator("#step-count").innerText()).includes("Step 1 of 5"));
+  assert(!(await desktop.locator("#step-1 .reveal-target").isVisible()));
+  await desktop.locator("#r-reveal").click();
+  assert((await desktop.locator("#step-1").innerText()).includes("ERROR_TIMEOUT"));
+  await desktop.locator("#r-next").click();
+  assert((await desktop.locator("#step-count").innerText()).includes("Step 2 of 5"));
+  assert(/step=2/.test(desktop.url()));
+  assert(/not yet proven/i.test(await desktop.locator("#replay").innerText()));
  });
- await step("Desktop graph island renders original six documented nodes",async()=>{
-  await desktop.goto(host+"/areas/control-room/",{waitUntil:"networkidle"});
-  await desktop.locator(".react-flow__node").first().waitFor({timeout:20000});
-  assert.equal(await desktop.locator(".react-flow__node").count(),6);
-  assert(await desktop.getByRole("link",{name:/open system profile|nova/i}).count()>=0);
+ await step("Legacy room URLs still land on the new pages",async()=>{
+  await desktop.goto(host+"/areas/control-room/",{waitUntil:"domcontentloaded"});
+  await desktop.waitForURL(/\/company\//);
+  await desktop.goto(host+"/explore/",{waitUntil:"domcontentloaded"});
+  await desktop.waitForURL(/\/company\//);
+  await desktop.goto(host+"/areas/roadmap-wing/",{waitUntil:"domcontentloaded"});
+  await desktop.waitForURL(/\/roadmap\//);
+  const r=await desktop.goto(host+"/roadmap/",{waitUntil:"domcontentloaded"});
+  assert.equal(r?.status(),200);
+  assert(!((await desktop.locator("body").innerText()).includes("on hold")));
+ });
+ await step("CV file is served",async()=>{
+  const r=await desktop.request.get(host+"/David_Eti_Systems_Infrastructure_CV.pdf");
+  assert.equal(r.status(),200);
  });
  await step("Policy search filters displayed settings",async()=>{
   await desktop.goto(host+"/policies/workstation-baseline/",{waitUntil:"networkidle"});
@@ -80,19 +111,30 @@ try {
   assert.equal(await desktop.locator("[data-search-item]:visible").count(),0);
   assert(await desktop.locator("[data-empty]").isVisible());
  });
- const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,deviceScaleFactor:1,hasTouch:true});
- mobile.on("pageerror",e=>errors.push(e.message));
- await step("390px mobile menu opens and navigates without side scrolling",async()=>{
-  await mobile.goto(host+"/",{waitUntil:"networkidle"});
-  assert(await mobile.locator(".mobile-nav summary").isVisible());
-  await mobile.locator(".mobile-nav summary").click();
-  const dir=mobile.locator(".mobile-nav nav a[href$='/directory/']");
-  assert(await dir.isVisible());
-  await dir.click();
-  await mobile.waitForURL(/\/directory\/$/);
-  const dimensions=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
-  assert(dimensions.scroll<=dimensions.inner+2,JSON.stringify(dimensions));
- });
+
+ for(const width of [320,375,390]){
+  const mobile=await browser.newPage({viewport:{width,height:844},isMobile:true,deviceScaleFactor:1,hasTouch:true});
+  mobile.on("pageerror",e=>errors.push(e.message));
+  await step(width+"px: menu hit target, navigation, no side scroll, explorer list and back",async()=>{
+   await mobile.goto(host+"/",{waitUntil:"networkidle"});
+   const summary=mobile.locator(".v4-menu summary");
+   assert(await summary.isVisible());
+   const box=await summary.boundingBox();
+   assert(box.height>=44&&box.width>=44,JSON.stringify(box));
+   const hit=await mobile.evaluate(({x,y})=>document.elementFromPoint(x,y)?.closest("summary")!==null,{x:box.x+box.width/2,y:box.y+box.height/2});
+   assert(hit,"menu button is covered by another element");
+   await summary.click();
+   await mobile.locator(".v4-menu nav a[href$='/company/']").click();
+   await mobile.waitForURL(/\/company\/$/);
+   await mobile.locator('#sys-list button[data-id="nova-files01"]').click();
+   assert(await mobile.locator("#sys-nova-files01").isVisible());
+   await mobile.locator("#back-btn").click();
+   assert(!(await mobile.locator("#sys-nova-files01").isVisible()));
+   const dimensions=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
+   assert(dimensions.scroll<=dimensions.inner+2,JSON.stringify(dimensions));
+  });
+  await mobile.close();
+ }
  await step("Keyboard skip link is first focusable control",async()=>{
   await desktop.goto(host+"/",{waitUntil:"domcontentloaded"});
   await desktop.keyboard.press("Tab");

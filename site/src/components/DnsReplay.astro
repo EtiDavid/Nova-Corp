@@ -1,0 +1,110 @@
+---
+const journal = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf";
+const record = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/dns-client-outage.md";
+// Every command, expected result and recorded result below is copied from the public incident record
+// (INC-CR014-02). Recorded results are the journal's summaries, not verbatim terminal output.
+const steps = [
+  { q: "Is the file server down?", ticket: "“I could open the IT folder yesterday. Today it says the network path can't be found.”",
+    cmd: 'Test-Path "\\\\nova-files01\\IT"\nResolve-DnsName nova-files01.nova.corp',
+    expected: "The share fails and the normal resolver times out.",
+    recorded: "Test-Path returned False. Resolve-DnsName returned ERROR_TIMEOUT.", bad: true,
+    meaning: "The share fails and the name lookup times out. That alone does not tell me whether the server or the lookup is the problem." },
+  { q: "Can I reach the server without DNS?", cmd: "Test-NetConnection 10.10.20.20 -Port 445",
+    expected: "TCP 445 succeeds if the server and network are healthy.",
+    recorded: "TcpTestSucceeded: True.", bad: false,
+    meaning: "The file server answers on the SMB port. It is not the failed component." },
+  { q: "Does the company DNS server know the answer?", cmd: "Resolve-DnsName nova-files01.nova.corp -Server 10.10.20.10",
+    expected: "An A record for 10.10.20.20.",
+    recorded: "DC01 returned 10.10.20.20.", bad: false,
+    meaning: "The internal DNS server is correct. The workstation's normal lookup is not reaching it." },
+  { q: "Which DNS server is the workstation actually using?", cmd: "Get-DnsClientServerAddress -AddressFamily IPv4",
+    expected: "10.10.20.10 and 10.10.20.11.",
+    recorded: "The Ethernet adapter was configured with the incorrect address 192.0.2.53.", bad: true,
+    meaning: "Cause found: the workstation was asking a wrong DNS server. This was configured deliberately for the exercise." },
+  { q: "Does everything work after the fix?", change: "I restored the client's DNS servers to 10.10.20.10 and 10.10.20.11 and cleared the resolver cache.",
+    cmd: 'Resolve-DnsName -Type SRV "_ldap._tcp.dc._msdcs.nova.corp"\nnltest /dsgetdc:nova.corp /force\nTest-Path "\\\\nova-files01\\IT"',
+    expected: "Both Domain Controller SRV records, a successful DC selection, and Test-Path True.",
+    recorded: "DC01 and DC02 were advertised, nltest selected DC01, and Test-Path returned True. ipconfig /all confirmed the restored DNS servers.", bad: false,
+    meaning: "The original request works again. This was a client DNS configuration fault, not a damaged file server or failed SMB service." }
+];
+---
+<section class="replay" id="replay" aria-labelledby="replay-title" data-total={steps.length}>
+  <div class="byline">Investigation replay · historical test, November 2026</div>
+  <h2 id="replay-title">The IT folder won't open</h2>
+  <p class="muted">A replay of recorded checks. Nothing here runs live commands against the lab.</p>
+  <div class="replay-grid">
+    <div>
+      <p class="step-count" id="step-count" aria-live="polite"></p>
+      <ol class="replay-steps" style="list-style:none;padding:0;margin:0">
+        {steps.map((st, i) => (
+          <li class="replay-step" data-step={i + 1} id={"step-" + (i + 1)}>
+            <h3><span class="no-js-note">Step {i + 1} of {steps.length} · </span>{st.q}</h3>
+            {st.ticket && <p class="ticket-quote">{st.ticket}</p>}
+            {st.change && <p><b>What I changed:</b> {st.change}</p>}
+            <p><b>What I checked</b></p>
+            <pre class="cmd">{st.cmd}</pre>
+            <p class="muted">Expected: {st.expected}</p>
+            <div class="reveal-target">
+              <div class={"recorded" + (st.bad ? " bad" : "")}><b>Recorded result:</b> {st.recorded}</div>
+              <p><b>What it means:</b> {st.meaning}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="replay-controls" id="replay-controls" hidden>
+        <button class="btn ghost small" type="button" id="r-prev">Previous</button>
+        <button class="btn small" type="button" id="r-reveal">Show recorded result</button>
+        <button class="btn ghost small" type="button" id="r-next">Next</button>
+        <button class="btn ghost small" type="button" id="r-restart">Restart replay</button>
+      </div>
+    </div>
+    <div class="replay-svg-wrap">
+      <svg class="replay-svg" viewBox="0 0 640 300" role="img" aria-label="Diagram of the workstation, a wrong DNS server, the Domain Controller and the file server. The highlighted path changes as each recorded result is shown.">
+        <g class="h h-4"><path class="bad" d="M170,125 C200,70 220,45 250,40"/><text x="176" y="30">was using this resolver</text></g>
+        <g class="h h-3 h-5"><path class="ok" d="M170,135 C300,115 400,100 470,100"/><text x="250" y="98">asked DC01 directly</text></g>
+        <g class="h h-1"><path class="bad" d="M170,165 C330,175 400,235 470,235"/><text x="215" y="232">lookup by name: timed out</text></g>
+        <g class="h h-2 h-5"><path class="ok" d="M170,165 C330,175 400,235 470,235"/><text x="215" y="232">direct to 10.10.20.20 : 445</text></g>
+        <g class="n"><rect x="20" y="110" width="150" height="70" rx="12"/><text class="t" x="95" y="140" text-anchor="middle">NOVA-CLIENT</text><text class="s" x="95" y="160" text-anchor="middle">Employee workstation</text></g>
+        <g class="n"><rect x="250" y="10" width="170" height="56" rx="12"/><text class="t" x="335" y="34" text-anchor="middle">192.0.2.53</text><text class="s" x="335" y="52" text-anchor="middle">DNS server it was using</text></g>
+        <g class="n"><rect x="470" y="70" width="150" height="60" rx="12"/><text class="t" x="545" y="96" text-anchor="middle">NOVA-DC01</text><text class="s" x="545" y="114" text-anchor="middle">DNS 10.10.20.10</text></g>
+        <g class="n"><rect x="470" y="200" width="150" height="70" rx="12"/><text class="t" x="545" y="230" text-anchor="middle">NOVA-FILES01</text><text class="s" x="545" y="250" text-anchor="middle">10.10.20.20</text></g>
+      </svg>
+    </div>
+  </div>
+  <div class="proof-note"><h3>Not yet proven</h3>
+    <p>The results above are the incident journal's recorded summaries, not verbatim terminal output. The exact test date is not yet reconciled. The deliberately wrong DNS server was a lab exercise, not a production outage.</p>
+    <p><a href={journal}>Full engineering journal (PDF) ↗</a> · <a href={record}>Original incident record ↗</a></p></div>
+  <script is:inline>
+  (function () {
+    var root = document.getElementById("replay");
+    var steps = [].slice.call(root.querySelectorAll(".replay-step"));
+    var total = steps.length, cur = 1, revealed = {};
+    var count = document.getElementById("step-count");
+    var controls = document.getElementById("replay-controls");
+    var reveal = document.getElementById("r-reveal"), prev = document.getElementById("r-prev"), next = document.getElementById("r-next");
+    controls.hidden = false;
+    function render() {
+      steps.forEach(function (s, i) {
+        var on = i + 1 === cur;
+        s.classList.toggle("is-current", on);
+        s.querySelector(".reveal-target").classList.toggle("is-revealed", !!revealed[i + 1]);
+      });
+      root.querySelectorAll(".replay-svg .h").forEach(function (g) {
+        g.classList.toggle("show", !!revealed[cur] && g.classList.contains("h-" + cur));
+      });
+      count.textContent = "Step " + cur + " of " + total;
+      prev.disabled = cur === 1; next.disabled = cur === total;
+      reveal.textContent = revealed[cur] ? "Hide recorded result" : "Show recorded result";
+      reveal.setAttribute("aria-pressed", revealed[cur] ? "true" : "false");
+    }
+    function url() { var u = new URL(location.href); u.searchParams.set("step", cur); return u.pathname + u.search; }
+    function go(n, push) { cur = Math.min(total, Math.max(1, n)); render(); if (push) history.replaceState(null, "", url()); }
+    prev.onclick = function () { go(cur - 1, true); };
+    next.onclick = function () { go(cur + 1, true); };
+    reveal.onclick = function () { revealed[cur] = !revealed[cur]; render(); };
+    document.getElementById("r-restart").onclick = function () { revealed = {}; go(1, true); };
+    var q = parseInt(new URLSearchParams(location.search).get("step"), 10);
+    go(q >= 1 && q <= total ? q : 1, false);
+  })();
+  </script>
+</section>

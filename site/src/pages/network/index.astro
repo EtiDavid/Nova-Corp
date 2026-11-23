@@ -4,7 +4,7 @@ import { zones, rules, aliases, networkEvidence } from "../../data/network";
 const base=import.meta.env.BASE_URL;
 const segments=zones.filter(z=>z.kind==="VLAN");
 ---
-<BaseLayout title="Network Gatehouse" description="Follow Nova Corp's five VLANs, WireGuard tunnel, ordered firewall rules and protected company services." breadcrumbs={[{label:"Explore",href:"explore/"},{label:"Network Gatehouse"}]}>
+<BaseLayout title="Network" description="Follow Nova Corp's five VLANs, WireGuard tunnel, ordered firewall rules and protected company services." breadcrumbs={[{label:"Explore",href:"company/"},{label:"Network Gatehouse"}]}>
 <section class="page-head"><div class="container">
  <div class="eyebrow">Network Gatehouse / Company traffic</div>
  <h1>Where can a company computer connect?</h1>

@@ -17,7 +17,7 @@ const associatedPolicies=linksForSystem(system.slug);
 const computer=getComputer(system.slug);
 const statusText = system.status === "observed-running" ? "Documented running at last check" : "Documented configuration";
 ---
-<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"explore/"},{label:area?.name||"Systems",href:"areas/"+system.area+"/"},{label:system.name}]}>
+<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"company/"},{label:area?.name||"Systems",href:"areas/"+system.area+"/"},{label:system.name}]}>
   <section class="page-head"><div class="container">
     <div class="eyebrow">{system.category}</div>
     <h1>{system.name}</h1>
@@ -69,7 +69,7 @@ const statusText = system.status === "observed-running" ? "Documented running at
     </div>
     <aside>
       <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "IT Control Room"}</dd></div><div><dt>Evidence date</dt><dd>{system.asOf}</dd></div></dl></div>
-      <div class="sidebox"><h3>Next steps</h3><a href={base+"areas/"+system.area+"/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
+      <div class="sidebox"><h3>Next steps</h3><a href={base+"company/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
     </aside>
   </div></section>
 </BaseLayout>

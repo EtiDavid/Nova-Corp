@@ -10,7 +10,7 @@ import { companyPolicies } from "../data/policies";
 
 const base=import.meta.env.BASE_URL;
 const index=[
-...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"areas/"+item.id+"/"})),
+...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"company/"})),
 ...systems.map(item=>({name:item.name,kind:item.category,description:item.summary,url:base+"systems/"+item.slug+"/"})),
 ...shares.map(item=>({name:item.name+" department share",kind:"Shared folder",description:item.purpose,url:base+"files/shares/"+item.id+"/"})),
 ...organizationalUnits.map(item=>({name:item.name,kind:"Organizational Unit",description:item.meaning,url:base+"directory/ous/"+item.slug+"/"})),
@@ -36,7 +36,7 @@ const index=[
   <div class="card-list" data-results>
   {index.map(item=><a class="system-card" data-search-item data-search-text={(item.name+" "+item.kind+" "+item.description).toLowerCase()} href={item.url}><small>{item.kind}</small><h3>{item.name}</h3><p>{item.description}</p><span class="readmore">Open →</span></a>)}
   </div>
-  <p data-empty class="empty" hidden>No matches. Try a broader term or open the <a href={base+"explore/"}>company map</a>.</p>
+  <p data-empty class="empty" hidden>No matches. Try a broader term or open the <a href={base+"company/"}>company map</a>.</p>
 </div></section>
 <script>
 const input = document.querySelector<HTMLInputElement>("[data-search]");

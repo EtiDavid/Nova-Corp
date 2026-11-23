@@ -1,109 +1,93 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import AreaCard from "../components/AreaCard.astro";
-import DiagramPanel from "../components/DiagramPanel.astro";
-import { areas } from "../data/areas";
+import ArchitectureSvg from "../components/ArchitectureSvg.astro";
 const base = import.meta.env.BASE_URL;
+const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
 ---
-<BaseLayout title="Explore Nova Corp" description="Explore a fictional company built as a real infrastructure home lab. See its people, servers, networks, tests and documented evidence.">
-  <section class="hero">
-    <div class="container hero-grid">
-      <div>
-        <div class="eyebrow">Built by David Eti · Enterprise infrastructure case study</div>
-        <h1>Explore Nova Corp — a small company built as a real infrastructure lab.</h1>
-        <p class="lead">A fictional workplace backed by real home-lab engineering. Explore its network, sign-ins, files and security policies—then see the failures, fixes and evidence behind them.</p>
-        <div class="button-row">
-          <a class="btn" href={base+"explore/"}>Explore the company <span aria-hidden="true">→</span></a>
-          <a class="btn ghost" href={base+"tour/"}>Take a guided tour</a>
-        </div>
-        <div class="truthline"><span class="dot" aria-hidden="true"></span><span>Fictional company</span><span aria-hidden="true">·</span><span>Real home-lab engineering</span><span aria-hidden="true">·</span><span>Evidence reviewed November 2026</span></div>
+<BaseLayout title="Home" description="An enterprise infrastructure lab you can explore. Built and tested by David Eti: Windows Server, Active Directory, pfSense, recovery and real troubleshooting.">
+  <section class="v4-hero"><div class="container v4-hero-grid">
+    <div>
+      <div class="byline">Built and tested by David Eti</div>
+      <h1>I built a small company's IT infrastructure — then tested what happens when it fails.</h1>
+      <p class="lead">Explore the real Windows, networking, security and recovery work behind my Nova Corp home lab. Choose a system, follow a request, or replay a troubleshooting investigation.</p>
+      <div class="button-row" style="margin-top:26px">
+        <a class="btn" href={base + "company/"}>Explore the infrastructure <span aria-hidden="true">→</span></a>
+        <a class="btn ghost" href={base + "incidents/"}>See what I fixed</a>
       </div>
-      <div><DiagramPanel /></div>
+      <div class="contact-row">
+        <span class="who">David Eti · Seeking system administrator, infrastructure and DevOps roles in Belgium and the Netherlands</span>
+      </div>
+      <div class="contact-row" style="margin-top:10px">
+        <a class="btn ghost small" href={cv}>Download CV</a>
+        <a class="btn ghost small" href="mailto:etidavid26@gmail.com">Email</a>
+        <a class="btn ghost small" href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
+      </div>
+      <p class="truth">Nova Corp is fictional; the infrastructure and recorded tests are from my real home lab. This is a documented snapshot, not a live console.</p>
     </div>
-    <div class="container">
-      <p class="built-by"><b>Built by David Eti.</b> I'm looking for system administrator, infrastructure and DevOps roles in Belgium and the Netherlands.
-        <a class="btn" href={base+"David_Eti_Systems_Infrastructure_CV.pdf"}>Download CV</a>
-        <a class="btn ghost" href="mailto:etidavid26@gmail.com">Email</a>
-        <a class="btn ghost" href="https://www.linkedin.com/in/eti-david">LinkedIn</a></p>
+    <figure class="figure-card">
+      <ArchitectureSvg />
+      <div class="arch-legend"><span><i style="border-color:#6557A8"></i>DNS and sign-in</span><span><i style="border-color:#087F75"></i>Shared files</span></div>
+      <figcaption>Original illustration of the documented architecture.</figcaption>
+    </figure>
+  </div></section>
+
+  <section class="v4-section" aria-labelledby="proved"><div class="container">
+    <div class="byline">Three things I proved</div>
+    <h2 id="proved">Tested failures, with the evidence.</h2>
+    <div class="outcomes">
+      <article class="outcome">
+        <span class="chip tested">Tested</span>
+        <h3>Sign-ins survive a Domain Controller outage</h3>
+        <p class="q">Can employees still work if DC01 goes offline?</p>
+        <p class="result">I took DC01 offline in a controlled test; the workstation kept working through DC02 and replication was checked when DC01 returned.</p>
+        <a href={base + "incidents/dc01-outage/"}>Read the investigation</a>
+      </article>
+      <article class="outcome">
+        <span class="chip tested">Tested</span>
+        <h3>A deleted file came back, byte for byte</h3>
+        <p class="q">Can a lost document be recovered after backup trouble?</p>
+        <p class="result">After a deliberate backup failure and repair, a deleted file was restored with the same SHA-256 hash as the original.</p>
+        <a href={base + "incidents/backup-target-unavailable/"}>Read the investigation</a>
+      </article>
+      <article class="outcome">
+        <span class="chip tested">Tested</span>
+        <h3>An employee PC blocked from firewall admin</h3>
+        <p class="q">Why could a workstation open the firewall console?</p>
+        <p class="result">I placed specific block rules ahead of a broad allow; the management path was blocked and business access kept working.</p>
+        <a href={base + "incidents/firewall-management-exposure/"}>Read the investigation</a>
+      </article>
     </div>
-    <div class="container">
-      <div class="stats-strip" aria-label="Documented infrastructure snapshot">
-        <div class="stat"><b>6</b><span>Documented virtual machines</span></div>
-        <div class="stat"><b>5</b><span>Configured network VLANs</span></div>
-        <div class="stat"><b>2</b><span>Identity servers tested for resilience</span></div>
-      </div>
+  </div></section>
+
+  <section class="v4-section" aria-labelledby="works"><div class="container split">
+    <div>
+      <div class="byline">How the company works</div>
+      <h2 id="works">A workstation, a firewall, two identity servers and a file server.</h2>
+      <p class="lead">Signing in and opening a shared folder are two separate paths: one asks the Domain Controllers for DNS and identity, the other connects to the file server. Select any system on the interactive map to see what it does and the evidence behind it.</p>
+      <p style="margin-top:20px"><a class="btn" href={base + "company/"}>Open the interactive map <span aria-hidden="true">→</span></a></p>
     </div>
-  </section>
-  <section class="section" style="padding-top:36px">
-    <div class="container">
-      <div class="section-heading">
-        <div><div class="eyebrow">Choose your path</div><h2>Walk through the company</h2><p class="lead" style="margin-top:13px">Each area leads to real documented systems, relationships and engineering results.</p></div>
-        <a class="text-link" href={base+"explore/"}>Open full company map <span aria-hidden="true">↗</span></a>
-      </div>
-      <div class="area-grid">{areas.map((area)=><AreaCard area={area} />)}</div>
+    <figure class="figure-card"><ArchitectureSvg /><div class="arch-legend"><span><i style="border-color:#6557A8"></i>DNS and sign-in</span><span><i style="border-color:#087F75"></i>Shared files</span></div><figcaption>Everything runs on one Proxmox host, nested in VMware Workstation.</figcaption></figure>
+  </div></section>
+
+  <section class="v4-section" aria-labelledby="featured"><div class="container">
+    <div class="byline">Featured investigation</div>
+    <h2 id="featured">"The IT folder won't open."</h2>
+    <blockquote class="ticket-quote">The file server looked down. It wasn't — a lookup by name timed out, while a direct connection to the server on port 445 succeeded.</blockquote>
+    <p class="lead">Testing DNS separately from network reachability showed the workstation was asking the wrong resolver, which avoided a needless server rebuild.</p>
+    <p style="margin-top:20px"><a class="btn" href={base + "incidents/dns-client-outage/"}>Follow the investigation <span aria-hidden="true">→</span></a></p>
+  </div></section>
+
+  <section class="v4-section" aria-labelledby="builder"><div class="container split">
+    <div>
+      <div class="byline">The engineer</div>
+      <h2 id="builder">I learn infrastructure by building it and breaking it.</h2>
+      <p class="lead">I designed, built, tested and documented every part of this lab myself. <a href={base + "about/"}>About me</a> · <a href="https://github.com/EtiDavid/Nova-Corp">Source on GitHub ↗</a></p>
     </div>
-  </section>
-  <section class="section feature-band" aria-labelledby="first-journeys">
-    <div class="container">
-      <div class="section-heading">
-        <div><div class="eyebrow">Try a connected journey</div><h2 id="first-journeys">Follow the work, not just the servers.</h2><p class="lead" style="margin-top:13px">Every link represents a documented system, a recorded relationship or a tested result. Start with a familiar workplace question.</p></div>
-      </div>
-      <div class="journey-grid">
-        <a class="journey" href={base+"people/moyo/"}><span class="journey-number">01 / IDENTITY & ACCESS</span><h3>How does an employee open a team folder?</h3><p>Follow a directory account through groups, the file server and the permissions that protect company documents.</p><span class="readmore">Trace the request →</span></a>
-        <a class="journey" href={base+"network/zones/client/"}><span class="journey-number">02 / NETWORK SECURITY</span><h3>Which connections can an employee computer make?</h3><p>Explore the firewall's real rule order, including why ordinary staff cannot open the management interface.</p><span class="readmore">Follow the connection →</span></a>
-        <a class="journey" href={base+"incidents/"}><span class="journey-number">03 / ENGINEERING RESPONSE</span><h3>What happened when something failed?</h3><p>Read controlled investigations into DNS, identity resilience, backups, VPN access and storage capacity.</p><span class="readmore">Investigate the failure →</span></a>
-      </div>
+    <div class="outcome">
+      <span class="chip planned">Planned</span>
+      <h3>Next planned hardening</h3>
+      <p>A privileged administrative VPN and tighter management-plane firewall controls (CR-016). Planned; not started.</p>
+      <a href={base + "roadmap/"}>See the roadmap</a>
     </div>
-  </section>
-  <section class="section soft-band">
-    <div class="container">
-      <div class="eyebrow">Engineering, not a simulation of success</div>
-      <h2 style="margin:13px 0 0;max-width:22ch">What happens when the real tests get difficult?</h2>
-      <div class="outcome-grid">
-        <div class="outcome">
-          <span class="tag">Recovery tested</span>
-          <strong>A deleted file was recovered.</strong>
-          <p>The backup disk failed in a controlled test. After repair, the restored file matched the original fingerprint.</p>
-          <a class="evidence-link" href={base+"incidents/backup-target-unavailable/"}>Follow the recovery <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="outcome">
-          <span class="tag">Resilience tested</span>
-          <strong>One identity server went offline.</strong>
-          <p>Employees could still find directory services through the second controller, and replication was checked after recovery.</p>
-          <a class="evidence-link" href={base+"incidents/dc01-outage/"}>See what happened <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="outcome">
-          <span class="tag">Scope documented</span>
-          <strong>Not every recovery is tested.</strong>
-          <p>The lab distinguishes successful file-level restores from configured whole-VM and Domain Controller backups.</p>
-          <a class="evidence-link" href={base+"recovery/"}>Understand the boundaries <span aria-hidden="true">→</span></a>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="section">
-    <div class="container grid-main" style="align-items:center">
-      <div>
-        <div class="eyebrow">For engineers and curious visitors</div>
-        <h2 style="margin:14px 0 16px">Two levels of explanation. The same actual evidence.</h2>
-        <p class="lead">Start with what a system does for the company. Then open its technical details, related services, source journals and recorded tests—without hunting through release notes.</p>
-        <div class="button-row" style="margin-top:24px">
-          <a class="btn" href={base+"systems/nova-dc01/"}>Meet the identity server <span aria-hidden="true">→</span></a>
-          <a class="btn ghost" href={base+"sources/"}>I want the technical proof</a>
-        </div>
-      </div>
-      <div class="paper panel">
-        <p class="kicker">A connected example</p>
-        <h3 style="margin:12px 0">NOVA-CLIENT → Firewall → Identity → Files</h3>
-        <p class="muted">Follow a workstation request through network policy, company sign-in services and controlled access to shared documents.</p>
-        <div class="button-row" style="margin-top:19px"><a class="btn small" href={base+"people/moyo/"}>Follow a real access path →</a><a class="btn ghost small" href={base+"files/"}>Explore shared folders</a></div>
-        <p class="source-line" style="margin-top:17px">This site is a dated documentation snapshot, not a live management console.</p>
-      </div>
-    </div>
-  </section>
-  <section class="section credit-band"><div class="container credit-grid">
-    <div><div class="eyebrow">About this project</div><h2 style="margin-top:13px">Built, tested and documented by David Eti.</h2>
-      <p class="lead" style="margin-top:15px">Nova Corp is not a real employer or production company. It is an independently built enterprise-style home lab, designed to practice infrastructure administration, troubleshooting, recovery and clear engineering documentation.</p></div>
-    <div class="credit-actions"><a class="btn" href="https://davideti.dev/">Visit David's portfolio ↗</a><a class="btn ghost" href="https://github.com/EtiDavid/Nova-Corp">Browse the source documentation ↗</a></div>
   </div></section>
 </BaseLayout>

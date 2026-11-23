@@ -1,18 +1,4 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import AreaCard from "../components/AreaCard.astro";
-import { areas } from "../data/areas";
-const base = import.meta.env.BASE_URL;
+import LegacyRedirect from "../components/LegacyRedirect.astro";
 ---
-<BaseLayout title="Explore the company" description="Choose a Nova Corp area and explore documented systems, policies, shared files, recovery and investigations." breadcrumbs={[{label:"Explore the company"}]}>
-  <section class="page-head"><div class="container">
-    <div class="eyebrow">Company atlas / Overview</div>
-    <h1>Every part of Nova Corp connects.</h1>
-    <p class="lead">Choose a room to see what it does. Follow a server to the people, networks and tests it connects to. No technical background required.</p>
-    <div class="button-row" style="margin-top:22px"><a class="btn ghost small" href={base+"tour/"}>Not sure where to start? Take the tour →</a><a class="btn ghost small" href={base+"search/"}>Find a specific system</a></div>
-  </div></section>
-  <section class="section compact"><div class="container">
-    <div class="area-grid">{areas.map((area)=><AreaCard area={area} />)}</div>
-    <div class="note" style="margin-top:28px"><strong>How to read this atlas:</strong> These are visual names for functions inside a simulated company—not physical offices. Every documented object links to its source. Unfinished controls remain identified as unfinished.</div>
-  </div></section>
-</BaseLayout>
+<LegacyRedirect to="company/" label="Explore the infrastructure" />
