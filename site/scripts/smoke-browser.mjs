@@ -72,6 +72,13 @@ try {
   await scene.locator('.sb-guest[data-id="nova-files01"]').click();
   assert.equal(await scene.locator('[data-mode="all"]').getAttribute("aria-pressed"),"true","selecting excluded node clears stale path filter");
   assert.equal(await scene.locator(".sb-node.is-muted").count(),0,"selected file server must not be dimmed");
+  assert((await scene.locator("#sb-related-buttons button").count())>=2,"inspector exposes linked lab systems");
+  await scene.locator('[data-rel-to="nova-client"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-CLIENT/,"user can walk between documented systems");
+  assert(/system=nova-client/.test(desktop.url()));
+  await scene.locator('[data-rel-to="nova-files01"]').click();
+  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-FILES01/);
+
 
   await scene.locator('[data-mode="files"]').click();
   assert.equal(await scene.locator(".sb-node.is-muted").count(),2,"file-access view selects four relevant systems");
