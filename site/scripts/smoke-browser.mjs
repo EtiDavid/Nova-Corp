@@ -27,69 +27,61 @@ try {
  const errors=[];
  desktop.on("pageerror",e=>errors.push(e.message));
 
- await step("Homepage names the builder, the job target and contact actions",async()=>{
+ await step("Homepage: clear headline, tour CTA, only two incident groups",async()=>{
   const response=await desktop.goto(host+"/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
-  assert.match((await desktop.locator("h1").innerText()),/built the infrastructure/i);
+  assert.match(await desktop.locator("h1").innerText(),/I built the infrastructure/i);
   const body=await desktop.locator("body").innerText();
-  assert(body.includes("David Eti")); assert(body.includes("Belgium and the Netherlands"));
-  assert(body.includes("Nova Corp is a fictional company"));
-  for(const name of ["Download CV","Email","LinkedIn"]) assert((await desktop.getByRole("link",{name:new RegExp(name)}).count())>0,name);
-  const nav=await desktop.locator(".v4-nav a").allInnerTexts();
-  assert.deepEqual(nav,["Explore","Investigations","Guided tour","Roadmap","About David"]);
-  assert(!(body.includes("on hold")));
-  assert.equal(await desktop.locator(".exp-hero .button-row a").count(),2,"two primary first-screen actions");
-  assert(await desktop.locator("#hx-explorer").isVisible(),"architecture explorer visible on homepage");
-  assert(await desktop.locator(".exp-hero h1").isVisible(),"main engineering statement visible");
+  assert.match(body,/Nova Corp is a fictional company/i);
+  assert(!body.includes("David Eti · Infrastructure"),"requested personal role block removed");
+  assert(!body.includes("22 NOV 2026"),"visual date removed from home diagram");
+  assert.equal(await desktop.locator(".exp-hero .button-row a").count(),2);
+  assert(await desktop.getByRole("link",{name:/Take the guided tour/}).first().isVisible());
+  const afterDiagram=await desktop.locator(".exp-hero + section").getAttribute("id");
+  assert.equal(afterDiagram,"incident-library","incident library is the only home section beneath map");
+  assert.equal(await desktop.locator(".il-group").count(),2);
+  assert.match(await desktop.locator("#il-controlled").innerText(),/Controlled failure tests/);
+  assert.match(await desktop.locator("#il-unplanned").innerText(),/Unexpected incidents/i);
+  assert.equal(await desktop.locator(".il-group:first-child .il-item").count(),9);
+  assert.equal(await desktop.locator(".il-group:last-child .il-item").count(),6);
+  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),8,"start with 4 visible from each group");
+  await desktop.locator("#il-more-controlled summary").click();
+  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),13);
+  await desktop.locator("#il-more-unplanned summary").click();
+  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),15);
+  assert.equal(await desktop.locator("main > section").count(),2,"hero and incident library only");
  });
- await step("Scrollable lab sandbox: branded topology, internal scroll, deep inspection, accessible mode",async()=>{
+ await step("Sandbox: color logos, real IPs, subtle scroll and genuine profile navigation",async()=>{
   await desktop.goto(host+"/",{waitUntil:"networkidle"});
-  const scene=desktop.locator("#hx-explorer");
-  const port=scene.locator("#lab-scrollport");
+  const scene=desktop.locator("#hx-explorer"),port=scene.locator("#lab-scrollport");
   assert(await scene.isVisible());
-  const initial=await port.evaluate(el=>({height:el.clientHeight,full:el.scrollHeight,top:el.scrollTop}));
-  assert(initial.full>initial.height+350,"diagram must have internal vertical scroll");
+  assert(await port.evaluate(el=>el.scrollHeight>el.clientHeight+300));
   assert.equal(await scene.locator(".hx-node[data-id]").count(),6);
-  assert.equal(await scene.locator(".sb-guest-grid .sb-guest").count(),4);
-  assert.equal(await scene.locator('img[src$="brands/proxmox.svg"]').count(),1);
-  assert.equal(await scene.locator('img[src$="brands/pfsense.svg"]').count(),1);
-  assert.equal(await scene.locator('img[src$="brands/vmware.svg"]').count(),1);
-  assert((await port.locator(".sb-section").allInnerTexts()).join(" ").indexOf("NOVA-PROX01") < (await port.locator(".sb-section").allInnerTexts()).join(" ").indexOf("NOVA-FW01"),"Proxmox is above pfSense");
-  await scene.locator(".atlas-prox").click();
+  assert.equal(await scene.locator(".sb-guest").count(),4);
+  for(const file of ["proxmox-color.svg","pfsense-color.svg","vmware-color.svg","windows-server-color.svg","server-corner.svg"]){
+    const res=await desktop.request.get(host+"/brands/"+file);
+    assert.equal(res.status(),200,"logo asset "+file);
+  }
+  assert((await scene.innerText()).includes("10.10.20.10"));
+  assert((await scene.innerText()).includes("10.10.20.11"));
+  assert((await scene.innerText()).includes("10.10.20.20"));
+  assert((await scene.innerText()).includes("10.10.40.100"));
+  await scene.locator(".atlas-prox").hover();
   assert.match(await scene.locator("#hx-title").innerText(),/NOVA-PROX01/);
-  assert((await scene.locator("#hx-record").getAttribute("href")).includes("/systems/nova-prox01/"));
-  await scene.locator('[data-jump="guests"]').click();
-  await desktop.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>300);
-  assert.equal(await scene.locator('.sb-guest[data-id="nova-dc01"]').count(),1);
-  await scene.locator('.sb-guest[data-id="nova-files01"]').click();
-  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-FILES01/);
-  assert.match(await scene.locator("#sb-facts").innerText(),/backup|share|operating system/i);
-  assert((await scene.locator("#hx-case").getAttribute("href")).includes("/incidents/backup-target-unavailable/"));
-  assert(/system=nova-files01/.test(desktop.url()),"selected component is deep-linkable");
-  assert.equal(await scene.locator(".sb-node.is-selected").count(),1);
-  await scene.locator('[data-mode="identity"]').click();
-  assert.equal(await scene.locator(".sb-node.is-muted").count(),2,"only non-identity nodes muted");
-  await scene.locator('.sb-guest[data-id="nova-files01"]').click();
-  assert.equal(await scene.locator('[data-mode="all"]').getAttribute("aria-pressed"),"true","selecting excluded node clears stale path filter");
-  assert.equal(await scene.locator(".sb-node.is-muted").count(),0,"selected file server must not be dimmed");
-  assert((await scene.locator("#sb-related-buttons button").count())>=2,"inspector exposes linked lab systems");
-  await scene.locator('[data-rel-to="nova-client"]').click();
-  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-CLIENT/,"user can walk between documented systems");
-  assert(/system=nova-client/.test(desktop.url()));
-  await scene.locator('[data-rel-to="nova-files01"]').click();
-  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-FILES01/);
-
-
-  await scene.locator('[data-mode="files"]').click();
-  assert.equal(await scene.locator(".sb-node.is-muted").count(),2,"file-access view selects four relevant systems");
-  await scene.locator('[data-mode="all"]').click();
-  assert.equal(await scene.locator(".sb-node.is-muted").count(),0);
-  await desktop.goto(host+"/?system=nova-dc02",{waitUntil:"networkidle"});
-  assert.match(await desktop.locator("#hx-title").innerText(),/NOVA-DC02/,"component deep link opens inspector");
-  const brand=await desktop.request.get(host+"/brands/proxmox.svg");
-  assert.equal(brand.status(),200,"local Proxmox mark is served");
-  const palette=await desktop.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue("--bg").trim());
-  assert.equal(palette,"#111210");
+  await scene.locator(".atlas-prox").click();
+  await desktop.waitForURL(/\/systems\/nova-prox01\/$/);
+  await desktop.goto(host+"/",{waitUntil:"networkidle"});
+  await desktop.locator('[data-jump="guests"]').click();
+  await desktop.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
+  assert((await desktop.locator(".sb-section.is-entered").count())>=1,"scroll reveal reaches visible stages");
+  await desktop.locator('.sb-guest[data-id="nova-dc01"]').click();
+  await desktop.waitForURL(/\/systems\/nova-dc01\/$/);
+  assert(await desktop.locator(".evidence-placeholder").isVisible(),"missing DC screenshot truthfully marked");
+  assert(!((await desktop.locator(".page-head").innerText()).includes("NOV 2026")),"no promotional date banner");
+  await desktop.goto(host+"/?system=nova-files01",{waitUntil:"networkidle"});
+  assert.match(await desktop.locator("#hx-title").innerText(),/NOVA-FILES01/);
+  const expected=await desktop.locator("#hx-record").getAttribute("href");
+  assert(expected.endsWith("/systems/nova-files01/"));
   const reducedContext=await browser.newContext({reducedMotion:"reduce",viewport:{width:1440,height:900}});
   const reduced=await reducedContext.newPage();
   await reduced.goto(host+"/",{waitUntil:"networkidle"});
@@ -97,9 +89,19 @@ try {
   await reduced.locator('[data-jump="guests"]').click();
   assert((await reduced.locator("#lab-scrollport").evaluate(el=>el.scrollTop))>200);
   await reducedContext.close();
-  await desktop.locator(".atlas-editorial").scrollIntoViewIfNeeded();
-  await desktop.waitForTimeout(350);
-  assert(await desktop.locator(".atlas-editorial").evaluate(el=>el.classList.contains("is-in-view")));
+ });
+ await step("Technical terms: auto-link servers and jargon to explainer pages",async()=>{
+  await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"networkidle"});
+  assert((await desktop.locator('a.technical-link[href$="/systems/nova-dc01/"]').count())>=1);
+  assert((await desktop.locator('a.technical-link[href$="/learn/ldap/"]').count())>=1);
+  assert((await desktop.locator('a.technical-link[href$="/learn/kerberos/"]').count())>=1);
+  assert((await desktop.locator('a.technical-link[href$="/learn/sysvol/"]').count())>=1);
+  assert(await desktop.getByRole("link",{name:/Read the full Markdown journal on GitHub/}).isVisible());
+  await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
+  assert.match(await desktop.locator("h1").innerText(),/SYSVOL/i);
+  assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
+  await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
+  assert.equal(await desktop.locator(".term-index > a").count(),18);
  });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
@@ -160,7 +162,7 @@ try {
  });
  await step("Investigations index filters; DNS replay steps and reveals recorded results",async()=>{
   await desktop.goto(host+"/incidents/",{waitUntil:"networkidle"});
-  assert.equal(await desktop.locator("#case-grid .outcome").count(),8);
+  assert.equal(await desktop.locator("#case-grid .outcome").count(),16);
   assert.equal(await desktop.locator(".chip.deferred").count(),1);
   await desktop.getByRole("button",{name:"Recovery"}).click();
   assert.equal(await desktop.locator("#case-grid .outcome:visible").count(),1);
@@ -229,12 +231,9 @@ try {
    await mobile.locator('[data-jump="guests"]').click();
    await mobile.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
    await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
-   assert.match(await mobile.locator("#hx-title").innerText(),/NOVA-FILES01/);
-   assert((await mobile.locator("#hx-record").getAttribute("href")).includes("/systems/nova-files01/"));
-   await mobile.waitForFunction(()=>{const b=document.getElementById("sb-inspector")?.getBoundingClientRect();return b&&b.top<220&&b.bottom>220;});
-   assert(await mobile.locator("#sb-back-to-map").isVisible(),"mobile visitors can return from details");
-   await mobile.locator("#sb-back-to-map").click();
-   await mobile.waitForFunction(()=>document.getElementById("hx-explorer").getBoundingClientRect().top<220);
+   await mobile.waitForURL(/\/systems\/nova-files01\/$/);
+   assert(await mobile.locator(".evidence-placeholder").isVisible(),"mobile file server profile shows honest image placeholder");
+   await mobile.goto(host+"/",{waitUntil:"networkidle"});
 
    const summary=mobile.locator(".v4-menu summary");
    assert(await summary.isVisible());
