@@ -65,7 +65,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+"-color.svg";
               <span class="sb-node-copy"><span class="sb-mini">HYPERVISOR / NESTED IN VMWARE</span><strong>NOVA-PROX01</strong><span>Proxmox Virtual Environment</span><span class="sb-micro">192.168.178.26 · Management IP</span><span class="sb-micro">Hosts the five illustrated virtual machines</span></span>
               <span class="sb-node-arrow" aria-hidden="true">↗</span>
             </a>
-            <div class="sb-spine sb-spine-first" aria-hidden="true"><span></span></div>
+            <div class="sb-spine sb-spine-first" aria-hidden="true"><span><i class="sb-flow-dot"></i></span></div>
             <p class="sb-relationship sb-rel-host">ALL GUEST VMS RUN ON PROXMOX</p>
           </div>
           <div class="sb-section sb-network" id="sb-layer-network" data-layer="network">
@@ -75,7 +75,7 @@ const iconURL=(slug:string)=>base+"brands/"+slug+"-color.svg";
               <span class="sb-node-copy"><span class="sb-mini">PFSENSE / NETWORK BOUNDARY</span><strong>NOVA-FW01</strong><span>pfSense CE 2.8.1</span><span class="sb-micro">WAN 192.168.178.71 · MGMT 10.10.10.1</span><span class="sb-micro">Routes approved traffic between network zones</span></span>
               <span class="sb-node-arrow" aria-hidden="true">↗</span>
             </a>
-            <div class="sb-spine sb-spine-second" aria-hidden="true"><span></span></div>
+            <div class="sb-spine sb-spine-second" aria-hidden="true"><span><i class="sb-flow-dot"></i></span></div>
             <p class="sb-relationship sb-rel-service">NETWORK PATHS ARE CONCEPTUAL · pfSense DOES NOT HOST THESE VMS</p>
           </div>
           <div class="sb-section sb-guests" id="sb-layer-guests" data-layer="guests">
@@ -230,6 +230,22 @@ const iconURL=(slug:string)=>base+"brands/"+slug+"-color.svg";
    layers.forEach(function(el){if(el.getBoundingClientRect().top-scrollport.getBoundingClientRect().top<scrollport.clientHeight*.49)current=el.dataset.layer;});
    status.textContent=labels[current];
    jumps.forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.jump===current));});
+ }
+
+ // Animate only when layers enter the bounded map viewport — visual affordance,
+ // never a claim that these lines depict actual live network traffic.
+ var motion=window.matchMedia("(prefers-reduced-motion: reduce)");
+ if("IntersectionObserver" in window && !motion.matches){
+   var io=new IntersectionObserver(function(entries){
+     entries.forEach(function(entry){
+       if(entry.isIntersecting){entry.target.classList.add("is-entered");}
+       else{entry.target.classList.remove("is-entered");}
+     });
+   },{root:scrollport,threshold:.14});
+   layers.forEach(function(layer){io.observe(layer);});
+   scrollport.classList.add("motion-ready");
+ }else{
+   layers.forEach(function(layer){layer.classList.add("is-entered");});
  }
  scrollport.addEventListener("scroll",onScroll,{passive:true});
  window.addEventListener("resize",onScroll,{passive:true});
