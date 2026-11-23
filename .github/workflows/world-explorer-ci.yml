@@ -58,7 +58,7 @@ jobs:
             sleep 1
           done
           if [ "$READY" -ne 1 ]; then cat /tmp/novacorp-preview.log; exit 1; fi
-          for ENTRY in "home:/" "policy:/policies/contractor-usb/" "acls:/files/permissions/technical/"; do
+          for ENTRY in "home:/" "explorer:/company/" "investigation:/incidents/dns-client-outage/" "policy:/policies/contractor-usb/" "acls:/files/permissions/technical/"; do
             NAME="${ENTRY%%:*}"
             PAGE="${ENTRY#*:}"
             for VIEW in "desktop:1440,900" "mobile:390,844"; do
@@ -68,7 +68,7 @@ jobs:
               test -s "qa-snapshots/${NAME}-${VIEW_NAME}.png"
             done
           done
-          echo "Real Chromium captured six 1440px/390px screenshots on the built static preview. Visual acceptance remains manual."
+          echo "Real Chromium captured ten desktop/mobile screenshots across five representative routes. Visual acceptance remains manual."
       - name: Keep actual browser screenshots for visual review
         uses: actions/upload-artifact@v4
         with:
