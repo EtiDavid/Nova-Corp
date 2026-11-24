@@ -20,6 +20,7 @@
     "precheck": "node scripts/stage-source-docs.mjs",
     "prebuild": "node scripts/stage-source-docs.mjs",
     "test:references": "node scripts/check-source-mirror.mjs",
+    "test:incidents": "node scripts/check-incident-fidelity.mjs",
     "test:browser": "node scripts/smoke-browser.mjs"
   },
   "dependencies": {
