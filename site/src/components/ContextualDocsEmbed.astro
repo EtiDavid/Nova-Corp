@@ -16,6 +16,43 @@ const docsByRoute:Record<string,{file:string;title:string}>={
  "policies":{file:"docs/explore/POLICIES.md",title:"Full Group Policy inventory and purpose"},
  "recovery":{file:"docs/explore/TESTS_AND_RECOVERY.md",title:"Recorded failure tests, recovery and limitations"}
 };
+// All public directory-profile source files are independently present in
+// docs/explore/. This mapping is based on the actual file inventory, not an
+// inferred company org chart or generated biography.
+const peopleSource:Record<string,string>={
+ "administrator":"people/accounts/administrator.md",
+ "guest":"people/accounts/guest.md",
+ "krbtgt":"people/accounts/krbtgt.md",
+ "test-user":"people/accounts/test-user.md",
+ "john-shaw":"people/JOHN_SHAW.md",
+ "alice-finance":"people/accounts/cr011-fin.md",
+ "finance-test":"people/accounts/fin-test.md",
+ "henry-hr":"people/accounts/cr011-hr.md",
+ "hr-test":"people/accounts/hr-test.md",
+ "isaac-it":"people/accounts/cr011-it.md",
+ "david-it":"people/DAVID.md",
+ "moyo":"people/MOYO.md",
+ "maria-manager":"people/accounts/cr011-mgmt.md",
+ "management-test":"people/accounts/mgmt-test.md",
+ "gui-pilot":"people/accounts/cr011-gui.md",
+ "sarah-sales":"people/accounts/cr011-sales.md",
+ "svc-backup":"people/accounts/svc-backup.md",
+ "svc-fileserver":"people/accounts/svc-fileserver.md",
+ "svc-monitoring":"people/accounts/svc-monitoring.md",
+ "sales-test":"people/accounts/sales-test.md"
+};
+const person=route.match(/^people\/([^/]+)$/);
+const group=route.match(/^groups\/([^/]+)$/);
+const ou=route.match(/^directory\/ous\/([^/]+)$/);
+const computer=route.match(/^computers\/([^/]+)$/);
+if(person){
+ const filename=peopleSource[person[1]];
+ if(!filename)throw Error("Unknown account source mapping: "+person[1]);
+ docsByRoute[route]={file:"docs/explore/"+filename,title:"Complete original directory account explanation and evidence"};
+}
+if(group)docsByRoute[route]={file:"docs/explore/GROUPS.md",title:"Complete original company group design, nesting and tested resource access"};
+if(ou)docsByRoute[route]={file:"docs/explore/DIRECTORY_SNAPSHOT_2026-11-22.md",title:"Full original directory snapshot, account and OU placement evidence"};
+if(computer)docsByRoute[route]={file:"docs/explore/DIRECTORY_SNAPSHOT_2026-11-22.md",title:"Complete original Active Directory computer-object snapshot"};
 const selected=docsByRoute[route];
 ---
 {selected&&<div class="container contextual-source"><EngineeringSourceEmbed sourcePath={selected.file} title={selected.title} /></div>}

@@ -1,5 +1,5 @@
 import {createHash} from "node:crypto";
-import {existsSync,mkdirSync,readdirSync,readFileSync,rmSync,writeFileSync} from "node:fs";
+import {copyFileSync,existsSync,mkdirSync,readdirSync,readFileSync,rmSync,writeFileSync} from "node:fs";
 import {dirname,extname,join,posix,relative,resolve,sep} from "node:path";
 
 /**
@@ -12,6 +12,7 @@ const root=resolve("..");
 const docs=resolve(root,"docs");
 const output=resolve("src/content/reference");
 const publicManifest=resolve("public/references/manifest.json");
+const originalImageRoot=resolve("public/docs-images");
 const origin="https://github.com/EtiDavid/Nova-Corp/blob/main/";
 const rawOrigin="https://raw.githubusercontent.com/EtiDavid/Nova-Corp/main/";
 if(!existsSync(docs))throw Error("Public docs/ source checkout missing; cannot stage reference library.");
@@ -29,8 +30,28 @@ const files=walk(docs);
 const all=new Set(files.map(f=>relative(docs,f).split(sep).join("/")));
 if(files.length<140)throw Error("Unexpectedly small public Markdown inventory ("+files.length+"); refuse partial mirror.");
 rmSync(output,{recursive:true,force:true});mkdirSync(output,{recursive:true});
+rmSync(originalImageRoot,{recursive:true,force:true});mkdirSync(originalImageRoot,{recursive:true});
 const manifest=[];
 const unresolved=new Set();
+const originalImages=[];
+function stageOriginalImage(file){
+ const relativePath=relative(docs,file).split(sep).join("/");
+ const target=join(originalImageRoot,relativePath);
+ mkdirSync(dirname(target),{recursive:true});copyFileSync(file,target);
+ const raw=readFileSync(file),copy=readFileSync(target);
+ const sha=createHash("sha256").update(raw).digest("hex");
+ if(createHash("sha256").update(copy).digest("hex")!==sha)throw Error("Original public source image failed parity: "+relativePath);
+ originalImages.push({source:"docs/"+relativePath,href:"/docs-images/"+relativePath,sha256:sha,bytes:raw.length,provenance:"already-public original GitHub repo image"});
+}
+function collectSourceImages(dir){
+ for(const ent of readdirSync(dir,{withFileTypes:true})){
+  const full=join(dir,ent.name);
+  if(ent.isDirectory())collectSourceImages(full);
+  else if(ent.isFile()&&/\.(png|jpe?g|gif|webp|svg)$/i.test(ent.name))stageOriginalImage(full);
+ }
+}
+collectSourceImages(docs);
+
 
 const isExternal=s=>/^(https?:|mailto:|tel:|data:|\/\/|#)/i.test(s);
 function mapped(link,current){
@@ -50,7 +71,10 @@ function mapped(link,current){
  const repoTarget="docs/"+target;
  const knownAsset=existsSync(resolve(docs,target));
  if(!knownAsset)unresolved.add(current+" -> "+link);
- if(/\.(png|jpe?g|gif|svg|webp)$/i.test(target))return rawOrigin+repoTarget.split("/").map(encodeURIComponent).join("/")+suffix;
+ if(/\.(png|jpe?g|gif|svg|webp)$/i.test(target)){
+  if(knownAsset)return "/docs-images/"+target.split("/").map(encodeURIComponent).join("/")+suffix;
+  return rawOrigin+repoTarget.split("/").map(encodeURIComponent).join("/")+suffix;
+ }
  return origin+repoTarget.split("/").map(encodeURIComponent).join("/")+suffix;
 }
 function rewriteLinks(text,current){
@@ -101,4 +125,8 @@ writeFileSync(publicManifest,JSON.stringify({
  provenance:"SHA-256 of unchanged original public source docs in GitHub main checkout",
  docsCount:manifest.length,documents:manifest,unresolvedSourceLinks:[...unresolved].sort()
 },null,2)+"\n");
-console.log("Staged "+manifest.length+" public Markdown documents with original SHA-256 fingerprints; unresolved source links: "+unresolved.size);
+writeFileSync(resolve("public/docs-images/manifest.json"),JSON.stringify({
+ purpose:"All already-public original repository docs images, copied unchanged at build",
+ imagesCount:originalImages.length,images:originalImages
+},null,2)+"\n");
+console.log("Staged "+manifest.length+" public Markdown documents and "+originalImages.length+" byte-identical original public images; unresolved source links: "+unresolved.size);

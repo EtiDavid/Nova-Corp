@@ -76,7 +76,7 @@ try {
   assert((await desktop.locator(".sb-section.is-entered").count())>=1,"scroll reveal reaches visible stages");
   await desktop.locator('.sb-guest[data-id="nova-dc01"]').click();
   await desktop.waitForURL(/\/systems\/nova-dc01\/$/);
-  assert(await desktop.locator(".evidence-placeholder").isVisible(),"missing DC screenshot truthfully marked");
+  assert(await desktop.locator('img[src*="/pdf-evidence/dc02-sysvol-available.jpg"]').isVisible(),"original DC failover screenshot now replaces placeholder");
   assert(!((await desktop.locator(".page-head").innerText()).includes("NOV 2026")),"no promotional date banner");
   await desktop.goto(host+"/?system=nova-files01",{waitUntil:"networkidle"});
   assert.match(await desktop.locator("#hx-title").innerText(),/NOVA-FILES01/);
@@ -98,10 +98,41 @@ try {
   assert((await desktop.locator('a.technical-link[href$="/learn/sysvol/"]').count())>=1);
   assert(await desktop.locator(".incident-sidebar-journal .incident-master-link").isVisible(),"actual full journal is linked");
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
-  assert.match(await desktop.locator("h1").innerText(),/SYSVOL/i);
+  assert.match(await desktop.locator(".page-head h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
   await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
   assert.equal(await desktop.locator(".term-index > a").count(),18);
+ });
+ await step("Every learn page shows complete public original docs and real CR journal links",async()=>{
+  await desktop.goto(host+"/learn/active-directory/",{waitUntil:"networkidle"});
+  const article=desktop.locator(".term-story .inline-source-doc");
+  assert(await article.isVisible());
+  const details=await article.textContent(); // Includes original source commands in collapsible <details> sections.
+  for(const phrase of ["Why Nova Corp installed it","16 OUs","repadmin /replsummary","Resolve-DnsName","What was tested?"]){
+    assert(details.includes(phrase),"active-directory must display source fact "+phrase);
+  }
+  const cr=desktop.locator('.term-source-links a[href*="CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal"]');
+  assert(await cr.isVisible(),"actual CR-013 journal linked");
+  assert(await desktop.locator('.term-aside a[href$="/reference/explore/services/ACTIVE_DIRECTORY/"]').isVisible());
+  await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".term-story .inline-source-doc").innerText()).includes("NETLOGON"));
+  await desktop.goto(host+"/learn/wireguard/",{waitUntil:"networkidle"});
+  assert(await desktop.locator('.term-source-links a[href*="Journal-CR-007"]').isVisible());
+  await desktop.goto(host+"/people/john-shaw/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("Physical USB behavior was not verified"));
+  const publishedImage=desktop.locator('.contextual-source img[src*="/docs-images/Documentation/Change-Requests/evidence/03-contractor-user-gpresult.png"]');
+  assert(await publishedImage.isVisible(),"published John Shaw gpresult screenshot present in original markdown");
+  await publishedImage.scrollIntoViewIfNeeded();
+  assert(await publishedImage.evaluate(img=>img.complete&&img.naturalWidth>0),"original GPO image must load locally");
+  await desktop.goto(host+"/people/moyo/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("IT allowed, Finance denied"));
+  await desktop.goto(host+"/groups/it-users/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("AGDLP"));
+  await desktop.goto(host+"/directory/ous/it/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("16 Organizational Units"));
+  await desktop.goto(host+"/search/",{waitUntil:"networkidle"});
+  await desktop.locator("[data-search]").fill("ACTIVE_DIRECTORY.md");
+  assert((await desktop.locator("[data-search-item]:visible").count())>0,"original repo Markdown documents must be searchable");
  });
  await step("Published engineering docs: original pfSense depth and cross-linked journals",async()=>{
   const response=await desktop.goto(host+"/systems/nova-fw01/",{waitUntil:"networkidle"});
@@ -246,7 +277,11 @@ try {
   }
   assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").getAttribute("href")).endsWith("Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
   assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").innerText()).includes("PDF"));
-  assert(await desktop.locator(".evidence-placeholder").isVisible(),"unpublished CR-014 screenshots must remain explicitly pending");
+  const hashScreenshot=desktop.locator('img[src*="/pdf-evidence/backup-sha256-match.jpg"]');
+  assert.equal(await hashScreenshot.count(),1,"Original CR-014 screenshot belongs on the backup incident");
+  await hashScreenshot.scrollIntoViewIfNeeded();
+  await hashScreenshot.evaluate(async el=>{if(!el.complete||el.naturalWidth===0)await el.decode();});
+  assert(await hashScreenshot.evaluate(el=>el.naturalWidth>0),"Original PDF screenshot must actually decode");
   const related=desktop.locator('.incident-associated-records a[href*="CR-012_Windows_Server_Backup"]');
   assert(await related.isVisible());
   await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"networkidle"});
@@ -304,7 +339,7 @@ try {
    await mobile.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
    await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
    await mobile.waitForURL(/\/systems\/nova-files01\/$/);
-   assert(await mobile.locator(".evidence-placeholder").isVisible(),"mobile file server profile shows honest image placeholder");
+   assert(await mobile.locator('img[src*="/pdf-evidence/backup-disk-offline.jpg"]').isVisible(),"mobile file server shows original recorded backup failure");
    await mobile.goto(host+"/",{waitUntil:"networkidle"});
 
    const summary=mobile.locator(".v4-menu summary");

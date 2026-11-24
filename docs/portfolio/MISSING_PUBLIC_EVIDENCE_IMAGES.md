@@ -1,5 +1,22 @@
 # Missing Public Evidence Images — Nova Corp Website
 
+## NEW RECONCILIATION — 24 November 2026: some original PDF evidence was found
+
+This file was originally written when only five individually curated original GPO PNGs were visible in the public site. **That was an incomplete search.** A comprehensive audit of all **14 already-public source PDF journals** extracted and indexed candidate original screenshots with exact page provenance, source-PDF SHA-256 and original screenshot-byte SHA-256. A reviewed subset of **12 original screenshots from CR-012, CR-013 and CR-014** is now staged **byte-identically** into the site at build time from the published PDFs (not copied from an AI mockup).
+
+The site can now show original documented evidence for a failed client DNS query, offline backup disk, successful single-file recovery and hash equality, DC02 SYSVOL continuity during DC01 outage, original Group Policy link-disabled result, configured permission test boundaries, CR-013 replication failure error 8457 and its recovery, and the CR-012 Windows Previous Versions and file-level restore screens. Each image carries the original journal PDF link, exact printed/source PDF page, descriptive caption, and SHA verification. **Never describe the CR-012 file-level restore as a complete Domain Controller System State restore**, which has not been demonstrated.
+
+- Source manifest: `site/public/pdf-evidence/manifest.json` (generated, verified in CI from `site/src/data/approvedPdfEvidence.json`).
+- Existing source images from public Markdown journals: **14 unchanged docs images** now mirrored under `/docs-images/` with their own source SHA-256 manifest. The earlier separate group of **five reviewed GPO screenshots** retains its original provenance.
+- Existing CR-007 figures: **six explanatory diagrams**, not test screenshots, remain separately reviewed and used.
+- A large internal review artifact `original-pdf-image-audit-unreviewed` contains the other PDF image candidates and source-page contact sheets. These are **not** individually approved and are **not automatically published**.
+- Still outstanding: targeted original screenshots for specific server GUI settings and configuration details not represented in the twelve selected source captures; granular redaction/review and faithful PDF-only journal Markdown conversion. Do not mark every request in the older table below as fulfilled just because a related but different screenshot exists.
+
+**Older backlog table below is historical for the original filename proposals.** Where a different verified original screenshot has now been used, check the new approved PDF evidence manifest rather than assuming its old requested filename exists. Full original journals remain authoritative.
+
+---
+
+
 ## Incident-to-journal visual audit — 24 November 2026
 
 - The WireGuard handshake web page now contains the exact public investigation from `docs/explore/incidents/wireguard-handshake.md`, a direct GitHub link to the real original full `docs/Documentation/Change-Requests/Journal-CR-007.md`, and a separately readable in-site full journal route. **Six already-public CR-007 PNG teaching diagrams** were copied byte-for-byte from `docs/Documentation/Change-Requests/cr007_assets/` to `site/public/journal-figures/cr007/` at build time with a per-image SHA-256 manifest. The incident displays three appropriately captioned diagrams; they explain the packet path, diagnostic funnel and firewall rule ordering, **not live WireGuard evidence**. Check the other three through the full CR-007 journal.

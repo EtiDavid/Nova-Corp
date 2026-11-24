@@ -24,7 +24,7 @@ const figuresBase=base+"journal-figures/cr007/";
  <div class="incident-full-heading">
   <span class="eyebrow">The complete public investigation · original source</span>
   <h2 id="incident-record-heading">Every recorded step, not just the outcome.</h2>
-  <p>The investigation below reproduces the published engineering Markdown on the website, including commands, hypotheses, actual results, repair and lessons. It is not a shortened case-study rewrite.</p>
+  <p>Follow the investigation from initial hypotheses and diagnostic commands through observed results, recovery and lessons learned.</p>
   <div class="incident-record-controls">
    <a href={siteArticle(record.source,base)}>Read this full investigation as its own page ↗</a>
    <a href={incidentSourceURL} target="_blank" rel="noopener noreferrer">Compare original source on GitHub ↗</a>
@@ -43,7 +43,7 @@ const figuresBase=base+"journal-figures/cr007/";
   <span class="eyebrow">Original change / fault-test record</span>
   <h2>{record.journalLabel}</h2>
   <p>{record.journalFormat==="pdf"
-    ? "The underlying CR-014 execution journal is published as a PDF, with screenshots and detailed failure/recovery records. It has not yet been faithfully converted to website Markdown. Open the actual original PDF rather than confusing the shorter public incident summary with the full journal."
+    ? "The CR-014 engineering journal contains the complete execution record, screenshots and recovery evidence. Read the original PDF for further detail."
     : "Read the original source journal for the complete implementation and troubleshooting history, recorded outputs, validation scope, and any outstanding limitations. The same Markdown is also available as a readable page on this website."}</p>
   <div class="incident-journal-actions">
    <a class="btn" href={journalURL} target="_blank" rel="noopener noreferrer">Open original {record.journalFormat==="pdf"?"PDF":"Markdown"} journal on GitHub ↗</a>

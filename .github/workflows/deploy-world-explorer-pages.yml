@@ -39,6 +39,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install original journal image extraction dependency
+        run: python -m pip install --quiet --disable-pip-version-check "PyMuPDF>=1.24,<2"
       - name: Install dependencies
         run: npm install --no-audit --no-fund
       - name: Validate public source data
@@ -57,6 +59,10 @@ jobs:
         run: npm run test:references
       - name: Verify original incident steps and real journal mappings
         run: npm run test:incidents
+      - name: Check every technical detail page against original GitHub documentation
+        run: npm run test:site-parity
+      - name: Prove genuine recorded PDF screenshots and their exact original source pages
+        run: npm run test:pdf-evidence
       - name: Verify public source document targets
         run: npm run test:sources
       - name: Verify original GPO evidence images

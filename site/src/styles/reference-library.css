@@ -115,3 +115,40 @@
 .source-illustration-grid figcaption strong{color:#EBE6D7;}
 .source-illustration-grid figcaption a{color:#E5C291;display:inline-block;}
 @media(max-width:650px){.source-illustration-grid{grid-template-columns:1fr;}.source-illustration-grid figure>a{min-height:120px;}}
+
+/* 24 Nov source-fidelity release: the 18 short learn pages are gateways to
+   complete canonical service docs and actual change journals, not dead-end
+   three-paragraph definitions. */
+.term-story{min-width:0;}
+.term-story>.engineer-source-section{margin-top:26px;padding:24px 24px 28px;}
+.term-source-index{margin-top:29px;padding:28px 0 15px;border-top:1px solid #555747;}
+.term-source-index>h2{font-size:1.55rem;margin:10px 0 12px;letter-spacing:-.02em;}
+.term-source-index>p{max-width:73ch;color:#C7C8BB;line-height:1.67;font-size:.86rem;}
+.term-source-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px;}
+.term-source-links a{display:flex;flex-direction:column;gap:10px;min-width:0;padding:15px 17px;background:#242720;border:1px solid #555745;border-radius:7px;text-decoration:none;}
+.term-source-links a:hover{background:#333229;border-color:#D0AF7C;}
+.term-source-links a small{font:700 .63rem/1.5 ui-monospace,monospace;color:#BBBAA9;overflow-wrap:anywhere;}
+.term-source-links a strong{font-size:.95rem;color:#F0EBDD;line-height:1.37;overflow-wrap:anywhere;}
+.term-source-links a span{color:#E2BF8C;font-size:.77rem;font-weight:700;margin-top:auto;}
+.term-source-links a.term-journal{grid-column:1/-1;background:#383629;border-color:#9F855C;}
+.term-source-links a.term-journal small{color:#E5C99A;}
+.term-aside .sidebox p{font-size:.82rem;line-height:1.6;}
+.term-aside .sidebox a{overflow-wrap:anywhere;}
+@media(max-width:720px){.term-source-links{grid-template-columns:1fr;}.term-story>.engineer-source-section{padding:15px 13px 20px;}.term-source-links a.term-journal{grid-column:auto;}}
+
+/* Verified source PDF images: original historical screenshot frames and provenance. */
+.pdf-evidence-gallery{padding:24px 0 30px;margin:16px 0 30px;border-top:1px solid #555A4B;border-bottom:1px solid #4A5144;min-width:0;}
+.pdf-evidence-heading h2{font-size:clamp(1.28rem,2.5vw,1.83rem);margin:9px 0 12px;letter-spacing:-.027em;line-height:1.2;color:#F4F1E7;}
+.pdf-evidence-heading p{color:#C8CABD;max-width:85ch;font-size:.88rem;line-height:1.7;}
+.pdf-evidence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin:22px 0 13px;}
+.pdf-evidence-card{margin:0;min-width:0;background:#20251E;border:1px solid #5F6756;border-radius:10px;overflow:hidden;}
+.pdf-evidence-image{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:170px;background:#111716;text-decoration:none!important;position:relative;}
+.pdf-evidence-image img{width:100%;height:auto;max-height:390px;object-fit:contain;display:block;}
+.pdf-evidence-image span{display:block;color:#F2D8AC;background:#161A16ee;border-radius:3px;padding:5px 9px;font-size:.69rem;position:absolute;bottom:6px;right:6px;}
+.pdf-evidence-card figcaption{padding:15px 14px 17px;line-height:1.55;color:#D0D1C4;font-size:.79rem;}
+.pdf-evidence-card figcaption strong{display:block;color:#F2EDD9;font-size:.96rem;line-height:1.35;margin-bottom:8px;}
+.pdf-evidence-card figcaption p{margin:7px 0 13px;font-size:.79rem;line-height:1.65;}
+.pdf-evidence-card figcaption small{font-size:.68rem;color:#BFC2B5;line-height:1.7;display:block;}
+.pdf-evidence-card figcaption small a,.pdf-evidence-provenance a{color:#E4C093;overflow-wrap:anywhere;}
+.pdf-evidence-provenance{font-size:.73rem;color:#C5C9BB;margin-top:17px;}
+@media(max-width:790px){.pdf-evidence-grid{grid-template-columns:1fr;}.pdf-evidence-card figcaption{padding:12px;}.pdf-evidence-image{min-height:90px;}}

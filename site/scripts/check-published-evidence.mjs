@@ -32,7 +32,7 @@ function walk(dir){
    // Only /evidence/... hosted by this website is part of the five-image
    // independently hash-verified subset.
    const localSrc=src&&src.startsWith("/")&&!src.startsWith("//");
-   const match=localSrc?src.match(/\/evidence\/([A-Za-z0-9._-]+\.png)(?:[?#].*)?$/):null;
+   const match=localSrc?src.match(/^\/evidence\/([A-Za-z0-9._-]+\.png)(?:[?#].*)?$/):null;
    if(!match)continue;
    const name=match[1];
    const original=join(source,name),published=join(dist,"evidence",name);
@@ -51,5 +51,18 @@ function walk(dir){
 walk(dist);
 if(found.size!==5)errors.push("Expected 5 linked original public screenshots, found "+found.size);
 if(manifest.images.length!==5)errors.push("Expected 5 audited manifest entries");
+const imageManifestPath=join(dist,"docs-images/manifest.json");
+if(!existsSync(imageManifestPath))errors.push("Missing original GitHub docs-image mirror manifest");
+else {
+ const originals=JSON.parse(readFileSync(imageManifestPath,"utf8"));
+ if(originals.imagesCount!==14)errors.push("Expected the 14 existing public source images; got "+originals.imagesCount);
+ for(const item of originals.images){
+  const sourceImage=resolve("../"+item.source),siteImage=join(dist,item.href.replace(/^\//,""));
+  if(!existsSync(sourceImage)||!existsSync(siteImage)){errors.push("Original image missing: "+item.source);continue;}
+  const src=readFileSync(sourceImage),copy=readFileSync(siteImage);
+  const sha=createHash("sha256").update(src).digest("hex");
+  if(!src.equals(copy)||sha!==item.sha256)errors.push("Original public journal image differs from GitHub: "+item.source);
+ }
+}
 if(errors.length){console.error(errors.join("\n"));process.exit(1);}
-console.log("Screenshot proof PASS: 5 unchanged locally hosted PNGs, source SHA-256 parity, alt text; "+pages+" HTML pages checked.");
+console.log("Screenshot proof PASS: 5 curated evidence PNGs + 14 original public docs images, exact source SHA-256 parity, alt text; "+pages+" HTML pages checked.");
