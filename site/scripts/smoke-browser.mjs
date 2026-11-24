@@ -96,7 +96,7 @@ try {
   assert((await desktop.locator('a.technical-link[href$="/learn/ldap/"]').count())>=1);
   assert((await desktop.locator('a.technical-link[href$="/learn/kerberos/"]').count())>=1);
   assert((await desktop.locator('a.technical-link[href$="/learn/sysvol/"]').count())>=1);
-  assert(await desktop.getByRole("link",{name:/Read the full Markdown journal on GitHub/}).isVisible());
+  assert(await desktop.locator(".incident-sidebar-journal .incident-master-link").isVisible(),"actual full journal is linked");
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
   assert.match(await desktop.locator("h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
