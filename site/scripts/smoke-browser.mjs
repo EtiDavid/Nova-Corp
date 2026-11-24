@@ -107,7 +107,7 @@ try {
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"networkidle"});
   const article=desktop.locator(".term-story .inline-source-doc");
   assert(await article.isVisible());
-  const details=await article.innerText();
+  const details=await article.textContent(); // Includes original source commands in collapsible <details> sections.
   for(const phrase of ["Why Nova Corp installed it","16 OUs","repadmin /replsummary","Resolve-DnsName","What was tested?"]){
     assert(details.includes(phrase),"active-directory must display source fact "+phrase);
   }
