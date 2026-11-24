@@ -4,7 +4,26 @@ import road from "../../data/roadmap.json";
 const base = import.meta.env.BASE_URL;
 const next = road.planned[0];
 const later = road.planned.slice(1);
-const journals = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/README.md";
+import {internalArticle,publicDocsRoot} from "../../data/termEvidence";
+const originals:Record<string,{path:string;kind:"md"|"pdf"}>={
+ "CR-001":{path:"Documentation/Change-Requests/Journal-CR-001.md",kind:"md"},
+ "CR-002":{path:"Documentation/Change-Requests/Journal-CR-002.md",kind:"md"},
+ "CR-003":{path:"Documentation/Change-Requests/Journal-CR-003.md",kind:"md"},
+ "CR-004":{path:"Documentation/Change-Requests/Journal-CR-004.md",kind:"md"},
+ "CR-005":{path:"Documentation/Change-Requests/Journal-CR-005.md",kind:"md"},
+ "CR-006":{path:"Documentation/Change-Requests/Journal-CR-006.md",kind:"md"},
+ "CR-007":{path:"Documentation/Change-Requests/Journal-CR-007.md",kind:"md"},
+ "CR-008":{path:"Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf",kind:"pdf"},
+ "CR-009":{path:"Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf",kind:"pdf"},
+ "CR-010":{path:"Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf",kind:"pdf"},
+ "CR-011":{path:"Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md",kind:"md"},
+ "CR-012":{path:"Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md",kind:"md"},
+ "CR-013":{path:"Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md",kind:"md"},
+ "CR-014":{path:"Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",kind:"pdf"},
+ "CR-015":{path:"Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md",kind:"md"}
+};
+const sourceFor=(id:string)=>originals[id];
+const sourceHref=(id:string)=>{const record=sourceFor(id);return record.kind==="pdf"?publicDocsRoot+record.path:internalArticle(record.path,base);};
 ---
 <BaseLayout title="Roadmap" description="What is done, what is next and what is planned in the Nova Corp lab." breadcrumbs={[{ label: "Roadmap" }]}>
   <section class="page-head tight"><div class="container prose-narrow">
@@ -15,9 +34,9 @@ const journals = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documenta
   <section class="container prose-narrow road-group">
     <span class="chip tested">Done · CR-001 to CR-015</span>
     <ul class="road-list">
-      {road.done.map(d => <li class="road-item"><b>{d.id}</b><div><strong>{d.title}</strong><p>{d.gain}</p></div></li>)}
+      {road.done.map(d => <li class="road-item"><b>{d.id}</b><div><strong>{d.title}</strong><p>{d.gain}</p><p style="margin:8px 0 0"><a href={sourceHref(d.id)} target={sourceFor(d.id).kind==="pdf"?"_blank":undefined} rel={sourceFor(d.id).kind==="pdf"?"noopener noreferrer":undefined}>Read original {sourceFor(d.id).kind==="pdf"?"PDF engineering journal":"full engineering journal on this website"} ↗</a></p></div></li>)}
     </ul>
-    <p style="margin-top:14px"><a href={journals}>Full engineering journals on GitHub ↗</a></p>
+    <p style="margin-top:17px"><a href={base+"reference/"}>Browse the complete original engineering library, including source commands and recorded failures →</a></p>
   </section>
   <section class="container prose-narrow road-group">
     <span class="chip configured">Next</span>
