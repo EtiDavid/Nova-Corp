@@ -129,7 +129,24 @@ try {
   await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/active-directory-original-pdf-evidence-desktop.png"});
   await mobile.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
   await mobile.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-backup-pdf-evidence-mobile.png"});
-  console.log("Captured complete original GitHub explanations and verified source-PDF screenshots on desktop/mobile.");
+  await desktop.goto(host+"/journals/",{waitUntil:"domcontentloaded"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.screenshot({path:out+"/complete-original-14-pdf-journal-library-desktop.png"});
+  await desktop.goto(host+"/journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/",{waitUntil:"domcontentloaded"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.screenshot({path:out+"/cr014-full-pdf-journal-reader-desktop.png"});
+  await desktop.locator(".pdf-transcription-header").scrollIntoViewIfNeeded();
+  await desktop.locator('details.native-pdf-page[id="page-25"] summary').click();
+  await desktop.screenshot({path:out+"/cr014-full-native-transcription-desktop.png"});
+  await desktop.goto(host+"/files/dfs/",{waitUntil:"domcontentloaded"});
+  await desktop.locator(".pdf-evidence-gallery").scrollIntoViewIfNeeded();
+  await Promise.all((await desktop.locator(".pdf-evidence-gallery img").all()).map(img=>img.evaluate(el=>el.decode())));
+  await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-cr010-dfs-proofs-desktop.png"});
+  await mobile.goto(host+"/journals/NovaCorp_CR-008_File_Server_Deployment_Journal/",{waitUntil:"domcontentloaded"});
+  await mobile.screenshot({path:out+"/cr008-original-journal-reader-mobile.png"});
+  await mobile.locator(".pdf-transcription-header").scrollIntoViewIfNeeded();
+  await mobile.screenshot({path:out+"/cr008-native-page-reading-mobile.png"});
+  console.log("Captured full 14-source PDF journal library, original CR-014 reader and original CR-010 screenshots at desktop/mobile sizes.");
 } finally {
   await browser.close();
 }

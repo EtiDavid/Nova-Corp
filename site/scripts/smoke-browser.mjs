@@ -169,6 +169,29 @@ try {
   const sizes=await desktop.evaluate(()=>({inner:innerWidth,width:document.documentElement.scrollWidth}));
   assert(sizes.width<=sizes.inner+3,"engineering library overflow "+JSON.stringify(sizes));
  });
+ await step("All 14 original PDF journals: full pages, native text, exact visual file and source links",async()=>{
+  await desktop.goto(host+"/journals/",{waitUntil:"domcontentloaded"});
+  assert.equal(await desktop.locator(".pdf-journal-card").count(),14);
+  assert.match(await desktop.locator(".page-head .lead").innerText(),/543 original pages/);
+  await desktop.goto(host+"/journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/",{waitUntil:"domcontentloaded"});
+  assert.equal(await desktop.locator("details.native-pdf-page").count(),46);
+  const exact=desktop.locator(".pdf-document-viewer");
+  const path=await exact.getAttribute("data");
+  assert(path?.includes("/pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
+  const sourcePdf=await desktop.request.get(host+"/pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf");
+  assert.equal(sourcePdf.status(),200);
+  assert.equal((await sourcePdf.body()).subarray(0,4).toString(),"%PDF");
+  await desktop.locator('details.native-pdf-page[id="page-25"] summary').click();
+  const transcribed=await desktop.locator('details.native-pdf-page[id="page-25"] pre').innerText();
+  assert(transcribed.length>150,"native PDF source text should be readable at each original page");
+  await desktop.goto(host+"/journals/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping/",{waitUntil:"domcontentloaded"});
+  assert.equal(await desktop.locator("details.native-pdf-page").count(),20,"the original page 18 contains Markdown backticks and MUST not disappear");
+  assert(await desktop.locator('details.native-pdf-page[id="page-18"]').count()===1);
+  await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
+  assert(await desktop.locator('a[href*="/journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/"]').count()>0,"backup journal is readable onsite");
+  await desktop.goto(host+"/roadmap/",{waitUntil:"domcontentloaded"});
+  assert(await desktop.locator('a[href*="/journals/NovaCorp_CR-008_File_Server_Deployment_Journal/"]').count()>0,"CR-008 links complete original PDF");
+ });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
   const node=desktop.locator('.node[data-id="nova-dc01"]');

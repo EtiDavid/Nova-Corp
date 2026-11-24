@@ -6,7 +6,7 @@ const path=join(dist,"pdf-evidence/manifest.json");
 if(!existsSync(path))throw Error("Missing approved original PDF screenshot provenance manifest");
 const m=JSON.parse(readFileSync(path,"utf8"));
 const errs=[],known=new Map(records.map(x=>[x.id,x]));
-if(m.count!==12||records.length!==12||m.images.length!==12)errs.push("Wrong curated screenshot count");
+if(m.count!==22||records.length!==22||m.images.length!==22)errs.push("Wrong curated screenshot count");
 const sha=x=>createHash("sha256").update(x).digest("hex");
 for(const img of m.images){
  const approved=known.get(img.id);if(!approved){errs.push("Unreviewed image published "+img.id);continue;}
@@ -28,13 +28,14 @@ const important={
  "incidents/gpo-link-disabled":["gpo-disabled-link"],
  "incidents/replication-divergence":["replication-rejected-8457","replication-restored"],
  "learn/active-directory":["dc02-sysvol-available","dc01-recovery-gpupdate"],
- "learn/shadow-copy":["vss-previous-versions"],
+ "learn/shadow-copy":["vss-previous-versions","shadow-copy-previous-it"],
+ "files/dfs":["dfs-namespace-gui","dfs-targets-online-audit","dfs-netlogon-mapping-hash","dfs-client-mapped-drive","dfs-target-offline-probe"],
  "systems/nova-dc01":["dc02-sysvol-available"],
- "systems/nova-files01":["backup-sha256-match"]
+ "systems/nova-files01":["backup-sha256-match","fileserver-installer-missing-virtio","fileserver-virtio-loaded-disks","fileserver-qemu-guest","fileserver-smb-session"]
 };
 for(const [route,ids]of Object.entries(important)){
  const html=readFileSync(join(dist,route,"index.html"),"utf8");
  for(const id of ids)if(!html.includes("/pdf-evidence/"+id+"."))errs.push("Original journal screenshot missing from "+route+" -> "+id);
 }
 if(errs.length){console.error(errs.join("\n"));process.exit(1);}
-console.log("Original PDF screenshot evidence PASS: 12 exact byte-verified images, 3 original PDF hashes, pages and source-subject captions, local subject embeddings.");
+console.log("Original PDF screenshot evidence PASS: 22 exact byte-verified images, 5 original PDF hashes, pages and source-subject captions, local subject embeddings.");

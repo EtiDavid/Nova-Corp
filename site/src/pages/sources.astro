@@ -23,7 +23,7 @@ const original=(path:string)=>docs+path.split("/").map(encodeURIComponent).join(
    <small>PUBLIC LAB SOURCE / {r.kind==="PDF"?"PDF JOURNAL":"FULL MARKDOWN JOURNAL"}</small>
    <h3>{r.name}</h3><p>{r.why}</p>
    <p><a href={internalArticle(r.source,base)}>Complete source explanation on this website ↗</a></p>
-   {r.kind==="Markdown"&&<p><a href={internalArticle(r.journal,base)}>Read the actual full journal on this website ↗</a></p>}
+   <p><a href={r.kind==="PDF"?base+"journals/"+r.journal.split("/").at(-1)?.replace(/\.pdf$/i,"")+"/":internalArticle(r.journal,base)}>Read complete original {r.kind==="PDF"?"PDF with every screenshot and page":"Markdown journal"} on this website ↗</a></p>
    <p><a href={original(r.journal)} target="_blank" rel="noopener noreferrer">Open original full {r.kind} journal on GitHub ↗</a></p>
  </article>)}</div>
  <h2 style="margin:48px 0 18px">Original system documentation</h2>
@@ -32,6 +32,6 @@ const original=(path:string)=>docs+path.split("/").map(encodeURIComponent).join(
  <p><a href={base+"systems/"+system.slug+"/"}>Complete documented system profile →</a></p>
  <p><a href={internalArticle("explore/systems/"+system.name.toUpperCase()+".md",base)}>Original detailed Markdown on this site ↗</a></p>
  </article>)}</div>
- <div class="note" style="margin-top:24px"><strong>Documentation boundary:</strong> Historical saved configuration, recovered file hashes and journal images are not live telemetry. All 161 public Markdown documents are available in the <a href={base+"reference/"}>complete engineering library</a>. PDF-only records remain linked to original evidence until reviewed conversion.</div>
+ <div class="note" style="margin-top:24px"><strong>Documentation boundary:</strong> Historical saved configuration, recovered file hashes and journal images are not live telemetry. All 161 public Markdown documents are available in the <a href={base+"reference/"}>complete engineering library</a>. All 14 published PDF journals are now directly readable in their complete original form and source-native text. Individually extracted screenshots are displayed only with verified provenance and suitable context.</div>
 </div></section>
 </BaseLayout>

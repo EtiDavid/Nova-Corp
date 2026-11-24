@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/stage-source-docs.mjs && npm run stage:evidence && npm run stage:journals && npm run stage:pdf-evidence",
+    "predev": "node scripts/stage-source-docs.mjs && python3 scripts/stage-complete-pdf-journals.py && npm run stage:evidence && npm run stage:journals && npm run stage:pdf-evidence",
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-graph.mjs",
@@ -17,15 +17,18 @@
     "test:evidence": "node scripts/check-published-evidence.mjs",
     "test:acls": "node scripts/validate-public-acls.mjs",
     "stage:evidence": "node scripts/stage-public-evidence.mjs",
-    "precheck": "node scripts/stage-source-docs.mjs",
-    "prebuild": "node scripts/stage-source-docs.mjs && node scripts/stage-journal-figures.mjs && python3 scripts/stage-approved-pdf-evidence.py",
+    "precheck": "node scripts/stage-source-docs.mjs && python3 scripts/stage-complete-pdf-journals.py",
+    "prebuild": "node scripts/stage-source-docs.mjs && python3 scripts/stage-complete-pdf-journals.py && node scripts/stage-journal-figures.mjs && python3 scripts/stage-approved-pdf-evidence.py",
     "stage:pdf-evidence": "python3 scripts/stage-approved-pdf-evidence.py",
     "stage:journals": "node scripts/stage-journal-figures.mjs",
+    "stage:complete-pdfs": "python3 scripts/stage-complete-pdf-journals.py",
     "test:references": "node scripts/check-source-mirror.mjs",
     "test:incidents": "node scripts/check-incident-fidelity.mjs",
     "test:site-parity": "node scripts/audit-site-source-coverage.mjs",
     "test:pdf-evidence": "node scripts/check-approved-pdf-evidence.mjs",
-    "test:browser": "node scripts/smoke-browser.mjs"
+    "test:complete-pdfs": "node scripts/check-complete-pdf-journals.mjs",
+    "test:browser": "node scripts/smoke-browser.mjs",
+    "test:all-pages": "node scripts/audit-every-page-browser.mjs"
   },
   "dependencies": {
     "astro": "^5.16.0",

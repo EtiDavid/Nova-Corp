@@ -20,7 +20,7 @@ const source=incidentDocuments[entry.id];
 if(!source)throw Error("Every incident needs a canonical full-journal mapping: "+entry.id);
 const journalURL=originalSourceURL(source.journal);
 const summaryURL=siteArticle(source.source,base);
-const journalOnSite=source.journalFormat==="markdown"?siteArticle(source.journal,base):null;
+const journalOnSite=source.journalFormat==="markdown"?siteArticle(source.journal,base):base+"journals/"+source.journal.split("/").at(-1)?.replace(/\.pdf$/i,"")+"/";
 
 const className=labStories.find(s=>s.slug===entry.id)?.kind||"controlled";
 const originalImagesAvailable=approvedEvidence.entries.some(image=>image.subject==="incidents/"+entry.id);
@@ -46,7 +46,7 @@ const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-targe
     <h3>The full engineering journal</h3>
     <p class="muted" style="font-size:.88rem">The full execution journal is the actual change/fault-test record, not the shorter incident summary. The complete public investigation is also reproduced directly below.</p>
     <a class="evidence-link incident-master-link" href={journalURL} target="_blank" rel="noopener noreferrer">Open {source.journalFormat==="pdf"?"original PDF":"full Markdown"} journal on GitHub ↗</a>
-    {journalOnSite&&<p><a href={journalOnSite}>Read full original journal on this website ↗</a></p>}
+    {journalOnSite&&<p><a href={journalOnSite}>Read complete original {source.journalFormat==="pdf"?"PDF, all pages and images":"Markdown journal"} on this website ↗</a></p>}
     <p><a href="#full-investigation">↓ Full step-by-step incident investigation</a></p>
     <p><a href={summaryURL}>Original detailed incident record ↗</a></p>
    </div>
