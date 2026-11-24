@@ -49,8 +49,12 @@ def audit(docs,output):
                         im=Image.open(io.BytesIO(raw))
                         width,height=im.size
                         if width<360 or height<175 or width*height<100000:continue
+                        # PDF page resource lists may include *unused* images
+                        # inherited from a shared resource dictionary. Only
+                        # count images actually placed on this physical page.
                         boxes=[]
                         for rect in page.get_image_rects(xref):boxes.append([round(v,1) for v in [rect.x0,rect.y0,rect.x1,rect.y1]])
+                        if not boxes:continue
                         h=digest(raw)
                         if h in seen:continue
                         seen.add(h)
