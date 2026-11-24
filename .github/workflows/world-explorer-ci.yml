@@ -1,7 +1,7 @@
 name: World Explorer site checks
 on:
   push:
-    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals]
+    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals, feature/sitewide-source-parity-and-pdf-evidence]
     paths:
       - "site/**"
       - "docs/**"
@@ -80,6 +80,19 @@ jobs:
         with:
           name: world-explorer-browser-snapshots
           path: site/qa-snapshots/
+          retention-days: 7
+      - name: Inspect all original PDF-journal screenshots for candidate evidence (not public)
+        timeout-minutes: 7
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --quiet --disable-pip-version-check PyMuPDF Pillow
+          python scripts/audit-pdf-images.py --output pdf-evidence-review
+      - name: Preserve original PDF screenshots for private human QA and redaction
+        uses: actions/upload-artifact@v4
+        with:
+          name: original-pdf-image-audit-unreviewed
+          path: site/pdf-evidence-review/
           retention-days: 7
       - name: Keep site preview artifact for QA
         uses: actions/upload-artifact@v4
