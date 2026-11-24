@@ -103,6 +103,37 @@ try {
   await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
   assert.equal(await desktop.locator(".term-index > a").count(),18);
  });
+ await step("Every learn page shows complete public original docs and real CR journal links",async()=>{
+  await desktop.goto(host+"/learn/active-directory/",{waitUntil:"networkidle"});
+  const article=desktop.locator(".term-story .inline-source-doc");
+  assert(await article.isVisible());
+  const details=await article.innerText();
+  for(const phrase of ["Why Nova Corp installed it","16 OUs","repadmin /replsummary","Resolve-DnsName","What was tested?"]){
+    assert(details.includes(phrase),"active-directory must display source fact "+phrase);
+  }
+  const cr=desktop.locator('.term-source-links a[href*="CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal"]');
+  assert(await cr.isVisible(),"actual CR-013 journal linked");
+  assert(await desktop.locator('.term-aside a[href$="/reference/explore/services/ACTIVE_DIRECTORY/"]').isVisible());
+  await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".term-story .inline-source-doc").innerText()).includes("NETLOGON"));
+  await desktop.goto(host+"/learn/wireguard/",{waitUntil:"networkidle"});
+  assert(await desktop.locator('.term-source-links a[href*="Journal-CR-007"]').isVisible());
+  await desktop.goto(host+"/people/john-shaw/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("Physical USB behavior was not verified"));
+  const publishedImage=desktop.locator('.contextual-source img[src*="/docs-images/Documentation/Change-Requests/evidence/03-contractor-user-gpresult.png"]');
+  assert(await publishedImage.isVisible(),"published John Shaw gpresult screenshot present in original markdown");
+  await publishedImage.scrollIntoViewIfNeeded();
+  assert(await publishedImage.evaluate(img=>img.complete&&img.naturalWidth>0),"original GPO image must load locally");
+  await desktop.goto(host+"/people/moyo/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("IT allowed, Finance denied"));
+  await desktop.goto(host+"/groups/it-users/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("AGDLP"));
+  await desktop.goto(host+"/directory/ous/it/",{waitUntil:"networkidle"});
+  assert((await desktop.locator(".contextual-source").innerText()).includes("16 Organizational Units"));
+  await desktop.goto(host+"/search/",{waitUntil:"networkidle"});
+  await desktop.locator("[data-search]").fill("ACTIVE_DIRECTORY.md");
+  assert((await desktop.locator("[data-search-item]:visible").count())>0,"original repo Markdown documents must be searchable");
+ });
  await step("Published engineering docs: original pfSense depth and cross-linked journals",async()=>{
   const response=await desktop.goto(host+"/systems/nova-fw01/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
