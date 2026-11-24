@@ -38,6 +38,8 @@ jobs:
         run: npm run test:references
       - name: Verify incident-to-full-journal fidelity and evidence details
         run: npm run test:incidents
+      - name: Audit source depth across every published technical detail page
+        run: npm run test:site-parity
       - name: Verify outbound public engineering source files exist
         run: npm run test:sources
       - name: Verify reused public screenshots and accessibility text
