@@ -86,6 +86,9 @@ try {
   await desktop.screenshot({path:out+"/wireguard-incident-overview-desktop.png"});
   await desktop.locator(".incident-full-heading").scrollIntoViewIfNeeded();
   await desktop.screenshot({path:out+"/wireguard-full-record-desktop.png"});
+  await desktop.locator(".incident-journal-figures").scrollIntoViewIfNeeded();
+  await desktop.locator(".incident-journal-figures img").first().evaluate(async el=>{if(!el.complete)await new Promise((r,e)=>{el.addEventListener("load",r,{once:true});el.addEventListener("error",e,{once:true});});await el.decode();});
+  await Promise.all((await desktop.locator(".incident-journal-figures img").all()).map(img=>img.evaluate(el=>el.decode())));
   await desktop.locator(".incident-journal-figures").screenshot({path:out+"/wireguard-original-journal-diagrams-desktop.png"});
   await desktop.locator(".incident-master-journal").screenshot({path:out+"/wireguard-full-cr007-journal-cta-desktop.png"});
   await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
