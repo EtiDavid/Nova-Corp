@@ -11,3 +11,6 @@ public/evidence/
 \n# Generated same-source GitHub Markdown pages; regenerated before check and build\nsrc/content/reference/\npublic/references/\n
 # Public GitHub Markdown illustrations are copied byte-identically during prebuild
 public/docs-images/
+
+# Original images extracted strictly from hash-verified public PDF journal pages
+public/pdf-evidence/
