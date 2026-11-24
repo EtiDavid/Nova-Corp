@@ -45,7 +45,7 @@ try{
   const missingAssets=internalAssets.filter(asset=>!existsSync(resolve(dist,"."+asset)));
   if(missingAssets.length)issues.push({route,kind:"missing-local-assets",values:missingAssets.slice(0,14)});
   const images=[...doc.matchAll(/<img\b[^>]*>/gi)];
-  const lackingAlt=images.filter(m=>!/ alt=["'][^"']+["']/i.test(m[0]));
+  const lackingAlt=images.filter(m=>!/\balt=["'][^"']*["']/i.test(m[0]));
   if(lackingAlt.length)issues.push({route,kind:"image-without-useful-alt",count:lackingAlt.length});
   let body;
   try{
