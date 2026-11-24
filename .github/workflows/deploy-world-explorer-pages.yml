@@ -55,6 +55,8 @@ jobs:
         run: npm run test:coverage
       - name: Verify on-site complete public engineering documents
         run: npm run test:references
+      - name: Verify original incident steps and real journal mappings
+        run: npm run test:incidents
       - name: Verify public source document targets
         run: npm run test:sources
       - name: Verify original GPO evidence images
