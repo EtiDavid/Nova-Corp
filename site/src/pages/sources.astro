@@ -16,7 +16,7 @@ const records=[
 const original=(path:string)=>docs+path.split("/").map(encodeURIComponent).join("/");
 ---
 <BaseLayout title="Engineering evidence" description="Original public engineering files, exact change-request journals and real test artifacts behind Nova Corp's infrastructure claims." breadcrumbs={[{label:"Engineering evidence"}]}>
-<section class="page-head"><div class="container"><div class="eyebrow">Original documentation / audited provenance</div><h1>Read the engineering record, not just the outcome.</h1><p class="lead" style="margin-top:17px">The complete public source explanations are available on this website. Links below distinguish the short investigation, underlying execution journal and original GitHub file. PDF-only journals are correctly labelled and still need individually reviewed screenshot extraction.</p></div></section>
+<section class="page-head"><div class="container"><div class="eyebrow">Engineering records</div><h1>Read the engineering record, not just the outcome.</h1><p class="lead" style="margin-top:17px">Explore the investigations, detailed engineering journals and supporting evidence. Original records are available in Markdown or PDF.</p></div></section>
 <section class="section compact"><div class="container">
  <h2 style="margin-bottom:22px">Investigations and full journals</h2>
  <div class="card-list">{records.map(r=><article class="system-card">
