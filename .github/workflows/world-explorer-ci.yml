@@ -62,6 +62,8 @@ jobs:
         run: npm run test:incidents
       - name: Audit source depth across every published technical detail page
         run: npm run test:site-parity
+      - name: Prove source PDF screenshots and exact original journal page integrity
+        run: npm run test:pdf-evidence
       - name: Verify outbound public engineering source files exist
         run: npm run test:sources
       - name: Verify reused public screenshots and accessibility text
