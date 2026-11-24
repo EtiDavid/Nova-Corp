@@ -63,6 +63,8 @@ jobs:
         run: npm run test:site-parity
       - name: Prove genuine recorded PDF screenshots and their exact original source pages
         run: npm run test:pdf-evidence
+      - name: Check ALL original PDF journals and native-text readings against source SHA
+        run: npm run test:complete-pdfs
       - name: Verify public source document targets
         run: npm run test:sources
       - name: Verify original GPO evidence images
