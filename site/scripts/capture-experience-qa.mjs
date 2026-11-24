@@ -100,7 +100,24 @@ try {
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.screenshot({path:out+"/wireguard-incident-mobile.png"});
   await mobile.locator(".incident-master-journal").screenshot({path:out+"/wireguard-journal-mobile.png"});
-  console.log("Captured canonical technical site plus full incident records and original journal links on desktop/mobile.");
+  await desktop.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.screenshot({path:out+"/active-directory-glossary-top-desktop.png"});
+  await desktop.locator(".term-story .engineer-source-section").scrollIntoViewIfNeeded();
+  await desktop.screenshot({path:out+"/active-directory-original-source-desktop.png"});
+  await desktop.locator(".term-source-index").screenshot({path:out+"/active-directory-related-original-journals-desktop.png"});
+  await desktop.goto(host+"/people/john-shaw/",{waitUntil:"domcontentloaded"});
+  await desktop.locator('.contextual-source img[src*="03-contractor-user-gpresult.png"]').scrollIntoViewIfNeeded();
+  await desktop.locator('.contextual-source img[src*="03-contractor-user-gpresult.png"]').evaluate(el=>el.decode());
+  await desktop.screenshot({path:out+"/john-shaw-original-gpresult-desktop.png"});
+  await mobile.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
+  await mobile.screenshot({path:out+"/active-directory-source-mobile.png"});
+  await mobile.locator(".term-story .engineer-source-section").scrollIntoViewIfNeeded();
+  await mobile.screenshot({path:out+"/active-directory-full-source-mobile.png"});
+  await mobile.goto(host+"/people/moyo/",{waitUntil:"domcontentloaded"});
+  await mobile.locator(".contextual-source").scrollIntoViewIfNeeded();
+  await mobile.screenshot({path:out+"/moyo-original-source-mobile.png"});
+  console.log("Captured complete original source per term and directory profile on desktop/mobile.");
 } finally {
   await browser.close();
 }
