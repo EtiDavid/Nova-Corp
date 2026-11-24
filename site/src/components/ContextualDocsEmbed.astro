@@ -1,5 +1,6 @@
 ---
 import EngineeringSourceEmbed from "./EngineeringSourceEmbed.astro";
+import OriginalPdfEvidenceGallery from "./OriginalPdfEvidenceGallery.astro";
 const route=Astro.url.pathname.replace(/^\/+|\/+$/g,"");
 const docsByRoute:Record<string,{file:string;title:string}>={
  "directory":{file:"docs/explore/DIRECTORY.md",title:"Complete directory design and configuration"},
@@ -55,4 +56,4 @@ if(ou)docsByRoute[route]={file:"docs/explore/DIRECTORY_SNAPSHOT_2026-11-22.md",t
 if(computer)docsByRoute[route]={file:"docs/explore/DIRECTORY_SNAPSHOT_2026-11-22.md",title:"Complete original Active Directory computer-object snapshot"};
 const selected=docsByRoute[route];
 ---
-{selected&&<div class="container contextual-source"><EngineeringSourceEmbed sourcePath={selected.file} title={selected.title} /></div>}
+{selected&&<div class="container contextual-source">{route==="files/dfs"&&<OriginalPdfEvidenceGallery subject="files/dfs" heading="Real CR-010 DFS configuration and failure-test screenshots" />}<EngineeringSourceEmbed sourcePath={selected.file} title={selected.title} /></div>}
