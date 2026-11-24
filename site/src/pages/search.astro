@@ -10,11 +10,13 @@ import { companyPolicies } from "../data/policies";
 import {techTerms} from "../data/techLexicon";
 import {getCollection, type CollectionEntry} from "astro:content";
 const originalDocs: CollectionEntry<"reference">[]=await getCollection("reference");
+const pdfDocs: CollectionEntry<"pdfJournals">[]=await getCollection("pdfJournals");
 
 const base=import.meta.env.BASE_URL;
 const index=[
 ...techTerms.map(term=>({name:term.word,kind:"Technical explanation with full original source",description:term.brief,url:base+"learn/"+term.slug+"/"})),
 ...originalDocs.map((doc: CollectionEntry<"reference">)=>({name:doc.data.title,kind:"Original engineering Markdown",description:doc.data.sourcePath,url:base+"reference/"+doc.id+"/"})),
+...pdfDocs.map((doc: CollectionEntry<"pdfJournals">)=>({name:doc.data.title,kind:"Original full PDF journal",description:doc.data.pageCount+" pages, including original screenshots and native text · "+doc.data.originalName,url:base+"journals/"+doc.id+"/"})),
 ...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"company/"})),
 ...systems.map(item=>({name:item.name,kind:item.category,description:item.summary,url:base+"systems/"+item.slug+"/"})),
 ...shares.map(item=>({name:item.name+" department share",kind:"Shared folder",description:item.purpose,url:base+"files/shares/"+item.id+"/"})),
@@ -33,7 +35,7 @@ const index=[
 ];
 ---
 <BaseLayout title="Search Nova Corp" description="Find a company area, OU, directory account, group, shared folder, server or recovery test." breadcrumbs={[{label:"Search"}]}>
-<section class="page-head"><div class="container"><div class="eyebrow">Find your way</div><h1>Search the company atlas.</h1><p class="lead" style="margin-top:15px">Look up a system, person, group, technical term or any of the 161 original engineering Markdown documents. Search for “Active Directory”, “CR-013”, “backup”, “Finance”, or “permissions”. All entries are still linked below if JavaScript is unavailable.</p></div></section>
+<section class="page-head"><div class="container"><div class="eyebrow">Find your way</div><h1>Search the company atlas.</h1><p class="lead" style="margin-top:15px">Look up a system, person, group, technical term or any of the {originalDocs.length} original Markdown documents or {pdfDocs.length} complete PDF engineering journals. Search for “Active Directory”, “CR-013”, “backup”, “Finance”, or “permissions”. All entries are still linked below if JavaScript is unavailable.</p></div></section>
 <section class="section compact"><div class="container">
   <label for="atlas-search" style="font-weight:750">Search every published engineering document and company area</label>
   <div class="searchbox"><span aria-hidden="true">⌕</span><input data-search id="atlas-search" type="search" autocomplete="off" placeholder="Try Domain Controller, backup, file server..." /></div>
