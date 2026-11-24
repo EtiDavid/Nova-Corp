@@ -70,7 +70,7 @@ def create(source,content,public):
                   f'<details class="native-pdf-page" id="page-{pnum}">\n'
                   f'<summary><span>Page {pnum} / {count}</span> — {caption(native,pnum)}</summary>\n'
                   f'<p class="native-pdf-page-actions"><a href="/pdf-journals/{file.name}#page={pnum}" target="_blank" rel="noopener noreferrer">View exact original PDF page with all images and layout ↗</a></p>\n'
-                  f'<pre class="pdf-native-source-text">{html.escape(native)}</pre>\n'
+                  f'<pre class="pdf-native-source-text">{html.escape(native).replace(chr(10), "&#10;").replace(chr(13), "&#13;")}</pre>\n'
                   '</details>\n'
                 )
                 sourcePages.append({"page":pnum,"nativeTextCharacters":len(native),"originalImageBlocks":blocks})
