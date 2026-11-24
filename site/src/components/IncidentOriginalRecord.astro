@@ -10,7 +10,7 @@ if(!source)throw Error("Missing original public incident markdown: "+record.sour
 const {Content,headings}=await render(source);
 const selectedHeadings:Array<{depth:number;slug:string;text:string}>=headings.filter((h:{depth:number})=>h.depth<=3).slice(0,27);
 const base=import.meta.env.BASE_URL;
-const longJournal=record.journalFormat==="markdown" ? siteArticle(record.journal,base) : null;
+const longJournal=record.journalFormat==="markdown" ? siteArticle(record.journal,base) : base+"journals/"+record.journal.split("/").at(-1)?.replace(/\.pdf$/i,"")+"/";
 const journalURL=originalSourceURL(record.journal);
 const incidentSourceURL=originalSourceURL(record.source);
 const journalImages=slug==="wireguard-handshake" ? [
@@ -43,11 +43,11 @@ const figuresBase=base+"journal-figures/cr007/";
   <span class="eyebrow">Original change / fault-test record</span>
   <h2>{record.journalLabel}</h2>
   <p>{record.journalFormat==="pdf"
-    ? "The CR-014 engineering journal contains the complete execution record, screenshots and recovery evidence. Read the original PDF for further detail."
+    ? "The complete original CR-014 engineering PDF—including its recorded outputs, screenshots and recovery evidence—is available below as an exact 46-page PDF viewer, with a page-by-page native-text reading copy. The source PDF is authoritative for tables and images."
     : "Read the original source journal for the complete implementation and troubleshooting history, recorded outputs, validation scope, and any outstanding limitations. The same Markdown is also available as a readable page on this website."}</p>
   <div class="incident-journal-actions">
    <a class="btn" href={journalURL} target="_blank" rel="noopener noreferrer">Open original {record.journalFormat==="pdf"?"PDF":"Markdown"} journal on GitHub ↗</a>
-   {longJournal&&<a class="btn ghost" href={longJournal}>Read full journal on this website ↗</a>}
+   {longJournal&&<a class="btn ghost" href={longJournal}>Read full {record.journalFormat==="pdf"?"original PDF + page-native text":"journal"} on this website ↗</a>}
   </div>
   {record.additional&&record.additional.length>0&&<div class="incident-associated-records"><h3>Additional directly related engineering records</h3><ul>{record.additional.map(path=><li><a href={siteArticle(path,base)}>{path.split("/").at(-1)?.replace(/_/g," ").replace(/\.md$/,"")} ↗</a></li>)}</ul></div>}
  </div>
