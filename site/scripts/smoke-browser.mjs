@@ -98,7 +98,7 @@ try {
   assert((await desktop.locator('a.technical-link[href$="/learn/sysvol/"]').count())>=1);
   assert(await desktop.locator(".incident-sidebar-journal .incident-master-link").isVisible(),"actual full journal is linked");
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
-  assert.match(await desktop.locator("h1").innerText(),/SYSVOL/i);
+  assert.match(await desktop.locator(".page-head h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
   await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
   assert.equal(await desktop.locator(".term-index > a").count(),18);
