@@ -57,6 +57,8 @@ jobs:
         run: npm run test:references
       - name: Verify original incident steps and real journal mappings
         run: npm run test:incidents
+      - name: Check every technical detail page against original GitHub documentation
+        run: npm run test:site-parity
       - name: Verify public source document targets
         run: npm run test:sources
       - name: Verify original GPO evidence images
