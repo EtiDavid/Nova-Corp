@@ -74,6 +74,8 @@ jobs:
         run: npm run test:site-parity
       - name: Prove source PDF screenshots and exact original journal page integrity
         run: npm run test:pdf-evidence
+      - name: Check ALL 14 original PDF journals and 543 source pages are present byte-identically
+        run: npm run test:complete-pdfs
       - name: Verify outbound public engineering source files exist
         run: npm run test:sources
       - name: Verify reused public screenshots and accessibility text
