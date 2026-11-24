@@ -85,6 +85,9 @@ jobs:
       - name: Run interactive desktop and mobile browser smoke tests
         timeout-minutes: 5
         run: npm run test:browser
+      - name: Audit EVERY generated page in a real mobile browser
+        timeout-minutes: 12
+        run: npm run test:all-pages
       - name: Capture real browser desktop and mobile screenshots
         shell: bash
         run: |
