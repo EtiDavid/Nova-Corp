@@ -10,7 +10,7 @@ const root="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/C
 ---
 {selected.length>0&&<section class="pdf-evidence-gallery" aria-label={heading}>
  <div class="pdf-evidence-heading"><span class="eyebrow">Source-verified / historical lab screenshots</span><h2>{heading}</h2>
- <p>These are original images extracted directly from the published engineering PDF—not generated mockups. Each is tied to the source journal, its exact page, and the recorded test. They document a historical result, not the current live state of the home lab.</p></div>
+ <p>These screenshots document the recorded lab tests. Each image links to its source journal and page for context.</p></div>
  <div class="pdf-evidence-grid">
   {selected.map((item)=>{const source=root+item.pdf+"#page="+item.page;const filename=item.id+"."+(item.ext==="jpeg"?"jpg":"png");return <figure class="pdf-evidence-card">
     <a class="pdf-evidence-image" href={"/pdf-evidence/"+filename} target="_blank" rel="noopener noreferrer" aria-label={"Enlarge original screenshot: "+item.title}>
