@@ -157,10 +157,15 @@ try {
   assert.match(await desktop.locator(".page-head h1").innerText(),/Secondary Domain Controller/i);
   assert((await desktop.locator(".reference-content").innerText()).includes("dcdiag"));
   await desktop.goto(host+"/reference/",{waitUntil:"networkidle"});
-  assert.equal(await desktop.locator("[data-ref-doc]").count(),161);
+  // Number of original public Markdown documents changes with each journal.
+  const refsResponse=await desktop.request.get(host+"/references/manifest.json");
+  assert.equal(refsResponse.status(),200,"original source manifest is served");
+  const originalDocumentCount=(await refsResponse.json()).docsCount;
+  assert(originalDocumentCount>=161,"reference inventory unexpectedly shrank");
+  assert.equal(await desktop.locator("[data-ref-doc]").count(),originalDocumentCount);
   await desktop.locator("[data-ref-search]").fill("NOVA-FW01");
   assert((await desktop.locator("[data-ref-doc]:visible").count())>0);
-  assert((await desktop.locator("[data-ref-doc]:visible").count())<161);
+  assert((await desktop.locator("[data-ref-doc]:visible").count())<originalDocumentCount);
   const sizes=await desktop.evaluate(()=>({inner:innerWidth,width:document.documentElement.scrollWidth}));
   assert(sizes.width<=sizes.inner+3,"engineering library overflow "+JSON.stringify(sizes));
  });
