@@ -97,6 +97,9 @@ jobs:
             count=$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" --jq '[.artifacts[] | select(.name == "github-pages")] | length' || echo 0)
             if [ "$count" = "1" ]; then
               echo "Pages artifact indexed and unambiguous after attempt $attempt"
+              # Deployment API indexing can lag the artifact list API; avoid
+              # the earlier 0-artifact race even when gh api reports exactly one.
+              sleep 18
               exit 0
             fi
             if [ "$count" -gt 1 ]; then
