@@ -175,8 +175,8 @@
       "sourceImageSha256": "71dba55d5430c7897be6eed44d0ce9387c53bd532c060784b9a6b47107e97504",
       "ext": "png",
       "title": "CR-012 file-level restore hash validation",
-      "caption": "Original CR-012 journal screenshot records a file recovery and its SHA-256 verification evidence.",
-      "subject": "learn/system-state",
+      "caption": "CR-012 records a file-level restore to an alternate path and a matching SHA-256 fingerprint. This screenshot does NOT prove a Domain Controller System State restore.",
+      "subject": "systems/nova-files01",
       "alt": "Original Nova Corp engineering journal screenshot, PDF CR-012_Windows_Server_Backup_and_Recovery_Journal, page 34: CR-012 file-level restore hash validation",
       "classification": "original already-public lab screenshot; historical evidence, not live telemetry",
       "review": "visually inspected source screenshot and accompanying PDF context; no visible passwords or private WireGuard keys"
