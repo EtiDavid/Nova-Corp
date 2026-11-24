@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "predev": "node scripts/stage-source-docs.mjs && npm run stage:evidence",
+    "predev": "node scripts/stage-source-docs.mjs && npm run stage:evidence && npm run stage:journals",
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-graph.mjs",
@@ -18,7 +18,8 @@
     "test:acls": "node scripts/validate-public-acls.mjs",
     "stage:evidence": "node scripts/stage-public-evidence.mjs",
     "precheck": "node scripts/stage-source-docs.mjs",
-    "prebuild": "node scripts/stage-source-docs.mjs",
+    "prebuild": "node scripts/stage-source-docs.mjs && node scripts/stage-journal-figures.mjs",
+    "stage:journals": "node scripts/stage-journal-figures.mjs",
     "test:references": "node scripts/check-source-mirror.mjs",
     "test:incidents": "node scripts/check-incident-fidelity.mjs",
     "test:browser": "node scripts/smoke-browser.mjs"
