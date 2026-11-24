@@ -117,7 +117,19 @@ try {
   await mobile.goto(host+"/people/moyo/",{waitUntil:"domcontentloaded"});
   await mobile.locator(".contextual-source").scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/moyo-original-source-mobile.png"});
-  console.log("Captured complete original source per term and directory profile on desktop/mobile.");
+  await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.locator(".pdf-evidence-gallery").scrollIntoViewIfNeeded();
+  await desktop.locator(".pdf-evidence-gallery img").first().evaluate(el=>el.decode());
+  await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-backup-pdf-screenshots-desktop.png"});
+  await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"domcontentloaded"});
+  await desktop.locator(".pdf-evidence-gallery img").first().evaluate(el=>el.decode());
+  await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-dc01-pdf-evidence-desktop.png"});
+  await desktop.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
+  await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/active-directory-original-pdf-evidence-desktop.png"});
+  await mobile.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
+  await mobile.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-backup-pdf-evidence-mobile.png"});
+  console.log("Captured complete original GitHub explanations and verified source-PDF screenshots on desktop/mobile.");
 } finally {
   await browser.close();
 }
