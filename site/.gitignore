@@ -9,3 +9,5 @@ test-results/
 # Generated copies of already-public, reviewed GPO evidence
 public/evidence/
 \n# Generated same-source GitHub Markdown pages; regenerated before check and build\nsrc/content/reference/\npublic/references/\n
+# Public GitHub Markdown illustrations are copied byte-identically during prebuild
+public/docs-images/
