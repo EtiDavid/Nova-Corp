@@ -1,7 +1,7 @@
 name: World Explorer site checks
 on:
   push:
-    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals, feature/sitewide-source-parity-and-pdf-evidence]
+    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals, feature/sitewide-source-parity-and-pdf-evidence, feature/full-pdf-journal-library-and-final-qa]
     paths:
       - "site/**"
       - "docs/**"
@@ -12,6 +12,16 @@ on:
       - "site/**"
       - ".github/workflows/world-explorer-ci.yml"
 jobs:
+  pdf-originals-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Provide source PDF journal files for content parity and visual audit
+        uses: actions/upload-artifact@v4
+        with:
+          name: original-public-journal-pdfs-review
+          path: docs/Documentation/Change-Requests/*.pdf
+          retention-days: 7
   journal-evidence-audit:
     runs-on: ubuntu-latest
     defaults:
