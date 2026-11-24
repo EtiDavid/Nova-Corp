@@ -40,39 +40,54 @@ def audit(docs,output):
                 for term in ("private key","secret","password","api token","wan ip","public ip","myfritz","bearer"):
                     if term in text.lower():securityHits.append({"page":i+1,"term":term})
                 items=[]
-                for item in page.get_images(full=True):
-                    xref=item[0]
+                # Actual visible image blocks have page coordinates even when
+                # Word-generated PDFs share image XObjects on page 1. Using
+                # page.get_images(full=True) alone assigns dozens of unused
+                # resources to the wrong page; image blocks avoid this.
+                for block_number,block in enumerate(page.get_text("dict")["blocks"]):
+                    if block.get("type")!=1:continue
                     try:
-                        src=doc.extract_image(xref)
-                        if not src:continue
-                        raw=src["image"]
+                        raw=block.get("image",b"")
+                        if not raw:continue
                         im=Image.open(io.BytesIO(raw))
                         width,height=im.size
                         if width<360 or height<175 or width*height<100000:continue
-                        # PDF page resource lists may include *unused* images
-                        # inherited from a shared resource dictionary. Only
-                        # count images actually placed on this physical page.
-                        boxes=[]
-                        for rect in page.get_image_rects(xref):boxes.append([round(v,1) for v in [rect.x0,rect.y0,rect.x1,rect.y1]])
-                        if not boxes:continue
                         h=digest(raw)
                         if h in seen:continue
                         seen.add(h)
-                        identifier=f"p{i+1:03d}-x{xref}"
+                        bbox=[round(v,1) for v in block["bbox"]]
+                        identifier=f"p{i+1:03d}-b{block_number:03d}"
                         im=resize(im.copy())
                         im=ImageOps.exif_transpose(im)
                         target=folder/(identifier+".jpg")
                         if im.mode=="RGBA":im=Image.alpha_composite(Image.new("RGBA",im.size,(244,244,244,255)),im).convert("RGB")
-                        im.save(target,quality=84,optimize=True)
-                        candidate={
+                        im.save(target,quality=85,optimize=True)
+                        items.append({
                           "id":identifier,"pdf":path.name,"page":i+1,
-                          "xref":xref,"sourceImageSha256":h,"sourceImageFormat":src.get("ext","unknown"),
-                          "size":[width,height],"pdfPageRectangles":boxes,
+                          "block":block_number,"sourceImageSha256":h,"sourceImageFormat":block.get("ext","unknown"),
+                          "size":[width,height],"pdfPageRectangles":[bbox],
                           "thumbnail":name+"/"+target.name,"pageTextStart":text[:1200],
                           "reviewStatus":"UNREVIEWED: DO NOT PUBLISH AS TEST EVIDENCE"
-                        }
-                        items.append(candidate)
-                    except Exception as e:items.append({"error":f"page {i+1} xref {xref}: {type(e).__name__}: {e}"})
+                        })
+                    except Exception as e:items.append({"error":f"page {i+1} block {block_number}: {type(e).__name__}: {e}"})
+                # Selected real rendered PDF pages are review candidates when
+                # journals put screenshots in complex forms/vector layers.
+                # Never call a page render a validated test screenshot.
+                flags=("restore","recovery","replication","ldap","kerberos","firewall","hash","sysvol","backup","handshake","error","fail","dns")
+                matched=[term for term in flags if term in text.lower()]
+                if matched and (len([c for c in imageCandidates if c.get("pageRender")])+len([c for c in items if c.get("pageRender")])<14):
+                    pix=page.get_pixmap(matrix=fitz.Matrix(1.25,1.25),alpha=False)
+                    thumb=Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
+                    thumb=resize(thumb,950,1150)
+                    target=folder/(f"p{i+1:03d}-page-render.jpg")
+                    thumb.save(target,quality=78,optimize=True)
+                    items.append({
+                     "id":f"p{i+1:03d}-render","pdf":path.name,"page":i+1,
+                     "pageRender":True,"sourceImageSha256":None,"size":[pix.width,pix.height],
+                     "pdfPageRectangles":[],"thumbnail":name+"/"+target.name,
+                     "pageTextStart":text[:1200],"matchingNativeTextTerms":matched,
+                     "reviewStatus":"UNREVIEWED FULL PDF PAGE: DO NOT PUBLISH WITHOUT REDACTION"
+                    })
                 imageCandidates.extend(items)
             record={
               "name":path.name,"pdfSha256":digest(path.read_bytes()),
