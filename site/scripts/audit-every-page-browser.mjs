@@ -30,8 +30,16 @@ try{
  if(!ready)throw Error("Local static site preview unavailable for full crawl");
  browser=await chromium.launch({executablePath:binary,headless:true,args:["--no-sandbox","--disable-dev-shm-usage"]});
  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:"reduce"});
+ // The source-binary PDF SHA checks separately prove the 14 complete files.
+ // Skip expensive browser PDF plugin loads here so this audit measures HTML
+ // content/accessibility of ALL 355+ routes without needlessly parsing 543 PDF pages.
+ await context.route("**/*.pdf",route=>route.abort());
  const errors=[];
- for(let i=0;i<files.length;i++){
+ let cursor=0;
+ const worker=async()=>{
+ while(true){
+  const i=cursor++;
+  if(i>=files.length)return;
   const file=files[i];
   const rel=relative(dist,file).split(sep).join("/");
   const route=rel.replace(/index\.html$/,"");
@@ -69,6 +77,8 @@ try{
   await page.close();
   if((i+1)%40===0)console.log("Full browser audit:",i+1,"/",files.length,"pages visited");
  }
+ };
+ await Promise.all(Array.from({length:6},()=>worker()));
  for(const e of errors)issues.push({route:e.route,kind:"client-side-JS-error",message:e.message});
  await context.close();
 }finally{if(browser)await browser.close();server.kill("SIGTERM");}
