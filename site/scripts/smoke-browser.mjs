@@ -76,7 +76,7 @@ try {
   assert((await desktop.locator(".sb-section.is-entered").count())>=1,"scroll reveal reaches visible stages");
   await desktop.locator('.sb-guest[data-id="nova-dc01"]').click();
   await desktop.waitForURL(/\/systems\/nova-dc01\/$/);
-  assert(await desktop.locator(".evidence-placeholder").isVisible(),"missing DC screenshot truthfully marked");
+  assert(await desktop.locator('img[src*="/pdf-evidence/dc02-sysvol-available.jpg"]').isVisible(),"original DC failover screenshot now replaces placeholder");
   assert(!((await desktop.locator(".page-head").innerText()).includes("NOV 2026")),"no promotional date banner");
   await desktop.goto(host+"/?system=nova-files01",{waitUntil:"networkidle"});
   assert.match(await desktop.locator("#hx-title").innerText(),/NOVA-FILES01/);
@@ -335,7 +335,7 @@ try {
    await mobile.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
    await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
    await mobile.waitForURL(/\/systems\/nova-files01\/$/);
-   assert(await mobile.locator(".evidence-placeholder").isVisible(),"mobile file server profile shows honest image placeholder");
+   assert(await mobile.locator('img[src*="/pdf-evidence/backup-disk-offline.jpg"]').isVisible(),"mobile file server shows original recorded backup failure");
    await mobile.goto(host+"/",{waitUntil:"networkidle"});
 
    const summary=mobile.locator(".v4-menu summary");
