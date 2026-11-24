@@ -8,13 +8,13 @@ import { accessGroups } from "../data/groups";
 import { zones, rules, aliases } from "../data/network";
 import { companyPolicies } from "../data/policies";
 import {techTerms} from "../data/techLexicon";
-import {getCollection} from "astro:content";
-const originalDocs=await getCollection("reference");
+import {getCollection, type CollectionEntry} from "astro:content";
+const originalDocs: CollectionEntry<"reference">[]=await getCollection("reference");
 
 const base=import.meta.env.BASE_URL;
 const index=[
 ...techTerms.map(term=>({name:term.word,kind:"Technical explanation with full original source",description:term.brief,url:base+"learn/"+term.slug+"/"})),
-...originalDocs.map(doc=>({name:doc.data.title,kind:"Original engineering Markdown",description:doc.data.sourcePath,url:base+"reference/"+doc.id+"/"})),
+...originalDocs.map((doc: CollectionEntry<"reference">)=>({name:doc.data.title,kind:"Original engineering Markdown",description:doc.data.sourcePath,url:base+"reference/"+doc.id+"/"})),
 ...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"company/"})),
 ...systems.map(item=>({name:item.name,kind:item.category,description:item.summary,url:base+"systems/"+item.slug+"/"})),
 ...shares.map(item=>({name:item.name+" department share",kind:"Shared folder",description:item.purpose,url:base+"files/shares/"+item.id+"/"})),
