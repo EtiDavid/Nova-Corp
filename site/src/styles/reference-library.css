@@ -115,3 +115,23 @@
 .source-illustration-grid figcaption strong{color:#EBE6D7;}
 .source-illustration-grid figcaption a{color:#E5C291;display:inline-block;}
 @media(max-width:650px){.source-illustration-grid{grid-template-columns:1fr;}.source-illustration-grid figure>a{min-height:120px;}}
+
+/* 24 Nov source-fidelity release: the 18 short learn pages are gateways to
+   complete canonical service docs and actual change journals, not dead-end
+   three-paragraph definitions. */
+.term-story{min-width:0;}
+.term-story>.engineer-source-section{margin-top:26px;padding:24px 24px 28px;}
+.term-source-index{margin-top:29px;padding:28px 0 15px;border-top:1px solid #555747;}
+.term-source-index>h2{font-size:1.55rem;margin:10px 0 12px;letter-spacing:-.02em;}
+.term-source-index>p{max-width:73ch;color:#C7C8BB;line-height:1.67;font-size:.86rem;}
+.term-source-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px;}
+.term-source-links a{display:flex;flex-direction:column;gap:10px;min-width:0;padding:15px 17px;background:#242720;border:1px solid #555745;border-radius:7px;text-decoration:none;}
+.term-source-links a:hover{background:#333229;border-color:#D0AF7C;}
+.term-source-links a small{font:700 .63rem/1.5 ui-monospace,monospace;color:#BBBAA9;overflow-wrap:anywhere;}
+.term-source-links a strong{font-size:.95rem;color:#F0EBDD;line-height:1.37;overflow-wrap:anywhere;}
+.term-source-links a span{color:#E2BF8C;font-size:.77rem;font-weight:700;margin-top:auto;}
+.term-source-links a.term-journal{grid-column:1/-1;background:#383629;border-color:#9F855C;}
+.term-source-links a.term-journal small{color:#E5C99A;}
+.term-aside .sidebox p{font-size:.82rem;line-height:1.6;}
+.term-aside .sidebox a{overflow-wrap:anywhere;}
+@media(max-width:720px){.term-source-links{grid-template-columns:1fr;}.term-story>.engineer-source-section{padding:15px 13px 20px;}.term-source-links a.term-journal{grid-column:auto;}}
