@@ -96,7 +96,7 @@ try {
   assert((await desktop.locator('a.technical-link[href$="/learn/ldap/"]').count())>=1);
   assert((await desktop.locator('a.technical-link[href$="/learn/kerberos/"]').count())>=1);
   assert((await desktop.locator('a.technical-link[href$="/learn/sysvol/"]').count())>=1);
-  assert(await desktop.getByRole("link",{name:/Read the full Markdown journal on GitHub/}).isVisible());
+  assert(await desktop.locator(".incident-sidebar-journal .incident-master-link").isVisible(),"actual full journal is linked");
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
   assert.match(await desktop.locator("h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
@@ -211,6 +211,47 @@ try {
   assert((await desktop.locator("#step-count").innerText()).includes("Step 2 of 5"));
   assert(/step=2/.test(desktop.url()));
   assert(/not yet proven/i.test(await desktop.locator("#replay").innerText()));
+ });
+ await step("Source-faithful incident pages: 16 complete analyses, original journal CTA and CR-007 figures",async()=>{
+  const wire=await desktop.goto(host+"/incidents/wireguard-handshake/",{waitUntil:"networkidle"});
+  assert.equal(wire?.status(),200);
+  const full=desktop.locator(".incident-source-document");
+  assert(await full.isVisible(),"original incident analysis should be on the page");
+  const details=await full.innerText();
+  for(const phrase of ["Capture WAN UDP 51820","pfctl -vvsr","sockstat -4 -l","wg show","Recreate client keys"]){
+    assert(details.includes(phrase),"wireguard original investigation missing "+phrase);
+  }
+  const original=desktop.locator(".incident-sidebar-journal .incident-master-link");
+  assert((await original.getAttribute("href")).endsWith("/docs/Documentation/Change-Requests/Journal-CR-007.md"));
+  assert((await original.innerText()).includes("full Markdown"));
+  const onsite=desktop.locator('.incident-sidebar-journal a[href*="/reference/Documentation/Change-Requests/Journal-CR-007/"]');
+  assert(await onsite.isVisible());
+  assert.equal(await desktop.locator(".incident-journal-figures img").count(),3);
+  for(const img of await desktop.locator(".incident-journal-figures img").all()){
+    await img.scrollIntoViewIfNeeded();
+    const loaded=await img.evaluate(el=>el.complete&&el.naturalWidth>0);
+    assert(loaded,"original journal image must have nonzero naturalWidth");
+    const url=await img.getAttribute("src");
+    assert(url.startsWith("/journal-figures/cr007/"));
+    assert.equal((await desktop.request.get(host+url)).status(),200);
+  }
+  assert(await desktop.locator(".incident-source-document pre").count()>=4,"preserve actual recorded commands");
+  await onsite.click();
+  await desktop.waitForURL(/\/reference\/Documentation\/Change-Requests\/Journal-CR-007\/$/);
+  assert((await desktop.locator(".reference-content").innerText()).includes("Incident report - WireGuard handshake failure"));
+  await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"networkidle"});
+  const backup=await desktop.locator(".incident-source-document").innerText();
+  for(const phrase of ["Get-Disk -Number 2","wbadmin start recovery","Get-FileHash","79FCAD43C927A5B19FB820E3E0BD9EE829083769AD2BE5E487C425B7820332E5"]){
+    assert(backup.includes(phrase),"backup original investigation missing "+phrase);
+  }
+  assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").getAttribute("href")).endsWith("Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
+  assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").innerText()).includes("PDF"));
+  assert(await desktop.locator(".evidence-placeholder").isVisible(),"unpublished CR-014 screenshots must remain explicitly pending");
+  const related=desktop.locator('.incident-associated-records a[href*="CR-012_Windows_Server_Backup"]');
+  assert(await related.isVisible());
+  await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"networkidle"});
+  assert(await desktop.locator(".incident-source-document").isVisible());
+  assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").getAttribute("href")).endsWith("Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
  });
  await step("Legacy room URLs still land on the new pages",async()=>{
   await desktop.goto(host+"/areas/control-room/",{waitUntil:"domcontentloaded"});

@@ -81,7 +81,26 @@ try {
   await mobile.goto(host+"/reference/",{waitUntil:"domcontentloaded"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.screenshot({path:out+"/reference-library-mobile.png"});
-  console.log("Captured verified homepage, source-backed system profiles, deep engineering library and mobile screenshots.");
+  await desktop.goto(host+"/incidents/wireguard-handshake/",{waitUntil:"domcontentloaded"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.screenshot({path:out+"/wireguard-incident-overview-desktop.png"});
+  await desktop.locator(".incident-full-heading").scrollIntoViewIfNeeded();
+  await desktop.screenshot({path:out+"/wireguard-full-record-desktop.png"});
+  await desktop.locator(".incident-journal-figures").scrollIntoViewIfNeeded();
+  await desktop.locator(".incident-journal-figures img").first().evaluate(async el=>{if(!el.complete)await new Promise((r,e)=>{el.addEventListener("load",r,{once:true});el.addEventListener("error",e,{once:true});});await el.decode();});
+  await Promise.all((await desktop.locator(".incident-journal-figures img").all()).map(img=>img.evaluate(el=>el.decode())));
+  await desktop.locator(".incident-journal-figures").screenshot({path:out+"/wireguard-original-journal-diagrams-desktop.png"});
+  await desktop.locator(".incident-master-journal").screenshot({path:out+"/wireguard-full-cr007-journal-cta-desktop.png"});
+  await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
+  await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
+  await desktop.locator(".incident-full-heading").scrollIntoViewIfNeeded();
+  await desktop.screenshot({path:out+"/backup-full-record-desktop.png"});
+  await desktop.locator(".incident-master-journal").screenshot({path:out+"/backup-original-pdf-journal-cta-desktop.png"});
+  await mobile.goto(host+"/incidents/wireguard-handshake/",{waitUntil:"domcontentloaded"});
+  await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
+  await mobile.screenshot({path:out+"/wireguard-incident-mobile.png"});
+  await mobile.locator(".incident-master-journal").screenshot({path:out+"/wireguard-journal-mobile.png"});
+  console.log("Captured canonical technical site plus full incident records and original journal links on desktop/mobile.");
 } finally {
   await browser.close();
 }

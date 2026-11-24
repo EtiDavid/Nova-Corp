@@ -1,0 +1,54 @@
+---
+import {getEntry,render} from "astro:content";
+import {incidentDocuments,siteArticle,originalSourceURL} from "../data/incidentDocuments";
+interface Props {slug:string}
+const {slug}=Astro.props;
+const record=incidentDocuments[slug];
+if(!record)throw Error("No full-source mapping for incident "+slug);
+const source=await getEntry("reference",record.source.replace(/\.md$/i,""));
+if(!source)throw Error("Missing original public incident markdown: "+record.source);
+const {Content,headings}=await render(source);
+const selectedHeadings:Array<{depth:number;slug:string;text:string}>=headings.filter((h:{depth:number})=>h.depth<=3).slice(0,27);
+const base=import.meta.env.BASE_URL;
+const longJournal=record.journalFormat==="markdown" ? siteArticle(record.journal,base) : null;
+const journalURL=originalSourceURL(record.journal);
+const incidentSourceURL=originalSourceURL(record.source);
+const journalImages=slug==="wireguard-handshake" ? [
+ {file:"02_packet_journey.png",title:"Tracing the encrypted VPN packet",alt:"Original CR-007 illustration of how remote WireGuard packets traverse the router, pfSense, and VPN tunnel"},
+ {file:"05_troubleshooting_funnel.png",title:"Where the handshake failed",alt:"Original CR-007 diagnostic decision diagram isolating incoming UDP, firewall state, and peer authentication"},
+ {file:"04_rule_order.png",title:"Rule evaluation and VPN scope",alt:"Original CR-007 rule-order illustration differentiating allowed remote access and blocked destinations"}
+] : [];
+const figuresBase=base+"journal-figures/cr007/";
+---
+<section class="incident-full-source" id="full-investigation" aria-labelledby="incident-record-heading">
+ <div class="incident-full-heading">
+  <span class="eyebrow">The complete public investigation · original source</span>
+  <h2 id="incident-record-heading">Every recorded step, not just the outcome.</h2>
+  <p>The investigation below reproduces the published engineering Markdown on the website, including commands, hypotheses, actual results, repair and lessons. It is not a shortened case-study rewrite.</p>
+  <div class="incident-record-controls">
+   <a href={siteArticle(record.source,base)}>Read this full investigation as its own page ↗</a>
+   <a href={incidentSourceURL} target="_blank" rel="noopener noreferrer">Compare original source on GitHub ↗</a>
+  </div>
+ </div>
+ {selectedHeadings.length>3&&<details class="incident-source-jumps"><summary>Jump to a recorded test or finding <span aria-hidden="true">⌄</span></summary>
+  <nav aria-label="Original investigation section navigation">{selectedHeadings.map(h=><a href={"#"+h.slug}>{h.text}</a>)}</nav>
+ </details>}
+ <div class="reference-content incident-source-document"><Content /></div>
+ {journalImages.length>0&&<section class="incident-journal-figures" aria-label="Figures from the original change-request journal">
+  <div><span class="eyebrow">Original CR-007 journal figures</span><h3>Visualize the investigation</h3>
+  <p>These drawings were already published as part of CR-007. They explain packet flow and troubleshooting; they are <strong>not</strong> screenshots of recorded WireGuard handshakes or packet captures.</p></div>
+  <div class="incident-journal-grid">{journalImages.map(fig=><figure><a href={figuresBase+fig.file} target="_blank" rel="noopener noreferrer"><img src={figuresBase+fig.file} alt={fig.alt} loading="eager" decoding="async"/></a><figcaption>{fig.title} · Original training diagram from <a href={journalURL}>CR-007 ↗</a></figcaption></figure>)}</div>
+ </section>}
+ <div class="incident-master-journal" id="original-journal">
+  <span class="eyebrow">Original change / fault-test record</span>
+  <h2>{record.journalLabel}</h2>
+  <p>{record.journalFormat==="pdf"
+    ? "The underlying CR-014 execution journal is published as a PDF, with screenshots and detailed failure/recovery records. It has not yet been faithfully converted to website Markdown. Open the actual original PDF rather than confusing the shorter public incident summary with the full journal."
+    : "Read the original source journal for the complete implementation and troubleshooting history, recorded outputs, validation scope, and any outstanding limitations. The same Markdown is also available as a readable page on this website."}</p>
+  <div class="incident-journal-actions">
+   <a class="btn" href={journalURL} target="_blank" rel="noopener noreferrer">Open original {record.journalFormat==="pdf"?"PDF":"Markdown"} journal on GitHub ↗</a>
+   {longJournal&&<a class="btn ghost" href={longJournal}>Read full journal on this website ↗</a>}
+  </div>
+  {record.additional&&record.additional.length>0&&<div class="incident-associated-records"><h3>Additional directly related engineering records</h3><ul>{record.additional.map(path=><li><a href={siteArticle(path,base)}>{path.split("/").at(-1)?.replace(/_/g," ").replace(/\.md$/,"")} ↗</a></li>)}</ul></div>}
+ </div>
+</section>
