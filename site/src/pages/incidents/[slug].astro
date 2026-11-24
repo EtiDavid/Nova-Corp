@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DnsReplay from "../../components/DnsReplay.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
+import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
 import { labStories } from "../../data/labStories";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 interface Props { entry: CollectionEntry<"incidents">; }
@@ -12,6 +13,35 @@ export async function getStaticPaths() {
 const {entry} = Astro.props;
 const {Content} = await render(entry);
 const base=import.meta.env.BASE_URL;
+const sourcePath=entry.data.sourceUrl.split("/blob/main/")[1];
+if(!sourcePath?.startsWith("docs/explore/incidents/")) throw new Error("Missing canonical incident source: "+entry.id);
+const sourceId=sourcePath.replace(/^docs\//,"").replace(/\.md$/i,"");
+const journalNames: Record<string,string> = {
+ "wireguard-handshake":"Change-Requests/Journal-CR-007.md",
+ "bulk-users-partial-rollback":"Change-Requests/CR-011_PowerShell_Administration_Toolkit.md",
+ "group-acl-name-mismatch":"Change-Requests/CR-011_PowerShell_Administration_Toolkit.md",
+ "dc01-vlan-migration":"Change-Requests/Journal-CR-003.md",
+ "firewall-management-exposure":"Change-Requests/CR-015_Phase_2_Validation_and_Closure.md",
+ "proxmox-storage-pressure":"Change-Requests/CR-015_Phase_2_Validation_and_Closure.md",
+ "proxmox-default-gateway":"failure-testing-report.md",
+ "proxmox-webgui-outage":"failure-testing-report.md",
+ "replication-divergence":"Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md",
+ "backup-target-unavailable":"Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",
+ "dc01-outage":"Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",
+ "dns-client-outage":"Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",
+ "file-permission-denial":"Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",
+ "gpo-link-disabled":"Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",
+ "two-faults-one-symptom":"Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",
+ "vpn-validation-deferred":"Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"
+};
+const journal=journalNames[entry.id];
+if(!journal) throw new Error("Missing original journal mapping: "+entry.id);
+const journalPath="docs/Documentation/"+journal;
+const journalUrl="https://github.com/EtiDavid/Nova-Corp/blob/main/"+journalPath;
+const isPdf=journal.endsWith(".pdf");
+const journalReference=base+"reference/Documentation/"+journal.replace(/\.md$/i,"")+"/";
+const diagramRoot="https://raw.githubusercontent.com/EtiDavid/Nova-Corp/main/docs/Documentation/Change-Requests/cr007_assets/";
+
 const className=labStories.find(s=>s.slug===entry.id)?.kind||"controlled";
 const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-target-unavailable","replication-divergence","firewall-management-exposure","file-permission-denial","proxmox-storage-pressure","gpo-link-disabled"]);
 ---
@@ -24,9 +54,9 @@ const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-targe
 </div></section>
 <section class="section compact"><div class="container">{entry.id==="dns-client-outage" && <DnsReplay />}</div></section>
 <section class="section compact"><div class="container grid-main">
-  <article class="prose"><Content />{evidenceRequested.has(entry.id)&&<div class="incident-proof-slot"><h2>Evidence image</h2><EvidencePanel subject={entry.data.title} requested={"A redacted screenshot from the "+entry.data.title+" journal, showing the relevant system state or observed validation result. Please publish only after review."}/></div>}</article>
+  <article class="prose"><h2>Investigation overview</h2><Content /><EngineeringSourceEmbed sourcePath={sourcePath} title="Complete investigation — commands, expected results and actual findings" />{entry.id==="wireguard-handshake"&&<section><h2>Illustrations from the original CR-007 journal</h2><p>These original teaching diagrams explain the diagnostic approach; they are not packet-capture screenshots.</p>{[["05_troubleshooting_funnel.png","Troubleshooting funnel: isolate the failing layer"],["02_packet_journey.png","Packet journey through the network"],["03_two_stage_firewall.png","Separate WAN and VPN firewall decisions"]].map(([file,caption])=><figure><a href={diagramRoot+file} target="_blank" rel="noopener noreferrer"><img src={diagramRoot+file} alt={caption} loading="lazy" style="max-width:100%;height:auto"/></a><figcaption>{caption}</figcaption></figure>)}</section>}{evidenceRequested.has(entry.id)&&<div class="incident-proof-slot"><h2>Evidence image</h2><EvidencePanel subject={entry.data.title} requested={"A redacted screenshot from the "+entry.data.title+" journal, showing the relevant system state or observed validation result. Please publish only after review."}/></div>}</article>
   <aside>
-   <div class="sidebox"><h3>Original evidence</h3><p class="muted" style="font-size:.9rem">Open the published engineering investigation for exact commands, expected and actual results, and supporting journal references.</p><a class="evidence-link" href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Read the full Markdown journal on GitHub ↗</a></div>
+   <div class="sidebox"><h3>Original evidence</h3><p class="muted" style="font-size:.9rem">Open the published engineering investigation for exact commands, expected and actual results, and supporting journal references.</p><p><a class="evidence-link" href={journalUrl} target="_blank" rel="noopener noreferrer">{isPdf?"Read the full illustrated engineering journal (PDF) ↗":"Read the full Markdown journal on GitHub ↗"}</a></p>{!isPdf&&<p><a href={journalReference}>Read the original journal on this site →</a></p>}<p><a href={base+"reference/"+sourceId+"/"}>Open the complete investigation as a standalone article →</a></p><p><a href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Investigation source Markdown ↗</a></p></div>
    <div class="sidebox"><h3>Continue exploring</h3>{entry.data.systems.map((slug:string)=><p style="margin-bottom:12px"><a href={base+"systems/"+slug+"/"}>{slug.toUpperCase()} →</a></p>)}<a href={base+"incidents/"}>← All investigations</a></div>
   </aside>
 </div></section>
