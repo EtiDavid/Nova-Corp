@@ -23,7 +23,7 @@ const originals:Record<string,{path:string;kind:"md"|"pdf"}>={
  "CR-015":{path:"Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md",kind:"md"}
 };
 const sourceFor=(id:string)=>originals[id];
-const sourceHref=(id:string)=>{const record=sourceFor(id);return record.kind==="pdf"?publicDocsRoot+record.path:internalArticle(record.path,base);};
+const sourceHref=(id:string)=>{const record=sourceFor(id);return record.kind==="pdf"?base+"journals/"+record.path.split("/").at(-1)?.replace(/\.pdf$/i,"")+"/":internalArticle(record.path,base);};
 const completed=road.done.map(d=>({id:d.id,title:d.title,gain:d.gain,href:sourceHref(d.id),format:sourceFor(d.id).kind}));
 ---
 <BaseLayout title="Roadmap" description="What is done, what is next and what is planned in the Nova Corp lab." breadcrumbs={[{ label: "Roadmap" }]}>
@@ -35,7 +35,7 @@ const completed=road.done.map(d=>({id:d.id,title:d.title,gain:d.gain,href:source
   <section class="container prose-narrow road-group">
     <span class="chip tested">Done · CR-001 to CR-015</span>
     <ul class="road-list">
-      {completed.map(item => <li class="road-item"><b>{item.id}</b><div><strong>{item.title}</strong><p>{item.gain}</p><p class="road-evidence"><a href={item.href}>Read {item.format==="pdf"?"original PDF engineering journal":"full original Markdown journal"} ↗</a></p></div></li>)}
+      {completed.map(item => <li class="road-item"><b>{item.id}</b><div><strong>{item.title}</strong><p>{item.gain}</p><p class="road-evidence"><a href={item.href}>Read {item.format==="pdf"?"complete original PDF and all screenshots on this website":"full original Markdown journal"} ↗</a></p></div></li>)}
     </ul>
     <p style="margin-top:17px"><a href={base+"reference/"}>Browse the complete original engineering library, including source commands and recorded failures →</a></p>
   </section>
