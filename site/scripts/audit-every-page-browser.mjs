@@ -63,7 +63,7 @@ try{
    // DOMContentLoaded is sufficient for layout and native source text;
    // waiting for every remote image/font "load" on 355 pages is wasteful.
    const res=await page.goto(url,{waitUntil:"domcontentloaded",timeout:12000});
-   if(route.startsWith("areas/")){
+   if(route.startsWith("areas/")||route==="explore/"){
     // Historical room URLs intentionally redirect to the company atlas.
     await page.waitForURL(/\/company\//,{timeout:4000}).catch(()=>{});
    }
