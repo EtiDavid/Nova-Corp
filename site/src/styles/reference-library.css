@@ -152,3 +152,54 @@
 .pdf-evidence-card figcaption small a,.pdf-evidence-provenance a{color:#E4C093;overflow-wrap:anywhere;}
 .pdf-evidence-provenance{font-size:.73rem;color:#C5C9BB;margin-top:17px;}
 @media(max-width:790px){.pdf-evidence-grid{grid-template-columns:1fr;}.pdf-evidence-card figcaption{padding:12px;}.pdf-evidence-image{min-height:90px;}}
+
+/* Original PDF journal library. The embedded PDF is always the full visual
+   source; the native text below is exact page-layer extraction, not a rewrite. */
+.pdf-source-actions{display:flex;align-items:center;gap:12px 17px;flex-wrap:wrap;margin-top:24px;}
+.pdf-source-actions>a:last-child{font-size:.83rem;color:#E8C697;font-weight:700;}
+.pdf-source-stats{font-size:.78rem;color:#BBC1AF;margin-top:18px;line-height:1.65;}
+.pdf-source-stats strong{color:#EDCB93;}
+.pdf-journal-layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:clamp(17px,2vw,35px);align-items:start;}
+.pdf-original-document{min-width:0;}
+.pdf-original-top{margin:0 0 13px;}.pdf-original-top p{line-height:1.6;font-size:.82rem;color:#C5C8B7;margin:9px 0;}
+.pdf-document-viewer{display:block;width:100%;max-width:100%;height:min(86vh,900px);min-height:500px;background:#151915;border:1px solid #5A6254;border-radius:7px;}
+.pdf-transcription-header{border-top:1px solid #666C5D;padding-top:29px;margin-top:35px;scroll-margin-top:105px;}
+.pdf-transcription-header h2{font-size:1.65rem;letter-spacing:-.028em;line-height:1.22;color:#F0EBDE;margin:10px 0;}
+.pdf-transcription-header p{line-height:1.7;color:#C9CCBE;font-size:.85rem;}
+.pdf-transcription-actions{display:flex;gap:11px;flex-wrap:wrap;margin:18px 0;}
+.pdf-transcription-actions button{font:700 .8rem/1.4 inherit;cursor:pointer;background:#33372E;color:#E8D0A7;border:1px solid #666951;border-radius:5px;padding:10px 15px;}
+.pdf-transcription-actions button:hover{background:#454737;}
+.original-pdf-text{min-width:0;}
+.original-pdf-text>h1{font-size:1.2rem;margin:21px 0;}
+.original-pdf-text>h2{font-size:1.27rem;margin:26px 0 15px;}
+.original-pdf-text blockquote{margin-bottom:20px;}
+.native-pdf-page{margin:12px 0;border:1px solid #4C5546;border-radius:6px;background:#222720;padding:0;}
+.native-pdf-page summary{cursor:pointer;padding:12px 14px;line-height:1.55;color:#E3E6D8;font-size:.86rem;font-weight:600;overflow-wrap:anywhere;}
+.native-pdf-page summary span{display:inline-block;margin-right:9px;color:#F0CD99;font-weight:760;}
+.native-pdf-page[open] summary{border-bottom:1px solid #454F41;background:#2D322A;}
+.native-pdf-page .native-pdf-page-actions{padding:11px 17px;margin:0;font-size:.77rem;background:#20261F;}
+.native-pdf-page .native-pdf-page-actions a{color:#E8C28B;}
+.original-pdf-text .pdf-native-source-text{display:block;width:100%;margin:0!important;padding:16px 17px;max-width:100%;box-sizing:border-box;border:0;border-top:1px solid #4C5547;border-radius:0 0 5px 5px;background:#151B18;color:#D9E1D4;font:.78rem/1.6 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;overflow-x:auto;min-width:0;}
+.pdf-journal-side{position:sticky;top:105px;max-height:calc(100vh - 130px);overflow-y:auto;}
+.pdf-page-jumps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+.pdf-page-jumps a{display:block;background:#2B3029;padding:8px;border-radius:5px;font-size:.76rem;line-height:1.4;color:#DCC69E;text-decoration:none;text-align:center;}
+.pdf-page-jumps a:hover{background:#41463C;}
+.source-sha{display:block;font:500 .66rem/1.7 ui-monospace,monospace;overflow-wrap:anywhere;color:#E4C7A0;}
+.pdf-journal-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.pdf-journal-card{min-width:0;border:1px solid #505747;border-radius:8px;background:#212720;padding:23px;}
+.pdf-journal-card h2{font-size:1.25rem;line-height:1.26;letter-spacing:-.025em;margin:9px 0 14px;color:#F1EFE7;}
+.pdf-journal-card p{font-size:.78rem;color:#C5C9B8;line-height:1.65;margin:11px 0;}
+.pdf-journal-card-actions{display:flex;flex-wrap:wrap;gap:11px 19px;margin-top:19px;}
+.pdf-journal-card-actions a{color:#E7C594;font-weight:730;font-size:.79rem;}
+@media(max-width:890px){
+ .pdf-journal-layout{grid-template-columns:minmax(0,1fr);}
+ .pdf-journal-side{position:static;max-height:none;overflow:visible;display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+ .pdf-journal-cards{grid-template-columns:1fr;}
+}
+@media(max-width:650px){
+ .pdf-journal-side{display:block;}
+ .pdf-document-viewer{height:520px;min-height:350px;}
+ .original-pdf-text .pdf-native-source-text{padding:13px 11px;font-size:.71rem;}
+ .pdf-journal-card{padding:18px;}
+ .pdf-source-actions .btn{width:100%;text-align:center;}
+}
