@@ -71,6 +71,12 @@ function mapped(link,current){
  const repoTarget="docs/"+target;
  const knownAsset=existsSync(resolve(docs,target));
  if(!knownAsset)unresolved.add(current+" -> "+link);
+ // Keep original CR PDF journal links on the site instead of sending readers
+ // to a short synopsis or an external PDF-only destination.
+ if(knownAsset&&target.startsWith("Documentation/Change-Requests/")&&/\.pdf$/i.test(target)){
+  const slug=posix.basename(target).replace(/\.pdf$/i,"");
+  return "/journals/"+encodeURIComponent(slug)+"/"+suffix;
+ }
  if(/\.(png|jpe?g|gif|svg|webp)$/i.test(target)){
   if(knownAsset)return "/docs-images/"+target.split("/").map(encodeURIComponent).join("/")+suffix;
   return rawOrigin+repoTarget.split("/").map(encodeURIComponent).join("/")+suffix;
