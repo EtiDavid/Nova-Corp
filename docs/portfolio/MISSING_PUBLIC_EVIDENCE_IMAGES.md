@@ -1,5 +1,16 @@
 # Missing Public Evidence Images — Nova Corp Website
 
+## Incident-to-journal visual audit — 24 November 2026
+
+- The WireGuard handshake web page now contains the exact public investigation from `docs/explore/incidents/wireguard-handshake.md`, a direct GitHub link to the real original full `docs/Documentation/Change-Requests/Journal-CR-007.md`, and a separately readable in-site full journal route. **Six already-public CR-007 PNG teaching diagrams** were copied byte-for-byte from `docs/Documentation/Change-Requests/cr007_assets/` to `site/public/journal-figures/cr007/` at build time with a per-image SHA-256 manifest. The incident displays three appropriately captioned diagrams; they explain the packet path, diagnostic funnel and firewall rule ordering, **not live WireGuard evidence**. Check the other three through the full CR-007 journal.
+- The incident `/incidents/backup-target-unavailable/` now reproduces all seven original public test steps and exact SHA-256 outcome, while linking the **actual** `docs/Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf` as its full primary journal. The full journal is PDF, not Markdown. The actual CR-014 diagnostic screenshots remain un-extracted and are **not** simulated on the page.
+- The same source and journal reconciliation applies to all sixteen incident pages. The website no longer mislabels shorter public explorer Markdown as the *full* engineering journal. Source mappings and original journal file existence are enforced by `site/scripts/check-incident-fidelity.mjs`, while Chromium checks that the embedded original CR-007 diagram assets really load.
+
+**Next imaging task:** Review individual screenshots inside `Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf` and the other published PDF journals, redact any sensitive personal/security information, extract each proof image with the page and command/result context, and add it to the correct incident page with the original journal and test linkage. Do not mistake an original drawn training diagram for an observed test screenshot. Until the extraction is reviewed, the labeled placeholders are intentional.
+
+---
+
+
 **Purpose:** This is a **public media backlog** for the site. It does not imply the screenshots already exist, or that an illustrative image proves the underlying incident. Pages use an explicitly labeled placeholder until each original, redacted screenshot is reviewed and published.
 
 ## Evidence verified and already used
