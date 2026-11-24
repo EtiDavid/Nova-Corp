@@ -46,6 +46,12 @@ for(const [slug,[sourceName,journalName]]of out){
   if(!html.includes("/reference/"+id+"/"))failures.push("Missing full on-site journal link "+slug);
  }
 }
+const figures=JSON.parse(readFileSync(resolve(dist,"journal-figures/cr007/manifest.json"),"utf8"));
+if(figures.count!==6)failures.push("Original CR-007 figure manifest missing full set");
+for(const figure of figures.figures){
+ const src=resolve(root,figure.source),served=resolve(dist,"journal-figures/cr007",figure.file);
+ if(!existsSync(src)||!existsSync(served)||createHash("sha256").update(readFileSync(served)).digest("hex")!==figure.sha256||createHash("sha256").update(readFileSync(src)).digest("hex")!==figure.sha256)failures.push("Original journal image SHA mismatch "+figure.file);
+}
 const wire=readFileSync(resolve(dist,"incidents/wireguard-handshake/index.html"),"utf8");
 for(const value of ["Capture WAN UDP 51820","pfctl -vvsr","sockstat -4 -l","wg show","02_packet_journey.png","05_troubleshooting_funnel.png","Journal-CR-007.md"]){
  if(!wire.includes(value))failures.push("WireGuard source content / original figure missing: "+value);
