@@ -22,6 +22,7 @@
     "stage:journals": "node scripts/stage-journal-figures.mjs",
     "test:references": "node scripts/check-source-mirror.mjs",
     "test:incidents": "node scripts/check-incident-fidelity.mjs",
+    "test:site-parity": "node scripts/audit-site-source-coverage.mjs",
     "test:browser": "node scripts/smoke-browser.mjs"
   },
   "dependencies": {
