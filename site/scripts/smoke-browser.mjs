@@ -277,7 +277,11 @@ try {
   }
   assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").getAttribute("href")).endsWith("Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
   assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").innerText()).includes("PDF"));
-  assert(await desktop.locator('img[src*="/pdf-evidence/backup-sha256-match.jpg"]').isVisible(),"original CR-014 backup hash proof replaces the earlier missing-image placeholder");
+  const hashScreenshot=desktop.locator('img[src*="/pdf-evidence/backup-sha256-match.jpg"]');
+  assert.equal(await hashScreenshot.count(),1,"Original CR-014 screenshot belongs on the backup incident");
+  await hashScreenshot.scrollIntoViewIfNeeded();
+  await hashScreenshot.evaluate(async el=>{if(!el.complete||el.naturalWidth===0)await el.decode();});
+  assert(await hashScreenshot.evaluate(el=>el.naturalWidth>0),"Original PDF screenshot must actually decode");
   const related=desktop.locator('.incident-associated-records a[href*="CR-012_Windows_Server_Backup"]');
   assert(await related.isVisible());
   await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"networkidle"});
