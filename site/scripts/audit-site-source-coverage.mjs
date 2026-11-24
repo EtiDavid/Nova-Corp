@@ -42,7 +42,7 @@ auditSection("16 full incident analyses",
 const contentPages=all.length;
 if(contentPages<320)errors.push("Expected >=320 generated HTML pages; got "+contentPages);
 const ad=pageAt("learn/active-directory");
-for(const str of ["Active Directory — Nova Corp","repadmin /replsummary","Resolve-DnsName","16 OUs","original change-request journal","source-document"]){
+for(const str of ["Active Directory — Nova Corp","repadmin /replsummary","Resolve-DnsName","16 OUs","COMPLETE CHANGE REQUEST","source-document"]){
  if(!ad?.includes(str))errors.push("Active Directory glossary missing original source fact: "+str);
 }
 const entry=pageAt("people/john-shaw");
