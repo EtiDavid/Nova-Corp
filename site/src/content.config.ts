@@ -24,4 +24,17 @@ const reference = defineCollection({
   })
 });
 
-export const collections = { incidents, reference };
+const pdfJournals = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/pdfJournals", generateId: ({entry}) => entry.replace(/\.md$/i,"") }),
+  schema: z.object({
+    title: z.string(),
+    originalName: z.string(),
+    sourceUrl: z.string().url(),
+    pageCount: z.number().positive(),
+    originalSha256: z.string().length(64),
+    nativeTextCharacters: z.number().positive(),
+    originalImageBlocks: z.number().nonnegative()
+  })
+});
+
+export const collections = { incidents, reference, pdfJournals };
