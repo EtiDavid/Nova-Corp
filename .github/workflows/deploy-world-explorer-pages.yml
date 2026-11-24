@@ -61,6 +61,8 @@ jobs:
         run: npm run test:incidents
       - name: Check every technical detail page against original GitHub documentation
         run: npm run test:site-parity
+      - name: Prove genuine recorded PDF screenshots and their exact original source pages
+        run: npm run test:pdf-evidence
       - name: Verify public source document targets
         run: npm run test:sources
       - name: Verify original GPO evidence images
