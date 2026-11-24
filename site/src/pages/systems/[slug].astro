@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
 import OriginalPublicDiagrams from "../../components/OriginalPublicDiagrams.astro";
+import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
 import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
 import { getArea } from "../../data/areas";
 import { systems, connectedTo, type Entity } from "../../data/model";
@@ -40,10 +41,13 @@ const statusText = system.status === "observed-running" ? `Running at last check
       <section class="content-section system-evidence-section" aria-label="Relevant engineering screenshot">
         <h2>Visual evidence</h2>
         <OriginalPublicDiagrams systemId={system.id} />
+        {system.id==="nova-dc01"&&<OriginalPdfEvidenceGallery subject="incidents/dc01-outage" heading="Original DC01 outage and return-to-service evidence" />}
+        {system.id==="nova-dc02"&&<OriginalPdfEvidenceGallery subject="incidents/replication-divergence" heading="Original replication failure/recovery screenshots" />}
+        {system.id==="nova-files01"&&<OriginalPdfEvidenceGallery subject="incidents/backup-target-unavailable" heading="Original file backup and recovery proof" />}
         <p class="muted" style="margin:9px 0 15px">Only reviewed public screenshots are displayed as evidence. When the correct image is not available, this site shows a labeled placeholder instead.</p>
         {system.id==="nova-client"
           ? <EvidencePanel subject="Windows workstation Group Policy baseline" filename="05-firewall-gpo-configuration.png" caption="Actual original Windows Defender Firewall policy configuration screenshot. The image establishes the GPO setting, not proof that every workstation applied it." />
-          : <EvidencePanel subject={system.name.toUpperCase()+" engineering verification"} requested={"A real redacted screenshot from the "+system.name.toUpperCase()+" system or validation journal. Exact image not present in the current reviewed public evidence set."} />
+          : !["nova-dc01","nova-dc02","nova-files01"].includes(system.id)&&<EvidencePanel subject={system.name.toUpperCase()+" engineering verification"} requested={"A real redacted screenshot from the "+system.name.toUpperCase()+" system or validation journal. Exact image not present in the current reviewed public evidence set."} />
         }
       </section>
       <EngineeringSourceEmbed sourcePath={"docs/explore/systems/"+system.name.toUpperCase()+".md"} title={"How "+system.name.toUpperCase()+" actually works"} />
