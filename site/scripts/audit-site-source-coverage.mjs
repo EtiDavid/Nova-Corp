@@ -30,12 +30,12 @@ const names={
  computers:["nova-dc01","nova-dc02","nova-files01","nova-client"],
  systems:["nova-prox01","nova-fw01","nova-dc01","nova-dc02","nova-files01","nova-client"]
 };
-auditSection("18 deep technical explanations",names.terms.map(x=>"learn/"+x),["ORIGINAL DOCUMENTATION","source-document","term-source-index"],"Must embed full original service/engineering source and link actual CR journal");
-auditSection("20 real lab directory account records",names.people.map(x=>"people/"+x),["ORIGINAL DOCUMENTATION","source-document"],"Exact public individual account Markdown per person, not assumed role");
-auditSection("11 source-backed group profiles",names.groups.map(x=>"groups/"+x),["ORIGINAL DOCUMENTATION","source-document"],"Original documented AGDLP inventory and actual group relationships");
-auditSection("16 original OU source-backed profiles",names.ous.map(x=>"directory/ous/"+x),["ORIGINAL DOCUMENTATION","source-document"],"Original 2026-11-22 directory snapshot, not live AD");
-auditSection("4 computer-object profiles",names.computers.map(x=>"computers/"+x),["ORIGINAL DOCUMENTATION","source-document"],"Original AD inventory distinct from VM status");
-auditSection("6 full server profiles",names.systems.map(x=>"systems/"+x),["ORIGINAL DOCUMENTATION","source-document"],"Full original per-system engineering Markdown and honest image panels");
+auditSection("18 deep technical explanations",names.terms.map(x=>"learn/"+x),["engineer-source-section","source-document","term-source-index"],"Must embed full original service/engineering source and link actual CR journal");
+auditSection("20 real lab directory account records",names.people.map(x=>"people/"+x),["engineer-source-section","source-document"],"Exact public individual account Markdown per person, not assumed role");
+auditSection("11 source-backed group profiles",names.groups.map(x=>"groups/"+x),["engineer-source-section","source-document"],"Original documented AGDLP inventory and actual group relationships");
+auditSection("16 original OU source-backed profiles",names.ous.map(x=>"directory/ous/"+x),["engineer-source-section","source-document"],"Original 2026-11-22 directory snapshot, not live AD");
+auditSection("4 computer-object profiles",names.computers.map(x=>"computers/"+x),["engineer-source-section","source-document"],"Original AD inventory distinct from VM status");
+auditSection("6 full server profiles",names.systems.map(x=>"systems/"+x),["engineer-source-section","source-document"],"Full original per-system engineering Markdown and honest image panels");
 auditSection("16 full incident analyses",
  ["backup-target-unavailable","bulk-users-partial-rollback","dc01-outage","dc01-vlan-migration","dns-client-outage","file-permission-denial","firewall-management-exposure","gpo-link-disabled","group-acl-name-mismatch","proxmox-default-gateway","proxmox-storage-pressure","proxmox-webgui-outage","replication-divergence","two-faults-one-symptom","vpn-validation-deferred","wireguard-handshake"].map(x=>"incidents/"+x),
  ["incident-source-document","incident-master-journal"],"Short case overview is NOT the full original journal");
