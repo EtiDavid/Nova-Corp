@@ -60,7 +60,14 @@ try{
   if(lackingAlt.length)issues.push({route,kind:"image-without-useful-alt",count:lackingAlt.length});
   let body;
   try{
-   const res=await page.goto(url,{waitUntil:"load",timeout:12000});
+   // DOMContentLoaded is sufficient for layout and native source text;
+   // waiting for every remote image/font "load" on 355 pages is wasteful.
+   const res=await page.goto(url,{waitUntil:"domcontentloaded",timeout:12000});
+   if(route.startsWith("areas/")){
+    // Historical room URLs intentionally redirect to the company atlas.
+    await page.waitForURL(/\/company\//,{timeout:4000}).catch(()=>{});
+   }
+   await page.waitForTimeout(35);
    if(res?.status()!==200)issues.push({route,kind:"http",status:res?.status()});
    body=await page.evaluate(()=>({
     h1:document.querySelectorAll("main h1").length,
