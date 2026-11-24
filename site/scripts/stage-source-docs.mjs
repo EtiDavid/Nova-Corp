@@ -128,5 +128,5 @@ writeFileSync(publicManifest,JSON.stringify({
 writeFileSync(resolve("public/docs-images/manifest.json"),JSON.stringify({
  purpose:"All already-public original repository docs images, copied unchanged at build",
  imagesCount:originalImages.length,images:originalImages
-},null,2)+"\\n");
+},null,2)+"\n");
 console.log("Staged "+manifest.length+" public Markdown documents and "+originalImages.length+" byte-identical original public images; unresolved source links: "+unresolved.size);
