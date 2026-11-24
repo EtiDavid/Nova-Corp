@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { techTerms, type Term } from "../../data/techLexicon";
 import { systems } from "../../data/model";
 import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
+import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
 import {termEvidence,internalArticle,publicDocsRoot} from "../../data/termEvidence";
 export function getStaticPaths(){return techTerms.map(term=>({params:{slug:term.slug},props:{term}}));}
 interface Props{term:Term}
@@ -28,6 +29,9 @@ const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":t
         <img src={base+"evidence/"+realImage} alt="Original historical configuration screenshot showing Windows Defender Firewall policy settings in Group Policy" loading="lazy" />
         <figcaption>Actual saved Windows Defender Firewall GPO configuration. This shows settings; it does not establish effective application on every workstation. <a href={base+"evidence/manifest.json"}>SHA-256 evidence provenance ↗</a></figcaption>
       </figure>}
+      <OriginalPdfEvidenceGallery subject={"learn/"+term.slug} heading={"Original "+term.word+" screenshots from the journals"} />
+      {term.slug==="active-directory"&&<OriginalPdfEvidenceGallery subject="incidents/dc01-outage" heading="Recorded directory continuity and recovery evidence" limit={2} />}
+      {term.slug==="replication"&&<OriginalPdfEvidenceGallery subject="incidents/replication-divergence" heading="Original replication failure and repair screenshots" />}
       <EngineeringSourceEmbed sourcePath={"docs/"+evidence.primary} title={"Full original "+term.word+" documentation"} />
       <section class="term-source-index" aria-label="Related original engineering records">
        <span class="eyebrow">Continue into the real source</span>
