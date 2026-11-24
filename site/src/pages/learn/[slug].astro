@@ -2,11 +2,15 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { techTerms, type Term } from "../../data/techLexicon";
 import { systems } from "../../data/model";
+import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
+import {termEvidence,internalArticle,publicDocsRoot} from "../../data/termEvidence";
 export function getStaticPaths(){return techTerms.map(term=>({params:{slug:term.slug},props:{term}}));}
 interface Props{term:Term}
 const {term}=Astro.props;
 const base=import.meta.env.BASE_URL;
 const related=term.related.map(id=>systems.find(s=>s.id===id)).filter(Boolean);
+const evidence=termEvidence[term.slug];
+if(!evidence)throw Error("No repository-backed technical documentation mapped for "+term.slug);
 const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":term.slug==="ntfs"?null:null;
 ---
 <BaseLayout title={term.word+" explained"} description={term.brief} breadcrumbs={[{label:"Glossary",href:"glossary/"},{label:term.word}]}>
@@ -24,11 +28,26 @@ const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":t
         <img src={base+"evidence/"+realImage} alt="Original historical configuration screenshot showing Windows Defender Firewall policy settings in Group Policy" loading="lazy" />
         <figcaption>Actual saved Windows Defender Firewall GPO configuration. This shows settings; it does not establish effective application on every workstation. <a href={base+"evidence/manifest.json"}>SHA-256 evidence provenance ↗</a></figcaption>
       </figure>}
-      <p class="term-research">Want the commands and expected/actual results? Open one of the linked system records below and follow its original engineering journal.</p>
+      <EngineeringSourceEmbed sourcePath={"docs/"+evidence.primary} title={"Full original "+term.word+" documentation"} />
+      <section class="term-source-index" aria-label="Related original engineering records">
+       <span class="eyebrow">Continue into the real source</span>
+       <h2>More configuration and recorded tests</h2>
+       <p>These links go to the <strong>real, published technical documents</strong>. Any outcome here is a historical observation, not live telemetry.</p>
+       <div class="term-source-links">
+        {evidence.supporting.map(path=><a href={internalArticle(path,base)}><small>ORIGINAL SOURCE / {path.split("/").at(-1)}</small><strong>{path.replace(/^explore\//,"").replace(/^Documentation\//,"").replace(/\.md$/,"").replaceAll("_"," ")}</strong><span>Read entire document ↗</span></a>)}
+        {evidence.journal&&<a class="term-journal" href={internalArticle(evidence.journal,base)}><small>COMPLETE CHANGE REQUEST / ORIGINAL JOURNAL</small><strong>{evidence.journal.split("/").at(-1)?.replace(/\.md$/,"").replaceAll("_"," ")}</strong><span>Read the full original journal on this website ↗</span></a>}
+       </div>
+      </section>
     </article>
     <aside class="term-aside">
       <div class="sidebox"><h3>Where you can find it</h3>
         <div class="term-related">{related.map(s=><a href={base+"systems/"+s!.slug+"/"}><span>{s!.name.toUpperCase()}</span><span aria-hidden="true">↗</span></a>)}</div>
+      </div>
+      <div class="sidebox"><h3>Original engineering source</h3>
+        <p>Every configuration detail below comes from existing published Nova Corp records.</p>
+        <p><a href={internalArticle(evidence.primary,base)}>Read the complete {term.word} reference →</a></p>
+        {evidence.journal&&<p><a href={internalArticle(evidence.journal,base)}>Open the actual change-request journal →</a></p>}
+        <p><a href={publicDocsRoot+evidence.primary} target="_blank" rel="noopener noreferrer">Compare original GitHub Markdown ↗</a></p>
       </div>
       <div class="sidebox"><h3>Keep exploring</h3><p><a href={base+"glossary/"}>← All technical terms</a></p><p><a href={base+"company/"}>Open the infrastructure explorer ↗</a></p></div>
     </aside>
