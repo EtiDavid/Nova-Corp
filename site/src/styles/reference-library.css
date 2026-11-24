@@ -203,3 +203,19 @@
  .pdf-journal-card{padding:18px;}
  .pdf-source-actions .btn{width:100%;text-align:center;}
 }
+
+/* Exhaustive 390px Chrome audit identified long AGDLP group identifiers, 
+   pfSense alias identifiers, and journal filenames as real horizontal overflow.
+   Break the *labels/cards*, never the preformatted source commands. */
+.page-head h1,.page-head .lead{min-width:0;max-width:100%;overflow-wrap:anywhere;}
+@media(max-width:720px){
+ .grid-main,.grid-main > div,.grid-main > aside,.grid-main .content-section,
+ .paper.panel,.sidebox,.fact-list,.fact-list dd,.plain-list,.plain-list li,
+ .card-list,.card-list > a,.system-card,.system-card h3,.system-card p,
+ .system-card small,.system-card .readmore,.searchbox,.searchbox input{
+   min-width:0;max-width:100%;box-sizing:border-box;overflow-wrap:anywhere;
+ }
+ .card-list > a{word-break:break-word;}
+ .plain-list li,.fact-list dd{word-break:break-word;}
+ .searchbox input{width:100%;}
+}
