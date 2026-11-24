@@ -1,10 +1,10 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import road from "../../data/roadmap.json";
+import {internalArticle,publicDocsRoot} from "../../data/termEvidence";
 const base = import.meta.env.BASE_URL;
 const next = road.planned[0];
 const later = road.planned.slice(1);
-import {internalArticle,publicDocsRoot} from "../../data/termEvidence";
 const originals:Record<string,{path:string;kind:"md"|"pdf"}>={
  "CR-001":{path:"Documentation/Change-Requests/Journal-CR-001.md",kind:"md"},
  "CR-002":{path:"Documentation/Change-Requests/Journal-CR-002.md",kind:"md"},
@@ -24,6 +24,7 @@ const originals:Record<string,{path:string;kind:"md"|"pdf"}>={
 };
 const sourceFor=(id:string)=>originals[id];
 const sourceHref=(id:string)=>{const record=sourceFor(id);return record.kind==="pdf"?publicDocsRoot+record.path:internalArticle(record.path,base);};
+const completed=road.done.map(d=>({id:d.id,title:d.title,gain:d.gain,href:sourceHref(d.id),format:sourceFor(d.id).kind}));
 ---
 <BaseLayout title="Roadmap" description="What is done, what is next and what is planned in the Nova Corp lab." breadcrumbs={[{ label: "Roadmap" }]}>
   <section class="page-head tight"><div class="container prose-narrow">
@@ -34,7 +35,7 @@ const sourceHref=(id:string)=>{const record=sourceFor(id);return record.kind==="
   <section class="container prose-narrow road-group">
     <span class="chip tested">Done · CR-001 to CR-015</span>
     <ul class="road-list">
-      {road.done.map(d => <li class="road-item"><b>{d.id}</b><div><strong>{d.title}</strong><p>{d.gain}</p><p style="margin:8px 0 0"><a href={sourceHref(d.id)} target={sourceFor(d.id).kind==="pdf"?"_blank":undefined} rel={sourceFor(d.id).kind==="pdf"?"noopener noreferrer":undefined}>Read original {sourceFor(d.id).kind==="pdf"?"PDF engineering journal":"full engineering journal on this website"} ↗</a></p></div></li>)}
+      {completed.map(item => <li class="road-item"><b>{item.id}</b><div><strong>{item.title}</strong><p>{item.gain}</p><p class="road-evidence"><a href={item.href}>Read {item.format==="pdf"?"original PDF engineering journal":"full original Markdown journal"} ↗</a></p></div></li>)}
     </ul>
     <p style="margin-top:17px"><a href={base+"reference/"}>Browse the complete original engineering library, including source commands and recorded failures →</a></p>
   </section>
