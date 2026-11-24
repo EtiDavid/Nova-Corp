@@ -74,6 +74,9 @@ jobs:
       - name: Interactive desktop and mobile smoke test
         timeout-minutes: 5
         run: npm run test:browser
+      - name: Audit all published routes in real Chromium mobile viewport
+        timeout-minutes: 12
+        run: npm run test:all-pages
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload verified static website
