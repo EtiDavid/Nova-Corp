@@ -18,7 +18,7 @@ const journalImages=slug==="wireguard-handshake" ? [
  {file:"05_troubleshooting_funnel.png",title:"Where the handshake failed",alt:"Original CR-007 diagnostic decision diagram isolating incoming UDP, firewall state, and peer authentication"},
  {file:"04_rule_order.png",title:"Rule evaluation and VPN scope",alt:"Original CR-007 rule-order illustration differentiating allowed remote access and blocked destinations"}
 ] : [];
-const figuresBase="https://raw.githubusercontent.com/EtiDavid/Nova-Corp/main/docs/Documentation/Change-Requests/cr007_assets/";
+const figuresBase=base+"journal-figures/cr007/";
 ---
 <section class="incident-full-source" id="full-investigation" aria-labelledby="incident-record-heading">
  <div class="incident-full-heading">
@@ -37,7 +37,7 @@ const figuresBase="https://raw.githubusercontent.com/EtiDavid/Nova-Corp/main/doc
  {journalImages.length>0&&<section class="incident-journal-figures" aria-label="Figures from the original change-request journal">
   <div><span class="eyebrow">Original CR-007 journal figures</span><h3>Visualize the investigation</h3>
   <p>These drawings were already published as part of CR-007. They explain packet flow and troubleshooting; they are <strong>not</strong> screenshots of recorded WireGuard handshakes or packet captures.</p></div>
-  <div class="incident-journal-grid">{journalImages.map(fig=><figure><a href={figuresBase+fig.file} target="_blank" rel="noopener noreferrer"><img src={figuresBase+fig.file} alt={fig.alt} loading="lazy" decoding="async"/></a><figcaption>{fig.title} · Original training diagram from <a href={journalURL}>CR-007 ↗</a></figcaption></figure>)}</div>
+  <div class="incident-journal-grid">{journalImages.map(fig=><figure><a href={figuresBase+fig.file} target="_blank" rel="noopener noreferrer"><img src={figuresBase+fig.file} alt={fig.alt} loading="eager" decoding="async"/></a><figcaption>{fig.title} · Original training diagram from <a href={journalURL}>CR-007 ↗</a></figcaption></figure>)}</div>
  </section>}
  <div class="incident-master-journal" id="original-journal">
   <span class="eyebrow">Original change / fault-test record</span>
