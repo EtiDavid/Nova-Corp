@@ -14,3 +14,7 @@ public/docs-images/
 
 # Original images extracted strictly from hash-verified public PDF journal pages
 public/pdf-evidence/
+
+# Generated full original PDF journal copies and page-native text from checked-out public sources
+src/content/pdfJournals/
+public/pdf-journals/
