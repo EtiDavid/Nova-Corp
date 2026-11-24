@@ -30,16 +30,19 @@ try{
  if(!ready)throw Error("Local static site preview unavailable for full crawl");
  browser=await chromium.launch({executablePath:binary,headless:true,args:["--no-sandbox","--disable-dev-shm-usage"]});
  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:"reduce"});
- const page=await context.newPage();
- page.setDefaultNavigationTimeout(12000);
- let current="",errors=[];
- page.on("pageerror",e=>errors.push({route:current,message:String(e.message||e).slice(0,500)}));
+ const errors=[];
  for(let i=0;i<files.length;i++){
   const file=files[i];
   const rel=relative(dist,file).split(sep).join("/");
   const route=rel.replace(/index\.html$/,"");
   const url=host+"/"+route;
-  current=route||"/";
+  const current=route||"/";
+  // Fresh tab isolates a page's own redirect and timers. Reusing the same tab
+  // with DOMContentLoaded caused 300+ false "navigation interrupted" failures
+  // when legacy route pages redirected asynchronously to the company atlas.
+  const page=await context.newPage();
+  page.setDefaultNavigationTimeout(12000);
+  page.on("pageerror",e=>errors.push({route:current,message:String(e.message||e).slice(0,500)}));
   const doc=readFileSync(file,"utf8");
   const internalAssets=[...doc.matchAll(/(?:src|href)=["'](\/[^"'?#]+\.(?:png|jpe?g|svg|webp|gif|pdf))(?=[#?"'])/gi)].map(x=>decodeURIComponent(x[1]));
   const missingAssets=internalAssets.filter(asset=>!existsSync(resolve(dist,"."+asset)));
@@ -49,7 +52,7 @@ try{
   if(lackingAlt.length)issues.push({route,kind:"image-without-useful-alt",count:lackingAlt.length});
   let body;
   try{
-   const res=await page.goto(url,{waitUntil:"domcontentloaded",timeout:12000});
+   const res=await page.goto(url,{waitUntil:"load",timeout:12000});
    if(res?.status()!==200)issues.push({route,kind:"http",status:res?.status()});
    body=await page.evaluate(()=>({
     h1:document.querySelectorAll("main h1").length,
@@ -59,10 +62,11 @@ try{
     width:document.documentElement.scrollWidth,
     viewport:innerWidth
    }));
-  }catch(e){issues.push({route,kind:"browser-error",message:String(e.message).slice(0,250)});continue;}
+  }catch(e){issues.push({route,kind:"browser-error",message:String(e.message).slice(0,250)});await page.close();continue;}
   if(body.h1<1||!body.main||body.contentSize<40)issues.push({route,kind:"missing-heading-or-content",body});
   if(body.width>body.viewport+6)issues.push({route,kind:"mobile-horizontal-overflow",px:body.width-body.viewport});
   entries.push({route:current,status:200,title:body.title,h1:body.h1,contentSize:body.contentSize,mobileWidth:body.width,missingAssets:missingAssets.length,images:images.length});
+  await page.close();
   if((i+1)%40===0)console.log("Full browser audit:",i+1,"/",files.length,"pages visited");
  }
  for(const e of errors)issues.push({route:e.route,kind:"client-side-JS-error",message:e.message});
