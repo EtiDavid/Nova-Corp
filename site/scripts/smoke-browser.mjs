@@ -227,6 +227,14 @@ try {
   const onsite=desktop.locator('.incident-sidebar-journal a[href*="/reference/Documentation/Change-Requests/Journal-CR-007/"]');
   assert(await onsite.isVisible());
   assert.equal(await desktop.locator(".incident-journal-figures img").count(),3);
+  for(const img of await desktop.locator(".incident-journal-figures img").all()){
+    await img.scrollIntoViewIfNeeded();
+    const loaded=await img.evaluate(el=>el.complete&&el.naturalWidth>0);
+    assert(loaded,"original journal image must have nonzero naturalWidth");
+    const url=await img.getAttribute("src");
+    assert(url.startsWith("/journal-figures/cr007/"));
+    assert.equal((await desktop.request.get(host+url)).status(),200);
+  }
   assert(await desktop.locator(".incident-source-document pre").count()>=4,"preserve actual recorded commands");
   await onsite.click();
   await desktop.waitForURL(/\/reference\/Documentation\/Change-Requests\/Journal-CR-007\/$/);
