@@ -30,7 +30,8 @@ const names={
  computers:["nova-dc01","nova-dc02","nova-files01","nova-client"],
  systems:["nova-prox01","nova-fw01","nova-dc01","nova-dc02","nova-files01","nova-client"]
 };
-auditSection("14 unchanged technical explanations",names.terms.filter(x=>!["smb","ntfs","dfs","shadow-copy"].includes(x)).map(x=>"learn/"+x),["engineer-source-section","source-document","term-source-index"],"Must embed full original service/engineering source and link actual CR journal");
+auditSection("Remaining unchanged technical explanations",names.terms.filter(x=>!["smb","ntfs","dfs","shadow-copy","active-directory","dns","ldap","kerberos","sysvol","group-policy","replication","system-state"].includes(x)).map(x=>"learn/"+x),["engineer-source-section","source-document","term-source-index"],"Must embed full original service/engineering source and link actual CR journal");
+auditSection("9 identity-service explanations",["active-directory","dns","ldap","kerberos","sysvol","netlogon","group-policy","replication","system-state"].map(x=>"learn/"+x),["Problem","Solution","How was it verified?","Recorded outcome:","Engineering journals","/reference/","/pdf-journals/"]);
 auditSection("5 file-service explanations",["smb","ntfs","dfs","shadow-copy","acl"].map(x=>"learn/"+x),["files01-document-images","Problem","Solution","Engineering journals","/reference/","/pdf-journals/"],"Explanation-first layout with original screenshots and complete standalone source/journal links");
 auditSection("20 real lab directory account records",names.people.map(x=>"people/"+x),["Active Directory profile","Direct security groups","Nested resource groups","Engineering journals","/reference/explore/people/"],"Exact public individual account Markdown per person, not assumed role");
 auditSection("11 source-backed group profiles",names.groups.map(x=>"groups/"+x),["Group attributes","/reference/explore/GROUPS/"],"Original documented AGDLP inventory and actual group relationships");
@@ -45,7 +46,7 @@ auditSection("16 full incident analyses",
 const contentPages=all.length;
 if(contentPages<320)errors.push("Expected >=320 generated HTML pages; got "+contentPages);
 const ad=pageAt("learn/active-directory");
-for(const str of ["Active Directory — Nova Corp","repadmin /replsummary","Resolve-DnsName","16 OUs","COMPLETE CHANGE REQUEST","source-document"]){
+for(const str of ["Organizational units (OUs)","repadmin /replsummary","Resolve-DnsName","16 documented OUs","Engineering journals","/reference/explore/services/ACTIVE_DIRECTORY/"]){
  if(!ad?.includes(str))errors.push("Active Directory glossary missing original source fact: "+str);
 }
 const entry=pageAt("people/john-shaw");

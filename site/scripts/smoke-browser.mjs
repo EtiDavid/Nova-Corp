@@ -101,7 +101,7 @@ try {
   assert.match(await desktop.locator(".page-head h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
   await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
-  assert.equal(await desktop.locator(".term-index > a").count(),19);
+  assert.equal(await desktop.locator(".term-index > a").count(),20);
   await desktop.locator('.term-index > a[href$="/learn/acl/"]').click();
   assert.match(await desktop.locator(".page-head h1").innerText(),/Access Control List/);
   assert.match(await desktop.locator("main").innerText(),/individual access control entries/);
@@ -110,17 +110,19 @@ try {
  });
  await step("Every learn page shows complete public original docs and real CR journal links",async()=>{
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"networkidle"});
-  const article=desktop.locator(".term-story .inline-source-doc");
+  const article=desktop.locator(".identity-lesson");
   assert(await article.isVisible());
   const details=await article.textContent(); // Includes original source commands in collapsible <details> sections.
-  for(const phrase of ["Why Nova Corp installed it","16 OUs","repadmin /replsummary","Resolve-DnsName","What was tested?"]){
+  for(const phrase of ["Why does the company need it?","16 documented OUs","repadmin /replsummary","Resolve-DnsName","How was it verified?"]){
     assert(details.includes(phrase),"active-directory must display source fact "+phrase);
   }
   const cr=desktop.locator('.term-source-links a[href*="CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal"]');
   assert(await cr.isVisible(),"actual CR-013 journal linked");
   assert(await desktop.locator('.term-aside a[href$="/reference/explore/services/ACTIVE_DIRECTORY/"]').isVisible());
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
-  assert((await desktop.locator(".term-story .inline-source-doc").innerText()).includes("NETLOGON"));
+  assert((await desktop.locator(".identity-lesson").innerText()).includes("NETLOGON"));
+  await desktop.goto(host+"/learn/netlogon/",{waitUntil:"networkidle"});
+  assert.match(await desktop.locator(".identity-lesson").innerText(),/Map-DepartmentDrive/);
   await desktop.goto(host+"/learn/wireguard/",{waitUntil:"networkidle"});
   assert(await desktop.locator('.term-source-links a[href*="Journal-CR-007"]').isVisible());
   await desktop.goto(host+"/people/john-shaw/",{waitUntil:"networkidle"});
@@ -131,6 +133,7 @@ try {
   assert(await publishedImage.evaluate(img=>img.complete&&img.naturalWidth>0),"original GPO image must load locally");
   await desktop.goto(host+"/people/moyo/",{waitUntil:"networkidle"});
   assert((await desktop.locator("main").innerText()).includes("IT allowed, Finance denied"));
+  assert(await desktop.locator(".account-details a[href$=\"/groups/dl-fs-it-modify/\"]").isVisible());
   await desktop.goto(host+"/groups/it-users/",{waitUntil:"networkidle"});
   assert((await desktop.locator("main").innerText()).includes("DL_FS_IT_Modify"));
   await desktop.goto(host+"/directory/ous/it/",{waitUntil:"networkidle"});

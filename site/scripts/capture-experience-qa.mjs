@@ -107,7 +107,7 @@ try {
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   await desktop.screenshot({path:out+"/active-directory-glossary-top-desktop.png"});
-  await desktop.locator(".term-story .engineer-source-section").scrollIntoViewIfNeeded();
+  await desktop.locator(".identity-lesson").scrollIntoViewIfNeeded();
   await desktop.screenshot({path:out+"/active-directory-original-source-desktop.png"});
   await desktop.locator(".term-source-index").screenshot({path:out+"/active-directory-related-original-journals-desktop.png"});
   await desktop.goto(host+"/people/john-shaw/",{waitUntil:"domcontentloaded"});
@@ -116,7 +116,7 @@ try {
   await desktop.screenshot({path:out+"/john-shaw-original-gpresult-desktop.png"});
   await mobile.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
   await mobile.screenshot({path:out+"/active-directory-source-mobile.png"});
-  await mobile.locator(".term-story .engineer-source-section").scrollIntoViewIfNeeded();
+  await mobile.locator(".identity-lesson").scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/active-directory-full-source-mobile.png"});
   await mobile.goto(host+"/people/moyo/",{waitUntil:"domcontentloaded"});
   await mobile.locator("main .content-section").first().scrollIntoViewIfNeeded();
@@ -130,7 +130,7 @@ try {
   await desktop.locator(".pdf-evidence-gallery img").first().evaluate(el=>el.decode());
   await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-dc01-pdf-evidence-desktop.png"});
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
-  await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/active-directory-original-pdf-evidence-desktop.png"});
+  await desktop.locator(".identity-lesson .files01-document-images").first().screenshot({path:out+"/active-directory-original-pdf-evidence-desktop.png"});
   await mobile.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
   await mobile.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-backup-pdf-evidence-mobile.png"});
   await desktop.goto(host+"/journals/",{waitUntil:"domcontentloaded"});
