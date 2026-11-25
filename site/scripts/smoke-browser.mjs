@@ -385,7 +385,12 @@ try {
    await mobile.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
    await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
    await mobile.waitForURL(/\/systems\/nova-files01\/$/);
-   assert(await mobile.locator('img[src*="/pdf-evidence/backup-disk-offline.jpg"]').isVisible(),"mobile file server shows original recorded backup failure");
+   const backupProof=mobile.locator('img[src*="/pdf-evidence/backup-disk-offline.jpg"]');
+   await backupProof.waitFor({state:"attached"});
+   await backupProof.scrollIntoViewIfNeeded();
+   await backupProof.waitFor({state:"visible"});
+   await mobile.waitForFunction(()=>{const image=document.querySelector('img[src*="/pdf-evidence/backup-disk-offline.jpg"]');return image instanceof HTMLImageElement&&image.complete&&image.naturalWidth>0;});
+   assert(await backupProof.isVisible(),"mobile file server shows original recorded backup failure");
    await mobile.goto(host+"/",{waitUntil:"networkidle"});
 
    const summary=mobile.locator(".v4-menu summary");
