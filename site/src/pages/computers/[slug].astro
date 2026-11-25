@@ -20,7 +20,7 @@ const policy=computer.linkedPolicySlug?getPolicy(computer.linkedPolicySlug):unde
   <h2>A computer identity is different from a virtual machine.</h2>
   <div class="paper panel" style="margin-top:18px">
    <p class="muted">This Active Directory computer object is registered in <a href={base+"directory/ous/"+computer.ouSlug+"/"}>{ou?.name}</a>. The corresponding <a href={base+"systems/"+computer.systemSlug+"/"}>system profile</a> explains the VM/service layer.</p>
-   <div class="button-row" style="margin-top:21px"><a class="btn small" href={base+"systems/"+computer.systemSlug+"/"}>Open the running system profile →</a><a class="btn ghost small" href={base+"directory/ous/"+computer.ouSlug+"/"}>Open its OU</a></div>
+   <div class="button-row" style="margin-top:21px"><a class="btn small" href={base+"systems/"+computer.systemSlug+"/"}>Open the system profile →</a><a class="btn ghost small" href={base+"directory/ous/"+computer.ouSlug+"/"}>Open its OU</a></div>
   </div>
  </section>
  <section class="content-section">
@@ -37,13 +37,13 @@ const policy=computer.linkedPolicySlug?getPolicy(computer.linkedPolicySlug):unde
   <p class="muted" style="margin-top:16px">The <a href={base+"policies/domain-password/"}>default domain policy</a> is linked at domain root. Link scope is not a fresh effective setting test on this computer.</p>
  </section>
  <section class="content-section">
-  <h2>Documentation and limitations</h2><div class="paper panel">
+  <h2>Engineering records</h2><p><a href={base+"reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"}>Original directory inventory →</a></p><div class="paper panel">
   <p class="muted">The source verifies the directory computer object's placement. VM configuration, actual services, failover, test output and physical-host dependencies are distinct evidence found on the technical system and original journals.</p>
   <a class="evidence-link" href={computerSource}>Read the Active Directory computer inventory ↗</a>
   </div>
  </section>
 </div><aside>
-  <div class="sidebox"><h3>Computer at a glance</h3><dl class="fact-list">
+  <div class="sidebox"><h3>Directory computer profile</h3><dl class="fact-list">
     <div><dt>Domain</dt><dd>nova.corp</dd></div>
     <div><dt>OU</dt><dd><a href={base+"directory/ous/"+computer.ouSlug+"/"}>{ou?.name}</a></dd></div>
     <div><dt>Separate VM profile</dt><dd><a href={base+"systems/"+computer.systemSlug+"/"}>{computer.name}</a></dd></div>

@@ -26,7 +26,7 @@ const computerEntries=computersForOu(ou.slug);
 <section class="section compact"><div class="container grid-main"><div>
   {parent && <div class="note" style="margin-bottom:24px">This OU is inside <a href={base+"directory/ous/"+parent.slug+"/"}>{parent.name}</a>. Parent location is part of the directory hierarchy, not automatic membership in a resource group.</div>}
   <section class="content-section">
-    <h2>What's directly inside?</h2>
+    <h2>What is stored in this OU?</h2>
     {children.length>0 && <div class="card-list" style="margin-top:18px">{children.map(child=><a class="system-card" href={base+"directory/ous/"+child.slug+"/"}><small>Child Organizational Unit</small><h3>{child.name}</h3><p>{child.meaning}</p><span class="readmore">Open OU →</span></a>)}</div>}
     {direct.length>0 && <div class="card-list" style="margin-top:18px">{direct.map(u=><a class="system-card" href={base+"people/"+u.slug+"/"}><small>{u.category.replace("-"," ")} · {u.enabled?"Enabled":"Disabled"}</small><h3>{u.name}</h3><p>Lab directory sign-in: <code>{u.logon}</code></p><span class="readmore">Open identity →</span></a>)}</div>}
     {computerEntries.length>0&&<div class="card-list" style="margin-top:18px">{computerEntries.map(computer=><a class="system-card" href={base+"computers/"+computer.slug+"/"}><small>Domain computer object</small><h3>{computer.name}</h3><p>{computer.purpose}</p><span class="readmore">Open registered computer →</span></a>)}</div>}
@@ -48,7 +48,7 @@ const computerEntries=computersForOu(ou.slug);
 </div>
 <aside>
  <div class="sidebox"><h3>Where is it?</h3><p class="muted">Directory: <strong>nova.corp</strong></p><p class="muted" style="margin-top:8px">Parent: {parent?parent.name:"Domain root"}</p><p class="muted" style="margin-top:8px">Documented direct users: {direct.length}</p></div>
- <div class="sidebox"><h3>Source</h3><p class="muted">The directory object and hierarchy were taken from the reviewed Active Directory snapshot. Use the technical record for object-level verification.</p><a class="evidence-link" href={directorySource}>Read the directory record ↗</a></div>
+ <div class="sidebox"><h3>Source</h3><p class="muted">The directory object and hierarchy were taken from the reviewed Active Directory snapshot. Use the technical record for object-level verification.</p><a class="evidence-link" href={base+"reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"}>Read the original directory record →</a></div>
  <div class="sidebox"><a href={base+"directory/"}>← All Organizational Units</a><p style="margin-top:12px"><a href={base+"company/"}>Company map →</a></p></div>
 </aside></div></section>
 </BaseLayout>
