@@ -6,7 +6,7 @@ const path=join(dist,"pdf-evidence/manifest.json");
 if(!existsSync(path))throw Error("Missing approved original PDF screenshot provenance manifest");
 const m=JSON.parse(readFileSync(path,"utf8"));
 const errs=[],known=new Map(records.map(x=>[x.id,x]));
-if(m.count!==22||records.length!==22||m.images.length!==22)errs.push("Wrong curated screenshot count");
+if(records.length<22||m.count!==records.length||m.images.length!==records.length||known.size!==records.length)errs.push("Wrong curated screenshot inventory or duplicate approval ID");
 const sha=x=>createHash("sha256").update(x).digest("hex");
 for(const img of m.images){
  const approved=known.get(img.id);if(!approved){errs.push("Unreviewed image published "+img.id);continue;}
@@ -38,4 +38,4 @@ for(const [route,ids]of Object.entries(important)){
  for(const id of ids)if(!html.includes("/pdf-evidence/"+id+"."))errs.push("Original journal screenshot missing from "+route+" -> "+id);
 }
 if(errs.length){console.error(errs.join("\n"));process.exit(1);}
-console.log("Original PDF screenshot evidence PASS: 22 exact byte-verified images, 5 original PDF hashes, pages and source-subject captions, local subject embeddings.");
+console.log("Original PDF screenshot evidence PASS: "+records.length+" exact byte-verified images, original PDF hashes, pages and source-subject captions, local subject embeddings.");
