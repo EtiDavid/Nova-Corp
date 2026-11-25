@@ -27,7 +27,7 @@ const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-cli
     <a class="btn" href={base + "incidents/dns-client-outage/"} style="width:fit-content">Follow the investigation <span aria-hidden="true">→</span></a>
   </div></section>}
   <section class="v4-section" style="border-top:0"><div class="container">
-    <div class="tabs" role="group" aria-label="Filter investigations" id="filters">
+    <article class="outcome"><span class="chip tested">Unexpected deployment issue</span><h3>The same network, two different subnet masks.</h3><p>CR-008: two domain controllers had /32 prefixes; the file server used /24.</p><a href={base+"incidents/fileserver-subnet/"}>Read the investigation →</a></article><div class="tabs" role="group" aria-label="Filter investigations" id="filters">
       <button type="button" data-f="all" aria-pressed="true">All</button>
       <button type="button" data-f="failure" aria-pressed="false">Failure</button>
       <button type="button" data-f="recovery" aria-pressed="false">Recovery</button>
