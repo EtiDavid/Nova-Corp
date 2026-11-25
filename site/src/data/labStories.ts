@@ -20,5 +20,6 @@ export const labStories:Story[]=[
  {slug:"firewall-management-exposure",kind:"unplanned",topic:"Security finding",short:"A validation check exposed an employee-to-firewall management path; rule ordering was corrected and retested."},
  {slug:"proxmox-storage-pressure",kind:"unplanned",topic:"Storage capacity risk",short:"Twenty obsolete snapshots pushed Proxmox thin-pool use to 86.73%; cleanup reduced it to 52.88%."},
  {slug:"wireguard-handshake",kind:"unplanned",topic:"VPN configuration fault",short:"Packets reached the WAN listener but the peer did not authenticate until client and firewall keys were corrected."},
+ {slug:"fileserver-subnet",kind:"unplanned",topic:"Subnet prefix mismatch",short:"Two domain controllers used /32 prefixes while the new file server used /24. Correcting the domain controller prefixes restored the intended same-subnet path."},
  {slug:"vpn-validation-deferred",kind:"deferred",topic:"External VPN test not run",short:"The independent external-laptop validation was not performed; no test pass is claimed."}
 ];
