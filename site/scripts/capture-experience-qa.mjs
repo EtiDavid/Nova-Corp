@@ -143,13 +143,15 @@ try {
   await desktop.locator('details.native-pdf-page[id="page-25"] summary').click();
   await desktop.screenshot({path:out+"/cr014-full-native-transcription-desktop.png"});
   await desktop.goto(host+"/files/dfs/",{waitUntil:"domcontentloaded"});
-  await desktop.locator(".pdf-evidence-gallery").scrollIntoViewIfNeeded();
-  await Promise.all((await desktop.locator(".pdf-evidence-gallery img").all()).map(img=>img.evaluate(el=>el.decode())));
-  await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-cr010-dfs-proofs-desktop.png"});
+  const dfsProof=desktop.locator(".files01-document-images").first();
+  await dfsProof.scrollIntoViewIfNeeded();
+  for(const img of await dfsProof.locator("img").all()){await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());}
+  await dfsProof.screenshot({path:out+"/original-cr010-dfs-proofs-desktop.png"});
   await mobile.goto(host+"/journals/NovaCorp_CR-008_File_Server_Deployment_Journal/",{waitUntil:"domcontentloaded"});
   await mobile.screenshot({path:out+"/cr008-original-journal-reader-mobile.png"});
   await mobile.locator(".pdf-transcription-header").scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/cr008-native-page-reading-mobile.png"});
+  for(const route of ["files/","files/shares/it/","files/shares/finance/","files/shares/hr/","files/shares/management/","files/shares/sales/","files/permissions/","files/dfs/","files/volumes/","files/shadow-copies/","files/backup/","learn/smb/","learn/ntfs/","learn/dfs/","learn/shadow-copy/","incidents/fileserver-subnet/","incidents/file-permission-denial/"]){for(const [label,p] of [["desktop",desktop],["mobile",mobile]]){await p.goto(host+"/"+route,{waitUntil:"domcontentloaded"});await p.locator("h1").first().waitFor({state:"visible"});await p.screenshot({path:out+"/review-"+route.replaceAll("/","-")+label+".png",fullPage:true});}}
   console.log("Captured full 14-source PDF journal library, original CR-014 reader and original CR-010 screenshots at desktop/mobile sizes.");
 } finally {
   await browser.close();

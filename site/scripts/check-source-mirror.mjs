@@ -32,7 +32,7 @@ const expectedPages={
  "policies/domain-password/index.html":["Complete original Group Policy explanation","Password"],
  "network/zones/client/index.html":["Complete network-zone documentation","CLIENT"],
  "network/rules/1795199640/index.html":["Full documented rule explanation","BLOCK"],
- "files/shares/it/index.html":["Complete departmental file-share explanation","IT"],
+ "files/shares/it/index.html":["What is the IT folder?","/reference/explore/files/it/","Engineering journals"],
  "reference/explore/systems/NOVA-FW01/index.html":["eight interfaces","Stateful","Original engineering source"]
 };
 for(const [page,phrases] of Object.entries(expectedPages)){
