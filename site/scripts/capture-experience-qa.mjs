@@ -49,7 +49,7 @@ try {
   await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-focused-guest-mobile.png"});
   await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
   await mobile.waitForURL("**/systems/nova-files01/");
-  const fileEvidence=mobile.locator(".files01-pilot .pdf-evidence-gallery").first();
+  const fileEvidence=mobile.locator(".files01-pilot .files01-document-images").first();
   await fileEvidence.scrollIntoViewIfNeeded();
   for(const img of await fileEvidence.locator("img").all()){await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());}
   await fileEvidence.screenshot({path:out+"/fileserver-original-evidence-mobile.png"});
