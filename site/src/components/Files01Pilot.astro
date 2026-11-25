@@ -66,7 +66,7 @@ const policies=linksForSystem("nova-files01");
 <h3>3. Recovering a missing or overwritten document</h3>
 <p><strong>Problem.</strong> An employee accidentally deletes a spreadsheet or saves the wrong changes just before a meeting.</p>
 <p><strong>Solution.</strong> <a href={base+"files/shadow-copies/"}>Shadow Copies</a> preserve selected earlier file versions at 07:00 and 12:00. Separately, <a href={base+"files/backup/"}>Windows Server Backup</a> protects the D: data volume to B: every day at 22:00. These are recorded schedules, not live job status.</p>
-<OriginalPdfEvidenceGallery ids={["vss-previous-versions","fileserver-backup-gui","fileserver-backup-schedule","backup-original-recovered-hash"]} heading="Original previous-version, backup schedule and restore evidence"/>
+<OriginalPdfEvidenceGallery ids={["vss-previous-versions","fileserver-backup-gui","fileserver-backup-schedule","backup-original-recovered-hash","backup-disk-offline"]} heading="Original previous-version, backup schedule, recovery and failure evidence"/>
 <p>CR-012 verified a naturally scheduled backup and a deleted-file restoration with matching SHA-256 fingerprints. These recovery mechanisms are inside the nested lab's shared failure domain; neither proves independent off-host disaster recovery.</p>
 <p><a href={base+"files/backup/"}>Explore the backup and recovery workflow →</a></p>
 </div>
