@@ -101,7 +101,12 @@ try {
   assert.match(await desktop.locator(".page-head h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
   await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
-  assert.equal(await desktop.locator(".term-index > a").count(),18);
+  assert.equal(await desktop.locator(".term-index > a").count(),19);
+  await desktop.locator('.term-index > a[href$="/learn/acl/"]').click();
+  assert.match(await desktop.locator(".page-head h1").innerText(),/Access Control List/);
+  assert.match(await desktop.locator("main").innerText(),/individual access control entries/);
+  await desktop.goto(host+"/learn/smb/",{waitUntil:"networkidle"});
+  assert.match(await desktop.locator("main").innerText(),/TCP port 445/);
  });
  await step("Every learn page shows complete public original docs and real CR journal links",async()=>{
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"networkidle"});
