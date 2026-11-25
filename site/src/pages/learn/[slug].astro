@@ -1,4 +1,5 @@
 ---
+import GlossaryPilot from "../../components/GlossaryPilot.astro";
 import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { techTerms, type Term } from "../../data/techLexicon";
@@ -10,6 +11,7 @@ export function getStaticPaths(){return techTerms.map(term=>({params:{slug:term.
 interface Props{term:Term}
 const {term}=Astro.props;
 const base=import.meta.env.BASE_URL;
+const isGlossaryPilot=["active-directory","dns","smb"].includes(term.slug);
 const related=term.related.map(id=>systems.find(s=>s.id===id)).filter(Boolean);
 const evidence=termEvidence[term.slug];
 if(!evidence)throw Error("No repository-backed technical documentation mapped for "+term.slug);
@@ -33,7 +35,7 @@ const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":t
     <h1>{term.word}</h1>
     <p class="lead">{term.brief}</p>
   </div></section>
-  <section class="section compact"><div class="container term-layout">
+  {isGlossaryPilot?<GlossaryPilot slug={term.slug}/>:<section class="section compact"><div class="container term-layout">
     <article class="term-story">
       <div class="term-block"><span class="term-num">01 / UNDERSTAND IT</span><h2>What does it actually mean?</h2><p>{term.everyday}</p></div>
       <div class="term-block"><span class="term-num">02 / SEE IT IN THIS LAB</span><h2>An example from Nova Corp</h2><p>{term.example}</p></div>
@@ -68,7 +70,7 @@ const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":t
       </div>
       <div class="sidebox"><h3>Keep exploring</h3><p><a href={base+"glossary/"}>← All technical terms</a></p><p><a href={base+"company/"}>Open the infrastructure explorer ↗</a></p></div>
     </aside>
-  </div></section>
+  </div></section>}
 </BaseLayout>
 
 <style>.term-block h2:not(:first-child){margin-top:38px}.term-block p{line-height:1.7;margin-bottom:16px}.term-story .term-block{margin-bottom:40px}.file-problem{color:#edb4a2}.file-solution{color:#c6dcb4}.term-block h3{margin-top:20px}</style>

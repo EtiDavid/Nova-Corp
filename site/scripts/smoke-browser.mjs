@@ -110,15 +110,15 @@ try {
  });
  await step("Every learn page shows complete public original docs and real CR journal links",async()=>{
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"networkidle"});
-  const article=desktop.locator(".identity-lesson");
+  const article=desktop.locator(".glossary-pilot");
   assert(await article.isVisible());
   const details=await article.textContent(); // Includes original source commands in collapsible <details> sections.
-  for(const phrase of ["Why does the company need it?","16 documented OUs","repadmin /replsummary","Resolve-DnsName","How was it verified?"]){
+  for(const phrase of ["Why does Nova Corp need it?","16 documented OUs","repadmin /replsummary","Resolve-DnsName","Technical checks"]){
     assert(details.includes(phrase),"active-directory must display source fact "+phrase);
   }
-  const cr=desktop.locator('.term-source-links a[href*="CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal"]');
+  const cr=desktop.locator('.glossary-pilot a[href*="CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.pdf"]');
   assert(await cr.isVisible(),"actual CR-013 journal linked");
-  assert(await desktop.locator('.term-aside a[href$="/reference/explore/services/ACTIVE_DIRECTORY/"]').isVisible());
+  assert(await desktop.locator('.glossary-pilot a[href$="/reference/explore/services/ACTIVE_DIRECTORY/"]').isVisible());
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
   assert((await desktop.locator(".identity-lesson").innerText()).includes("NETLOGON"));
   await desktop.goto(host+"/learn/netlogon/",{waitUntil:"networkidle"});
