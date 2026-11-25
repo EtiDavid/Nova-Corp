@@ -1,4 +1,5 @@
 ---
+import OriginalPdfEvidenceGallery from "../../../components/OriginalPdfEvidenceGallery.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import EngineeringSourceEmbed from "../../../components/EngineeringSourceEmbed.astro";
 import { shares, type Share } from "../../../data/fileCentre";
@@ -11,6 +12,7 @@ const base=import.meta.env.BASE_URL;
 const group=findGroupByName(share.group);
 const access=findGroupByName(share.resourceGroup);
 const users=identities.filter(i=>i.directGroups.includes(share.group));
+const scenarios:Record<string,string>={it:"Moyo needs a shared troubleshooting guide so the IT team can use one maintained copy.",finance:"Finance staff need one controlled location for budgets and reports, without giving every employee access.",hr:"HR needs a restricted place for personnel documents rather than distributing copies by email.",management:"Managers need one location for internal planning documents, separate from other departments.",sales:"Sales staff need shared proposals and customer-facing working documents rather than isolated local copies."};
 const encode=(slug:string)=>base+"groups/"+slug+"/";
 ---
 <BaseLayout title={share.name+" shared folder"} description={"Explore "+share.name+" folder access at Nova Corp: directory groups, DFS, SMB and NTFS permissions."} breadcrumbs={[{label:"Explore",href:"company/"},{label:"Files",href:"files/"},{label:share.name}]}>
@@ -23,7 +25,7 @@ const encode=(slug:string)=>base+"groups/"+slug+"/";
 <section class="section compact"><div class="container grid-main">
 <div>
   <section class="content-section">
-    <h2>Follow the access path</h2>
+    <h2>What is this folder and why does it exist?</h2><p><strong>Illustrative office problem:</strong> {scenarios[share.id]}</p><p><strong>Solution:</strong> The {share.name} team uses a central shared folder on NOVA-FILES01 with group-based access. Employees receive the required rights without distributing separate copies or opening the folder to everyone.</p><h2>Follow the access path</h2>
     <p class="muted" style="margin:12px 0 19px">These are separate configuration relationships. The final access outcome depends on the user's logon token and the exact folder or file requested.</p>
     <ol class="walkthrough">
       <li class="walk-step">
@@ -61,9 +63,11 @@ const encode=(slug:string)=>base+"groups/"+slug+"/";
     <h2>What happened during access testing?</h2>
     <div class="paper panel">
       <p class="muted">Moyo's documented IT tests confirmed an allowed IT path and a denied Finance path. A later incident deliberately placed a temporary denial on an IT child folder and then repaired it. The current IT incident-folder snapshot has no lingering Moyo-specific DENY.</p>
-      <a class="evidence-link" href="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/file-permission-denial.md">Read the actual access-denial investigation ↗</a>
+      <a class="evidence-link" href={base+"incidents/file-permission-denial/"}>Read the actual access-denial investigation ↗</a>
       <p class="source-line">This does not imply that every department or account has passed the same end-to-end test.</p>
     </div>
+    {share.id==="it"&&<OriginalPdfEvidenceGallery subject="incidents/dc01-outage" heading="Recorded authorized IT access during DC01 outage" limit={1}/>}
+    <h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf"}>CR-009 original departmental access journal →</a></p><p><a href={base+"pdf-journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"}>CR-010 original DFS journal →</a></p>
   </section>
 </div>
 <aside>
