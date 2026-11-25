@@ -1,0 +1,55 @@
+---
+import EvidencePanel from "./EvidencePanel.astro";
+import approved from "../data/approvedPdfEvidence.json";
+import {shares} from "../data/fileCentre";
+const base=import.meta.env.BASE_URL;
+const {asOf,statusText}=Astro.props;
+const image=(id:string)=>approved.entries.find(x=>x.id===id)!;
+const pictures=(ids:string[])=>ids.map(image);
+const journal=(name:string)=>base+"pdf-journals/"+name+".pdf";
+const records=[
+["CR-008 · File server deployment","NovaCorp_CR-008_File_Server_Deployment_Journal"],
+["CR-009 · Departmental shares and drive mapping","NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping"],
+["CR-010 · DFS and Shadow Copies","NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED"],
+["CR-012 · Windows Server Backup and Recovery","CR-012_Windows_Server_Backup_and_Recovery_Journal"],
+["CR-014 · Incident exercises","Nova_Corp_CR-014_Engineering_Journal_and_Evidence"]];
+const inside=[["Company File Centre","Open the five shared department folders","files/"],["Departmental access matrix","See who can open which folder","files/permissions/"],["DFS link targets","Follow the company address to its destinations","files/dfs/"],["Shadow Copies","Understand earlier versions and recovery limits","learn/shadow-copy/"],["Windows volumes","Explore company data and backup storage","files/volumes/"],["Backup and recovery","See how deleted documents are restored","recovery/"]];
+---
+<section class="section compact"><div class="container grid-main">
+<div>
+<section class="content-section">
+<h2>What is NOVA-FILES01?</h2>
+<p>NOVA-FILES01 is the computer that stores Nova Corp's shared company documents. Employees open their team folders from their own workstations instead of collecting copies from each other. The server also helps control who can open those files and recover documents when something goes wrong.</p>
+<div class="pilot-images">
+<EvidencePanel subject="File server management interface" requested="Server Manager showing NOVA-FILES01 and its file services. Approved screenshot pending (FILES01-01)."/>
+<EvidencePanel subject="File server identity in PowerShell" requested="Hostname, operating system and installed file services in PowerShell. Approved screenshot pending (FILES01-02)."/>
+</div>
+</section>
+<section class="content-section">
+<h2>Why does the company need it?</h2>
+<h3>1. Sharing documents without a USB drive</h3>
+<p><strong>Problem:</strong> Imagine Moyo in IT needs a colleague's support document. Without a shared folder she might have to ask for an emailed copy or transfer it on a flash drive. Different copies can quickly become outdated.</p>
+<p><strong>Solution:</strong> The IT team stores documents in a shared folder on NOVA-FILES01. Moyo opens the company file address from her own workstation and works on the shared document rather than collecting another copy.</p>
+<div class="pilot-images">{pictures(["dfs-client-mapped-drive","dfs-targets-online-audit"]).map(item=><figure class="pdf-evidence-card"><a href={base+"pdf-evidence/"+item.id+"."+(item.ext==="jpeg"?"jpg":"png")} target="_blank" rel="noopener"><img loading="lazy" src={base+"pdf-evidence/"+item.id+"."+(item.ext==="jpeg"?"jpg":"png")} alt={item.alt}/></a><figcaption><strong>{item.title}</strong><p>{item.caption}</p><small>CR-010 · page {item.page} · historical evidence</small></figcaption></figure>)}</div>
+<EvidencePanel subject="Five department folders in File Explorer" requested="File Explorer showing the five company folders at the namespace root (FILES01-03)."/>
+<h3>2. Keeping confidential files in the right hands</h3>
+<p><strong>Problem:</strong> Moyo needs IT documents, but that does not mean she should be able to read confidential Finance records.</p>
+<p><strong>Solution:</strong> Nova Corp grants access through security groups. Moyo's documented IT account receives the IT permissions; Windows checks both <a href={base+"learn/smb/"}>SMB</a> and <a href={base+"learn/ntfs/"}>folder permissions</a>. The recorded access validation allowed IT and denied Finance.</p>
+<div class="pilot-flow"><a href={base+"people/moyo/"}>Moyo</a><span>→</span><a href={base+"files/permissions/"}>IT security group</a><span>→</span><a href={base+"files/shares/it/"}>IT folder</a></div>
+<div class="pilot-images">{pictures(["dc02-sysvol-available"]).map(item=><figure class="pdf-evidence-card"><a href={base+"pdf-evidence/"+item.id+".jpg"} target="_blank" rel="noopener"><img loading="lazy" src={base+"pdf-evidence/"+item.id+".jpg"} alt={item.alt}/></a><figcaption><strong>Authorized IT access during DC01 outage</strong><p>{item.caption}</p><small>CR-014 · page {item.page}</small></figcaption></figure>)}<EvidencePanel subject="Allowed IT and denied Finance" requested="Moyo's own client session showing identity, successful IT access and denied Finance access in one capture (FILES01-04)."/></div>
+<h3>3. Recovering a missing or overwritten document</h3>
+<p><strong>Problem:</strong> An employee accidentally deletes a spreadsheet or saves the wrong changes just before a meeting.</p>
+<p><strong>Solution:</strong> Earlier versions can help undo some file changes. Windows Server Backup also stores recovery versions on the dedicated B: volume. In the lab a deleted test file was restored to another path and its contents verified by matching SHA-256 fingerprints. Both mechanisms remain within the nested lab's failure domain; neither proves off-host disaster recovery.</p>
+<div class="pilot-images">{pictures(["vss-previous-versions","backup-original-recovered-hash"]).map(item=><figure class="pdf-evidence-card"><a href={base+"pdf-evidence/"+item.id+"."+(item.ext==="jpeg"?"jpg":"png")} target="_blank" rel="noopener"><img loading="lazy" src={base+"pdf-evidence/"+item.id+"."+(item.ext==="jpeg"?"jpg":"png")} alt={item.alt}/></a><figcaption><strong>{item.title}</strong><p>{item.caption}</p><small>CR-012 · page {item.page}</small></figcaption></figure>)}</div>
+<EvidencePanel subject="Scheduled Windows backup" requested="Windows Server Backup schedule and configured destination on NOVA-FILES01 (FILES01-05)."/>
+</section>
+<section class="content-section"><h2>Inside this server</h2><div class="card-list">{inside.map(([title,description,href])=><a class="system-card" href={base+href}><h3>{title}</h3><p>{description}</p><span class="readmore">Explore →</span></a>)}</div></section>
+<section class="content-section"><h2>How it connects</h2><p>Proxmox hosts the virtual machine, the domain controllers provide company identity and DNS, and NOVA-CLIENT opens authorized shared files.</p><div class="pilot-flow">{["nova-prox01","nova-dc01","nova-dc02","nova-client"].map(s=><a href={base+"systems/"+s+"/"}>{s.toUpperCase()}</a>)}</div><p><a href={base+"computers/nova-files01/"}>Explore its Active Directory computer identity →</a></p></section>
+<section class="content-section"><h2>Related tests and incidents</h2><div class="card-list">{[["Unexpected · File server subnet configuration","Domain connectivity failed during deployment.","fileserver-subnet"],["Controlled · A folder denies Moyo access","An explicit folder rule blocked an authorized employee.","file-permission-denial"],["Controlled · Backup target unavailable","A missing backup disk interrupted backup; file recovery was verified.","backup-target-unavailable"],["Controlled · DNS client outage","Name-based file access failed despite network reachability.","dns-client-outage"],["Controlled · Domain controller outage","File access was checked through the surviving controller.","dc01-outage"]].map(([title,description,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h3>{title}</h3><p>{description}</p><span class="readmore">Read investigation →</span></a>)}</div></section>
+<section class="content-section"><h2>Engineering journals</h2><p>Read the original implementation, commands, tests and screenshots.</p><div class="card-list">{records.map(([title,name])=><a class="system-card" href={journal(name)}><h3>{title}</h3><span class="readmore">Open original PDF →</span></a>)}</div><p><a href={base+"journals/"}>All original journals →</a></p></section>
+</div>
+<aside><div class="sidebox"><h3>Technical Profile</h3><dl class="fact-list">{[["Hostname","NOVA-FILES01.nova.corp"],["Operating system","Windows Server 2025 Standard"],["IP address","10.10.20.20/24"],["Network","INFRA / VLAN 20"],["Domain","nova.corp"],["Roles","File Server, DFS Namespace, Windows Server Backup"],["Services","LanmanServer, DFS"],["Storage","C: 63.15 GiB · D: 59.98 GiB · B: 99.98 GiB"],["Last recorded check",asOf]].map(([label,value])=><div><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p class="muted">{statusText}</p><p class="muted">CPU and RAM pending source verification.</p></div></aside>
+</div></section>
+<style>
+.pilot-images{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:20px 0}.pilot-images img{width:100%;height:auto;display:block}.pilot-flow{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0}.pilot-flow a{border:1px solid currentColor;padding:8px 12px;border-radius:8px}.content-section h3{margin-top:26px}.content-section p{margin:12px 0;line-height:1.65}@media(max-width:680px){.pilot-images{grid-template-columns:1fr}}
+</style>
