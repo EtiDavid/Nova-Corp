@@ -107,17 +107,18 @@ try {
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   await desktop.screenshot({path:out+"/active-directory-glossary-top-desktop.png"});
-  await desktop.locator(".identity-lesson").scrollIntoViewIfNeeded();
+  await desktop.locator(".glossary-pilot").scrollIntoViewIfNeeded();
   await desktop.screenshot({path:out+"/active-directory-original-source-desktop.png"});
-  await desktop.locator(".term-source-index").screenshot({path:out+"/active-directory-related-original-journals-desktop.png"});
+  await desktop.locator(".glossary-pilot .content-section").last().screenshot({path:out+"/active-directory-related-original-journals-desktop.png"});
   await desktop.goto(host+"/people/john-shaw/",{waitUntil:"domcontentloaded"});
   await desktop.locator('img[src*="03-contractor-user-gpresult.png"]').scrollIntoViewIfNeeded();
   await desktop.locator('img[src*="03-contractor-user-gpresult.png"]').evaluate(el=>el.decode());
   await desktop.screenshot({path:out+"/john-shaw-original-gpresult-desktop.png"});
   await mobile.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
   await mobile.screenshot({path:out+"/active-directory-source-mobile.png"});
-  await mobile.locator(".identity-lesson").scrollIntoViewIfNeeded();
+  await mobile.locator(".glossary-pilot").scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/active-directory-full-source-mobile.png"});
+  for(const slug of ["active-directory","dns","smb"]){for(const [label,page] of [["desktop",desktop],["mobile",mobile]]){await page.goto(host+"/learn/"+slug+"/",{waitUntil:"domcontentloaded"});await page.locator(".glossary-pilot").waitFor({state:"visible"});await page.addStyleTag({content:".v4-header{position:relative!important}"});for(const img of await page.locator(".glossary-pilot img").all()){await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());}await page.locator(".glossary-pilot details").first().locator("summary").click();await page.screenshot({path:out+"/glossary-"+slug+"-"+label+".png",fullPage:true,animations:"disabled"});}}
   await mobile.goto(host+"/people/moyo/",{waitUntil:"domcontentloaded"});
   await mobile.locator("main .content-section").first().scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/moyo-original-source-mobile.png"});
@@ -130,7 +131,7 @@ try {
   await desktop.locator(".pdf-evidence-gallery img").first().evaluate(el=>el.decode());
   await desktop.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-dc01-pdf-evidence-desktop.png"});
   await desktop.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
-  await desktop.locator(".identity-lesson .files01-document-images").first().screenshot({path:out+"/active-directory-original-pdf-evidence-desktop.png"});
+  await desktop.locator(".glossary-pilot .files01-document-images").first().screenshot({path:out+"/active-directory-original-pdf-evidence-desktop.png"});
   await mobile.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
   await mobile.locator(".pdf-evidence-gallery").screenshot({path:out+"/original-backup-pdf-evidence-mobile.png"});
   await desktop.goto(host+"/journals/",{waitUntil:"domcontentloaded"});
