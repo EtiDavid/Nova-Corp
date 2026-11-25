@@ -48,7 +48,11 @@ try {
   await mobile.locator('.sb-guest[data-id="nova-files01"]').focus();
   await mobile.locator("#hx-explorer").screenshot({path:out+"/lab-focused-guest-mobile.png"});
   await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
-  await mobile.locator(".system-evidence-section").screenshot({path:out+"/fileserver-evidence-placeholder-mobile.png"});
+  await mobile.waitForURL("**/systems/nova-files01/");
+  const fileEvidence=mobile.locator(".files01-pilot .pdf-evidence-gallery").first();
+  await fileEvidence.scrollIntoViewIfNeeded();
+  for(const img of await fileEvidence.locator("img").all()){await img.scrollIntoViewIfNeeded();await img.evaluate(el=>el.decode());}
+  await fileEvidence.screenshot({path:out+"/fileserver-original-evidence-mobile.png"});
   await mobile.goto(host+"/company/?workflow=security",{waitUntil:"networkidle"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.locator("#workflow-lab").screenshot({path:out+"/workflow-security-mobile.png"});
