@@ -3,9 +3,9 @@
  * source CR-012/013/014 PDFs. These cards do not claim live state.
  */
 import approved from "../data/approvedPdfEvidence.json";
-interface Props {subject:string; heading?:string; limit?:number}
-const {subject,heading="Original screenshots from the engineering journal",limit=6}=Astro.props;
-const selected=approved.entries.filter(image=>image.subject===subject).slice(0,limit);
+interface Props {subject?:string; ids?:string[]; heading?:string; limit?:number}
+const {subject,ids,heading="Original screenshots from the engineering journal",limit=30}=Astro.props;
+const selected=(ids ? ids.map(id=>{const found=approved.entries.find(image=>image.id===id);if(!found)throw Error("Unknown reviewed PDF image "+id);return found;}) : approved.entries.filter(image=>image.subject===subject)).slice(0,limit);
 const root="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/";
 ---
 {selected.length>0&&<section class="pdf-evidence-gallery" aria-label={heading}>
