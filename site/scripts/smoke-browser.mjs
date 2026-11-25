@@ -43,12 +43,12 @@ try {
   assert.match(await desktop.locator("#il-controlled").innerText(),/Controlled failure tests/);
   assert.match(await desktop.locator("#il-unplanned").innerText(),/Unexpected incidents/i);
   assert.equal(await desktop.locator(".il-group:first-child .il-item").count(),9);
-  assert.equal(await desktop.locator(".il-group:last-child .il-item").count(),6);
+  assert.equal(await desktop.locator(".il-group:last-child .il-item").count(),7);
   assert.equal(await desktop.locator(".il-group .il-item:visible").count(),8,"start with 4 visible from each group");
   await desktop.locator("#il-more-controlled summary").click();
   assert.equal(await desktop.locator(".il-group .il-item:visible").count(),13);
   await desktop.locator("#il-more-unplanned summary").click();
-  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),15);
+  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),16);
   assert.equal(await desktop.locator("main > section").count(),2,"hero and incident library only");
  });
  await step("Sandbox: color logos, real IPs, subtle scroll and genuine profile navigation",async()=>{
