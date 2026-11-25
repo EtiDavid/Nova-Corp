@@ -27,7 +27,7 @@ const expectedPages={
   "eight interfaces","five VLANs","17 filter rules","one active WireGuard",
   "six DHCP scopes","Original engineering records"
  ],
- "systems/nova-dc01/index.html":["What we tested","Domain Controller","directory"],
+ "systems/nova-dc01/index.html":["Related tests and incidents","Domain Controller","directory","Technical Profile"],
  "systems/nova-files01/index.html":["Technical profile","Backup","shared"],
  "policies/domain-password/index.html":["Complete original Group Policy explanation","Password"],
  "network/zones/client/index.html":["Complete network-zone documentation","CLIENT"],

@@ -32,11 +32,12 @@ const names={
 };
 auditSection("14 unchanged technical explanations",names.terms.filter(x=>!["smb","ntfs","dfs","shadow-copy"].includes(x)).map(x=>"learn/"+x),["engineer-source-section","source-document","term-source-index"],"Must embed full original service/engineering source and link actual CR journal");
 auditSection("5 file-service explanations",["smb","ntfs","dfs","shadow-copy","acl"].map(x=>"learn/"+x),["files01-document-images","Problem","Solution","Engineering journals","/reference/","/pdf-journals/"],"Explanation-first layout with original screenshots and complete standalone source/journal links");
-auditSection("20 real lab directory account records",names.people.map(x=>"people/"+x),["engineer-source-section","source-document"],"Exact public individual account Markdown per person, not assumed role");
-auditSection("11 source-backed group profiles",names.groups.map(x=>"groups/"+x),["engineer-source-section","source-document"],"Original documented AGDLP inventory and actual group relationships");
-auditSection("16 original OU source-backed profiles",names.ous.map(x=>"directory/ous/"+x),["engineer-source-section","source-document"],"Original 2026-11-22 directory snapshot, not live AD");
-auditSection("4 computer-object profiles",names.computers.map(x=>"computers/"+x),["engineer-source-section","source-document"],"Original AD inventory distinct from VM status");
-auditSection("5 full server profiles",names.systems.filter(x=>x!=="nova-files01").map(x=>"systems/"+x),["engineer-source-section","source-document"],"Full original per-system engineering Markdown and honest image panels");
+auditSection("20 real lab directory account records",names.people.map(x=>"people/"+x),["Active Directory profile","Direct security groups","Nested resource groups","Engineering journals","/reference/explore/people/"],"Exact public individual account Markdown per person, not assumed role");
+auditSection("11 source-backed group profiles",names.groups.map(x=>"groups/"+x),["Group attributes","/reference/explore/GROUPS/"],"Original documented AGDLP inventory and actual group relationships");
+auditSection("16 original OU source-backed profiles",names.ous.map(x=>"directory/ous/"+x),["What is stored in this OU?","/reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"],"Original 2026-11-22 directory snapshot, not live AD");
+auditSection("4 computer-object profiles",names.computers.map(x=>"computers/"+x),["Directory computer profile","/reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"],"Original AD inventory distinct from VM status");
+auditSection("5 full server profiles",names.systems.filter(x=>!["nova-files01","nova-dc01"].includes(x)).map(x=>"systems/"+x),["engineer-source-section","source-document"],"Full original per-system engineering Markdown and honest image panels");
+auditSection("DC01 explanation-first profile",["systems/nova-dc01"],["Technical Profile","Inside this server","Engineering journals","dc02-sysvol-available.jpg","/reference/explore/systems/NOVA-DC01/"]);
 auditSection("1 explanation-first file server profile",["systems/nova-files01"],["Technical Profile","What is NOVA-FILES01?","files01-document-images","Engineering journals","NovaCorp_CR-008_File_Server_Deployment_Journal.pdf","NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf","NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf","CR-012_Windows_Server_Backup_and_Recovery_Journal.pdf","Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"],"Owner-approved concise profile with original evidence and direct full journal access; redundant inline source removed. Standalone source remains verified separately.");
 auditSection("16 full incident analyses",
  ["backup-target-unavailable","bulk-users-partial-rollback","dc01-outage","dc01-vlan-migration","dns-client-outage","file-permission-denial","firewall-management-exposure","gpo-link-disabled","group-acl-name-mismatch","proxmox-default-gateway","proxmox-storage-pressure","proxmox-webgui-outage","replication-divergence","two-faults-one-symptom","vpn-validation-deferred","wireguard-handshake"].map(x=>"incidents/"+x),
@@ -48,11 +49,11 @@ for(const str of ["Active Directory — Nova Corp","repadmin /replsummary","Reso
  if(!ad?.includes(str))errors.push("Active Directory glossary missing original source fact: "+str);
 }
 const entry=pageAt("people/john-shaw");
-for(const str of ["John Shaw","gpresult","source-document","03-contractor-user-gpresult.png"]){
+for(const str of ["John Shaw","gpresult","Active Directory profile","03-contractor-user-gpresult.png"]){
  if(!entry?.includes(str))errors.push("John Shaw original GPO test or picture reference missing: "+str);
 }
 const groups=pageAt("groups/it-users");
-if(!groups?.includes("AGDLP"))errors.push("IT group page missing original AGDLP source concept");
+if(!groups?.includes("DL_FS_IT_Modify"))errors.push("IT group page missing original AGDLP source concept");
 const dir=pageAt("directory/ous/it");
 if(!dir?.includes("DIRECTORY_SNAPSHOT_2026-11-22"))errors.push("IT OU lacks actual directory snapshot source");
 const manifest={purpose:"Source-backed public site-wide audit. A passage is shown only when its original published Markdown was staged by SHA and included in the built page; this does not independently prove every described lab claim.",generatedHtmlPages:contentPages,totalCheckedProfiles:checks.reduce((sum,x)=>sum+x.count,0),checks,errors,sourceBranch:"Public docs/ in website's checked-out publishing branch; compare GitHub main before later upgrades"};

@@ -21,7 +21,7 @@ try {
   await desktop.locator('.sb-guest[data-id="nova-files01"]').hover();
   await desktop.locator("#hx-explorer").screenshot({path:out+"/lab-fileserver-preview-desktop.png"});
   await desktop.locator('.sb-guest[data-id="nova-dc01"]').click();
-  await desktop.locator(".system-evidence-section").screenshot({path:out+"/dc01-evidence-placeholder-desktop.png"});
+  await desktop.locator(".dc-profile .files01-document-images").first().screenshot({path:out+"/dc01-evidence-placeholder-desktop.png"});
   await desktop.goto(host+"/",{waitUntil:"networkidle"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   await desktop.locator(".il").screenshot({path:out+"/incident-library-collapsed-desktop.png"});
@@ -111,15 +111,15 @@ try {
   await desktop.screenshot({path:out+"/active-directory-original-source-desktop.png"});
   await desktop.locator(".term-source-index").screenshot({path:out+"/active-directory-related-original-journals-desktop.png"});
   await desktop.goto(host+"/people/john-shaw/",{waitUntil:"domcontentloaded"});
-  await desktop.locator('.contextual-source img[src*="03-contractor-user-gpresult.png"]').scrollIntoViewIfNeeded();
-  await desktop.locator('.contextual-source img[src*="03-contractor-user-gpresult.png"]').evaluate(el=>el.decode());
+  await desktop.locator('img[src*="03-contractor-user-gpresult.png"]').scrollIntoViewIfNeeded();
+  await desktop.locator('img[src*="03-contractor-user-gpresult.png"]').evaluate(el=>el.decode());
   await desktop.screenshot({path:out+"/john-shaw-original-gpresult-desktop.png"});
   await mobile.goto(host+"/learn/active-directory/",{waitUntil:"domcontentloaded"});
   await mobile.screenshot({path:out+"/active-directory-source-mobile.png"});
   await mobile.locator(".term-story .engineer-source-section").scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/active-directory-full-source-mobile.png"});
   await mobile.goto(host+"/people/moyo/",{waitUntil:"domcontentloaded"});
-  await mobile.locator(".contextual-source").scrollIntoViewIfNeeded();
+  await mobile.locator("main .content-section").first().scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/moyo-original-source-mobile.png"});
   await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
