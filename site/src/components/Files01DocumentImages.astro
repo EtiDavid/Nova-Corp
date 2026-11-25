@@ -1,0 +1,12 @@
+---
+import approved from "../data/approvedPdfEvidence.json";
+interface Props {ids:string[]}
+const {ids}=Astro.props;
+const items=ids.map(id=>{const item=approved.entries.find(x=>x.id===id);if(!item)throw Error("Unknown reviewed image "+id);return item;});
+---
+<div class="files01-document-images">
+{items.map(item=><figure><img src={import.meta.env.BASE_URL+"pdf-evidence/"+item.id+"."+(item.ext==="jpeg"?"jpg":"png")} alt={item.alt} loading="lazy" decoding="async"/><figcaption><strong>{item.title}</strong><p>{item.caption}</p></figcaption></figure>)}
+</div>
+<style>
+.files01-document-images{min-width:0;max-width:100%}.files01-document-images figure{margin:26px 0 32px;min-width:0}.files01-document-images img{display:block;width:100%;height:auto;max-width:100%;border:1px solid #505449;border-radius:4px;background:#151814}.files01-document-images figcaption{padding:10px 0 0;color:#c5c7bb;font-size:.84rem;line-height:1.5}.files01-document-images figcaption strong{display:block;color:#e9e5d8;font-size:.92rem}.files01-document-images figcaption p{margin:5px 0 0;font-size:.84rem}
+</style>
