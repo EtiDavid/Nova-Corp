@@ -12,7 +12,7 @@ const groupTargets=person.directGroups.map(name=>findGroupByName(name)).filter(B
 const descriptions:Record<string,string>={"administrator":"Built-in privileged domain administration account.","guest":"Built-in Guest account, disabled in the recorded directory.","krbtgt":"Built-in Kerberos ticket service identity. Its disabled interactive-account status is normal.","test-user":"Enabled test account in the default Users container.","john-shaw":"Contractor account used to test Group Policy targeting.","alice-finance":"Finance account created during PowerShell bulk onboarding.","finance-test":"Finance test account used for authorization and lockout scenarios.","henry-hr":"HR account created during bulk user onboarding tests.","hr-test":"Test account retained in the HR department.","isaac-it":"IT account created for PowerShell user administration exercises.","david-it":"IT department account used during the original directory exercise.","moyo":"IT account used to test actual access to company documents.","maria-manager":"Management account created during bulk onboarding and group membership exercises.","management-test":"Management test account used for resource authorization analysis, including Finance Full Control.","gui-pilot":"Test account kept disabled after administration exercises.","sarah-sales":"Sales account disabled and moved to Nova Disabled Objects during offboarding; no longer in Sales_Users.","svc-backup":"Service identity created for backup-related operations; actual process use is not established.","svc-fileserver":"Service identity created for file-server operations; actual service logon is not established.","svc-monitoring":"Service identity created for monitoring work; centralized monitoring was not deployed in Phase 2.","sales-test":"Enabled Sales test account, distinct from disabled Sarah Sales."};
 const sourcePaths:Record<string,string>={"finance-test":"accounts/fin-test","management-test":"accounts/mgmt-test","david-it":"DAVID","moyo":"MOYO","john-shaw":"JOHN_SHAW","alice-finance":"accounts/cr011-fin","henry-hr":"accounts/cr011-hr","isaac-it":"accounts/cr011-it","maria-manager":"accounts/cr011-mgmt","gui-pilot":"accounts/cr011-gui","sarah-sales":"accounts/cr011-sales"};
 const sourcePath=sourcePaths[person.slug]??"accounts/"+person.slug;
-const nested=person.directGroups.flatMap(groupResources);
+const nested=person.directGroups.flatMap(name=>groupResources(name));
 const builtIn:Record<string,string[]>={administrator:["Administrators","Domain Admins","Enterprise Admins","Schema Admins","Group Policy Creator Owners"],guest:["Guests"]};
 const isExample=person.slug==="moyo";
 const isManager=person.slug==="maria-manager";
@@ -27,16 +27,16 @@ const label=person.category==="service"?"Service identity":person.category==="bu
 <h1>{person.name}</h1><p class="lead" style="margin-top:17px">{descriptions[person.slug]}</p>
 
 </div></section>
-<section class="section compact"><div class="container grid-main"><div>
+<section class="section compact"><div class="container grid-main account-page"><div>
   <section class="content-section">
    <h2>Active Directory profile</h2>
    <div class="paper panel" style="margin-top:20px">
-     <dl class="fact-list">
-       <div><dt>Display name</dt><dd>{person.name}</dd></div><div><dt>Domain</dt><dd>nova.corp</dd></div><div><dt>Sign-in identifier (not an email address)</dt><dd><code>{person.logon}</code></dd></div>
-       <div><dt>Directory location</dt><dd>{ou?<a href={base+"directory/ous/"+ou.slug+"/"}>{person.location}</a>:person.location}</dd></div>
-       <div><dt>Account kind</dt><dd>{label}</dd></div>
-       <div><dt>Recorded account status</dt><dd>{person.enabled?"Enabled":"Disabled"}</dd></div>
-     <div><dt>Direct security groups</dt><dd>{person.directGroups.length?person.directGroups.join(", "):builtIn[person.slug]?.join(", ")??"No custom membership recorded"}</dd></div><div><dt>Nested resource groups</dt><dd>{nested.length?nested.map(g=><p><a href={base+"groups/"+g.slug+"/"}>{g.name}</a></p>):"None recorded"}</dd></div></dl>
+     <dl class="fact-list account-details">
+       <div><dt>Display name</dt><dd>{person.name}</dd></div><div><dt>Domain</dt><dd>nova.corp</dd></div><div><dt>AD username (sAMAccountName)</dt><dd><code>{person.logon}</code></dd></div>
+       <div><dt>Organizational Unit / container</dt><dd>{ou?<a href={base+"directory/ous/"+ou.slug+"/"}>{person.location}</a>:person.location}</dd></div>
+       <div><dt>Account type</dt><dd>{label}</dd></div>
+       <div><dt>Account enabled</dt><dd>{person.enabled?"Yes":"No"}</dd></div>
+     <div><dt>Direct security groups</dt><dd>{person.directGroups.length?person.directGroups.map(name=>{const g=findGroupByName(name);return <p>{g?<a href={base+"groups/"+g.slug+"/"}>{name}</a>:name}</p>}):builtIn[person.slug]?.join(", ")??"No custom membership recorded"}</dd></div><div><dt>Nested resource groups</dt><dd>{nested.length?nested.map(g=><p><a href={base+"groups/"+g.slug+"/"}>{g.name}</a></p>):"None recorded"}</dd></div></dl>
    </div>
   </section>
   {ou&&<section class="content-section">
@@ -49,7 +49,7 @@ const label=person.category==="service"?"Service identity":person.category==="bu
     <p class="muted" style="margin-top:15px">Domain-wide policy links are a separate inherited scope. <a href={base+"policies/domain-password/"}>See the default domain policy</a>.</p>
   </section>}
   <section class="content-section">
-    <h2>Which folders can this account access?</h2>{nested.length>0&&<div class="card-list">{nested.map(g=><a class="system-card" href={base+"files/shares/"+g.folder+"/"}><h3>{g.folder?.toUpperCase()} folder</h3><p>Configured group rights: SMB {g.shareRight} · NTFS {g.ntfsRight}</p></a>)}</div>}
+    <h2>Configured folder access</h2>{nested.length>0&&<div class="card-list">{nested.map(g=><a class="system-card" href={base+"files/shares/"+g.folder+"/"}><h3>{g.folder?.toUpperCase()} folder</h3><p>Configured group rights: SMB {g.shareRight} · NTFS {g.ntfsRight}</p></a>)}</div>}
     {groupTargets.length>0?<div class="card-list" style="margin-top:19px">{groupTargets.map(group=>group&&<a class="system-card" href={base+"groups/"+group.slug+"/"}><small>Recorded direct group membership</small><h3>{group.name}</h3><p>{group.description}</p><span class="readmore">Follow the group →</span></a>)}</div>:
       <div class="note" style="margin-top:19px">No custom direct department-group membership is established for this account in the selected public slice. This does not imply an empty Windows access token or no built-in group memberships.</div>}
     <p class="muted" style="margin-top:18px">Group membership is an observed directory fact. Permission grants are separate file-server ACL facts; the ability to open a file depends on both and on the current session.</p>
@@ -83,6 +83,8 @@ const label=person.category==="service"?"Service identity":person.category==="bu
 </div>
 <aside>
   <div class="sidebox"><h3>Explore connections</h3>{ou?<a href={base+"directory/ous/"+ou.slug+"/"}>Parent Organizational Unit →</a>:<a href={base+"directory/"}>Directory tree →</a>}<p style="margin-top:15px"><a href={base+"groups/"}>Company security groups →</a></p><p style="margin-top:15px"><a href={base+"files/"}>Department file access →</a></p></div>
-  <div class="sidebox"><h3>Do not confuse</h3><p class="muted">An identity being enabled, belonging to an OU or appearing in a group is not by itself a completed sign-in or file-access test.</p></div>
+  
 </aside></div></section>
 </BaseLayout>
+
+<style>.account-page>*{min-width:0}.account-page .content-section{margin-bottom:44px}.account-page h2{font-size:clamp(1.55rem,2.4vw,2.15rem);margin:0 0 17px;line-height:1.2}.account-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}.account-details dd{overflow-wrap:anywhere}.account-details dd p{margin:0 0 5px}.account-page p{line-height:1.65}@media(max-width:640px){.account-details{grid-template-columns:1fr}}</style>
