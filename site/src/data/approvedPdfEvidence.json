@@ -585,36 +585,6 @@
       "alt": "Original Nova Corp CR-010 PDF page 21: Previous versions exist on NovaData",
       "classification": "original already-public historical lab screenshot; not live telemetry",
       "review": "Visually inspected exact PDF image and source context on 25 November 2026; no visible passwords, keys, or unrelated personal documents. Caption limited to visible evidence."
-    },
-    {
-      "id": "shadow-copy-storage",
-      "pdf": "NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf",
-      "pdfSha256": "38085dc8b955c7cd56e01755b6c153ea19b7d52e7db4d81b2b03afb608909d69",
-      "page": 21,
-      "block": 5,
-      "sourceImageSha256": "687150071d00aa9bb2367caecdaf8b30c522baecebe6ef3d4be8f1e7df3a1f9",
-      "ext": "jpeg",
-      "title": "Shadow Copy storage association",
-      "caption": "The original vssadmin output shows client-accessible snapshots and a D:-to-D: storage association with a 6 GB maximum. It is not an independent backup disk.",
-      "subject": "learn/shadow-copy",
-      "alt": "Original Nova Corp CR-010 PDF page 21: Shadow Copy storage association",
-      "classification": "original already-public historical lab screenshot; not live telemetry",
-      "review": "Visually inspected exact PDF image and source context on 25 November 2026; no visible passwords, keys, or unrelated personal documents. Caption limited to visible evidence."
-    },
-    {
-      "id": "shadow-copy-deleted-file",
-      "pdf": "NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf",
-      "pdfSha256": "38085dc8b955c7cd56e01755b6c153ea19b7d52e7db4d81b2b03afb608909d69",
-      "page": 23,
-      "block": 5,
-      "sourceImageSha256": "2be1dfceb1def77ae71cbb0f328b665bb941d120ae9ed497cfb6465fd51e9480",
-      "ext": "jpeg",
-      "title": "Finding a deleted test file in an earlier version",
-      "caption": "The historical DFS-backed IT folder still contains CR010-Shadow-Recovery-Test.txt, although the live test file had been deleted.",
-      "subject": "learn/shadow-copy",
-      "alt": "Original Nova Corp CR-010 PDF page 23: Finding a deleted test file in an earlier version",
-      "classification": "original already-public historical lab screenshot; not live telemetry",
-      "review": "Visually inspected exact PDF image and source context on 25 November 2026; no visible passwords, keys, or unrelated personal documents. Caption limited to visible evidence."
     }
   ]
 }
