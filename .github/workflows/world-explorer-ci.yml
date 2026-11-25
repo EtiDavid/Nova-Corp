@@ -1,7 +1,7 @@
 name: World Explorer site checks
 on:
   push:
-    branches: [feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals, feature/sitewide-source-parity-and-pdf-evidence, feature/full-pdf-journal-library-and-final-qa]
+    branches: [feature/files01-explanation-pilot, feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals, feature/sitewide-source-parity-and-pdf-evidence, feature/full-pdf-journal-library-and-final-qa]
     paths:
       - "site/**"
       - "docs/**"
@@ -104,7 +104,7 @@ jobs:
             sleep 1
           done
           if [ "$READY" -ne 1 ]; then cat /tmp/novacorp-preview.log; exit 1; fi
-          for ENTRY in "home:/" "explorer:/company/" "investigation:/incidents/dns-client-outage/" "policy:/policies/contractor-usb/" "acls:/files/permissions/technical/"; do
+          for ENTRY in "home:/" "explorer:/company/" "investigation:/incidents/dns-client-outage/" "policy:/policies/contractor-usb/" "acls:/files/permissions/technical/" "files01:/systems/nova-files01/" "file-centre:/files/" "subnet:/incidents/fileserver-subnet/" "permission:/incidents/file-permission-denial/"; do
             NAME="${ENTRY%%:*}"
             PAGE="${ENTRY#*:}"
             for VIEW in "desktop:1440,900" "mobile:390,844"; do
@@ -115,7 +115,7 @@ jobs:
             done
           done
           CHROME_PATH="$CHROME" node scripts/capture-experience-qa.mjs
-          echo "Real Chromium captured ten standard screenshots and six interaction-focused screenshots. Visual acceptance remains manual."
+          echo "Real Chromium captured standard desktop/mobile and interaction-focused screenshots. Visual acceptance remains manual."
       - name: Keep actual browser screenshots for visual review
         uses: actions/upload-artifact@v4
         with:
