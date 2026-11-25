@@ -1,5 +1,5 @@
 ---
-import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
+import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { shares, fileEvidence } from "../../data/fileCentre";
 const base=import.meta.env.BASE_URL;
@@ -13,7 +13,7 @@ const base=import.meta.env.BASE_URL;
 <section class="section compact"><div class="container grid-main">
 <div>
   <section class="content-section">
-    <h2>Why use a company file address?</h2><p><strong>Problem:</strong> If employees memorize a physical server name, moving storage can break familiar paths.</p><p><strong>Solution:</strong> The domain namespace provides a stable company address and points to the appropriate department share. The actual permissions remain on the destination.</p><div class="paper panel">
+    <h2>Why use a company file address?</h2><h3 class="file-problem">Problem</h3><p>Imagine <a href={base+"people/moyo/"}>Moyo</a> has saved a shortcut to a folder on a particular server. If IT moves the folder to another server, the shortcut could stop working.</p><h3 class="file-solution">Solution</h3><p>IT creates a stable company address instead. The employee can use the same shortcut while IT updates the destination behind it. DFS finds the folder; permissions remain on the destination.</p><div class="paper panel">
       <p class="kicker">The company entry point</p>
       <h2 style="margin:12px 0 15px"><code class="technical">\\nova.corp\shares</code></h2>
       <p class="muted">The namespace root is stored on NOVA-FILES01 at <code class="technical">C:\DFSRoots\shares</code>. Its SMB share called <code>shares</code> has a recorded <strong>Everyone: Read</strong> entry for the namespace, which must not be confused with unrestricted access to Finance or HR data on D:.</p>
@@ -31,7 +31,7 @@ const base=import.meta.env.BASE_URL;
       <li class="walk-step"><h3>The target checks SMB and NTFS rights</h3><p>The employee's domain group and current security token are evaluated against the real share and folder permissions. Namespace Read is not a bypass.</p></li>
     </ol>
   </section>
-  <OriginalPdfEvidenceGallery subject="files/dfs" heading="Recorded DFS setup, referral and mapped-drive tests"/><section class="content-section"><h2>Related investigations</h2><p><a href={base+"incidents/dns-client-outage/"}>When name resolution fails →</a></p><h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"}>CR-010 original PDF, including the offline-target exercise →</a></p></section>
+  <Files01DocumentImages ids={["dfs-namespace-gui","dfs-client-mapped-drive","dfs-targets-online-audit"]}/><details><summary>Show more images · Drive mapping and unavailable target</summary><Files01DocumentImages ids={["dfs-netlogon-mapping-hash","dfs-target-offline-probe"]}/></details><section class="content-section"><h2>Related investigations</h2><p><a href={base+"incidents/dns-client-outage/"}>When name resolution fails →</a></p><h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"}>CR-010 original PDF, including the offline-target exercise →</a></p></section>
 </div>
 <aside>
   <div class="sidebox"><h3>Inspect the real file server</h3><a href={base+"systems/nova-files01/"}>NOVA-FILES01 →</a><p class="muted" style="margin-top:12px">The lab uses one documented target per department. This is not a file-server failover cluster.</p></div>
@@ -39,3 +39,5 @@ const base=import.meta.env.BASE_URL;
 </aside>
 </div></section>
 </BaseLayout>
+
+<style>.file-problem{color:#edb4a2;margin:24px 0 8px;font-size:1.05rem}.file-solution{color:#c6dcb4;margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>

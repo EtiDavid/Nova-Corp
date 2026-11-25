@@ -1,5 +1,5 @@
 ---
-import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
+import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { shares, fileEvidence } from "../../data/fileCentre";
 import { findGroupByName } from "../../data/groups";
@@ -12,7 +12,7 @@ const base=import.meta.env.BASE_URL;
 <p class="lead" style="margin-top:17px">Instead of giving permissions individually to every staff account, Nova Corp uses department groups nested into resource groups. SMB and NTFS permissions remain separate security checks.</p>
 </div></section>
 <section class="section compact"><div class="container">
-  <section class="content-section"><h2>Why does Nova Corp need an access matrix?</h2><p><strong>Problem:</strong> Moyo needs to modify IT documents, but confidential Finance files must remain restricted.</p><p><strong>Solution:</strong> Assign rights to department resource groups, then audit the two permission layers separately. The following matrix describes recorded root configuration rather than a live authorization simulator.</p></section><div class="paper" style="overflow-x:auto">
+  <section class="content-section"><h2>Why does Nova Corp need an access matrix?</h2><h3 class="file-problem">Problem</h3><p><a href={base+"people/moyo/"}>Moyo</a> needs to modify IT documents, while Finance must keep sensitive records private.</p><h3 class="file-solution">Solution</h3><p>IT assigns rights to resource groups instead of individual accounts. Windows checks both share and folder permissions. The IT group grants the required access, but it does not grant Finance access. The following matrix describes recorded root configuration rather than a live authorization simulator.</p></section><div class="paper" style="overflow-x:auto">
   <table class="data-table" style="min-width:690px">
    <caption>Reviewed departmental root permissions. Select a share or group for the full access path.</caption>
    <thead><tr><th scope="col">Department</th><th scope="col">Global membership group</th><th scope="col">Domain Local permission group</th><th scope="col">SMB</th><th scope="col">NTFS</th></tr></thead>
@@ -49,5 +49,7 @@ const base=import.meta.env.BASE_URL;
     <aside><div class="sidebox"><h3>What was actually inspected?</h3><p class="muted">The detailed source records 27 SMB permission entries and 73 NTFS access entries across 11 shares and 14 reviewed folder scopes. It is not a recursive audit of all files.</p><a class="evidence-link" href={fileEvidence.technical}>Open every recorded permission ↗</a></div>
     <div class="sidebox"><h3>Real incident</h3><p class="muted">A controlled IT folder-denial test was later repaired. The restored snapshot shows inherited Modify and no remaining Moyo-specific explicit DENY.</p><a class="evidence-link" href={base+"incidents/file-permission-denial/"}>See the repair evidence ↗</a></div></aside>
   </div>
-<section class="content-section"><OriginalPdfEvidenceGallery subject="incidents/file-permission-denial" heading="Recorded diagnostic evidence"/><h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf"}>CR-009 original access tests →</a> · <a href={base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"}>CR-014 controlled denial and repair →</a></p></section></div></section>
+<section class="content-section"><Files01DocumentImages ids={["permission-positive-baseline","permission-denial-observed"]}/><details><summary>Show more images · Diagnosing the separate folder denial</summary><Files01DocumentImages ids={["file-permission-isolation","permission-explicit-deny","permission-repair-pass"]}/></details><h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf"}>CR-009 original access tests →</a> · <a href={base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"}>CR-014 controlled denial and repair →</a></p></section></div></section>
 </BaseLayout>
+
+<style>.file-problem{color:#edb4a2;margin:24px 0 8px;font-size:1.05rem}.file-solution{color:#c6dcb4;margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>
