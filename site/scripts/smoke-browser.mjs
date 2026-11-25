@@ -192,6 +192,24 @@ try {
   await desktop.goto(host+"/roadmap/",{waitUntil:"domcontentloaded"});
   assert(await desktop.locator('a[href*="/journals/NovaCorp_CR-008_File_Server_Deployment_Journal/"]').count()>0,"CR-008 links complete original PDF");
  });
+ await step("FILES01 pilot: actual navigation and responsive source evidence",async()=>{
+  for(const width of [390,768,1440]){
+   const page=await browser.newPage({viewport:{width,height:900}});
+   const start=host+"/systems/nova-files01/";
+   await page.goto(start,{waitUntil:"domcontentloaded"});
+   assert(await page.getByRole("heading",{name:"What is NOVA-FILES01?"}).isVisible());
+   assert(await page.getByRole("heading",{name:"Technical Profile"}).isVisible());
+   for(const route of ["files/","files/permissions/","files/dfs/","files/shadow-copies/","files/volumes/","files/backup/","incidents/fileserver-subnet/","incidents/file-permission-denial/"]){
+    await page.goto(start,{waitUntil:"domcontentloaded"});
+    await page.locator('.files01-pilot a[href="/'+route+'"]').first().click();
+    await page.waitForURL(host+"/"+route);
+    const dimensions=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth}));
+    assert(dimensions.document<=dimensions.viewport+3,route+" overflow at "+width+": "+JSON.stringify(dimensions));
+    assert(await page.locator("h1").isVisible(),route+" missing title");
+   }
+   await page.close();
+  }
+ });
  await step("Company explorer: select, deep link, Escape and focus return",async()=>{
   await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
   const node=desktop.locator('.node[data-id="nova-dc01"]');
@@ -252,7 +270,7 @@ try {
  });
  await step("Investigations index filters; DNS replay steps and reveals recorded results",async()=>{
   await desktop.goto(host+"/incidents/",{waitUntil:"networkidle"});
-  assert.equal(await desktop.locator("#case-grid .outcome").count(),16);
+  assert.equal(await desktop.locator("#case-grid .outcome").count(),17);
   assert.equal(await desktop.locator(".chip.deferred").count(),1);
   await desktop.getByRole("button",{name:"Recovery"}).click();
   assert.equal(await desktop.locator("#case-grid .outcome:visible").count(),1);
