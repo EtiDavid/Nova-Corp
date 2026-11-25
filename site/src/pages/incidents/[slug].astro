@@ -1,4 +1,5 @@
 ---
+import PermissionIncidentPilot from "../../components/PermissionIncidentPilot.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DnsReplay from "../../components/DnsReplay.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
@@ -36,21 +37,21 @@ const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-targe
 <section class="section compact"><div class="container">{entry.id==="dns-client-outage" && <DnsReplay />}</div></section>
 <section class="section compact"><div class="container grid-main">
   <article class="prose">
-     {entry.id==="file-permission-denial" ? <div class="incident-case-intro"><h2>What did I plan to test?</h2><p>Could I diagnose a file access failure affecting an employee who already had the correct departmental access?</p><h2>Why test it?</h2><p>An employee unable to open a document may be facing a network problem or a permission problem. Changing permissions without identifying the cause can expose confidential files.</p><h2>How the failure was introduced</h2><p>In a controlled lab exercise, an explicit NTFS DENY for NOVA\\moyo was applied to the disposable CR014-IncidentLab subfolder. First, Moyo proved read/write access. The first injector launch was blocked by PowerShell execution policy; the trusted script was unblocked without weakening RemoteSigned globally. The next launch ran but did not actually break access, so it was declared invalid. A corrected injector finally produced the intended denial.</p><p><a href={base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf#page=9"}>Original baseline and injection evidence, figures 4.1–4.4 →</a></p><EvidencePanel subject="Controlled fault injection" requested="Original CR-014 figures 4.1–4.4: baseline, blocked injector, unblocking and valid failure; image review pending (FILES01-10)."/><h2>What happened?</h2><p>Moyo could see the IT share but could not read or write the test file. The share itself was still reachable.</p><OriginalPdfEvidenceGallery subject="incidents/file-permission-denial" heading="The network and share still worked during the failure"/><h2>How I investigated and recovered</h2><IncidentOriginalRecord slug={entry.id}/><EvidencePanel subject="Root cause and repair" requested="Original CR-014 figures 4.6 and 4.7: explicit deny and post-repair read/write validation; image review pending (FILES01-11/12)."/><p><a href={base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf#page=11"}>Original ACL and recovery evidence →</a></p><h2>What the test teaches</h2><p>Check the network, the user’s group membership and each permission layer before changing access. Remove only the temporary denial and verify that the intended access works again.</p><h2>Engineering journal</h2><p><a href={journalOnSite}>Read the complete original CR-014 journal with screenshots →</a></p></div> : <><div class="incident-case-intro"><span class="eyebrow">Quick overview</span><Content /><p><a href="#full-investigation">↓ Read every recorded troubleshooting step and result on this page</a></p></div>
+     {entry.id==="file-permission-denial" ? <PermissionIncidentPilot /> : <><div class="incident-case-intro"><span class="eyebrow">Quick overview</span><Content /><p><a href="#full-investigation">↓ Read every recorded troubleshooting step and result on this page</a></p></div>
      <OriginalPdfEvidenceGallery subject={"incidents/"+entry.id} heading="See the original recorded failure and recovery" />
      <IncidentOriginalRecord slug={entry.id} />
      {evidenceRequested.has(entry.id)&&!originalImagesAvailable&&entry.id!=="wireguard-handshake"&&<div class="incident-proof-slot"><h2>Diagnostic screenshots</h2><EvidencePanel subject={entry.data.title} requested={"A redacted original diagnostic screenshot from the "+entry.data.title+" execution journal. The full primary journal link above preserves any existing PDF images."}/></div>}
    </>}
    </article>
   <aside>
-   <div class="sidebox incident-sidebar-journal">
+   {entry.id!=="file-permission-denial"&&<div class="sidebox incident-sidebar-journal">
     <h3>The full engineering journal</h3>
     <p class="muted" style="font-size:.88rem">The full execution journal is the actual change/fault-test record, not the shorter incident summary. The complete public investigation is also reproduced directly below.</p>
     <a class="evidence-link incident-master-link" href={journalURL} target="_blank" rel="noopener noreferrer">Open {source.journalFormat==="pdf"?"original PDF":"full Markdown"} journal on GitHub ↗</a>
     {journalOnSite&&<p><a href={journalOnSite}>Read complete original {source.journalFormat==="pdf"?"PDF, all pages and images":"Markdown journal"} on this website ↗</a></p>}
     <p><a href="#full-investigation">↓ Full step-by-step incident investigation</a></p>
     <p><a href={summaryURL}>Original detailed incident record ↗</a></p>
-   </div>
+   </div>}
    <div class="sidebox"><h3>Continue exploring</h3>{entry.data.systems.map((slug:string)=><p style="margin-bottom:12px"><a href={base+"systems/"+slug+"/"}>{slug.toUpperCase()} →</a></p>)}<a href={base+"incidents/"}>← All investigations</a></div>
   </aside>
 </div></section>
