@@ -501,7 +501,7 @@
       "pdf": "CR-012_Windows_Server_Backup_and_Recovery_Journal.pdf",
       "pdfSha256": "55a8e7bddd0997a37dd864b93ff601fb24181086c31c433d350dc7b687d4fd36",
       "page": 20,
-      "block": 4,
+      "block": 8,
       "sourceImageSha256": "98566fa3a8605e332d163da33fc332525113db5d86b53eba4e6231dc7be29418",
       "ext": "png",
       "title": "Dedicated NovaBackup volume",
