@@ -70,7 +70,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
         <div class="card-list">{associatedPolicies.map(policy=><a class="system-card" href={base+"policies/"+policy.slug+"/"}><small>{policy.side} · {policy.link?"Linked to "+policy.link.label:"Not linked"}</small><h3>{policy.name}</h3><p>{policy.summary}</p><span class="readmore">Inspect settings and verification →</span></a>)}</div>
       </section>}
       <section class="content-section">
-        <h2>Not yet proven</h2>
+        <h2>Not yet proven</h2>{["nova-dc01","nova-dc02","nova-fw01","nova-prox01"].includes(system.id)&&<p><a href={base+"incidents/fileserver-subnet/"}>Related investigation: CR-008 subnet mismatch →</a></p>}
         <div class="paper panel">
           <a class="evidence-link" href={system.sourceUrl} target="_blank" rel="noopener noreferrer">Read the original engineering record ↗</a>
           <ul class="plain-list">{system.limitations.map(item=><li>{item}</li>)}</ul>
