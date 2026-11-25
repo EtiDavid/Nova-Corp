@@ -30,11 +30,8 @@ const statusText = system.status === "observed-running" ? `Running at last check
     <div class="eyebrow">{system.category}</div>
     <h1>{system.name}</h1>
     <p class="lead" style="margin-top:17px">{system.summary}</p>
-    {!["nova-files01","nova-dc01"].includes(system.id)&&<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:19px">
-      <span class="status">{statusText}</span>
-    </div>}
   </div></section>
-  {system.id==="nova-files01" ? <Files01Pilot/> : system.id==="nova-dc01" ? <DC01Profile/> : <section class="section compact"><div class="container grid-main deep-system-profile">
+  {system.id==="nova-files01" ? <Files01Pilot/> : ["nova-dc01","nova-dc02"].includes(system.id) ? <DC01Profile secondary={system.id==="nova-dc02"}/> : <section class="section compact"><div class="container grid-main deep-system-profile">
     <div>
       <section class="content-section">
         <h2>Key facts</h2>
@@ -79,7 +76,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
       </section>
     </div>
     <aside>
-      <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "Systems"}</dd></div><div><dt>Evidence date</dt><dd>{asOf}</dd></div></dl></div>
+      <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "Systems"}</dd></div></dl></div>
       <div class="sidebox"><h3>Next steps</h3><a href={base+"company/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
     </aside>
   </div></section>}
