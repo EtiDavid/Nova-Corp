@@ -386,6 +386,8 @@ try {
    await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
    await mobile.waitForURL(/\/systems\/nova-files01\/$/);
    const backupProof=mobile.locator('img[src*="/pdf-evidence/backup-disk-offline.jpg"]');
+   const backupDetails=backupProof.locator("xpath=ancestor::details[1]");
+   if(await backupDetails.count()&&!(await backupDetails.getAttribute("open")!==null))await backupDetails.locator("summary").click();
    await backupProof.waitFor({state:"attached"});
    await backupProof.scrollIntoViewIfNeeded();
    await backupProof.waitFor({state:"visible"});
