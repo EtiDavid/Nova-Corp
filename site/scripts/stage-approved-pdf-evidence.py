@@ -38,9 +38,11 @@ for item in images:
     if not 1<=page_number<=len(original):raise RuntimeError("Invalid PDF page: "+item["id"])
     blocks=original[page_number-1].get_text("dict")["blocks"]
     block_number=item["block"]
-    if not 0<=block_number<len(blocks):raise RuntimeError("Invalid PDF screenshot block: "+item["id"])
-    block=blocks[block_number]
-    if block.get("type")!=1:raise RuntimeError("Not an original image: "+item["id"])
+    # Extraction order varies across MuPDF releases. Match the exact approved bytes
+    # on the exact approved page; the review block remains provenance metadata.
+    matches=[b for b in blocks if b.get("type")==1 and sha(b.get("image",b""))==item["sourceImageSha256"]]
+    if not matches:raise RuntimeError("Approved image bytes absent from exact original page: "+item["id"])
+    block=matches[0]
     raw=block.get("image",b"")
     if sha(raw)!=item["sourceImageSha256"]:raise RuntimeError("Screenshot bytes changed or wrong original page: "+item["id"])
     if block.get("ext")!=item["ext"]:raise RuntimeError("Original screenshot extension changed: "+item["id"])

@@ -1,0 +1,98 @@
+---
+import OriginalPdfEvidenceGallery from "./OriginalPdfEvidenceGallery.astro";
+import EngineeringSourceEmbed from "./EngineeringSourceEmbed.astro";
+import EvidencePanel from "./EvidencePanel.astro";
+import {linksForSystem} from "../data/policies";
+interface Props {asOf:string;statusText:string}
+const {asOf,statusText}=Astro.props;
+const base=import.meta.env.BASE_URL;
+const pdf=(name:string)=>base+"pdf-journals/"+name+".pdf";
+const records=[
+ ["CR-008","File server deployment","NovaCorp_CR-008_File_Server_Deployment_Journal"],
+ ["CR-009","Departmental shares and drive mapping","NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping"],
+ ["CR-010","DFS and Shadow Copies","NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED"],
+ ["CR-012","Windows Server Backup and Recovery","CR-012_Windows_Server_Backup_and_Recovery_Journal"],
+ ["CR-014","Incident exercises","Nova_Corp_CR-014_Engineering_Journal_and_Evidence"]];
+const inside=[
+ ["Company File Centre","Five departments · IT, Finance, HR, Management and Sales","files/"],
+ ["Departmental access matrix","Who can access which resources, and how","files/permissions/"],
+ ["DFS link targets","Five friendly addresses and actual destinations","files/dfs/"],
+ ["Shadow Copy inventory","30 recorded snapshot objects across two volume identifiers","files/shadow-copies/"],
+ ["Windows volumes and NovaData","C: Windows · D: company documents · B: backup target","files/volumes/"],
+ ["Backup and recovery","Scheduled backup and tested restoration","files/backup/"]];
+const incidents=[
+ ["Unexpected · Same-VLAN subnet mismatch","Both domain controllers used /32 while the file server used /24. The return path was wrong.","fileserver-subnet"],
+ ["Controlled · A folder denies Moyo access","An explicit folder rule blocked an authorized employee.","file-permission-denial"],
+ ["Controlled · Backup target unavailable","A missing backup disk interrupted backup; file recovery was verified.","backup-target-unavailable"],
+ ["Controlled · DNS client outage","Name-based file access failed despite network reachability.","dns-client-outage"],
+ ["Controlled · Domain controller outage","File access was checked through the surviving controller.","dc01-outage"],
+ ["Controlled · Two independent faults","Bad name resolution concealed a second authorization fault.","two-faults-one-symptom"]];
+const specs=[
+ ["Hostname","NOVA-FILES01.nova.corp"],["VM ID","104"],["Hypervisor","NOVA-PROX01"],["CPU","2 vCPU"],["RAM","4 GiB (4096 MiB)"],
+ ["Operating system","Windows Server 2025 Standard"],["IP address","10.10.20.20/24"],["Network","INFRA / VLAN 20"],["Gateway","10.10.20.1"],["DNS","10.10.20.10, 10.10.20.11"],
+ ["Domain","nova.corp"],["Virtual disks","64 GiB OS · 60 GiB data · 100 GiB backup"],["Windows volumes","C: 63.15 GiB · D: 59.98 GiB · B: 99.98 GiB"],["NIC / bridge","VirtIO / vmbr1"],["Storage controller","VirtIO SCSI single"],
+ ["Roles","File Server, DFS Namespace, Windows Server Backup"],["Services","LanmanServer, DFS"],["SMB baseline","SMB1 disabled; SMB2/3 enabled"],["Last recorded check",asOf]];
+const policies=linksForSystem("nova-files01");
+---
+<section class="section compact"><div class="container grid-main deep-system-profile files01-pilot">
+<div>
+<section class="content-section">
+<h2>What is NOVA-FILES01?</h2>
+<p>NOVA-FILES01 is the virtual computer that stores Nova Corp's shared company documents. Employees open their team folders from their own workstations instead of collecting copies from each other. It also helps control who can open those files and recover documents when something goes wrong.</p>
+<OriginalPdfEvidenceGallery ids={["fileserver-proxmox-hardware","fileserver-department-inventory"]} heading="Meet the real file server" />
+</section>
+<section class="content-section">
+<h2>Why does the company need it?</h2>
+<div class="pilot-story">
+<h3>1. Sharing documents without passing copies around</h3>
+<p><strong>Problem.</strong> Imagine Moyo in IT needs a colleague's support document. Without a shared folder, the team might email copies or transfer them on flash drives. One person's copy can quickly become outdated.</p>
+<p><strong>Solution.</strong> The IT team stores documents centrally on NOVA-FILES01. Moyo opens the company file address from a workstation and works on the shared file.</p>
+<div class="pilot-flow" aria-label="Illustrative file access path"><a href={base+"people/moyo/"}>Moyo</a><span aria-hidden="true">→</span><a href={base+"files/dfs/"}>Company address</a><span aria-hidden="true">→</span><a href={base+"files/shares/it/"}>IT folder</a></div>
+<p><a href={base+"files/"}>Explore the Company File Centre →</a> · <a href={base+"learn/dfs/"}>What is DFS?</a></p>
+<OriginalPdfEvidenceGallery ids={["dfs-client-mapped-drive","dfs-targets-online-audit"]} heading="The working company file address" />
+<EvidencePanel subject="Five department folders in File Explorer" requested="A reviewed Explorer view of all five departmental links is still needed. The original target audit above lists all five."/>
+</div>
+<div class="pilot-story">
+<h3>2. Keeping confidential files in the right hands</h3>
+<p><strong>Problem.</strong> Moyo needs IT documents, but that does not mean confidential Finance records should be accessible.</p>
+<p><strong>Solution.</strong> Nova Corp assigns access through <a href={base+"groups/it-users/"}>department groups</a> and <a href={base+"groups/dl-fs-it-modify/"}>resource groups</a>. Windows checks both <a href={base+"learn/smb/"}>SMB share permissions</a> and <a href={base+"learn/ntfs/"}>NTFS folder permissions</a>. CR-009 and CR-014 recorded the intended access: IT allowed, Finance denied.</p>
+<div class="pilot-flow" aria-label="Recorded IT authorization chain"><a href={base+"people/moyo/"}>Moyo</a><span aria-hidden="true">→</span><a href={base+"groups/it-users/"}>IT_Users</a><span aria-hidden="true">→</span><a href={base+"groups/dl-fs-it-modify/"}>DL_FS_IT_Modify</a><span aria-hidden="true">→</span><a href={base+"files/shares/it/"}>IT folder</a></div>
+<div class="paper panel pilot-test"><h4>Two real user-session checks</h4><pre><code>{'Test-Path "\\\\nova-files01\\IT"\nTest-Path "\\\\nova-files01\\Finance"'}</code></pre><p><strong>IT:</strong> True — authorized access. <strong>Finance:</strong> access denied, then False — expected protection. These were recorded in the CR-014 baseline; the image below does not show the final Finance error.</p></div>
+<OriginalPdfEvidenceGallery ids={["fileserver-client-baseline","permission-denial-observed"]} heading="Actual IT access and a separate scoped denial exercise" />
+<EvidencePanel subject="Finance access denied" requested="The full Finance-denied screenshot from Moyo's baseline session is not in the reviewed public PDF set. The CR-009 access matrix and CR-014 journal record the result."/>
+<p><a href={base+"files/permissions/"}>Compare departmental access →</a> · <a href={base+"incidents/file-permission-denial/"}>Investigate the separate controlled folder denial →</a></p>
+</div>
+<div class="pilot-story">
+<h3>3. Recovering a missing or overwritten document</h3>
+<p><strong>Problem.</strong> An employee accidentally deletes a spreadsheet or saves the wrong changes just before a meeting.</p>
+<p><strong>Solution.</strong> <a href={base+"files/shadow-copies/"}>Shadow Copies</a> preserve selected earlier file versions at 07:00 and 12:00. Separately, <a href={base+"files/backup/"}>Windows Server Backup</a> protects the D: data volume to B: every day at 22:00. These are recorded schedules, not live job status.</p>
+<OriginalPdfEvidenceGallery ids={["vss-previous-versions","fileserver-backup-gui","fileserver-backup-schedule","backup-original-recovered-hash","backup-disk-offline"]} heading="Original previous-version, backup schedule, recovery and failure evidence"/>
+<p>CR-012 verified a naturally scheduled backup and a deleted-file restoration with matching SHA-256 fingerprints. These recovery mechanisms are inside the nested lab's shared failure domain; neither proves independent off-host disaster recovery.</p>
+<p><a href={base+"files/backup/"}>Explore the backup and recovery workflow →</a></p>
+</div>
+</section>
+<section class="content-section"><h2>Inside this server</h2><div class="card-list">{inside.map(([title,description,href])=><a class="system-card" href={base+href}><h3>{title}</h3><p>{description}</p><span class="readmore">Explore →</span></a>)}</div></section>
+<section class="content-section"><h2>How it connects</h2>
+<div class="card-list">{[
+ ["NOVA-PROX01","Hosts the virtual machine and its virtual disks.","nova-prox01"],
+ ["NOVA-FW01","Routes permitted traffic between network segments.","nova-fw01"],
+ ["NOVA-DC01","Provides domain identity and DNS services.","nova-dc01"],
+ ["NOVA-DC02","Additional domain controller and DNS service.","nova-dc02"],
+ ["NOVA-CLIENT","Employee workstation used to validate authorized and denied file access.","nova-client"]].map(([name,description,slug])=><a class="system-card" href={base+"systems/"+slug+"/"}><h3>{name}</h3><p>{description}</p><span class="readmore">Explore →</span></a>)}</div>
+<p><a href={base+"computers/nova-files01/"}>Explore the file server's Active Directory computer identity →</a></p>
+{policies.length>0&&<details><summary>Related Group Policy links</summary><ul>{policies.map(p=><li><a href={base+"policies/"+p.slug+"/"}>{p.name}</a> — {p.summary}</li>)}</ul><p>Related links are not proof that every policy applies to this server.</p></details>}
+</section>
+<section class="content-section"><h2>Related tests and incidents</h2><p>These are actual historical lab investigations. Choose one to read the diagnosis, original commands, evidence and repair.</p><div class="card-list">{incidents.map(([title,description,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h3>{title}</h3><p>{description}</p><span class="readmore">Read investigation →</span></a>)}</div></section>
+<section class="content-section">
+<details><summary>More original deployment and recovery screenshots</summary>
+<OriginalPdfEvidenceGallery ids={["fileserver-installer-missing-virtio","fileserver-virtio-loaded-disks","fileserver-qemu-guest","fileserver-smb-session","fileserver-scheduled-backup-pass","backup-sha256-match"]} heading="Additional original engineering evidence"/>
+</details>
+<details><summary>Read the full original file server technical documentation</summary><EngineeringSourceEmbed sourcePath="docs/explore/systems/NOVA-FILES01.md" title="Original engineering record"/></details>
+</section>
+<section class="content-section"><h2>Engineering journals</h2><p>Open the complete original implementation, commands, tests and screenshots, not a generated substitute.</p><div class="card-list">{records.map(([id,title,name])=><a class="system-card" href={base+"journals/"+name+"/"}><small>{id}</small><h3>{title}</h3><span class="readmore">Read original PDF and text →</span></a>)}</div><p><a href={base+"journals/"}>All original journals →</a></p></section>
+</div>
+<aside><div class="sidebox"><h3>Technical Profile</h3><dl class="fact-list">{specs.map(([label,value])=><div><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p class="muted">{statusText}</p><p class="muted">Hardware allocation: <a href={base+"reference/explore/virtualization/vms/104/"}>VM 104 recorded configuration</a>. Deployment history: <a href={pdf("NovaCorp_CR-008_File_Server_Deployment_Journal")}>CR-008 PDF</a>.</p></div></aside>
+</div></section>
+<style>
+.files01-pilot{min-width:0}.files01-pilot>div,.files01-pilot aside{min-width:0}.pilot-story{border-top:1px solid var(--line,rgba(150,150,150,.25));padding:24px 0}.pilot-flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:18px 0}.pilot-flow a{border:1px solid currentColor;padding:8px 12px;border-radius:8px;overflow-wrap:anywhere}.content-section h3{margin-top:18px}.content-section p{margin:12px 0;line-height:1.65}.pilot-test pre{overflow:auto;max-width:100%}.pilot-test h4{margin:0}.content-section details{margin:14px 0;min-width:0}.content-section summary{cursor:pointer;padding:10px 0;font-weight:600}.fact-list dd{overflow-wrap:anywhere}
+</style>

@@ -1,4 +1,5 @@
 ---
+import Files01Pilot from "../../components/Files01Pilot.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
 import OriginalPublicDiagrams from "../../components/OriginalPublicDiagrams.astro";
@@ -32,7 +33,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
       <span class="status">{statusText}</span>
     </div>
   </div></section>
-  <section class="section compact"><div class="container grid-main deep-system-profile">
+  {system.id==="nova-files01" ? <Files01Pilot {asOf} {statusText}/> : <section class="section compact"><div class="container grid-main deep-system-profile">
     <div>
       <section class="content-section">
         <h2>Key facts</h2>
@@ -69,7 +70,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
         <div class="card-list">{associatedPolicies.map(policy=><a class="system-card" href={base+"policies/"+policy.slug+"/"}><small>{policy.side} · {policy.link?"Linked to "+policy.link.label:"Not linked"}</small><h3>{policy.name}</h3><p>{policy.summary}</p><span class="readmore">Inspect settings and verification →</span></a>)}</div>
       </section>}
       <section class="content-section">
-        <h2>Not yet proven</h2>
+        <h2>Not yet proven</h2>{["nova-dc01","nova-dc02","nova-fw01","nova-prox01"].includes(system.id)&&<p><a href={base+"incidents/fileserver-subnet/"}>Related investigation: CR-008 subnet mismatch →</a></p>}
         <div class="paper panel">
           <a class="evidence-link" href={system.sourceUrl} target="_blank" rel="noopener noreferrer">Read the original engineering record ↗</a>
           <ul class="plain-list">{system.limitations.map(item=><li>{item}</li>)}</ul>
@@ -80,5 +81,5 @@ const statusText = system.status === "observed-running" ? `Running at last check
       <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "Systems"}</dd></div><div><dt>Evidence date</dt><dd>{asOf}</dd></div></dl></div>
       <div class="sidebox"><h3>Next steps</h3><a href={base+"company/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
     </aside>
-  </div></section>
+  </div></section>}
 </BaseLayout>

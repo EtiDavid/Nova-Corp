@@ -1,4 +1,5 @@
 ---
+import PermissionIncidentPilot from "../../components/PermissionIncidentPilot.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import DnsReplay from "../../components/DnsReplay.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
@@ -11,7 +12,7 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 interface Props { entry: CollectionEntry<"incidents">; }
 export async function getStaticPaths() {
   const entries = await getCollection("incidents");
-  return entries.map((entry: CollectionEntry<"incidents">)=>({params:{slug:entry.id},props:{entry}}));
+  return entries.filter((entry: CollectionEntry<"incidents">)=>entry.id!=="fileserver-subnet").map((entry: CollectionEntry<"incidents">)=>({params:{slug:entry.id},props:{entry}}));
 }
 const {entry} = Astro.props;
 const {Content} = await render(entry);
@@ -36,20 +37,21 @@ const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-targe
 <section class="section compact"><div class="container">{entry.id==="dns-client-outage" && <DnsReplay />}</div></section>
 <section class="section compact"><div class="container grid-main">
   <article class="prose">
-     <div class="incident-case-intro"><span class="eyebrow">Quick overview</span><Content /><p><a href="#full-investigation">↓ Read every recorded troubleshooting step and result on this page</a></p></div>
+     {entry.id==="file-permission-denial" ? <PermissionIncidentPilot /> : <><div class="incident-case-intro"><span class="eyebrow">Quick overview</span><Content /><p><a href="#full-investigation">↓ Read every recorded troubleshooting step and result on this page</a></p></div>
      <OriginalPdfEvidenceGallery subject={"incidents/"+entry.id} heading="See the original recorded failure and recovery" />
      <IncidentOriginalRecord slug={entry.id} />
      {evidenceRequested.has(entry.id)&&!originalImagesAvailable&&entry.id!=="wireguard-handshake"&&<div class="incident-proof-slot"><h2>Diagnostic screenshots</h2><EvidencePanel subject={entry.data.title} requested={"A redacted original diagnostic screenshot from the "+entry.data.title+" execution journal. The full primary journal link above preserves any existing PDF images."}/></div>}
+   </>}
    </article>
   <aside>
-   <div class="sidebox incident-sidebar-journal">
+   {entry.id!=="file-permission-denial"&&<div class="sidebox incident-sidebar-journal">
     <h3>The full engineering journal</h3>
     <p class="muted" style="font-size:.88rem">The full execution journal is the actual change/fault-test record, not the shorter incident summary. The complete public investigation is also reproduced directly below.</p>
     <a class="evidence-link incident-master-link" href={journalURL} target="_blank" rel="noopener noreferrer">Open {source.journalFormat==="pdf"?"original PDF":"full Markdown"} journal on GitHub ↗</a>
     {journalOnSite&&<p><a href={journalOnSite}>Read complete original {source.journalFormat==="pdf"?"PDF, all pages and images":"Markdown journal"} on this website ↗</a></p>}
     <p><a href="#full-investigation">↓ Full step-by-step incident investigation</a></p>
     <p><a href={summaryURL}>Original detailed incident record ↗</a></p>
-   </div>
+   </div>}
    <div class="sidebox"><h3>Continue exploring</h3>{entry.data.systems.map((slug:string)=><p style="margin-bottom:12px"><a href={base+"systems/"+slug+"/"}>{slug.toUpperCase()} →</a></p>)}<a href={base+"incidents/"}>← All investigations</a></div>
   </aside>
 </div></section>
