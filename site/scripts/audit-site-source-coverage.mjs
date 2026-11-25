@@ -31,7 +31,7 @@ const names={
  systems:["nova-prox01","nova-fw01","nova-dc01","nova-dc02","nova-files01","nova-client"]
 };
 auditSection("14 unchanged technical explanations",names.terms.filter(x=>!["smb","ntfs","dfs","shadow-copy"].includes(x)).map(x=>"learn/"+x),["engineer-source-section","source-document","term-source-index"],"Must embed full original service/engineering source and link actual CR journal");
-auditSection("4 file-service explanations",["smb","ntfs","dfs","shadow-copy"].map(x=>"learn/"+x),["files01-document-images","Problem","Solution","Engineering journals","/reference/","/pdf-journals/"],"Explanation-first layout with original screenshots and complete standalone source/journal links");
+auditSection("5 file-service explanations",["smb","ntfs","dfs","shadow-copy","acl"].map(x=>"learn/"+x),["files01-document-images","Problem","Solution","Engineering journals","/reference/","/pdf-journals/"],"Explanation-first layout with original screenshots and complete standalone source/journal links");
 auditSection("20 real lab directory account records",names.people.map(x=>"people/"+x),["engineer-source-section","source-document"],"Exact public individual account Markdown per person, not assumed role");
 auditSection("11 source-backed group profiles",names.groups.map(x=>"groups/"+x),["engineer-source-section","source-document"],"Original documented AGDLP inventory and actual group relationships");
 auditSection("16 original OU source-backed profiles",names.ous.map(x=>"directory/ous/"+x),["engineer-source-section","source-document"],"Original 2026-11-22 directory snapshot, not live AD");
