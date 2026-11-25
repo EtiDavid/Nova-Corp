@@ -20,7 +20,7 @@ const groups=[{id:"controlled",items:controlled},{id:"unplanned",items:unplanned
     <header class="il-header">
       <span class="exp-eyebrow">Engineering evidence / incident library</span>
       <h2 id="il-heading">What broke. Why. What the tests proved.</h2>
-      <p>These are real documented lab exercises and problems—not imaginary production incidents. Start with the concise summaries, then open any investigation for the full story and its original Markdown journal.</p>
+      <p>These are real documented lab exercises and problems—not imaginary production incidents. Start with the concise summaries, then open any investigation for the full story and its original engineering journal.</p>
     </header>
     <div class="il-groups">
       {groups.map(({id,items})=><section class="il-group" aria-labelledby={"il-"+id}>
@@ -54,6 +54,6 @@ const groups=[{id:"controlled",items:controlled},{id:"unplanned",items:unplanned
         {id==="controlled"&&deferred&&<p class="il-deferred">Not counted as a completed test: <a href={base+"incidents/"+deferred.slug+"/"}>Independent external VPN validation was deferred ↗</a></p>}
       </section>)}
     </div>
-    <p class="il-archive">Every page links to its public original engineering Markdown record. <a href={base+"incidents/"}>Browse all investigation pages ↗</a></p>
+    <p class="il-archive">Every page links to its public original engineering record. <a href={base+"incidents/"}>Browse all investigation pages ↗</a></p>
   </div>
 </section>
