@@ -205,7 +205,7 @@ try {
     await page.waitForURL(host+"/"+route);
     const dimensions=await page.evaluate(()=>({viewport:innerWidth,document:document.documentElement.scrollWidth}));
     assert(dimensions.document<=dimensions.viewport+3,route+" overflow at "+width+": "+JSON.stringify(dimensions));
-    assert(await page.locator("h1").isVisible(),route+" missing title");
+    assert(await page.locator(".page-head h1").first().isVisible(),route+" missing title");
    }
    await page.close();
   }
