@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { identities, organizationalUnits, directorySource, type DirectoryIdentity } from "../../data/directory";
-import { findGroupByName } from "../../data/groups";
+import { findGroupByName, groupResources } from "../../data/groups";
 import { companyPolicies } from "../../data/policies";
 export function getStaticPaths(){return identities.map(person=>({params:{slug:person.slug},props:{person}}));}
 interface Props{person:DirectoryIdentity}
@@ -9,6 +9,11 @@ const {person}=Astro.props;
 const base=import.meta.env.BASE_URL;
 const ou=organizationalUnits.find(x=>x.slug===person.ou);
 const groupTargets=person.directGroups.map(name=>findGroupByName(name)).filter(Boolean);
+const descriptions:Record<string,string>={"administrator":"Built-in privileged domain administration account.","guest":"Built-in Guest account, disabled in the recorded directory.","krbtgt":"Built-in Kerberos ticket service identity. Its disabled interactive-account status is normal.","test-user":"Enabled test account in the default Users container.","john-shaw":"Contractor account used to test Group Policy targeting.","alice-finance":"Finance account created during PowerShell bulk onboarding.","finance-test":"Finance test account used for authorization and lockout scenarios.","henry-hr":"HR account created during bulk user onboarding tests.","hr-test":"Test account retained in the HR department.","isaac-it":"IT account created for PowerShell user administration exercises.","david-it":"IT department account used during the original directory exercise.","moyo":"IT account used to test actual access to company documents.","maria-manager":"Management account created during bulk onboarding and group membership exercises.","management-test":"Management test account used for resource authorization analysis, including Finance Full Control.","gui-pilot":"Test account kept disabled after administration exercises.","sarah-sales":"Sales account disabled and moved to Nova Disabled Objects during offboarding; no longer in Sales_Users.","svc-backup":"Service identity created for backup-related operations; actual process use is not established.","svc-fileserver":"Service identity created for file-server operations; actual service logon is not established.","svc-monitoring":"Service identity created for monitoring work; centralized monitoring was not deployed in Phase 2.","sales-test":"Enabled Sales test account, distinct from disabled Sarah Sales."};
+const sourcePaths:Record<string,string>={"david-it":"DAVID","moyo":"MOYO","john-shaw":"JOHN_SHAW","alice-finance":"accounts/cr011-fin","henry-hr":"accounts/cr011-hr","isaac-it":"accounts/cr011-it","maria-manager":"accounts/cr011-mgmt","gui-pilot":"accounts/cr011-gui","sarah-sales":"accounts/cr011-sales"};
+const sourcePath=sourcePaths[person.slug]??"accounts/"+person.slug;
+const nested=person.directGroups.flatMap(groupResources);
+const builtIn:Record<string,string[]>={administrator:["Administrators","Domain Admins","Enterprise Admins","Schema Admins","Group Policy Creator Owners"],guest:["Guests"]};
 const isExample=person.slug==="moyo";
 const isManager=person.slug==="maria-manager";
 const directlyLinked=companyPolicies.filter(p=>p.link?.ouSlug===person.ou);
@@ -19,19 +24,19 @@ const label=person.category==="service"?"Service identity":person.category==="bu
 <BaseLayout title={person.name} description={person.name+" is a recorded "+label.toLowerCase()+" in the Nova Corp Active Directory exercise."} breadcrumbs={[{label:"Directory",href:"directory/"},{label:person.name}]}>
 <section class="page-head"><div class="container">
 <div class="eyebrow">{label}</div>
-<h1>{person.name}</h1><p class="lead" style="margin-top:17px">This is a documented Active Directory account in a fictional company lab, not an assertion about a real person's employment or email mailbox.</p>
-<div style="display:flex;gap:12px;align-items:center;margin-top:20px"><span class={"status "+(!person.enabled?"deferred":"")}>{person.enabled?"Enabled at last review":"Disabled at last review"}</span><span class="muted" style="font-size:.81rem">Documented 22 November 2026</span></div>
+<h1>{person.name}</h1><p class="lead" style="margin-top:17px">{descriptions[person.slug]}</p>
+
 </div></section>
 <section class="section compact"><div class="container grid-main"><div>
   <section class="content-section">
-   <h2>Where does this account belong?</h2>
+   <h2>Active Directory profile</h2>
    <div class="paper panel" style="margin-top:20px">
      <dl class="fact-list">
-       <div><dt>Sign-in identifier (not an email address)</dt><dd><code>{person.logon}</code></dd></div>
+       <div><dt>Display name</dt><dd>{person.name}</dd></div><div><dt>Domain</dt><dd>nova.corp</dd></div><div><dt>Sign-in identifier (not an email address)</dt><dd><code>{person.logon}</code></dd></div>
        <div><dt>Directory location</dt><dd>{ou?<a href={base+"directory/ous/"+ou.slug+"/"}>{person.location}</a>:person.location}</dd></div>
        <div><dt>Account kind</dt><dd>{label}</dd></div>
-       <div><dt>Status at last source review</dt><dd>{person.enabled?"Enabled":"Disabled"}</dd></div>
-     </dl>
+       <div><dt>Recorded account status</dt><dd>{person.enabled?"Enabled":"Disabled"}</dd></div>
+     <div><dt>Direct security groups</dt><dd>{person.directGroups.length?person.directGroups.join(", "):builtIn[person.slug]?.join(", ")??"No custom membership recorded"}</dd></div><div><dt>Nested resource groups</dt><dd>{nested.length?nested.map(g=><p><a href={base+"groups/"+g.slug+"/"}>{g.name}</a></p>):"None recorded"}</dd></div></dl>
    </div>
   </section>
   {ou&&<section class="content-section">
@@ -44,15 +49,16 @@ const label=person.category==="service"?"Service identity":person.category==="bu
     <p class="muted" style="margin-top:15px">Domain-wide policy links are a separate inherited scope. <a href={base+"policies/domain-password/"}>See the default domain policy</a>.</p>
   </section>}
   <section class="content-section">
-    <h2>Direct membership and related permissions</h2>
+    <h2>Which folders can this account access?</h2>{nested.length>0&&<div class="card-list">{nested.map(g=><a class="system-card" href={base+"files/shares/"+g.folder+"/"}><h3>{g.folder?.toUpperCase()} folder</h3><p>Configured group rights: SMB {g.shareRight} · NTFS {g.ntfsRight}</p></a>)}</div>}
     {groupTargets.length>0?<div class="card-list" style="margin-top:19px">{groupTargets.map(group=>group&&<a class="system-card" href={base+"groups/"+group.slug+"/"}><small>Recorded direct group membership</small><h3>{group.name}</h3><p>{group.description}</p><span class="readmore">Follow the group →</span></a>)}</div>:
       <div class="note" style="margin-top:19px">No custom direct department-group membership is established for this account in the selected public slice. This does not imply an empty Windows access token or no built-in group memberships.</div>}
     <p class="muted" style="margin-top:18px">Group membership is an observed directory fact. Permission grants are separate file-server ACL facts; the ability to open a file depends on both and on the current session.</p>
   </section>
-  {isExample && <section class="content-section">
+  {person.slug==="john-shaw"&&<section class="content-section"><h2>Recorded policy test</h2><p>gpresult confirmed the contractor USB restriction and corporate wallpaper. Physical USB behavior was not verified end-to-end.</p><figure><img style="width:100%;height:auto" src={base+"evidence/03-contractor-user-gpresult.png"} alt="John Shaw Group Policy result"/><figcaption style="text-align:center">John Shaw’s recorded Group Policy processing result.</figcaption></figure><p><a href={base+"reference/Documentation/Change-Requests/Journal-CR-006/"}>Group Policy journal →</a></p></section>}
+{isExample && <section class="content-section">
     <div class="paper panel">
-      <div class="eyebrow">Follow one tested company request</div><h2 style="margin:13px 0">From Moyo to the IT folder.</h2>
-      <ol class="walkthrough">
+      <div class="eyebrow">Follow one tested company request</div><h2 style="margin:13px 0">From Moyo to the IT folder.</h2><p>Recorded user-session test: IT allowed, Finance denied.</p><p><a href={base+"incidents/group-acl-name-mismatch/"}>Unexpected · Access checker error</a> · <a href={base+"incidents/file-permission-denial/"}>Controlled · Folder access denied</a></p>
+      <ol class="walkthrough" style="list-style:none;padding-left:0">
         <li class="walk-step"><h3><a href={base+"directory/ous/it/"}>IT Organizational Unit</a></h3><p>Moyo's account is located inside the IT OU.</p></li>
         <li class="walk-step"><h3><a href={base+"groups/it-users/"}>IT_Users</a></h3><p>The recorded direct Global department membership.</p></li>
         <li class="walk-step"><h3><a href={base+"groups/dl-fs-it-modify/"}>DL_FS_IT_Modify</a></h3><p>IT_Users is nested into this Domain Local group, which appears in the resource ACLs.</p></li>
@@ -72,7 +78,7 @@ const label=person.category==="service"?"Service identity":person.category==="bu
   </section>}
   {person.category==="service"&&<div class="note warning">The account was created for a named service purpose. Its existence alone does not establish that a running backup, file server or monitoring process actually signs in using it.</div>}
   <section class="content-section" style="margin-top:28px">
-    <h2>Source and limits</h2><div class="paper panel"><p class="muted">All 20 directory account records in this view were taken from the published snapshot. No mailbox addresses were exported, and the sign-in identifier is not evidence of a working email account.</p><a class="evidence-link" href={person.slug==="moyo"?"https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/people/MOYO.md":person.slug==="maria-manager"?"https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/people/accounts/cr011-mgmt.md":directorySource}>Open source documentation ↗</a></div>
+    <h2>Engineering journals</h2><div class="paper panel"><p class="muted">All 20 directory account records in this view were taken from the published snapshot. No mailbox addresses were exported, and the sign-in identifier is not evidence of a working email account.</p><p><a href={base+"reference/explore/people/"+sourcePath+"/"}>Original account record →</a></p><p><a href={base+"reference/Documentation/Change-Requests/Journal-CR-005/"}>Directory setup journal →</a></p><p><a href={base+"reference/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit/"}>Account automation journal →</a></p><a class="evidence-link" href={person.slug==="moyo"?"https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/people/MOYO.md":person.slug==="maria-manager"?"https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/people/accounts/cr011-mgmt.md":directorySource}>Open source documentation ↗</a></div>
   </section>
 </div>
 <aside>
