@@ -7,7 +7,7 @@ const base=import.meta.env.BASE_URL;
 <BaseLayout title="Company file addresses" description="Explore how one DFS namespace directs people to five departmental SMB shares while preserving folder permissions." breadcrumbs={[{label:"Explore",href:"company/"},{label:"Files",href:"files/"},{label:"File addresses"}]}>
 <section class="page-head"><div class="container">
   <div class="eyebrow">Files / Network paths</div>
-  <h1>One familiar address. Five protected destinations.</h1>
+  <h1>Company file addresses (DFS)</h1>
   <p class="lead" style="margin-top:18px">Nova Corp uses a domain-based DFS namespace so employees can find their department without remembering the server name. The namespace redirects a request—it does not grant access to the actual documents.</p>
 </div></section>
 <section class="section compact"><div class="container grid-main">
@@ -20,11 +20,11 @@ const base=import.meta.env.BASE_URL;
     </div>
   </section>
   <section class="content-section">
-    <h2>Choose a department referral</h2>
+    <h2>Where does each department address lead?</h2>
     <div class="card-list">{shares.map(share=><a class="system-card" href={base+"files/shares/"+share.id+"/"}><small>Observed DFS referral: online</small><h3>{share.name}</h3><p><code class="technical">{share.dfs}</code><br/><span class="muted">→</span> <code class="technical">{share.smb}</code></p><span class="readmore">Inspect the destination →</span></a>)}</div>
   </section>
   <section class="content-section">
-    <h2>What happens after a referral?</h2>
+    <h2>How does Windows find the shared folder?</h2>
     <ol class="walkthrough">
       <li class="walk-step"><h3>The employee opens the friendly path</h3><p>The workstation asks the DFS namespace where the requested department folder lives.</p></li>
       <li class="walk-step"><h3>DFS returns the configured target</h3><p>In the documented setup, each of the five DFS links has one online target on NOVA-FILES01. No additional independent file-server target is claimed.</p></li>
@@ -40,4 +40,4 @@ const base=import.meta.env.BASE_URL;
 </div></section>
 </BaseLayout>
 
-<style>.file-problem{color:#edb4a2;margin:24px 0 8px;font-size:1.05rem}.file-solution{color:#c6dcb4;margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>
+<style>.content-section h2,.prose h2{font-size:clamp(1.65rem,2.6vw,2.35rem);line-height:1.2;margin:40px 0 16px}.content-section p,.prose p{line-height:1.7;margin:0 0 15px}.content-section{margin-bottom:44px}.walkthrough{list-style:none;padding-left:0}.walkthrough>li::marker{content:""}.prose h3{margin:25px 0 10px}.grid-main>*{min-width:0}.prose code{overflow-wrap:anywhere}.prose pre code{overflow-wrap:normal}.file-problem{color:#edb4a2;margin:24px 0 8px;font-size:1.05rem}.file-solution{color:#c6dcb4;margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>

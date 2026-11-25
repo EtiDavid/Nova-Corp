@@ -18,13 +18,13 @@ export type Share = {
 const docs = "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/files/";
 export const shares: Share[] = [
   {
-    id:"it", name:"IT", purpose:"Technology and support files for the IT department.",
+    id:"it", name:"IT", purpose:"Shared files and documents for the IT department.",
     group:"IT_Users",resourceGroup:"DL_FS_IT_Modify",
     dfs:"\\\\nova.corp\\shares\\IT",smb:"\\\\NOVA-FILES01\\IT",ntfs:"D:\\NovaData\\IT",
     evidence:docs+"it.md"
   },
   {
-    id:"finance",name:"Finance",purpose:"Financial working documents with a separate management authorization path.",
+    id:"finance",name:"Finance",purpose:"Shared financial documents for the Finance department.",
     group:"Finance_Users",resourceGroup:"DL_FS_Finance_Modify",
     dfs:"\\\\nova.corp\\shares\\Finance",smb:"\\\\NOVA-FILES01\\Finance",ntfs:"D:\\NovaData\\Finance",
     evidence:docs+"finance.md",
