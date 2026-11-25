@@ -61,5 +61,7 @@ const backup=readFileSync(resolve(dist,"incidents/backup-target-unavailable/inde
 for(const value of ["Get-Disk","wbadmin start backup","Get-FileHash","79FCAD43C927A5B19FB820E3E0BD9EE829083769AD2BE5E487C425B7820332E5","Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"]){
  if(!backup.includes(value))failures.push("Backup source steps / PDF journal missing: "+value);
 }
+const subnet=readFileSync(resolve(dist,"incidents/fileserver-subnet/index.html"),"utf8");
+for(const value of ["Get-NetIPAddress","Get-NetRoute","tcpdump","/32","/24","subnet-vlan40-positive","NovaCorp_CR-008_File_Server_Deployment_Journal.pdf"]){if(!subnet.includes(value))failures.push("CR-008 dedicated investigation missing: "+value);}
 if(failures.length){console.error(failures.join("\n"));process.exit(1);}
-console.log("Incident fidelity PASS: all 16 exact public source analyses rendered in-site; all 16 real journal targets exist and link correctly; WireGuard and backup exact tests/figures preserved.");
+console.log("Incident fidelity PASS: all 16 exact public source analyses rendered in-site; all 16 real journal targets exist and link correctly; WireGuard and backup exact tests/figures preserved; dedicated CR-008 original PDF investigation verified.");
