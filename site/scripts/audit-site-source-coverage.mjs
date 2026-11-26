@@ -44,8 +44,8 @@ auditSection("16 full incident analyses",
  ["incident-source-document","incident-master-journal"],"Short case overview is NOT the full original journal");
 const contentPages=all.length;
 if(contentPages<320)errors.push("Expected >=320 generated HTML pages; got "+contentPages);
-auditSection("Recruiter and technical entry points",[""],["Three things I proved","David Eti","tour/#recruiter","Download CV"]);
-auditSection("Two guided tour routes",["tour"],["Two-minute recruiter overview","Technical walkthrough","Previous","Next","Download CV"]);
+auditSection("Recruiter and technical entry points",[""],["I built the infrastructure","David Eti","Download CV","Available now","What broke, and how I fixed it"]);
+auditSection("Change pages link the full journals",["changes/CR-004","changes/CR-008"],["Full journal","What I built"]);
 const ad=pageAt("learn/active-directory");
 for(const str of ["Organizational units (OUs)","repadmin /replsummary","Resolve-DnsName","16 documented OUs","Engineering journals","/reference/explore/services/ACTIVE_DIRECTORY/"]){
  if(!ad?.includes(str))errors.push("Active Directory glossary missing original source fact: "+str);

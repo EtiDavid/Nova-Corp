@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { chromium } from "playwright-core";
 
-const host="http://127.0.0.1:4343";
+const host="http://127.0.0.1:4343"; // archive pages only; the v2 pages are tested in smoke-v2.mjs
 const bin=process.env.CHROME_PATH || execFileSync("which",["google-chrome"]).toString().trim();
 const server=spawn("npm",["run","preview","--","--host","127.0.0.1","--port","4343"],{
  cwd:process.cwd(),stdio:["ignore","pipe","pipe"],shell:false
@@ -27,79 +27,6 @@ try {
  const errors=[];
  desktop.on("pageerror",e=>errors.push(e.message));
 
- await step("Homepage: clear headline, tour CTA, only two incident groups",async()=>{
-  const response=await desktop.goto(host+"/",{waitUntil:"networkidle"});
-  assert.equal(response?.status(),200);
-  assert.match(await desktop.locator("h1").innerText(),/I built the infrastructure/i);
-  const body=await desktop.locator("body").innerText();
-  assert.match(body,/Nova Corp is a fictional company/i);
-  assert(body.includes("David Eti"),"candidate identity is immediately available");
-  assert.equal(await desktop.locator(".recruiter-feature .system-card").count(),3);
-  assert(await desktop.locator(".candidate-links a[href$=\"David_Eti_Systems_Infrastructure_CV.pdf\"]").isVisible());
-  assert(!body.includes("22 NOV 2026"),"visual date removed from home diagram");
-  assert.equal(await desktop.locator(".exp-hero .button-row a").count(),2);
-  assert(await desktop.getByRole("link",{name:/Take the guided tour/}).first().isVisible());
-  const afterDiagram=await desktop.locator(".exp-hero + section").getAttribute("id");
-  assert.equal(afterDiagram,"incident-library","incident library is the only home section beneath map");
-  assert.equal(await desktop.locator(".il-group").count(),2);
-  assert.match(await desktop.locator("#il-controlled").innerText(),/Controlled failure tests/);
-  assert.match(await desktop.locator("#il-unplanned").innerText(),/Unexpected incidents/i);
-  assert.equal(await desktop.locator(".il-group:first-child .il-item").count(),9);
-  assert.equal(await desktop.locator(".il-group:last-child .il-item").count(),7);
-  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),8,"start with 4 visible from each group");
-  await desktop.locator("#il-more-controlled summary").click();
-  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),13);
-  await desktop.locator("#il-more-unplanned summary").click();
-  assert.equal(await desktop.locator(".il-group .il-item:visible").count(),16);
-  assert.equal(await desktop.locator("main > section").count(),2,"hero and incident library only");
- });
- await step("Recruiter route and technical tour retain links and step navigation",async()=>{
-  await desktop.goto(host+"/tour/#recruiter",{waitUntil:"domcontentloaded"});
-  assert.equal(await desktop.locator("#recruiter .walk-step").count(),3);
-  assert.equal(await desktop.locator("#technical .walk-step").count(),8);
-  await desktop.locator("#recruiter-1 a[href=\"#recruiter-2\"]").click();
-  assert(desktop.url().endsWith("#recruiter-2"));
-  assert(await desktop.locator("#recruiter-2 a[href=\"#recruiter-1\"]").isVisible());
- });
- await step("Sandbox: color logos, real IPs, subtle scroll and genuine profile navigation",async()=>{
-  await desktop.goto(host+"/",{waitUntil:"networkidle"});
-  const scene=desktop.locator("#hx-explorer"),port=scene.locator("#lab-scrollport");
-  assert(await scene.isVisible());
-  assert(await port.evaluate(el=>el.scrollHeight>el.clientHeight+300));
-  assert.equal(await scene.locator(".hx-node[data-id]").count(),6);
-  assert.equal(await scene.locator(".sb-guest").count(),4);
-  for(const file of ["proxmox-color.svg","pfsense-color.svg","vmware-color.svg","windows-server-color.svg","server-corner.svg"]){
-    const res=await desktop.request.get(host+"/brands/"+file);
-    assert.equal(res.status(),200,"logo asset "+file);
-  }
-  assert((await scene.innerText()).includes("10.10.20.10"));
-  assert((await scene.innerText()).includes("10.10.20.11"));
-  assert((await scene.innerText()).includes("10.10.20.20"));
-  assert((await scene.innerText()).includes("10.10.40.100"));
-  await scene.locator(".atlas-prox").hover();
-  assert.match(await scene.locator("#hx-title").innerText(),/NOVA-PROX01/);
-  await scene.locator(".atlas-prox").click();
-  await desktop.waitForURL(/\/systems\/nova-prox01\/$/);
-  await desktop.goto(host+"/",{waitUntil:"networkidle"});
-  await desktop.locator('[data-jump="guests"]').click();
-  await desktop.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
-  assert((await desktop.locator(".sb-section.is-entered").count())>=1,"scroll reveal reaches visible stages");
-  await desktop.locator('.sb-guest[data-id="nova-dc01"]').click();
-  await desktop.waitForURL(/\/systems\/nova-dc01\/$/);
-  assert(await desktop.locator('img[src*="/pdf-evidence/dc02-sysvol-available.jpg"]').isVisible(),"original DC failover screenshot now replaces placeholder");
-  assert(!((await desktop.locator(".page-head").innerText()).includes("NOV 2026")),"no promotional date banner");
-  await desktop.goto(host+"/?system=nova-files01",{waitUntil:"networkidle"});
-  assert.match(await desktop.locator("#hx-title").innerText(),/NOVA-FILES01/);
-  const expected=await desktop.locator("#hx-record").getAttribute("href");
-  assert(expected.endsWith("/systems/nova-files01/"));
-  const reducedContext=await browser.newContext({reducedMotion:"reduce",viewport:{width:1440,height:900}});
-  const reduced=await reducedContext.newPage();
-  await reduced.goto(host+"/",{waitUntil:"networkidle"});
-  assert(!await reduced.evaluate(()=>document.documentElement.classList.contains("motion-ready")));
-  await reduced.locator('[data-jump="guests"]').click();
-  assert((await reduced.locator("#lab-scrollport").evaluate(el=>el.scrollTop))>200);
-  await reducedContext.close();
- });
  await step("Technical terms: auto-link servers and jargon to explainer pages",async()=>{
   await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"networkidle"});
   assert((await desktop.locator('a.technical-link[href$="/systems/nova-dc01/"]').count())>=1);
@@ -110,9 +37,7 @@ try {
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
   assert.match(await desktop.locator(".page-head h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
-  await desktop.goto(host+"/glossary/",{waitUntil:"networkidle"});
-  assert.equal(await desktop.locator(".term-index > a").count(),20);
-  await desktop.locator('.term-index > a[href$="/learn/acl/"]').click();
+  await desktop.goto(host+"/learn/acl/",{waitUntil:"networkidle"});
   assert.match(await desktop.locator(".page-head h1").innerText(),/Access Control List/);
   assert.match(await desktop.locator("main").innerText(),/individual access control entries/);
   await desktop.goto(host+"/learn/smb/",{waitUntil:"networkidle"});
@@ -207,7 +132,7 @@ try {
   assert(await desktop.locator('details.native-pdf-page[id="page-18"]').count()===1);
   await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"domcontentloaded"});
   assert(await desktop.locator('a[href*="/journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/"]').count()>0,"backup journal is readable onsite");
-  await desktop.goto(host+"/roadmap/",{waitUntil:"domcontentloaded"});
+  await desktop.goto(host+"/changes/CR-008/",{waitUntil:"domcontentloaded"});
   assert(await desktop.locator('a[href*="/journals/NovaCorp_CR-008_File_Server_Deployment_Journal/"]').count()>0,"CR-008 links complete original PDF");
  });
  await step("FILES01 pilot: actual navigation and responsive source evidence",async()=>{
@@ -227,85 +152,6 @@ try {
    }
    await page.close();
   }
- });
- await step("Company explorer: select, deep link, Escape and focus return",async()=>{
-  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
-  const node=desktop.locator('.node[data-id="nova-dc01"]');
-  await node.focus(); await desktop.keyboard.press("Enter");
-  await desktop.waitForURL(/focus=nova-dc01/);
-  const card=desktop.locator("#sys-nova-dc01");
-  assert(await card.isVisible());
-  assert(/not yet proven/i.test(await card.innerText()));
-  await desktop.keyboard.press("Escape");
-  await desktop.waitForFunction(() => !new URLSearchParams(window.location.search).has("focus"),null,{timeout:5000});
-  assert(!/focus=/.test(desktop.url()));
-  assert.equal(await desktop.evaluate(()=>document.activeElement?.getAttribute("data-id")),"nova-dc01");
-  await desktop.locator('#tabs button[data-view="network"]').click();
-  await desktop.waitForURL(/view=network/);
-  await desktop.goto(host+"/company/?view=files&focus=nova-files01",{waitUntil:"networkidle"});
-  assert(await desktop.locator("#sys-nova-files01").isVisible());
- });
- await step("Historical fault switch: DC01 outage and wrong client resolver display real limits",async()=>{
-  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
-  await desktop.locator('[data-scenario="dc01-outage"]').click();
-  assert(/scenario=dc01-outage/.test(desktop.url()));
-  assert.equal(await desktop.locator('.node.scenario-outage').count(),1);
-  assert.equal(await desktop.locator('.node.scenario-alternate').count(),1);
-  assert(/client selected DC02/i.test(await desktop.locator("#sim-text").innerText()));
-  await desktop.locator('[data-scenario="client-dns-fault"]').click();
-  assert(/scenario=client-dns-fault/.test(desktop.url()));
-  assert.equal(await desktop.locator('.node.scenario-misconfigured').count(),1);
-  assert(/192\.0\.2\.53/.test(await desktop.locator("#sim-text").innerText()));
-  await desktop.locator('#tabs button[data-view="overview"]').click();
-  assert(!/scenario=/.test(desktop.url()));
-  assert.equal(await desktop.locator('.node.scenario-outage').count(),0);
- });
- await step("Workflow lab traces four recorded routes and updates architecture focus",async()=>{
-  await desktop.goto(host+"/company/",{waitUntil:"networkidle"});
-  const lab=desktop.locator("#workflow-lab");
-  assert(await lab.isVisible());
-  assert.equal(await lab.locator("[data-flow-tab]").count(),4);
-  assert(await lab.locator('[data-flow="files"]').isVisible());
-  await lab.locator('[data-flow="files"] [data-next]').click();
-  assert((await lab.locator('[data-flow="files"] .wl-progress').innerText()).includes("Step 2 of 5"));
-  await lab.locator('[data-flow="files"] .wl-step.is-active [data-show-map]').click();
-  assert(/view=identity/.test(desktop.url()),"map view follows DNS path stage");
-  assert(/focus=nova-dc01/.test(desktop.url()),"map focuses the correct DNS server");
-  assert(await desktop.locator("#sys-nova-dc01").isVisible());
-  await lab.locator('[data-flow-tab="identity"]').click();
-  assert(await lab.locator('[data-flow="identity"]').isVisible());
-  assert(!(await lab.locator('[data-flow="files"]').isVisible()));
-  assert((await lab.locator('[data-flow="identity"] .wl-progress').innerText()).includes("Step 1 of 4"));
-  await lab.locator('[data-flow-tab="security"]').click();
-  assert(await lab.locator('[data-flow="security"]').isVisible());
-  await lab.locator('[data-flow-tab="recovery"]').click();
-  assert(await lab.locator('[data-flow="recovery"]').isVisible());
-  assert.equal(await desktop.locator(".exp-evidence-gallery img").count(),3);
-  for(const img of await desktop.locator(".exp-evidence-gallery img").all()){
-    assert((await img.getAttribute("alt")).length>18,"source screenshot requires descriptive alt");
-    assert((await img.getAttribute("src")).startsWith("/evidence/"));
-  }
- });
- await step("Investigations index filters; DNS replay steps and reveals recorded results",async()=>{
-  await desktop.goto(host+"/incidents/",{waitUntil:"networkidle"});
-  assert.equal(await desktop.locator("#case-grid .outcome").count(),17);
-  assert.equal(await desktop.locator(".chip.deferred").count(),1);
-  await desktop.getByRole("button",{name:"Recovery"}).click();
-  assert.equal(await desktop.locator("#case-grid .outcome:visible").count(),1);
-  await desktop.goto(host+"/incidents/dns-client-outage/",{waitUntil:"networkidle"});
-  assert((await desktop.locator("#step-count").innerText()).includes("Step 1 of 5"));
-  assert(!(await desktop.locator("#step-1 .reveal-target").isVisible()));
-  await desktop.locator('#step-1 .r-challenge [data-choice="0"]').click();
-  assert(/try a narrower diagnostic step/i.test(await desktop.locator('#step-1 .r-answer').innerText()));
-  await desktop.locator('#step-1 .r-challenge [data-choice="1"]').click();
-  assert(/best next check/i.test(await desktop.locator('#step-1 .r-answer').innerText()));
-  await desktop.locator("#r-reveal").click();
-  assert((await desktop.locator("#step-1").innerText()).includes("ERROR_TIMEOUT"));
-  assert(/server reachability is still unknown/i.test(await desktop.locator("#r-signal").innerText()));
-  await desktop.locator("#r-next").click();
-  assert((await desktop.locator("#step-count").innerText()).includes("Step 2 of 5"));
-  assert(/step=2/.test(desktop.url()));
-  assert(/not yet proven/i.test(await desktop.locator("#replay").innerText()));
  });
  await step("Source-faithful incident pages: 16 complete analyses, original journal CTA and CR-007 figures",async()=>{
   const wire=await desktop.goto(host+"/incidents/wireguard-handshake/",{waitUntil:"networkidle"});
@@ -352,21 +198,6 @@ try {
   assert(await desktop.locator(".incident-source-document").isVisible());
   assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").getAttribute("href")).endsWith("Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
  });
- await step("Legacy room URLs still land on the new pages",async()=>{
-  await desktop.goto(host+"/areas/control-room/",{waitUntil:"domcontentloaded"});
-  await desktop.waitForURL(/\/company\//);
-  await desktop.goto(host+"/explore/",{waitUntil:"domcontentloaded"});
-  await desktop.waitForURL(/\/company\//);
-  await desktop.goto(host+"/areas/roadmap-wing/",{waitUntil:"domcontentloaded"});
-  await desktop.waitForURL(/\/roadmap\//);
-  const r=await desktop.goto(host+"/roadmap/",{waitUntil:"domcontentloaded"});
-  assert.equal(r?.status(),200);
-  assert(!((await desktop.locator("body").innerText()).includes("on hold")));
- });
- await step("CV file is served",async()=>{
-  const r=await desktop.request.get(host+"/David_Eti_Systems_Infrastructure_CV.pdf");
-  assert.equal(r.status(),200);
- });
  await step("Policy search filters displayed settings",async()=>{
   await desktop.goto(host+"/policies/workstation-baseline/",{waitUntil:"networkidle"});
   const rows=desktop.locator("[data-setting-row]");
@@ -394,15 +225,8 @@ try {
  for(const width of [320,375,390]){
   const mobile=await browser.newPage({viewport:{width,height:844},isMobile:true,deviceScaleFactor:1,hasTouch:true});
   mobile.on("pageerror",e=>errors.push(e.message));
-  await step(width+"px: menu hit target, navigation, no side scroll, explorer list and back",async()=>{
-   await mobile.goto(host+"/",{waitUntil:"networkidle"});
-   const map=mobile.locator("#lab-scrollport");
-   assert(await map.isVisible(),"scrollable diagram exists on mobile");
-   assert(await map.evaluate(el=>el.scrollHeight>el.clientHeight+200),"mobile diagram must be internally scrollable");
-   await mobile.locator('[data-jump="guests"]').click();
-   await mobile.waitForFunction(()=>document.getElementById("lab-scrollport").scrollTop>200);
-   await mobile.locator('.sb-guest[data-id="nova-files01"]').click();
-   await mobile.waitForURL(/\/systems\/nova-files01\/$/);
+  await step(width+"px: FILES01 shows the original backup failure proof, no side scroll",async()=>{
+   await mobile.goto(host+"/systems/nova-files01/",{waitUntil:"networkidle"});
    const backupProof=mobile.locator('img[src*="/pdf-evidence/backup-disk-offline.jpg"]');
    const backupDetails=backupProof.locator("xpath=ancestor::details[1]");
    if(await backupDetails.count()&&!(await backupDetails.getAttribute("open")!==null))await backupDetails.locator("summary").click();
@@ -411,25 +235,6 @@ try {
    await backupProof.waitFor({state:"visible"});
    await mobile.waitForFunction(()=>{const image=document.querySelector('img[src*="/pdf-evidence/backup-disk-offline.jpg"]');return image instanceof HTMLImageElement&&image.complete&&image.naturalWidth>0;});
    assert(await backupProof.isVisible(),"mobile file server shows original recorded backup failure");
-   await mobile.goto(host+"/",{waitUntil:"networkidle"});
-
-   const summary=mobile.locator(".v4-menu summary");
-   assert(await summary.isVisible());
-   const box=await summary.boundingBox();
-   assert(box.height>=44&&box.width>=44,JSON.stringify(box));
-   const hit=await mobile.evaluate(({x,y})=>document.elementFromPoint(x,y)?.closest("summary")!==null,{x:box.x+box.width/2,y:box.y+box.height/2});
-   assert(hit,"menu button is covered by another element");
-   await summary.click();
-   await mobile.locator(".v4-menu nav a[href$='/company/']").click();
-   await mobile.waitForURL(/\/company\/$/);
-   await mobile.locator('#sys-list button[data-id="nova-files01"]').click();
-   assert(await mobile.locator("#sys-nova-files01").isVisible());
-   await mobile.locator("#back-btn").click();
-   assert(!(await mobile.locator("#sys-nova-files01").isVisible()));
-   const workflow=mobile.locator("#workflow-lab");
-   assert(await workflow.isVisible(),"guided workflow available on mobile");
-   await workflow.locator('[data-flow-tab="identity"]').click();
-   assert(await workflow.locator('[data-flow="identity"]').isVisible());
    const dimensions=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert(dimensions.scroll<=dimensions.inner+2,JSON.stringify(dimensions));
   });

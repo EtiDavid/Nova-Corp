@@ -1,17 +1,25 @@
 name: World Explorer site checks
 on:
   push:
-    branches: [feature/files01-explanation-pilot, feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals, feature/sitewide-source-parity-and-pdf-evidence, feature/full-pdf-journal-library-and-final-qa]
+    branches: [redesign/v2, feature/files01-explanation-pilot, feature/world-explorer-site, feature/dark-infrastructure-experience, feature/physical-host-scroll-story, feature/scrollable-lab-sandbox, feature/home-incident-library-and-glossary, feature/source-faithful-engineering-library, feature/full-incident-records-and-journals, feature/sitewide-source-parity-and-pdf-evidence, feature/full-pdf-journal-library-and-final-qa]
     paths:
       - "site/**"
       - "docs/**"
       - ".github/workflows/world-explorer-ci.yml"
   pull_request:
-    branches: [main]
+    branches: [main, feature/world-explorer-site]
     paths:
       - "site/**"
       - ".github/workflows/world-explorer-ci.yml"
 jobs:
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan the repository history for secrets
+        run: docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:latest detect --source /repo --no-banner --redact --verbose
   pdf-originals-review:
     runs-on: ubuntu-latest
     steps:
@@ -56,7 +64,7 @@ jobs:
         run: python -m pip install --quiet --disable-pip-version-check "PyMuPDF>=1.24,<2"
       - name: Install dependencies
         run: npm install --no-audit --no-fund
-      - name: Validate public entity graph
+      - name: Validate public entity graph and the Nova content model (fails on any broken reference)
         run: npm run validate
       - name: Astro type-check
         run: npm run check
@@ -64,6 +72,10 @@ jobs:
         run: npm run build
       - name: Validate generated HTML navigation
         run: npm run test:links
+      - name: Every old URL still resolves (page or redirect)
+        run: npm run test:legacy
+      - name: Secret scan of the website source
+        run: npm run test:secrets
       - name: Verify full first-slice catalog and user journeys
         run: npm run test:coverage
       - name: Prove all canonical Markdown pages and in-site depth match source
@@ -104,7 +116,7 @@ jobs:
             sleep 1
           done
           if [ "$READY" -ne 1 ]; then cat /tmp/novacorp-preview.log; exit 1; fi
-          for ENTRY in "home:/" "explorer:/company/" "investigation:/incidents/dns-client-outage/" "policy:/policies/contractor-usb/" "acls:/files/permissions/technical/" "files01:/systems/nova-files01/" "file-centre:/files/" "subnet:/incidents/fileserver-subnet/" "permission:/incidents/file-permission-denial/"; do
+          for ENTRY in "home:/" "map:/map/" "investigation:/incidents/dns-client-outage/" "policy:/policies/contractor-usb/" "acls:/files/permissions/technical/" "files01:/systems/nova-files01/" "file-centre:/files/" "subnet:/incidents/fileserver-subnet/" "permission:/incidents/file-permission-denial/"; do
             NAME="${ENTRY%%:*}"
             PAGE="${ENTRY#*:}"
             for VIEW in "desktop:1440,900" "mobile:390,844"; do
@@ -114,7 +126,7 @@ jobs:
               test -s "qa-snapshots/${NAME}-${VIEW_NAME}.png"
             done
           done
-          CHROME_PATH="$CHROME" node scripts/capture-experience-qa.mjs
+          CHROME_PATH="$CHROME" node scripts/capture-v2-qa.mjs
           echo "Real Chromium captured standard desktop/mobile and interaction-focused screenshots. Visual acceptance remains manual."
       - name: Keep actual browser screenshots for visual review
         uses: actions/upload-artifact@v4

@@ -39,7 +39,7 @@ else{
 for(const [route,filename] of [
  ["incidents/backup-target-unavailable","Nova_Corp_CR-014_Engineering_Journal_and_Evidence"],
  ["incidents/dc01-outage","Nova_Corp_CR-014_Engineering_Journal_and_Evidence"],
- ["roadmap","NovaCorp_CR-008_File_Server_Deployment_Journal"],
+ ["changes/CR-008","NovaCorp_CR-008_File_Server_Deployment_Journal"],
  ["sources","Nova_Corp_CR-014_Engineering_Journal_and_Evidence"]
 ]){
  const full=join(dist,route,"index.html");
