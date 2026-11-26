@@ -25,6 +25,7 @@ const computerEntries=computersForOu(ou.slug);
 </div></section>
 <section class="section compact"><div class="container grid-main"><div>
   {parent && <div class="note" style="margin-bottom:24px">This OU is inside <a href={base+"directory/ous/"+parent.slug+"/"}>{parent.name}</a>. Parent location is part of the directory hierarchy, not automatic membership in a resource group.</div>}
+  <section class="content-section"><h2>Why does Nova Corp use this OU?</h2><p>{ou.meaning} Organizational Units keep the directory organized and can be used as policy targets. They do not grant departmental file permissions by themselves.</p><p><a href={base+"directory/"}>nova.corp</a> → {parent&&<><a href={base+"directory/ous/"+parent.slug+"/"}>{parent.name}</a> → </>}<strong>{ou.name}</strong></p></section>
   <section class="content-section">
     <h2>What is stored in this OU?</h2>
     {children.length>0 && <div class="card-list" style="margin-top:18px">{children.map(child=><a class="system-card" href={base+"directory/ous/"+child.slug+"/"}><small>Child Organizational Unit</small><h3>{child.name}</h3><p>{child.meaning}</p><span class="readmore">Open OU →</span></a>)}</div>}
@@ -45,6 +46,7 @@ const computerEntries=computersForOu(ou.slug);
     <a class="evidence-link" style="margin-top:16px;display:inline-flex" href={base+"policies/"}>Browse all seven company policies →</a>
   </section>
   <section class="content-section"><h2>How this connects to access</h2><p class="muted" style="margin-top:14px">OU membership determines location and possible policy scope. File access follows separate direct group membership, nesting, SMB and NTFS permissions. No object is assumed to have access solely because of its OU.</p><div class="button-row" style="margin-top:17px"><a class="btn ghost small" href={base+"groups/"}>Browse group membership →</a><a class="btn ghost small" href={base+"files/permissions/"}>Inspect file permissions</a></div></section>
+<section class="content-section"><details><summary>Technical checks</summary><p><strong>Where:</strong> Domain controller or management PC with Active Directory tools.</p><pre><code>{"Get-ADOrganizationalUnit -Filter \"Name -eq "+String.fromCharCode(39)+ou.name+String.fromCharCode(39)+"\" | Select-Object Name,DistinguishedName"}</code></pre><p><strong>Expected:</strong> the named OU is returned in the documented parent location. Compare distinguished names if more than one object shares the name.</p></details></section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"}>Original directory inventory →</a></p><p><a href={base+"journals/change_request_cr005/"}>Directory setup journal →</a></p></section>
 </div>
 <aside>
  <div class="sidebox"><h3>Where is it?</h3><p class="muted">Directory: <strong>nova.corp</strong></p><p class="muted" style="margin-top:8px">Parent: {parent?parent.name:"Domain root"}</p><p class="muted" style="margin-top:8px">Documented direct users: {direct.length}</p></div>

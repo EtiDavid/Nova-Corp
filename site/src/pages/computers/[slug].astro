@@ -36,8 +36,9 @@ const policy=computer.linkedPolicySlug?getPolicy(computer.linkedPolicySlug):unde
   </div>:<div class="note">No additional computer-specific OU-linked GPO is claimed from the reviewed seven-object policy inventory for this member-server area. <a href={base+"policies/"}>Explore all Group Policies</a> to distinguish domain links from OU links.</div>}
   <p class="muted" style="margin-top:16px">The <a href={base+"policies/domain-password/"}>default domain policy</a> is linked at domain root. Link scope is not a fresh effective setting test on this computer.</p>
  </section>
+ <section class="content-section"><details><summary>Technical checks</summary><p><strong>Where:</strong> Domain controller or management PC with Active Directory tools.</p><pre><code>{"Get-ADComputer -Identity \""+computer.name+"\" -Properties Enabled | Select-Object Name,Enabled,DistinguishedName"}</code></pre><p><strong>Expected:</strong> The registered computer appears in {ou?.name}. This proves directory placement, not current VM health.</p></details></section>
  <section class="content-section">
-  <h2>Engineering records</h2><p><a href={base+"reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"}>Original directory inventory →</a></p><div class="paper panel">
+  <h2>Engineering journals</h2><p><a href={base+"reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"}>Original directory inventory →</a></p><div class="paper panel">
   <p class="muted">The source verifies the directory computer object's placement. VM configuration, actual services, failover, test output and physical-host dependencies are distinct evidence found on the technical system and original journals.</p>
   <a class="evidence-link" href={computerSource}>Read the Active Directory computer inventory ↗</a>
   </div>

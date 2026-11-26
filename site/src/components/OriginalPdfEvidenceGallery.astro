@@ -2,24 +2,11 @@
 /** Public originals only: exact raw image bytes from previously published
  * source CR-012/013/014 PDFs. These cards do not claim live state.
  */
+import Files01DocumentImages from "./Files01DocumentImages.astro";
 import approved from "../data/approvedPdfEvidence.json";
 interface Props {subject?:string; ids?:string[]; heading?:string; limit?:number}
 const {subject,ids,heading="Original screenshots from the engineering journal",limit=30}=Astro.props;
 const selected=(ids ? ids.map(id=>{const found=approved.entries.find(image=>image.id===id);if(!found)throw Error("Unknown reviewed PDF image "+id);return found;}) : approved.entries.filter(image=>image.subject===subject)).slice(0,limit);
-const root="https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/";
 ---
-{selected.length>0&&<section class="pdf-evidence-gallery" aria-label={heading}>
- <div class="pdf-evidence-heading"><span class="eyebrow">Source-verified / historical lab screenshots</span><h2>{heading}</h2>
- <p>These screenshots document the recorded lab tests. Each image links to its source journal and page for context.</p></div>
- <div class="pdf-evidence-grid">
-  {selected.map((item)=>{const source=root+item.pdf+"#page="+item.page;const filename=item.id+"."+(item.ext==="jpeg"?"jpg":"png");return <figure class="pdf-evidence-card">
-    <a class="pdf-evidence-image" href={"/pdf-evidence/"+filename} target="_blank" rel="noopener noreferrer" aria-label={"Enlarge original screenshot: "+item.title}>
-      <img loading="lazy" decoding="async" src={"/pdf-evidence/"+filename} alt={item.alt}/>
-      <span aria-hidden="true">Open full-size ↗</span>
-    </a>
-    <figcaption><strong>{item.title}</strong><p>{item.caption}</p>
-    <small>Original PDF page {item.page} · Historical screenshot · <a href={source} target="_blank" rel="noopener noreferrer">See original journal ↗</a></small></figcaption>
-  </figure>})}
- </div>
- <p class="pdf-evidence-provenance"><a href="/pdf-evidence/manifest.json">Image SHA-256, source page and original PDF provenance ↗</a></p>
-</section>}
+{selected.length>0&&<section class="pdf-evidence-gallery" aria-label={heading}><div class="pdf-evidence-grid"><Files01DocumentImages ids={selected.map(item=>item.id)}/></div></section>}
+<style>.pdf-evidence-grid{display:block!important;grid-template-columns:1fr!important}.pdf-evidence-gallery{min-width:0}</style>

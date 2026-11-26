@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ScrollableLabSandbox from "../components/ScrollableLabSandbox.astro";
+import {labStories} from "../data/labStories";
 import LabIncidentLibrary from "../components/LabIncidentLibrary.astro";
 const base = import.meta.env.BASE_URL;
 ---
@@ -23,7 +24,7 @@ const base = import.meta.env.BASE_URL;
           </div><div class="candidate-links"><a href={base+"David_Eti_Systems_Infrastructure_CV.pdf"}>Download CV</a><a href={base+"about/"}>About &amp; contact</a></div>
         </div>
       </div>
-      <div class="candidate-metrics"><span><strong>6</strong> virtual machines</span><span><strong>5</strong> VLANs</span><span><strong>15</strong> documented completed tests and incidents</span></div>
+      <div class="candidate-metrics"><span><strong>6</strong> virtual machines</span><span><strong>5</strong> VLANs</span><span><strong>{labStories.filter(s=>s.kind!=="deferred").length}</strong> documented completed tests and incidents</span></div>
       <section class="recruiter-feature" aria-label="Featured engineering investigations"><h2>Three things I proved</h2><div class="card-list">{[["A server went offline. Could employees still work?","I verified sign-in and file access through the surviving controller.","dc01-outage"],["A document disappeared. Could I recover it?","I restored a deleted file and verified its contents matched.","backup-target-unavailable"],["An employee could reach management tools.","I corrected firewall rule order and retested required access.","firewall-management-exposure"]].map(([title,desc,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h3>{title}</h3><p>{desc}</p><span class="readmore">Read investigation →</span></a>)}</div><p><a href="#hx-explorer">Explore the infrastructure diagram ↓</a> · <a href={base+"incidents/"}>All investigations →</a></p></section>
     </div>
     <div class="atlas-wide">

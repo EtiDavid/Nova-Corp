@@ -17,7 +17,7 @@ const directShare=shares.find(share=>share.id===group.folder);
 </div></section>
 <section class="section compact"><div class="container grid-main"><div>
   <section class="content-section">
-  <h2>Who belongs to this group and what can they access?</h2>
+  <h2>What does this security group do?</h2><p>{group.description}</p><div class="paper panel" style="margin:18px 0"><h3>How Nova Corp assigns permissions</h3><p>AGDLP means Accounts → Global department groups → Domain Local resource groups → Permissions. Administrators change the membership of a user’s department group instead of editing every folder ACL individually.</p>{group.scope==="Global"?<p><strong>{group.name}</strong> → {nested.map((g,i)=><Fragment>{i>0&&" · "}<a href={base+"groups/"+g.slug+"/"}>{g.name}</a></Fragment>)} → resource ACL</p>:<p>{group.directMemberGroups.map((g,i)=><Fragment>{i>0&&" · "}<a href={base+"groups/"+findGroupByName(g)?.slug+"/"}>{g}</a></Fragment>)} → <strong>{group.name}</strong>{directShare&&<> → <a href={base+"files/shares/"+directShare.id+"/"}>{directShare.name}</a></>}</p>}</div><h2>Who belongs to this group and what can they access?</h2>
   {people.length>0&&<div class="paper panel" style="margin-top:20px">
     <h3>Recorded direct identity members</h3>
     <div class="card-list" style="margin-top:18px">{people.map(u=><a class="system-card" href={base+"people/"+u.slug+"/"}><small>{u.category.replace("-"," ")} · {u.enabled?"Enabled":"Disabled"}</small><h3>{u.name}</h3><p>Account <code>{u.logon}</code></p><span class="readmore">Open identity →</span></a>)}</div>
@@ -38,6 +38,7 @@ const directShare=shares.find(share=>share.id===group.folder);
     <a class="btn small" href={base+"files/shares/"+directShare.id+"/"}>Follow the actual {directShare.name} folder →</a>
   </div>}
   </section>
+  <section class="content-section"><details><summary>Technical checks</summary><p><strong>Where:</strong> Domain controller or management PC with AD tools.</p><pre><code>{"Get-ADGroupMember -Identity \""+group.name+"\""}</code></pre><p><strong>Expected:</strong> the direct recorded accounts and/or groups appear; compare against the original inventory. Recursive membership and the user’s actual file-access token are separate.</p>{directShare&&<><h3>Check resource permission</h3><p><strong>Where:</strong> NOVA-FILES01.</p><pre><code>{"Get-SmbShareAccess -Name "+directShare.name}</code></pre><p><strong>Expected:</strong> {group.name} has {group.shareRight} on the share; NTFS {group.ntfsRight} is a separate folder ACL check.</p></>}</details></section>
   <section class="content-section">
     <h2>Engineering journals and original records</h2><p><a href={base+"reference/explore/GROUPS/"}>Original group configuration →</a> · <a href={base+"reference/Documentation/Change-Requests/Journal-CR-005/"}>Directory setup journal →</a></p>
     <div class="note"><strong>Two independent sources:</strong> direct identity/group membership comes from the Active Directory snapshot, while share and NTFS permission grants come from the file-server inventory. Their combined path is meaningful, but still must be distinguished from a successful client-side test.</div>

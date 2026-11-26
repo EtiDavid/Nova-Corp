@@ -45,6 +45,6 @@ const empty=companyPolicies.find(p=>!p.link);
  <p class="muted">The keyboard-named Group Policy exists, but has no linked OU and no configured settings. Keyboard preferences were found instead in the Domain Controllers policy.</p>
  <a class="evidence-link" href={base+"policies/"+empty.slug+"/"}>See why it doesn't apply →</a>
 </div>}
-<div class="note" style="margin-top:26px">All seven GPOs were exported in the last documented November 2026 source review, and each has <strong>Authenticated Users</strong> with Apply Group Policy permission. The effective target still depends on link, inheritance, filtering and processing.</div>
+<div class="note" style="margin-top:26px">All seven GPOs were exported in the documented source review, and each has <strong>Authenticated Users</strong> with Apply Group Policy permission. The effective target still depends on link, inheritance, filtering and processing.</div>
 </div></section>
 </BaseLayout>

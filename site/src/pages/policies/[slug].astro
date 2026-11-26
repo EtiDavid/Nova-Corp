@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
+
 import {
  companyPolicies,policySourceIndex,policyImageSource,
  type CompanyPolicy
@@ -24,13 +24,13 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
 <p class="lead" style="margin-top:17px">{policy.summary}</p>
 <div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:22px">
  <span class={"rule-action "+(isUnlinked?"block":"pass")}>{isUnlinked?"Unlinked / empty":"Linked / configured"}</span>
- <span class="muted" style="font-size:.85rem">Saved settings reviewed 22 November 2026</span>
+ <span class="muted" style="font-size:.85rem">Saved configuration</span>
 </div>
 </div></section>
 <section class="section compact"><div class="container grid-main">
 <div>
 <section class="content-section">
- <h2>Why does Nova Corp have this policy?</h2><p class="muted" style="margin:12px 0 18px">{policy.why}</p>
+ <h2>What does this policy do?</h2><p>{policy.summary}</p><h2 style="margin-top:24px">Why does Nova Corp have this policy?</h2><p class="muted" style="margin:12px 0 18px">{policy.why}</p>
  <div class="paper panel">
   <p class="kicker">1 / The configured scope</p>
   <h3 style="margin:11px 0">{isUnlinked?"This policy was not linked to anything.":policy.link?.label}</h3>
@@ -56,12 +56,12 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
  </section>)}
  <p data-filter-empty hidden class="note">No setting matches this search. Try another word.</p>
 </section>
-<EngineeringSourceEmbed sourcePath={policy.sourceUrl.split("/blob/main/")[1]} title="Complete original Group Policy explanation" />
+
 <section class="content-section">
  <h2>Was this policy actually applied?</h2>
  <p class="muted" style="margin:12px 0 20px">A saved policy, a matching OU, <code>gpresult</code>, and an actual Windows behavior test answer different questions. The following statements describe only what was observed or configured in the original work.</p>
  <div class="proof-grid vertical">
-  <div class="proof-item"><strong>Configuration</strong><p>{isUnlinked?"No configured settings or links found.":"Settings, enabled link and security descriptor verified in the November GPO report."}</p></div>
+  <div class="proof-item"><strong>Configuration</strong><p>{isUnlinked?"No configured settings or links found.":"Settings, enabled link and security descriptor verified in the saved GPO report."}</p></div>
   <div class="proof-item"><strong>Link/scope</strong><p>{isUnlinked?"No link; no user/computer target established.":policy.link?.path+" (enabled; not enforced). This is potential scope, not effective output."}</p></div>
   <div class="proof-item"><strong>Client evidence</strong><p>{hasTest?"Some relevant historical processing or behavior evidence exists below; see exact limits.":"No claim of fresh effective user/computer policy processing is supported here."}</p></div>
  </div>
@@ -73,13 +73,10 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
  </div>
 </section>
 {policy.evidenceImages && policy.evidenceImages.length>0&&<section class="content-section">
- <h2>Original screenshots</h2>
- <p class="muted" style="margin:10px 0 19px">These images already appear in the published engineering records. Each caption states what that image supports. They are not representations of a new test.</p>
- <div class="card-list">{policy.evidenceImages.map(img=><figure class="paper evidence-figure">
-   <a href={policyImageSource(img.filename)} target="_blank" rel="noopener noreferrer" aria-label={"Open the original evidence image: "+img.caption}>
+ <div class="policy-original-images">{policy.evidenceImages.map(img=><figure>
+   
     <img src={base+"evidence/"+img.filename} loading="lazy" alt={img.alt} decoding="async" />
-   </a>
-   <figcaption><strong>{img.caption}</strong><small>Supports: {img.proves}</small><a class="evidence-link" href={policyImageSource(img.filename)}>Open original image ↗</a></figcaption>
+   <figcaption><strong>{img.caption}</strong><p>{img.proves}</p></figcaption>
  </figure>)}</div>
 </section>}
 <section class="content-section">
@@ -97,6 +94,7 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
  {policy.slug==="keyboard"&&<div class="paper panel" style="margin-top:17px"><h3>Where the keyboard settings were actually found</h3><p class="muted">Two registry preferences appear in the Domain Controllers policy instead. Do not interpret that as a keyboard layout applied to all staff.</p><a class="evidence-link" href={base+"policies/domain-controllers/"}>Open the actual policy →</a></div>}
  <div class="note warning" style="margin-top:20px"><strong>Limits on this claim</strong><ul class="plain-list" style="margin-top:12px">{policy.limitations.map(limit=><li>{limit}</li>)}</ul></div>
 </section>
+<section class="content-section"><details><summary>Technical checks</summary><h3>Inspect the saved GPO object</h3><p><strong>Where:</strong> Domain controller or management PC with the GroupPolicy module.</p><pre><code>{"Get-GPO -Name \""+policy.technicalName+"\""}</code></pre><p><strong>Expected:</strong> The correct name and GPO ID are returned. This verifies the object, not its effective settings.</p><h3>Review actual processing</h3><p><strong>Where:</strong> NOVA-CLIENT in the intended user session; elevate for computer scope.</p><pre><code>{policy.side==="User"?"gpresult /scope user /r":policy.side==="Computer"?"gpresult /scope computer /r":"gpresult /r"}</code></pre><p><strong>Expected:</strong> {isUnlinked?"The empty/unlinked GPO should not appear as applied.":"An eligible and successfully processed GPO appears in the Applied Group Policy Objects list. For actual behavior, perform an approved test."}</p></details></section><section class="content-section"><h2>Related tests and incidents</h2>{policy.slug==="corporate-wallpaper"?<a class="system-card" href={base+"incidents/gpo-link-disabled/"}><h3>Controlled · Wallpaper policy link disabled</h3><p>The missing policy was traced to its link.</p><span class="readmore">Read investigation →</span></a>:policy.slug==="contractor-usb"?<p><a href={base+"people/john-shaw/"}>John Shaw’s recorded policy-processing test →</a></p>:<p>See the documented observations above. No independent per-device behavior test is inferred from this GPO record.</p>}</section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"reference/"+policy.sourceUrl.split("/blob/main/docs/")[1].replace(/\.md$/,"")+"/"}>Complete original Group Policy explanation →</a></p><p><a href={base+"journals/CR-006_Group_Policy_Management_Beautified/"}>Group Policy implementation journal →</a></p></section>
 </div>
 <aside>
  <div class="sidebox"><h3>Policy details</h3>
@@ -110,7 +108,7 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
   </dl>
   <details class="detail-disclosure" style="margin-top:12px"><summary>Technical GPO identifier</summary><code class="technical">{policy.guid}</code></details>
  </div>
- <div class="sidebox"><h3>Source</h3><a href={policy.sourceUrl}>Exact saved policy record ↗</a><p class="muted" style="margin-top:12px">Original data: seven verified GPO XML/HTML reports from 22 November 2026. This site only publishes reviewed values and existing public proof.</p></div>
+ <div class="sidebox"><h3>Source</h3><a href={policy.sourceUrl}>Exact saved policy record ↗</a><p class="muted" style="margin-top:12px">Original data: seven verified GPO XML/HTML reports. This page separates configured settings from observed processing.</p></div>
  <div class="sidebox"><a href={base+"policies/"}>← All company policies</a><p style="margin-top:14px"><a href={base+"directory/"}>Directory tree →</a></p><p style="margin-top:14px"><a href={policySourceIndex}>Technical GPO index ↗</a></p></div>
 </aside>
 </div></section>
@@ -136,3 +134,4 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
  });
 </script>
 </BaseLayout>
+<style>.policy-original-images figure{margin:26px 0 32px}.policy-original-images img{width:100%;height:auto;display:block}.policy-original-images figcaption{text-align:center;color:#c5c7bb;font-size:.84rem;margin-top:10px}.policy-original-images figcaption p{margin:5px 0}</style>
