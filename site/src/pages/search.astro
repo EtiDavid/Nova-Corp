@@ -12,10 +12,10 @@ import {getCollection, type CollectionEntry} from "astro:content";
 const originalDocs: CollectionEntry<"reference">[]=await getCollection("reference");
 const pdfDocs: CollectionEntry<"pdfJournals">[]=await getCollection("pdfJournals");
 
-const incidents=await getCollection("incidents");
+const incidents:CollectionEntry<"incidents">[]=await getCollection("incidents");
 const base=import.meta.env.BASE_URL;
 const index=[
-...incidents.map(doc=>({name:doc.data.title,kind:"Investigation",description:doc.data.summary+" · "+doc.data.outcome,url:base+"incidents/"+doc.id+"/"})),
+...incidents.map((doc:CollectionEntry<"incidents">)=>({name:doc.data.title,kind:"Investigation",description:doc.data.summary+" · "+doc.data.outcome,url:base+"incidents/"+doc.id+"/"})),
 ...techTerms.map(term=>({name:term.word,kind:"Technical explanation with full original source",description:term.brief,url:base+"learn/"+term.slug+"/"})),
 ...originalDocs.map((doc: CollectionEntry<"reference">)=>({name:doc.data.title,kind:"Original engineering Markdown",description:doc.data.sourcePath,url:base+"reference/"+doc.id+"/"})),
 ...pdfDocs.map((doc: CollectionEntry<"pdfJournals">)=>({name:doc.data.title,kind:"Original full PDF journal",description:doc.data.pageCount+" pages, including original screenshots and native text · "+doc.data.originalName,url:base+"journals/"+doc.id+"/"})),
