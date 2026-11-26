@@ -18,6 +18,6 @@ saw: "The backup target was gone and the backup failed."
 cause: "The backup destination was unavailable, so no new backup could be written."
 fix: "I repaired the target and ran a fresh backup."
 proof: "A deleted file was restored with the same SHA-256 hash as the original."
-limits: "Restoring one file is not a whole-server restore, and the backups sit on the same nested lab host, so this is not off-site recovery."
+limits: "Restoring one file is not a whole-server restore, and the backups go to a separate hard drive outside the lab."
 copyStatus: "rewritten"
 ---

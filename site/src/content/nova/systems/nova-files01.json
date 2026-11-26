@@ -26,7 +26,7 @@
     "w": 13,
     "h": 4.4
   },
-  "limit": "Its Windows backups sit on the same nested lab host, so this is not off-site disaster recovery.",
+  "limit": "Its Windows backups go to a separate hard drive outside the lab, but restoring a whole server from them has not been demonstrated.",
   "links": [
     {
       "line": "recovery",

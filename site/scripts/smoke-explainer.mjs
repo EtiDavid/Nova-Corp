@@ -21,7 +21,7 @@ try {
       if (reduce === "reduce") { assert.match(await fig.locator(".xf-count").textContent(), new RegExp(`Step ${total} of ${total}`), `${sys} reduced motion shows the final step`); }
       else {
         assert.equal(await fig.locator('[data-act="play"]').count(), 0, "no play button");
-        await fig.scrollIntoViewIfNeeded(); await p.waitForTimeout(7500);
+        await fig.scrollIntoViewIfNeeded(); await p.waitForTimeout(5000);
         const n = Number((await fig.locator(".xf-count").textContent()).match(/Step (\d+)/)[1]); assert.ok(n >= 2, `${sys} autoplays on its own (step ${n})`);
         await p.click(`#${id} .xf-dot >> nth=0`); assert.match(await fig.locator(".xf-count").textContent(), /Step 1 of/, `${sys} dot jumps to step 1`);
         assert.equal(await fig.locator(".xf-pause").textContent(), "Pause", "clicking a dot keeps it playing");

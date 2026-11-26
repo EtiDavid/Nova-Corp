@@ -33,7 +33,7 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
     <p class="tiny"><a href={base + "incidents/"}>← All incidents</a></p>
     <h1 style="margin-top:10px">{d.shortTitle ?? d.title}</h1>
     <div class="meta">
-      <span class={"type " + d.type}>{typeLabel[d.type]}</span><span>{d.date}</span>
+      <span class={"type " + d.type}>{typeLabel[d.type]}</span>
       <span>{involved.map((s: any) => <a class="chip" href={base + "systems/" + s.id + "/"}>{s.name}</a>)}</span>
       {d.cr && <a class="chip" href={base + "changes/" + d.cr + "/"}>{d.cr}</a>}
     </div>

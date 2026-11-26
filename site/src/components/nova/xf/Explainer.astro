@@ -53,7 +53,8 @@ const data = { start: start ?? scenarios[0].id, scenarios };
     let sc = data.scenarios.find((s: any) => s.id === data.start) || data.scenarios[0];
     let idx = 0, token = 0, paused = false, visible = false, run = 0;
     const el = (id: string) => svg.querySelector('[data-id="' + id + '"]') as SVGElement | null;
-    const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
+    const SPEED = 2; // everything plays at twice the original pace
+    const wait = (ms: number) => new Promise(r => setTimeout(r, ms / SPEED));
     function resetAll() {
       svg.querySelectorAll("[data-hide]").forEach(e => e.classList.remove("xf-on"));
       svg.querySelectorAll("[data-state]").forEach(e => e.removeAttribute("data-state"));
@@ -70,7 +71,7 @@ const data = { start: start ?? scenarios[0].id, scenarios };
         const t0 = performance.now();
         const frame = (now: number) => {
           if (my !== token) return res();
-          const k = Math.min(1, (now - t0) / ms); put(rev ? (1 - k) * L : k * L);
+          const k = Math.min(1, (now - t0) * SPEED / ms); put(rev ? (1 - k) * L : k * L);
           if (k < 1) requestAnimationFrame(frame); else { if (!keep) dot.style.opacity = "0"; res(); }
         };
         requestAnimationFrame(frame);
@@ -89,7 +90,7 @@ const data = { start: start ?? scenarios[0].id, scenarios };
           const dec = a.dec ?? 0, suf = a.suffix ?? "";
           if (instant) { e.textContent = a.to.toFixed(dec) + suf; break; }
           const t0 = performance.now();
-          await new Promise<void>(res => { const f = (now: number) => { if (my !== token) return res(); const k = Math.min(1, (now - t0) / a.ms); e.textContent = (a.from + (a.to - a.from) * k).toFixed(dec) + suf; k < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
+          await new Promise<void>(res => { const f = (now: number) => { if (my !== token) return res(); const k = Math.min(1, (now - t0) * SPEED / a.ms); e.textContent = (a.from + (a.to - a.from) * k).toFixed(dec) + suf; k < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
         } break;
         case "glide": { const path = el(a.path) as unknown as SVGPathElement, dot = el(a.dot); if (path && dot) await glide(path, dot, a.ms ?? 1100, !!a.rev, !!a.keep, instant, my); break; }
         case "wait": if (!instant) await wait(a.ms ?? 400); break;

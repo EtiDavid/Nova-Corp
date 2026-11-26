@@ -9,5 +9,5 @@
     "A firewall fix: block rules for the CLIENT network and HTTPS for the pfSense web interface",
     "A snapshot cleanup that freed Proxmox storage"
   ],
-  "validated": "Closed on 21 Nov 2026 as a conditional pass. The conditions are on the roadmap."
+  "validated": "Closed as a conditional pass. The conditions are on the roadmap."
 }

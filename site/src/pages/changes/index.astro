@@ -9,7 +9,7 @@ const next = nova.upcoming.find((c: any) => c.status === "next");
   <section class="hero2" style="padding-bottom:16px"><div class="wrap">
     <div class="eyebrow">Changes</div>
     <h1>What I built, in order.</h1>
-    <p class="lead">Each change request added something to the map. The Windows foundation (CR-001 to CR-{nova.done.at(-1).id.slice(3)}) was signed off on {nova.facts.signOff.date} as a {nova.facts.signOff.result}.</p>
+    <p class="lead">Each change request added something to the map. The Windows foundation (CR-001 to CR-{nova.done.at(-1).id.slice(3)}) was signed off as a {nova.facts.signOff.result}.</p>
   </div></section>
   <section class="wrap" style="padding-bottom:48px">
     <ol class="timeline">

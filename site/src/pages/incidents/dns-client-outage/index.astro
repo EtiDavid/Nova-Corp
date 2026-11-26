@@ -41,7 +41,7 @@ const proof = [
     <h1 style="margin-top:10px">The file server looked down. It was DNS.</h1>
     <div class="meta">
       <span class={"type " + me.type}>{typeLabel[me.type]}</span>
-      <span>{me.date}</span>
+      
       <span>{involved.map((s: any) => <a class="chip" href={base + "systems/" + s.id + "/"}>{s.name}</a>)}</span>
       <a class="chip" href={base + "changes/" + me.cr + "/"}>{me.cr}</a>
     </div>

@@ -27,7 +27,7 @@ const lineNames = s.lines.map((l: string) => nova.lineMap[l].name);
     <span class="chip">{s.zone}</span>
     {s.ip && <span class="chip mono">{s.ip}</span>}
     {s.os && <span class="chip">{s.os}</span>}
-    <span class="chip">Running at last check: {asOf}</span>
+    <span class="chip">Running at last check</span>
   </div>
   <div class="note" style="margin-top:20px"><strong>The one limit:</strong> {s.limit}</div>
   <dl class="sys-links">

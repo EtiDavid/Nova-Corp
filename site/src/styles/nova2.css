@@ -269,7 +269,7 @@ html:not(.js) .sysdata { display:block; border-top:1px solid var(--rule); paddin
 .xf-svg [data-state="good"] { --st:var(--ok); }
 .xf-svg [data-state="pulse"] .halo { opacity:1; animation:xfpulse 1s ease-in-out 2; }
 @keyframes xfpulse { 50% { opacity:.2; stroke-width:9; } }
-.js .xf-svg [data-hide] { opacity:0; transition:opacity .35s ease; } .js .xf-svg [data-hide].xf-on { opacity:1; }
+.js .xf-svg [data-hide] { opacity:0; transition:opacity .18s ease; } .js .xf-svg [data-hide].xf-on { opacity:1; }
 .xf-caption { min-height:7.2em; padding:10px 2px 0; }
 .xf-count { font:600 .8rem var(--font-mono); color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin:0; }
 .xf-say { font-size:1rem; font-weight:600; margin:4px 0 2px; max-width:none; } .xf-why { color:var(--muted); margin:0; max-width:none; }
