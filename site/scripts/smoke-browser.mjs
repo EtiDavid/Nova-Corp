@@ -120,11 +120,11 @@ try {
   assert(await cr.isVisible(),"actual CR-013 journal linked");
   assert(await desktop.locator('.glossary-pilot a[href$="/reference/explore/services/ACTIVE_DIRECTORY/"]').isVisible());
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
-  assert((await desktop.locator(".identity-lesson").innerText()).includes("NETLOGON"));
+  assert((await desktop.locator(".glossary-pilot").innerText()).includes("NETLOGON"));
   await desktop.goto(host+"/learn/netlogon/",{waitUntil:"networkidle"});
-  assert.match(await desktop.locator(".identity-lesson").innerText(),/Map-DepartmentDrive/);
+  assert.match(await desktop.locator(".glossary-pilot").innerText(),/Map-DepartmentDrive/);
   await desktop.goto(host+"/learn/wireguard/",{waitUntil:"networkidle"});
-  assert(await desktop.locator('.term-source-links a[href*="Journal-CR-007"]').isVisible());
+  assert(await desktop.locator('.glossary-pilot a[href*="Journal-CR-007"]').isVisible());
   await desktop.goto(host+"/people/john-shaw/",{waitUntil:"networkidle"});
   assert((await desktop.locator("main").innerText()).includes("Physical USB behavior was not verified"));
   const publishedImage=desktop.locator('img[src*="/evidence/03-contractor-user-gpresult.png"]');

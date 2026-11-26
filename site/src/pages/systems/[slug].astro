@@ -1,4 +1,5 @@
 ---
+import ClientProfile from "../../components/ClientProfile.astro";
 import DC01Profile from "../../components/DC01Profile.astro";
 import Files01Pilot from "../../components/Files01Pilot.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
@@ -31,7 +32,7 @@ const statusText = system.status === "observed-running" ? `Running at last check
     <h1>{system.name}</h1>
     <p class="lead" style="margin-top:17px">{system.summary}</p>
   </div></section>
-  {system.id==="nova-files01" ? <Files01Pilot/> : ["nova-dc01","nova-dc02"].includes(system.id) ? <DC01Profile secondary={system.id==="nova-dc02"}/> : <section class="section compact"><div class="container grid-main deep-system-profile">
+  {system.id==="nova-files01" ? <Files01Pilot/> : ["nova-dc01","nova-dc02"].includes(system.id) ? <DC01Profile secondary={system.id==="nova-dc02"}/> : system.id==="nova-client" ? <ClientProfile/> : <section class="section compact"><div class="container grid-main deep-system-profile">
     <div>
       <section class="content-section">
         <h2>Key facts</h2>
