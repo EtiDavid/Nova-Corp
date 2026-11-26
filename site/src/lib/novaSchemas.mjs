@@ -27,7 +27,7 @@ export const systemSchema = z.object({
   zone: z.string(), ip: z.string().optional(), os: z.string().optional(), status: z.enum(["live", "retired"]),
   services: z.array(id).default([]), builtBy: z.array(cr).min(1),
   map: z.object({ col: z.number(), row: z.number(), w: z.number().default(13), h: z.number().default(4.4) }),
-  links: z.array(linkSchema).default([]), limit: z.string().min(10), copyStatus: copy
+  links: z.array(linkSchema).default([]), limit: z.string().min(10), story: z.string().min(60), copyStatus: copy
 }).strict();
 
 export const serviceSchema = z.object({

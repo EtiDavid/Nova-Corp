@@ -22,7 +22,7 @@ const unique=aliases.filter(x=>{const k=x.text.toLowerCase();if(seen.has(k))retu
  function eligible(node){
    if(!node.nodeValue||!node.nodeValue.trim())return false;
    var el=node.parentElement;
-   if(!el||el.closest("a,button,summary,pre,code,script,style,textarea,option,select,svg,h1,h2,h3,h4,h5,h6,[data-no-tech-links]"))return false;
+   if(!el||el.closest("a,button,summary,pre,code,script,style,textarea,option,select,svg,h1,h2,h3,h4,h5,h6,.eyebrow,.chip,.sys-chips,[data-no-tech-links]"))return false;
    if(!el.closest("main"))return false;
    return true;
  }

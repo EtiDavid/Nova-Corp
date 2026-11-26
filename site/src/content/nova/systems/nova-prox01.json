@@ -38,5 +38,7 @@
         ]
       ]
     }
-  ]
+  ],
+  "story": "Proxmox is the platform under everything. It runs nested inside VMware Workstation on one Windows 11 host, and it hosts all five virtual machines: the firewall, both domain controllers, the file server and the test workstation. I built it first (CR-001), and every later change depends on it. It also holds the backup repository and the snapshots I use as rollback points. When old snapshots filled its storage to 86.73%, I cleaned them up (CR-015).",
+  "copyStatus": "rewritten"
 }

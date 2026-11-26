@@ -27,3 +27,7 @@ body.legacy { --bg:var(--paper); --text:var(--ink); --border:var(--rule); --blue
 .legacy .card-list a, .legacy .sidebox a, .legacy .source-line a { display:inline-block; min-height:24px; line-height:24px; }
 /* card arrows: ink, so they read on both themes */
 .legacy .arrow-label, .legacy .area-card .arrow-label { color:var(--ink)!important; }
+.sys-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+.sys-links { margin:22px 0 0; display:grid; gap:10px; max-width:70ch; }
+.sys-links dt { font:600 .8rem var(--font-mono); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+.sys-links dd { margin:2px 0 0; }

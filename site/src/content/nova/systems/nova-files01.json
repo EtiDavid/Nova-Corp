@@ -47,5 +47,7 @@
         ]
       ]
     }
-  ]
+  ],
+  "story": "FILES01 is the file server, on 10.10.20.20. It shares five department folders (Finance, HR, IT, Management and Sales) through one DFS path, \\\\nova.corp\\shares, and checks both the share permission and the NTFS permission before a folder opens. It keeps Shadow Copies at 07:00 and 12:00, and Windows Server Backup writes to a separate disk. I restored a deleted file from backup with a matching SHA-256 hash (CR-012, CR-014).",
+  "copyStatus": "rewritten"
 }

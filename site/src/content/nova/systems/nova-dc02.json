@@ -26,5 +26,7 @@
     "h": 4.4
   },
   "limit": "Taking over sign-ins during an outage is not the same as restoring a server.",
-  "links": []
+  "links": [],
+  "story": "DC02 is the second writable domain controller, on 10.10.20.11. It holds the same directory and DNS as DC01 and replicates with it. When DC01 was offline in the CR-013 test, the workstation found DC02 and kept working. I also switched off replication on DC02 on purpose and repaired it. Building DC02 (CR-004) caused a 24-hour failure that I never fully explained.",
+  "copyStatus": "rewritten"
 }

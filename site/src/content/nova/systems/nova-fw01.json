@@ -84,5 +84,7 @@
         ]
       ]
     }
-  ]
+  ],
+  "story": "The firewall is the only door between Nova Corp's networks. pfSense routes between five VLANs (MGMT 10, INFRA 20, APP 30, CLIENT 40 and DMZ 50) and decides which connections cross. On the CLIENT network, two block rules sit ahead of a broad allow, so an employee PC cannot open the firewall's admin pages while DNS, sign-in, file shares and internet still work (CR-015). The rules for the other networks are still broad, and tightening them is the next planned change, CR-016.",
+  "copyStatus": "rewritten"
 }

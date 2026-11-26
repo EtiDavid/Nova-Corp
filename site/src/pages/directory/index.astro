@@ -43,7 +43,7 @@ const rootUsers=identities.filter(i=>i.category==="built-in"||i.slug==="test-use
       </section>
       <section class="content-section">
         <div class="section-heading"><h2>Browse directory accounts</h2><a class="text-link" href={base+"groups/"}>Open groups →</a></div>
-        <p class="muted" style="margin:10px 0 20px">These are **directory records**, not a company payroll list. Service identities, built-in accounts and disposable test users are labelled separately.</p>
+        <p class="muted" style="margin:10px 0 20px">These are **directory records**, not a company payroll list. Service identities, built-in accounts and disposable test users are labeled separately.</p>
         <div class="card-list">{identities.map(user=><a class="system-card" href={base+"people/"+user.slug+"/"}><small>{user.category.replace("-"," ")} · {user.enabled?"Enabled":"Disabled at last check"}</small><h3>{user.name}</h3><p>{user.location}</p><span class="readmore">Open directory identity →</span></a>)}</div>
       </section>
     </div>

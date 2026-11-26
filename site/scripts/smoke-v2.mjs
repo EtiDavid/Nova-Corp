@@ -120,8 +120,9 @@ try {
   });
   await step("System page still renders and shows generated cross-links", async () => {
     await d.goto(host + "/systems/nova-dc01/", { waitUntil: "networkidle" });
-    const t = await d.locator("#nl-gen").locator("xpath=..").innerText();
-    assert(t.includes("Lines through NOVA-DC01")); assert(t.includes("Built in"));
+    const t = await d.locator(".sys-links").innerText();
+    assert(/on the map/i.test(t)); assert(/built in/i.test(t)); assert(/what broke here/i.test(t));
+    assert(/the one limit/i.test(await d.locator("main").innerText()));
   });
   await step("Reduced motion shows the final journey state at once", async () => {
     const r = await page({ reducedMotion: "reduce" });

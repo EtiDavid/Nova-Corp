@@ -23,7 +23,7 @@
   },
   {
    "id": "CR-005",
-   "title": "AD organisational structure and identity management",
+   "title": "AD organizational structure and identity management",
    "gain": "Departments, OUs and AGDLP access groups."
   },
   {
@@ -103,7 +103,7 @@
    "goal": "No daily account has admin rights, domain admin accounts can only sign in to domain controllers, every computer has a unique rotating local admin password, and an independent AD security scan shows a measurable improvement.",
    "ok": [
     "adm-t0-david signs in to DC01 and DC02.",
-    "An authorised admin retrieves the LAPS password for NOVA-CLIENT and it rotates after use.",
+    "An authorized admin retrieves the LAPS password for NOVA-CLIENT and it rotates after use.",
     "David’s daily account works for normal tasks."
    ],
    "deny": [
@@ -330,7 +330,7 @@
    "title": "Remote monitoring and management: MSP-style support",
    "time": "2 weeks",
    "tier": "core",
-   "goal": "Nova Corp IT supports two simulated customer organisations with an RMM tool, scripted fixes and strictly separated customer data.",
+   "goal": "Nova Corp IT supports two simulated customer organizations with an RMM tool, scripted fixes and strictly separated customer data.",
    "ok": [
     "Jonas fixes a slow-PC ticket for customer A with an approved script."
    ],

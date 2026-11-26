@@ -20,7 +20,7 @@ const related=rulesForAlias(alias.name);
  <div class="card-list">{related.map(rule=><a class="system-card" href={base+"network/rules/"+rule.id+"/"}><small>{rule.action} · {rule.zone.toUpperCase()} rule {rule.order}</small><h3>{rule.description}</h3><p>{rule.protocol} · {rule.destination}</p><span class="readmore">Follow the rule →</span></a>)}</div>
 </section>
 
-<div class="note">Alias membership is a saved configuration fact. The referenced rule's ordered action and real traffic tests are separate evidence. Having a host on the alias does not by itself prove that a remote client can reach it.</div>
+<div class="note">An alias only names a group of hosts or ports. What a rule does with it depends on the rule's action and its place in the order.</div>
 <section class="content-section"><details><summary>Technical checks</summary><p><strong>Where:</strong> pfSense web interface, Firewall → Aliases. Review the saved members of <code>{alias.name}</code>, then compare the referenced rules.</p><p><strong>Expected:</strong> {alias.members.length} documented entries match the intended list. The alias alone does not permit traffic.</p></details></section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"reference/explore/network/aliases/"+alias.name+"/"}>Full alias configuration and examples →</a></p><p><a href={base+"reference/explore/network/ALIASES/"}>Original alias inventory →</a></p></section>
 </div><aside>
  <div class="sidebox"><h3>Alias profile</h3><dl class="fact-list"><div><dt>Type</dt><dd>{alias.kind}</dd></div><div><dt>Reviewed members</dt><dd>{alias.members.length}</dd></div><div><dt>Rules using alias</dt><dd>{related.length}</dd></div></dl></div>
