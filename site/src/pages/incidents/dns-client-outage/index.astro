@@ -17,8 +17,7 @@ const src = incidentDocuments[slug];
 const journal = base + "journals/" + src.journal.split("/").at(-1)?.replace(/\.pdf$/i, "") + "/";
 const journalGitHub = originalSourceURL(src.journal);
 const recordGitHub = originalSourceURL(src.source);
-const related = [...new Set(involved.flatMap((s: any) => s.incidents))].filter(i => i !== slug)
-  .map(i => ({ slug: i as string, title: nova.titleOf(i as string) }));
+const related = nova.relatedIncidents(slug);
 // Commands, expectations and recorded results are copied from the public incident record INC-CR014-02.
 const worked = [
   { q: "Is the share failing, and is name lookup failing too?", cmd: 'Test-Path "\\\\nova-files01\\IT"\nResolve-DnsName nova-files01.nova.corp',
@@ -93,7 +92,7 @@ const proof = [
         <details class="orig-record" open style="margin-top:16px"><summary><b>The complete original investigation</b> (every recorded step)</summary><IncidentOriginalRecord slug={slug} /></details>
 
         <h2 style="margin-top:36px">Related</h2>
-        <div class="related">{related.map(r => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div>
+        <div class="related">{related.map((r: any) => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div>
       </div>
     </div>
   </div>

@@ -65,7 +65,15 @@ export async function loadNova() {
   // Stations on each line, in the order the line meets them. Used for the phone list.
   const lineStops: Record<string, string[]> = Object.fromEntries(lines.map((l: any) => [l.id, [] as string[]]));
   segments.forEach((sg: any) => [sg.from, sg.to].forEach(id => { if (!lineStops[sg.line].includes(id)) lineStops[sg.line].push(id); }));
+  // The few incidents most related to one: shared services count double, shared systems once; same change breaks ties.
+  const relatedIncidents = (slug: string, n = 4) => {
+    const me: any = incidents.find((i: any) => i.slug === slug); if (!me) return [];
+    return incidents.filter((i: any) => i.slug !== slug).map((i: any) => ({
+      slug: i.slug, title: i.shortTitle ?? i.title,
+      score: 2 * (i.services ?? []).filter((x: string) => (me.services ?? []).includes(x)).length + i.systems.filter((x: string) => me.systems.includes(x)).length + (i.cr && i.cr === me.cr ? 1 : 0)
+    })).filter((x: any) => x.score > 0).sort((a: any, b: any) => b.score - a.score || a.slug.localeCompare(b.slug)).slice(0, n);
+  };
   const counts = { systems: systems.length, vlans: (facts as any).vlans.length, changesDone: done.length, incidents: counted.length };
   return { facts: facts as any, lines, lineMap, zones, stations, segments, systems, services, changes, done, upcoming, glossary, journeys, journey: journeys.find((j: any) => j.featured) ?? journeys[0],
-    incidents, featured, markers, titleOf, builtIn, counts, lineStops, stationById: (id: string) => stations.find((s: any) => s.id === id) };
+    incidents, featured, markers, titleOf, builtIn, counts, lineStops, relatedIncidents, stationById: (id: string) => stations.find((s: any) => s.id === id) };
 }

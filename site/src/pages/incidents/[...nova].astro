@@ -18,7 +18,7 @@ const nova = await loadNova();
 const involved = d.systems.map(nova.stationById).filter(Boolean);
 const change = d.cr ? nova.changes.find((c: any) => c.id === d.cr) : null;
 const journal = change?.journal ? await journalHref(change.journal, base) : null;
-const related = [...new Set(involved.flatMap((s: any) => s.incidents))].filter(i => i !== entry.id).map(i => ({ slug: i as string, title: nova.titleOf(i as string) }));
+const related = nova.relatedIncidents(entry.id);
 const hasTwenty = d.saw && d.cause && d.fix && d.proof;
 ---
 <NovaLayout title={d.shortTitle ?? d.title} description={d.summary} current="incidents">

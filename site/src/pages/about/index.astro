@@ -1,27 +1,27 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
+import NovaLayout from "../../layouts/NovaLayout.astro";
 const base = import.meta.env.BASE_URL;
 ---
-<BaseLayout title="About David" description="David Eti builds, tests and documents enterprise infrastructure. Seeking system administrator, infrastructure and DevOps roles in Belgium and the Netherlands." breadcrumbs={[{ label: "About David" }]}>
-  <section class="page-head tight"><div class="container prose-narrow">
-    <div class="byline">About David</div>
-    <h1>I learn infrastructure by building it, testing its failures and explaining what happened.</h1>
-    <p class="lead" style="margin-top:16px">I'm David Eti, based in Roeselare, Belgium. I'm looking for system administrator, infrastructure and DevOps roles in Belgium and the Netherlands.</p>
-    <div class="contact-row">
-      <a class="btn" href={base + "David_Eti_Systems_Infrastructure_CV.pdf"}>Download CV</a>
-      <a class="btn ghost" href="mailto:etidavid26@gmail.com">Email</a>
-      <a class="btn ghost" href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
-      <a class="btn ghost" href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
+<NovaLayout title="About" description="David Eti builds infrastructure, breaks it on purpose and writes down what happened. Looking for sysadmin, infrastructure and DevOps roles in Belgium and the Netherlands." current="about">
+  <section class="hero2"><div class="wrap prose-narrow">
+    <div class="eyebrow">About</div>
+    <h1>I'm David Eti. I build infrastructure, break it on purpose, and write down what happened.</h1>
+    <p class="lead">I'm a systems and infrastructure engineer in Belgium. I'm looking for sysadmin, infrastructure and DevOps roles in Belgium and the Netherlands, and I'm available now.</p>
+    <div class="actions">
+      <a class="nv-btn primary" href={base + "David_Eti_Systems_Infrastructure_CV.pdf"}>Download CV</a>
+      <a class="nv-btn secondary" href="mailto:etidavid26@gmail.com">Email</a>
+      <a class="nv-link" href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a>
+      <a class="nv-link" href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
     </div>
   </div></section>
-  <section class="v4-section"><div class="container prose-narrow">
-    <h2>What I did on Nova Corp</h2>
-    <p>I designed, built, tested and documented the whole lab myself: a nested Proxmox environment, a pfSense firewall with five VLANs, Windows Server 2025 Active Directory with two Domain Controllers, Group Policy, DFS and SMB file services, a WireGuard VPN, PowerShell administration scripts and tested recovery.</p>
-    <h2>Evidence of my work</h2><ul><li><a href={base+"incidents/dc01-outage/"}>Identity and resilience:</a> investigate a controlled domain controller outage.</li><li><a href={base+"incidents/backup-target-unavailable/"}>Recovery:</a> restore a file and verify its integrity.</li><li><a href={base+"incidents/firewall-management-exposure/"}>Network security:</a> investigate and restrict management exposure.</li><li><a href={base+"groups/"}>Windows administration:</a> trace access through the documented group hierarchy.</li></ul><h2>How I work</h2>
-    <p>I change one thing at a time, write down the expected result before I test, and keep the failures in the record. When something breaks, I separate the possible causes with a test before I change anything. The <a href={base + "incidents/dns-client-outage/"}>DNS investigation</a> is a good example.</p>
-    <h2>What this project is not</h2>
-    <p>Nova Corp is a home lab, not an employer's production network. It shows Windows Server and Active Directory, pfSense and VLAN networking, virtualization, PowerShell, recovery and diagnostics. My cloud and DevOps work (Azure, Terraform, GitHub Actions) is in separate projects, such as <a href="https://github.com/EtiDavid/novapredict-devops-case-study">NovaPredict ↗</a>.</p>
-    <h2>Languages</h2>
-    <p>English: fluent. Dutch: basic, and I'm actively studying for NT2.</p>
+  <section class="sec"><div class="wrap prose-narrow">
+    <h2>What I built</h2>
+    <p style="margin-top:8px">Nova Corp is a small fictional company with a real lab behind it, and I built all of it: Proxmox running inside VMware Workstation, a pfSense firewall with five VLANs, Windows Server 2025 with two domain controllers, Group Policy, file services with DFS, and PowerShell scripts for account work. <a href={base + "map/"}>The map</a> shows how the pieces connect.</p>
+    <h2 style="margin-top:32px">How I work</h2>
+    <p style="margin-top:8px">I write down what I expect before I test. I change one thing at a time. When something breaks, I separate the possible causes with a test before I touch anything: <a href={base + "incidents/dns-client-outage/"}>the DNS case</a> shows that best. When I can't prove a cause, I say so, as in <a href={base + "incidents/dc02-cannot-reach-dc01/"}>the CR-004 case</a>.</p>
+    <h2 style="margin-top:32px">What Nova Corp doesn't cover</h2>
+    <p style="margin-top:8px">It's a home lab, not an employer's network. It shows Windows Server, Active Directory, pfSense, virtualization, PowerShell, recovery and fault-finding. My Azure, Terraform and GitHub Actions work is in separate projects, such as <a href="https://github.com/EtiDavid/novapredict-devops-case-study">NovaPredict ↗</a>.</p>
+    <h2 style="margin-top:32px">Languages</h2>
+    <p style="margin-top:8px">English: fluent. Dutch: basic, and I'm studying for NT2.</p>
   </div></section>
-</BaseLayout>
+</NovaLayout>

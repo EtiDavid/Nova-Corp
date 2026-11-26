@@ -26,7 +26,7 @@ try {
     assert.equal(await d.getByRole("link", { name: "Download CV" }).first().getAttribute("href"), "/David_Eti_Systems_Infrastructure_CV.pdf");
     assert.equal(await d.locator(".icard").count(), 3);
     const nums = await d.locator(".counts b").allInnerTexts();
-    assert.deepEqual(nums, ["6", "5", "15", "16"]);
+    assert.deepEqual(nums, ["6", "5", "15", "17"]);
     assert.equal(await d.locator("main > section").count(), 4); // hero, cases, map, counts
   });
   await step("Home: the journey ends on FILES01 and Replay works", async () => {
