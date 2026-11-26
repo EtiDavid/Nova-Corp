@@ -1,21 +1,22 @@
 ---
-import { stations, segments, zones, markers, lines, type LineId } from "../../data/novaMap";
+import { loadNova, type LineId } from "../../lib/nova";
+const { stations, segments, zones, markers, lineMap: lines } = await loadNova();
 interface Props {
   interactive?: boolean; id?: string; showMarkers?: "home" | "all" | "none"; broken?: string; emphasise?: string[];
   linesOn?: LineId[]; viewBox?: string; journey?: boolean; label: string; mini?: boolean;
 }
 const { interactive = false, id = "nl", showMarkers = "none", broken, emphasise, linesOn, viewBox = "0 0 920 610", journey = false, label, mini = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const shownMarkers = showMarkers === "none" ? [] : markers.filter(m => showMarkers === "all" || m.home);
+const shownMarkers = showMarkers === "none" ? [] : markers.filter((m: any) => showMarkers === "all" || m.home);
 const dim = (st: string) => emphasise && !emphasise.includes(st);
 ---
 <svg class={"nl" + (interactive ? "" : " static") + (mini ? " mini" : "")} id={id} viewBox={viewBox} role={interactive ? "group" : "img"} aria-label={label}>
-  {zones.map(z => <g class="zone-g"><rect class="zone" x={z.x} y={z.y} width={z.w} height={z.h} rx="14" /><text class="zone-label" x={z.end ? z.x + z.w - 14 : z.x + 14} y={z.y + 22} text-anchor={z.end ? "end" : "start"}>{z.name}</text></g>)}
-  {segments.filter(sg => !linesOn || linesOn.includes(sg.line)).map(sg => (
+  {zones.map((z: any) => <g class="zone-g"><rect class="zone" x={z.x} y={z.y} width={z.w} height={z.h} rx="14" /><text class="zone-label" x={z.end ? z.x + z.w - 14 : z.x + 14} y={z.y + 22} text-anchor={z.end ? "end" : "start"}>{z.name}</text></g>)}
+  {segments.filter((sg: any) => !linesOn || linesOn.includes(sg.line)).map((sg: any) => (
     <path class={"seg line-" + sg.line + (broken === sg.id ? " broken" : "") + (emphasise && !(emphasise.includes(sg.from) && emphasise.includes(sg.to)) && sg.line !== "platform" ? " dim" : "")}
       d={sg.d} data-seg={sg.id} data-line={sg.line}><title>{lines[sg.line].name} line: {sg.meaning}</title></path>
   ))}
-  {stations.map(s => (
+  {stations.map((s: any) => (
     <g class={"stn" + (dim(s.id) ? " dim" : "")} data-id={s.id} transform={`translate(${s.x - s.w / 2},${s.y - s.h / 2})`}
        {...(interactive ? { tabindex: 0, role: "button", "aria-pressed": "false", "aria-label": `${s.name}, ${s.role}. Show details.` } : {})}>
       <rect width={s.w} height={s.h} rx="12" />
@@ -24,7 +25,7 @@ const dim = (st: string) => emphasise && !emphasise.includes(st);
     </g>
   ))}
   {journey && <><circle class="dot" id="dot" r="9" cx="-40" cy="-40" /><text class="tick" id="tick" x="758" y="428" opacity="0">✔ IT</text></>}
-  {shownMarkers.map(m => (
+  {shownMarkers.map((m: any) => (
     <a href={base + "incidents/" + m.slug + "/"} class="marker" aria-label={`Incident ${m.n}: ${m.title} (${m.type})`}>
       <circle cx={m.x} cy={m.y} r="14" /><text x={m.x} y={m.y}>{m.n}</text><title>{m.n}. {m.title} ({m.type})</title>
     </a>

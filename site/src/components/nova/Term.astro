@@ -1,0 +1,6 @@
+---
+// <Term id="dns">DNS</Term>. Decorated by the page script on first mention only, never in headings, links or buttons.
+interface Props { id: string }
+const { id } = Astro.props;
+---
+<span class="term" data-term={id} tabindex="0" role="button"><slot /></span>

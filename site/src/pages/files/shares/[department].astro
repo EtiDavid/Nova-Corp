@@ -26,7 +26,7 @@ const controlled=[
 const unexpected=[["The access checker gives the wrong answer","The administration script compared two formats of the same group name. It incorrectly predicted denial. Correcting the comparison and retesting confirmed IT allowed and Finance denied.","group-acl-name-mismatch"]];
 const encode=(slug:string)=>base+"groups/"+slug+"/";
 ---
-<BaseLayout title={share.name+" shared folder"} description={"Explore "+share.name+" folder access at Nova Corp: directory groups, DFS, SMB and NTFS permissions."} breadcrumbs={[{label:"Explore",href:"company/"},{label:"Files",href:"files/"},{label:share.name}]}>
+<BaseLayout title={share.name+" shared folder"} description={"Explore "+share.name+" folder access at Nova Corp: directory groups, DFS, SMB and NTFS permissions."} breadcrumbs={[{label:"Explore",href:"map/"},{label:"Files",href:"files/"},{label:share.name}]}>
 <section class="page-head"><div class="container">
 <div class="eyebrow">Files / {share.name}</div>
 <h1>{share.name} shared folder</h1>

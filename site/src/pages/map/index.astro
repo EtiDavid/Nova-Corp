@@ -2,10 +2,9 @@
 import NovaLayout from "../../layouts/NovaLayout.astro";
 import MapSvg from "../../components/nova/MapSvg.astro";
 import MobileLines from "../../components/nova/MobileLines.astro";
-import { stations, lines, incidentTitles, type LineId } from "../../data/novaMap";
+import { loadNova } from "../../lib/nova";
 const base = import.meta.env.BASE_URL;
-const titleOf = (slug: string) => incidentTitles[slug] ?? slug.replace(/-/g, " ");
-const lineIds = Object.keys(lines) as LineId[];
+const { stations, lines, lineMap, titleOf } = await loadNova();
 ---
 <NovaLayout title="Map" description="The Nova Corp lab drawn as a line map: select a system to see what it does, what it connects to and what broke there." current="map">
   <section class="hero2" style="padding-bottom:16px"><div class="wrap">
@@ -18,7 +17,7 @@ const lineIds = Object.keys(lines) as LineId[];
       <div class="nl-wrap">
         <div class="map-card">
           <div class="legend2" id="line-filter" role="group" aria-label="Show one line">
-            {lineIds.map(l => <button type="button" data-line={l} aria-pressed="false"><i class={l === "recovery" ? "dotted" : ""} style={`border-color:var(${lines[l].token})`}></i>{lines[l].name}</button>)}
+            {lines.map((l: any) => <button type="button" data-line={l.id} aria-pressed="false"><i class={l.id === "recovery" ? "dotted" : ""} style={`border-color:var(${l.token})`}></i>{l.name}</button>)}
           </div>
           <p class="tiny" id="line-note" aria-live="polite" style="padding:0 6px">All lines shown.</p>
           <MapSvg id="nl-full" interactive showMarkers="all" label="Interactive line map of the Nova Corp lab. Select a system to see its details." />
@@ -28,28 +27,28 @@ const lineIds = Object.keys(lines) as LineId[];
       </div>
       <aside class="panel" id="panel" aria-live="polite" aria-label="Selected system">
         <p id="panel-empty" class="tiny">Select a system on the map, or from the list below, to see what it does and what broke there.</p>
-        {stations.map(s => (
+        {stations.map((s: any) => (
           <div class="sysdata" id={"sys-" + s.id} data-id={s.id} tabindex="-1">
             <h2>{s.name}</h2>
             <p>{s.role}</p>
             <h4>Where</h4><p>{s.zone}{s.ip ? " · " + s.ip : ""}</p>
             <h4>On these lines</h4>
-            <p>{s.lines.map(l => lines[l].name).join(", ")}</p>
+            <p>{s.lines.map((l: string) => lineMap[l].name).join(", ")}</p>
             <h4>What broke here</h4>
-            <ul>{s.incidents.map(i => <li><a href={base + "incidents/" + i + "/"}>{titleOf(i)}</a></li>)}</ul>
-            <h4>Built in</h4><p class="mono">{s.builtBy.join(", ")}</p>
+            <ul>{s.incidents.map((i: string) => <li><a href={base + "incidents/" + i + "/"}>{titleOf(i)}</a></li>)}</ul>
+            <h4>Built in</h4><p class="mono">{s.builtBy.map((c: string) => <a href={base + "changes/" + c + "/"}>{c}</a>).reduce((a: any, b: any) => [a, ", ", b])}</p>
             <h4>Limit</h4><p>{s.limit}</p>
-            <p style="margin-top:14px"><a class="nv-link" href={base + "systems/" + s.slug + "/"}>Open the full record <span aria-hidden="true">→</span></a></p>
+            <p style="margin-top:14px"><a class="nv-link" href={base + "systems/" + s.id + "/"}>Open the full record <span aria-hidden="true">→</span></a></p>
           </div>
         ))}
       </aside>
     </div>
     <h2 style="margin-top:40px;font-size:1.25rem">All systems</h2>
     <ul class="tiny" style="margin:10px 0 0;padding-left:18px;font-size:1rem">
-      {stations.map(s => <li><a href={base + "systems/" + s.slug + "/"}>{s.name}</a>: {s.role}</li>)}
+      {stations.map((s: any) => <li><a href={base + "systems/" + s.id + "/"}>{s.name}</a>: {s.role}</li>)}
     </ul>
   </section>
-  <script is:inline define:vars={{ ids: stations.map(s => s.id), lineNames: Object.fromEntries(Object.entries(lines).map(([k, v]) => [k, v.question])) , stLines: Object.fromEntries(stations.map(s => [s.id, s.lines]))}}>
+  <script is:inline define:vars={{ ids: stations.map((s: any) => s.id), lineNames: Object.fromEntries(lines.map((l: any) => [l.id, l.question])), stLines: Object.fromEntries(stations.map((s: any) => [s.id, s.lines])) }}>
   (function () {
     var svg = document.getElementById("nl-full");
     var nodes = [].slice.call(svg.querySelectorAll(".stn")), segs = [].slice.call(svg.querySelectorAll(".seg"));

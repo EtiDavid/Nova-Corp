@@ -1,0 +1,20 @@
+---
+// Generated cross-links for a system, from the Nova content model. Never hand-edited per system.
+import { loadNova } from "../../lib/nova";
+interface Props { id: string }
+const { id } = Astro.props;
+const nova = await loadNova();
+const s = nova.stationById(id);
+const base = import.meta.env.BASE_URL;
+const svcs = s ? nova.services.filter((v: any) => s.services.includes(v.id)) : [];
+---
+{s && <section class="section compact" aria-labelledby="nl-gen"><div class="container">
+  <h2 id="nl-gen">On the Nova line map</h2>
+  <p style="margin:10px 0">
+    Lines through {s.name}: {s.lines.map((l: string) => nova.lineMap[l].name).join(", ")}.
+    <a href={base + "map/?focus=" + s.id}>Show it on the map →</a>
+  </p>
+  {svcs.length > 0 && <p><b>Services it runs:</b> {svcs.map((v: any, i: number) => <>{i ? ", " : ""}<a href={base + "services/" + v.id + "/"}>{v.name}</a></>)}</p>}
+  {s.incidents.length > 0 && <p><b>What broke here:</b> {s.incidents.map((i: string, n: number) => <>{n ? "; " : ""}<a href={base + "incidents/" + i + "/"}>{nova.titleOf(i)}</a></>)}</p>}
+  <p><b>Built in:</b> {s.builtBy.map((c: string, n: number) => <>{n ? ", " : ""}<a href={base + "changes/" + c + "/"}>{c}</a></>)}</p>
+</div></section>}

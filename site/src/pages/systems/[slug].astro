@@ -4,6 +4,7 @@ import ClientProfile from "../../components/ClientProfile.astro";
 import DC01Profile from "../../components/DC01Profile.astro";
 import Files01Pilot from "../../components/Files01Pilot.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import NovaLinks from "../../components/nova/NovaLinks.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
 import OriginalPublicDiagrams from "../../components/OriginalPublicDiagrams.astro";
 import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
@@ -27,7 +28,7 @@ const [yy,mm,dd]=String(system.asOf).split("-").map(Number);
 const asOf=yy&&mm&&dd?`${dd} ${months[mm-1]} ${yy}`:String(system.asOf);
 const statusText = system.status === "observed-running" ? `Running at last check: ${asOf}` : `Configuration as of ${asOf}`;
 ---
-<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"company/"},{label:area?.name||"Systems",href:"company/"},{label:system.name}]}>
+<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"map/"},{label:area?.name||"Systems",href:"map/"},{label:system.name}]}>
   <section class="page-head"><div class="container">
     <div class="eyebrow">{system.category}</div>
     <h1>{system.name}</h1>
@@ -79,7 +80,8 @@ const statusText = system.status === "observed-running" ? `Running at last check
     </div>
     <aside>
       <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "Systems"}</dd></div></dl></div>
-      <div class="sidebox"><h3>Next steps</h3><a href={base+"company/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
+      <div class="sidebox"><h3>Next steps</h3><a href={base+"map/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
     </aside>
   </div></section>}
+  <NovaLinks id={system.id} />
 </BaseLayout>

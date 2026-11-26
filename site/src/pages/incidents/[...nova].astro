@@ -1,0 +1,52 @@
+---
+// The generic, data-driven incident page. Any incident that has no hand-mapped legacy record renders here,
+// so adding an incident is: add one Markdown file with front matter. See HOW-TO/add-an-incident.md.
+import NovaLayout from "../../layouts/NovaLayout.astro";
+import MapSvg from "../../components/nova/MapSvg.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import { incidentDocuments } from "../../data/incidentDocuments";
+import { loadNova, typeLabel, segmentId, journalHref } from "../../lib/nova";
+export async function getStaticPaths() {
+  const entries = await getCollection("incidents");
+  return entries.filter((e: CollectionEntry<"incidents">) => !incidentDocuments[e.id]).map((e: CollectionEntry<"incidents">) => ({ params: { nova: e.id }, props: { entry: e } }));
+}
+const { entry } = Astro.props as unknown as { entry: CollectionEntry<"incidents"> };
+const d = entry.data as any;
+const { Content } = await render(entry);
+const base = import.meta.env.BASE_URL;
+const nova = await loadNova();
+const involved = d.systems.map(nova.stationById).filter(Boolean);
+const change = d.cr ? nova.changes.find((c: any) => c.id === d.cr) : null;
+const journal = change?.journal ? await journalHref(change.journal, base) : null;
+const related = [...new Set(involved.flatMap((s: any) => s.incidents))].filter(i => i !== entry.id).map(i => ({ slug: i as string, title: nova.titleOf(i as string) }));
+const hasTwenty = d.saw && d.cause && d.fix && d.proof;
+---
+<NovaLayout title={d.shortTitle ?? d.title} description={d.summary} current="incidents">
+  <section class="incident-head"><div class="wrap">
+    <p class="tiny"><a href={base + "incidents/"}>← All incidents</a></p>
+    <h1 style="margin-top:10px">{d.shortTitle ?? d.title}</h1>
+    <div class="meta">
+      <span class={"type " + d.type}>{typeLabel[d.type]}</span><span>{d.date}</span>
+      <span>{involved.map((s: any) => <a class="chip" href={base + "systems/" + s.id + "/"}>{s.name}</a>)}</span>
+      {d.cr && <a class="chip" href={base + "changes/" + d.cr + "/"}>{d.cr}</a>}
+    </div>
+  </div></section>
+  <div class="wrap">
+    {hasTwenty ? (
+      <section class="v20" aria-labelledby="h-20"><h2 id="h-20" style="grid-column:1/-1;font-size:1.05rem">The 20-second version</h2>
+        <div><h3>What users saw</h3><p>{d.saw}</p></div><div><h3>What was actually wrong</h3><p>{d.cause}</p></div>
+        <div><h3>What fixed it</h3><p>{d.fix}</p></div><div><h3>How I proved it</h3><p>{d.proof}</p></div>
+      </section>) : <p class="lead">{d.summary}</p>}
+    <div class="inc-grid">
+      {d.segment && <aside class="inc-map" aria-label="Where it broke"><div class="map-card">
+        <MapSvg id="nl-inc" broken={segmentId(d.segment.line, d.segment.from, d.segment.to)} emphasise={[d.segment.from, d.segment.to]} linesOn={[d.segment.line]} viewBox="0 20 920 560" mini
+          label={`Line map showing the ${d.segment.line} line between ${d.segment.from} and ${d.segment.to} drawn broken in red.`} />
+        <p class="caption"><b style="color:var(--broken-text)">Red dashed:</b> the segment that failed.</p></div></aside>}
+      <div class="inc-main md" style={d.segment ? "" : "grid-column:1/-1"}>
+        <Content />
+        {journal && <><h2 style="margin-top:32px">Evidence</h2><p style="margin-top:8px"><a class="nv-link" href={journal.href}>Full journal ({change.id}){journal.external ? " ↗" : " →"}</a></p></>}
+        {related.length > 0 && <><h2 style="margin-top:32px">Related</h2><div class="related">{related.map((r: any) => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div></>}
+      </div>
+    </div>
+  </div>
+</NovaLayout>

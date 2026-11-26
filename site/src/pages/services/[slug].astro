@@ -1,0 +1,33 @@
+---
+import NovaLayout from "../../layouts/NovaLayout.astro";
+import { loadNova, typeLabel } from "../../lib/nova";
+export async function getStaticPaths() {
+  const nova = await loadNova();
+  return nova.services.map((v: any) => ({ params: { slug: v.id }, props: { id: v.id } }));
+}
+const { id } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const nova = await loadNova();
+const v = nova.services.find((x: any) => x.id === id);
+const line = nova.lineMap[v.line];
+const broke = nova.incidents.filter((i: any) => (i.services ?? []).includes(id));
+const needs = v.dependsOn.map((d: string) => nova.services.find((x: any) => x.id === d));
+---
+<NovaLayout title={v.name} description={v.summary} current="map">
+  <section class="incident-head"><div class="wrap prose-narrow">
+    <p class="tiny"><a href={base + "map/?line=" + v.line}>← {line.name} line on the map</a></p>
+    <h1 style="margin-top:10px">{v.name}</h1>
+    <p class="lead" style="margin-top:12px">{v.summary}</p>
+  </div></section>
+  <div class="wrap prose-narrow" style="padding-bottom:40px">
+    <h2 style="margin-top:20px">In Nova Corp</h2>
+    <p style="margin-top:8px">{v.inNova}</p>
+    <p style="margin-top:12px"><b>Runs on:</b> {v.runsOn.map((s: string, n: number) => <>{n ? ", " : ""}<a href={base + "systems/" + s + "/"}>{nova.stationById(s)?.name ?? s}</a></>)}
+      {needs.length > 0 && <> · <b>Depends on:</b> {needs.map((d: any, n: number) => <>{n ? ", " : ""}<a href={base + "services/" + d.id + "/"}>{d.name}</a></>)}</>}</p>
+    {broke.length > 0 && <>
+      <h2 style="margin-top:28px">When it broke</h2>
+      <ul class="plainlist">{broke.map((n: any) => <li><span class={"type " + n.type} style="margin-right:8px">{typeLabel[n.type]}</span><a href={base + "incidents/" + n.slug + "/"}>{n.shortTitle ?? n.title}</a></li>)}</ul></>}
+    <h2 style="margin-top:28px">Where it was built</h2>
+    <p style="margin-top:6px">{v.builtBy.map((c: string, n: number) => <>{n ? ", " : ""}<a href={base + "changes/" + c + "/"}>{c}</a></>)}</p>
+  </div>
+</NovaLayout>

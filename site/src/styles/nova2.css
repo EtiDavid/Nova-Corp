@@ -181,3 +181,26 @@ html:not(.js) .sysdata { display:block; border-top:1px solid var(--rule); paddin
 .related .chip { font-family:var(--font-sans); font-size:.92rem; }
 .inc-grid { grid-template-columns:minmax(0,1fr) 520px; }
 @media (max-width:1100px) { .inc-grid { grid-template-columns:1fr; } .inc-map { grid-column:1; grid-row:1; position:static; } .inc-main { grid-row:2; } }
+.timeline { list-style:none; margin:0; padding:0; border-left:4px solid var(--line-platform); }
+.timeline li { display:grid; grid-template-columns:88px 1fr; gap:6px 16px; padding:14px 0 14px 18px; position:relative; border-bottom:1px solid var(--rule); }
+.timeline li::before { content:""; position:absolute; left:-12px; top:22px; width:16px; height:16px; background:var(--surface); border:3px solid var(--ink); border-radius:50%; }
+.tl-id { color:var(--muted); padding-top:2px; } .tl-title { font-size:1.15rem; }
+.plainlist { list-style:none; padding:0; margin:10px 0 0; display:grid; gap:8px; }
+@media (max-width:560px) { .timeline li { grid-template-columns:1fr; } }
+
+/* glossary marks: dotted underline only, inherits the text color, never in headings */
+.nv .term { text-decoration:underline dotted; text-decoration-thickness:1.5px; text-underline-offset:4px; cursor:help; }
+.nv .term:focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
+#term-pop { position:absolute; z-index:60; background:var(--surface); color:var(--ink); border:1px solid var(--rule); border-radius:12px; padding:14px 16px; box-shadow:0 12px 36px rgba(0,0,0,.2); font-size:.95rem; line-height:1.5; }
+#term-pop[hidden] { display:none; } #term-pop p { margin:6px 0; } #term-pop a { font-weight:600; }
+.gloss > div { border-top:1px solid var(--rule); padding:16px 0; max-width:var(--measure); }
+.gloss dt { font-weight:700; font-size:1.1rem; } .gloss dd { margin:6px 0 0; }
+.md h2 { font-size:var(--step-2); margin:28px 0 8px; } .md h3 { margin:20px 0 6px; } .md p { margin:8px 0; } .md ul,.md ol { padding-left:22px; max-width:var(--measure); }
+.md pre { background:#0F1720; color:#E8EEF5; padding:12px 14px; border-radius:8px; overflow-x:auto; } .md code { font-family:var(--font-mono); }
+
+/* long original records inside the new layout must never widen the page */
+.inc-main, .inc-grid > * { min-width:0; }
+.nv .reference-content, .nv .incident-source-document, .nv .incident-full-source { max-width:100%; overflow-wrap:anywhere; }
+.nv .incident-source-document pre, .nv .reference-content pre { max-width:100%; overflow-x:auto; white-space:pre; }
+.nv .incident-source-document table, .nv .reference-content table { display:block; max-width:100%; overflow-x:auto; }
+.nv .incident-source-document img, .nv .reference-content img, .nv .pdf-evidence-gallery img { max-width:100%; height:auto; }

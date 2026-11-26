@@ -12,7 +12,7 @@ import { getCollection, render, type CollectionEntry } from "astro:content";
 interface Props { entry: CollectionEntry<"incidents">; }
 export async function getStaticPaths() {
   const entries = await getCollection("incidents");
-  return entries.filter((entry: CollectionEntry<"incidents">)=>entry.id!=="fileserver-subnet"&&entry.id!=="dns-client-outage").map((entry: CollectionEntry<"incidents">)=>({params:{slug:entry.id},props:{entry}}));
+  return entries.filter((entry: CollectionEntry<"incidents">)=>entry.id!=="fileserver-subnet"&&entry.id!=="dns-client-outage"&&!!incidentDocuments[entry.id]).map((entry: CollectionEntry<"incidents">)=>({params:{slug:entry.id},props:{entry}}));
 }
 const {entry} = Astro.props;
 const {Content} = await render(entry);

@@ -10,7 +10,7 @@ const options=[
 {title:"A firewall configuration change",kind:"Rollback artifacts",copy:"A known-good snapshot, a separate VM archive and a configuration export were recorded. These are different kinds of rollback evidence.",href:base+"systems/nova-fw01/",label:"Open firewall profile"}
 ];
 ---
-<BaseLayout title="Recovery" description="Explore what Nova Corp actually tested, what is configured and what is not yet proven." breadcrumbs={[{label:"Explore",href:"company/"},{label:"Recovery"}]}>
+<BaseLayout title="Recovery" description="Explore what Nova Corp actually tested, what is configured and what is not yet proven." breadcrumbs={[{label:"Explore",href:"map/"},{label:"Recovery"}]}>
  <section class="page-head"><div class="container"><div class="eyebrow">Recovering company services</div><h1>What do you need to recover?</h1><p class="lead" style="margin-top:17px">Not every backup is a proven restoration. Choose a situation below to see the exact level of evidence.</p></div></section>
  <section class="section compact"><div class="container">
    <div class="area-grid">{options.map(o=><a class="area-card" style="--accent:#0F766E" href={o.href}><div class="number"><span>{o.kind}</span><span aria-hidden="true">{o.href.startsWith("http") ? "↗" : "→"}</span></div><h3>{o.title}</h3><p>{o.copy}</p><span class="arrow-label">{o.label} →</span></a>)}</div>

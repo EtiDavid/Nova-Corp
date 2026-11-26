@@ -2,32 +2,15 @@
 import NovaLayout from "../layouts/NovaLayout.astro";
 import MapSvg from "../components/nova/MapSvg.astro";
 import MobileLines from "../components/nova/MobileLines.astro";
-import { stations, zoneVlans, markers, journey, lines } from "../data/novaMap";
-import road from "../data/roadmap.json";
-import { getCollection } from "astro:content";
+import { loadNova, typeLabel } from "../lib/nova";
 const base = import.meta.env.BASE_URL;
-const incidents = (await getCollection("incidents")).filter((e: any) => e.data.status !== "deferred");
-const cases = [
-  { slug: "dns-client-outage", type: "blind", label: "Blind test", title: "The file server looked down. It was DNS.",
-    saw: "The IT share would not open, so it looked like the file server had failed.",
-    wrong: "The workstation's DNS pointed at a wrong server. The file server itself answered on port 445.",
-    fix: "I put the two domain controllers back as the DNS servers and cleared the resolver cache.",
-    proof: "The share opened again: Test-Path returned True." },
-  { slug: "dc01-outage", type: "controlled", label: "Controlled", title: "DC01 went offline. The company kept working.",
-    saw: "I took the main domain controller offline on purpose.",
-    wrong: "Nothing was broken beyond that; the test asked whether sign-ins depend on DC01.",
-    fix: "No repair was needed: the workstation found DC02 and kept working.",
-    proof: "I checked Active Directory replication after DC01 came back." },
-  { slug: "backup-target-unavailable", type: "blind", label: "Blind test", title: "The backup disk disappeared. The file came back.",
-    saw: "The backup target was gone and the backup failed.",
-    wrong: "The backup destination was unavailable, so no new backup could be written.",
-    fix: "I repaired the target and ran a fresh backup.",
-    proof: "A deleted file was restored with the same SHA-256 hash as the original." }
-];
-const homeMarkers = markers.filter(m => m.home);
+const nova = await loadNova();
+const { counts: c, journey, markers, lines, featured } = nova;
+const cases = featured;
+const homeMarkers = markers.filter((m: any) => m.home);
 const counts = [
-  { n: stations.length, t: "systems on the map" }, { n: zoneVlans.length, t: "VLANs, from 10 to 50" },
-  { n: road.done.length, t: "change requests completed" }, { n: incidents.length, t: "incidents documented" }
+  { n: c.systems, t: "systems on the map" }, { n: c.vlans, t: "VLANs, from 10 to 50" },
+  { n: c.changesDone, t: "change requests completed" }, { n: c.incidents, t: "incidents documented" }
 ];
 const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
 ---
@@ -48,13 +31,13 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     <h2 id="h-broke">What broke, and how I fixed it</h2>
     <p class="sub">Three of the strongest cases. Each one has the commands and results behind it.</p>
     <div class="cards3">
-      {cases.map(c => (
+      {cases.map((c: any) => (
         <article class="icard">
-          <span class={"type " + c.type}>{c.label}</span>
-          <h3>{c.title}</h3>
+          <span class={"type " + c.type}>{typeLabel[c.type]}</span>
+          <h3>{c.shortTitle}</h3>
           <dl>
             <dt>What I saw</dt><dd>{c.saw}</dd>
-            <dt>What was wrong</dt><dd>{c.wrong}</dd>
+            <dt>What was wrong</dt><dd>{c.cause}</dd>
             <dt>How I fixed it</dt><dd>{c.fix}</dd>
             <dt>How I proved it</dt><dd>{c.proof}</dd>
           </dl>
@@ -62,7 +45,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
         </article>
       ))}
     </div>
-    <p style="margin-top:20px"><a class="nv-link" href={base + "incidents/"}>All {incidents.length} incidents <span aria-hidden="true">→</span></a></p>
+    <p style="margin-top:20px"><a class="nv-link" href={base + "incidents/"}>All {counts[3].n} incidents <span aria-hidden="true">→</span></a></p>
   </div></section>
 
   <section class="sec" aria-labelledby="h-map"><div class="wrap nl-wrap">
@@ -71,15 +54,15 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     <div class="map-card">
       <MapSvg id="nl-home" showMarkers="home" journey label="Line map of the Nova Corp lab: a workstation, a firewall, two domain controllers, a file server and the Proxmox host that runs them, with three incident pins." />
       <div class="legend2" aria-label="Lines">
-        {(Object.keys(lines) as (keyof typeof lines)[]).map(l => <span><i class={l === "recovery" ? "dotted" : ""} style={`border-color:var(${lines[l].token})`}></i>{lines[l].name}</span>)}
+        {lines.map((l: any) => <span><i class={l.id === "recovery" ? "dotted" : ""} style={`border-color:var(${l.token})`}></i>{l.name}</span>)}
         <span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="var(--broken)"/></svg>Incident pin</span>
       </div>
       <p class="journey-text" id="journey-text" aria-live="polite"></p>
       <div class="journey-controls"><button class="nv-btn secondary small" id="replay" type="button">Replay: {journey.title}</button></div>
-      <ol class="journey-ol tiny">{journey.steps.map(s => <li>{s.text}</li>)}</ol>
+      <ol class="journey-ol tiny">{journey.steps.map((s: any) => <li>{s.text}</li>)}</ol>
     </div>
     <MobileLines />
-    <ol class="tiny" style="margin:14px 0 0;padding-left:18px">{homeMarkers.map(m => <li><a href={base + "incidents/" + m.slug + "/"}>{m.title}</a></li>)}</ol>
+    <ol class="tiny" style="margin:14px 0 0;padding-left:18px">{homeMarkers.map((m: any) => <li><a href={base + "incidents/" + m.slug + "/"}>{m.title}</a></li>)}</ol>
     <p class="caption">Diagram of how services depend on each other, not physical cabling.</p>
     <p style="margin-top:16px"><a class="nv-link" href={base + "map/"}>Open the full map <span aria-hidden="true">→</span></a></p>
   </div></section>

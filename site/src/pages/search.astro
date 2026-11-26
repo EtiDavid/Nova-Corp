@@ -19,7 +19,7 @@ const index=[
 ...techTerms.map(term=>({name:term.word,kind:"Technical explanation with full original source",description:term.brief,url:base+"learn/"+term.slug+"/"})),
 ...originalDocs.map((doc: CollectionEntry<"reference">)=>({name:doc.data.title,kind:"Original engineering Markdown",description:doc.data.sourcePath,url:base+"reference/"+doc.id+"/"})),
 ...pdfDocs.map((doc: CollectionEntry<"pdfJournals">)=>({name:doc.data.title,kind:"Original full PDF journal",description:doc.data.pageCount+" pages, including original screenshots and native text · "+doc.data.originalName,url:base+"journals/"+doc.id+"/"})),
-...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"company/"})),
+...areas.map(item=>({name:item.name,kind:"Company area",description:item.description,url:base+"map/"})),
 ...systems.map(item=>({name:item.name,kind:item.category,description:item.summary,url:base+"systems/"+item.slug+"/"})),
 ...shares.map(item=>({name:item.name+" department share",kind:"Shared folder",description:item.purpose,url:base+"files/shares/"+item.id+"/"})),
 ...organizationalUnits.map(item=>({name:item.name,kind:"Organizational Unit",description:item.meaning,url:base+"directory/ous/"+item.slug+"/"})),
@@ -47,7 +47,7 @@ index.sort((a,b)=>priority[category(a.url)]-priority[category(b.url)]);
   <div class="card-list" data-results>
   {index.map(item=><a class="system-card" data-search-item data-category={category(item.url)} data-search-text={(item.name+" "+item.kind+" "+item.description).toLowerCase()} href={item.url}><small>{item.kind}</small><h3>{item.name}</h3><p>{item.description}</p><span class="readmore">Open →</span></a>)}
   </div>
-  <p data-empty class="empty" hidden>No matches. Try a broader term or open the <a href={base+"company/"}>company map</a>.</p>
+  <p data-empty class="empty" hidden>No matches. Try a broader term or open the <a href={base+"map/"}>company map</a>.</p>
 </div></section>
 <script>
 const input = document.querySelector<HTMLInputElement>("[data-search]");

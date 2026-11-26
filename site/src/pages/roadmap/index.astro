@@ -1,54 +1,26 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro";
-import road from "../../data/roadmap.json";
-import {internalArticle,publicDocsRoot} from "../../data/termEvidence";
+import NovaLayout from "../../layouts/NovaLayout.astro";
+import { loadNova } from "../../lib/nova";
 const base = import.meta.env.BASE_URL;
-const next = road.planned[0];
-const later = road.planned.slice(1);
-const originals:Record<string,{path:string;kind:"md"|"pdf"}>={
- "CR-001":{path:"Documentation/Change-Requests/Journal-CR-001.md",kind:"md"},
- "CR-002":{path:"Documentation/Change-Requests/Journal-CR-002.md",kind:"md"},
- "CR-003":{path:"Documentation/Change-Requests/Journal-CR-003.md",kind:"md"},
- "CR-004":{path:"Documentation/Change-Requests/Journal-CR-004.md",kind:"md"},
- "CR-005":{path:"Documentation/Change-Requests/Journal-CR-005.md",kind:"md"},
- "CR-006":{path:"Documentation/Change-Requests/Journal-CR-006.md",kind:"md"},
- "CR-007":{path:"Documentation/Change-Requests/Journal-CR-007.md",kind:"md"},
- "CR-008":{path:"Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf",kind:"pdf"},
- "CR-009":{path:"Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf",kind:"pdf"},
- "CR-010":{path:"Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf",kind:"pdf"},
- "CR-011":{path:"Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md",kind:"md"},
- "CR-012":{path:"Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md",kind:"md"},
- "CR-013":{path:"Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md",kind:"md"},
- "CR-014":{path:"Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",kind:"pdf"},
- "CR-015":{path:"Documentation/Change-Requests/CR-015_Phase_2_Validation_and_Closure.md",kind:"md"}
-};
-const sourceFor=(id:string)=>originals[id];
-const sourceHref=(id:string)=>{const record=sourceFor(id);return record.kind==="pdf"?base+"journals/"+record.path.split("/").at(-1)?.replace(/\.pdf$/i,"")+"/":internalArticle(record.path,base);};
-const completed=road.done.map(d=>({id:d.id,title:d.title,gain:d.gain,href:sourceHref(d.id),format:sourceFor(d.id).kind}));
+const nova = await loadNova();
+// Only the next three items are shown. Planned work never appears anywhere else.
+const upcoming = nova.upcoming.slice(0, 3);
 ---
-<BaseLayout title="Roadmap" description="What is done, what is next and what is planned in the Nova Corp lab." breadcrumbs={[{ label: "Roadmap" }]}>
-  <section class="page-head tight"><div class="container prose-narrow">
-    <div class="byline">Roadmap</div>
-    <h1>The foundation I've completed, and the security work that comes next.</h1>
-    <p class="lead" style="margin-top:14px">The Windows infrastructure foundation (CR-001 to CR-015) is complete within its documented scope. The next management-plane security gate and later items are planned, not built.</p>
+<NovaLayout title="Roadmap" description="What is done, and the next three planned changes in the Nova Corp lab." current="">
+  <section class="hero2" style="padding-bottom:16px"><div class="wrap prose-narrow">
+    <div class="eyebrow">Roadmap</div>
+    <h1>The foundation is done. Next is security.</h1>
+    <p class="lead">{nova.counts.changesDone} change requests are done and signed off ({nova.facts.signOff.date}, {nova.facts.signOff.result}). <a href={base + "changes/"}>See what each one built →</a></p>
   </div></section>
-  <section class="container prose-narrow road-group">
-    <span class="chip tested">Done · CR-001 to CR-015</span>
-    <ul class="road-list">
-      {completed.map(item => <li class="road-item"><b>{item.id}</b><div><strong>{item.title}</strong><p>{item.gain}</p><p class="road-evidence"><a href={item.href}>Read {item.format==="pdf"?"complete original PDF and all screenshots on this website":"full original Markdown journal"} ↗</a></p></div></li>)}
+  <section class="wrap prose-narrow" style="padding-bottom:48px">
+    <h2>Next three</h2>
+    <ul class="plainlist">
+      {upcoming.map((c: any) => (
+        <li class="boxnote"><span class={"chip " + (c.status === "next" ? "" : "")}>{c.status === "next" ? "Next" : "Planned"}</span> <b class="mono" style="margin-left:6px">{c.id}</b> <b>{c.title}</b>
+          <p style="margin-top:6px">{c.goal}</p>
+          {c.status === "next" && <p class="tiny" style="margin-top:4px">{nova.facts.nextChangeStatus === "not started" ? "Not started." : ""}</p>}</li>))}
     </ul>
-    <p style="margin-top:17px"><a href={base+"reference/"}>Browse the complete original engineering library, including source commands and recorded failures →</a></p>
+    <h2 style="margin-top:32px">The conditions on the sign-off</h2>
+    <ul>{nova.facts.signOff.conditions.map((x: string) => <li>{x}.</li>)}</ul>
   </section>
-  <section class="container prose-narrow road-group">
-    <span class="chip configured">Next</span>
-    <ul class="road-list">
-      <li class="road-item next"><b>{next.id}</b><div><strong>{next.title}</strong><p>Planned; not started. A separate admin tunnel for administrators, and Proxmox, pfSense and server administration reachable only through it.</p></div></li>
-    </ul>
-  </section>
-  <section class="container prose-narrow road-group" style="margin-bottom:40px">
-    <span class="chip planned">Planned</span>
-    <ul class="road-list">
-      {later.map(p => <li class="road-item planned"><b>{p.id}</b><div><strong>{p.title}</strong><p><em>Planned goal:</em> {(p.goal ?? "").split(/(?<=\.)\s/)[0]}</p></div></li>)}
-    </ul>
-  </section>
-</BaseLayout>
+</NovaLayout>
