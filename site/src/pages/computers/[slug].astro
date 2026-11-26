@@ -39,7 +39,7 @@ const policy=computer.linkedPolicySlug?getPolicy(computer.linkedPolicySlug):unde
  <section class="content-section"><details><summary>Technical checks</summary><p><strong>Where:</strong> Domain controller or management PC with Active Directory tools.</p><pre><code>{"Get-ADComputer -Identity \""+computer.name+"\" -Properties Enabled | Select-Object Name,Enabled,DistinguishedName"}</code></pre><p><strong>Expected:</strong> The registered computer appears in {ou?.name}. This proves directory placement, not current VM health.</p></details></section>
  <section class="content-section">
   <h2>Engineering journals</h2><p><a href={base+"reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"}>Original directory inventory →</a></p><div class="paper panel">
-  <p class="muted">The source verifies the directory computer object's placement. VM configuration, actual services, failover, test output and physical-host dependencies are distinct evidence found on the technical system and original journals.</p>
+  <p class="muted">The directory snapshot confirms where this computer object sits. The VM, its services and the tests are on the system page and in the journals.</p>
   <a class="evidence-link" href={computerSource}>Read the Active Directory computer inventory ↗</a>
   </div>
  </section>

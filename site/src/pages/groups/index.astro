@@ -9,14 +9,14 @@ const local=accessGroups.filter(x=>x.scope==="Domain Local");
 <section class="page-head"><div class="container">
 <div class="eyebrow">Identity / Access groups</div>
 <h1>People join groups. Groups receive permissions.</h1>
-<p class="lead" style="margin-top:17px">Nova Corp organizes department membership separately from file-system permissions. Follow a Global group into a Domain Local resource group and then into the folder's actual SMB and NTFS rules.</p>
+<p class="lead" style="margin-top:17px">Department membership and folder permissions are kept apart. Follow a department group into a resource group and then into the folder's SMB and NTFS rules.</p>
 </div></section>
 <section class="section compact"><div class="container">
-  <div class="paper panel" style="margin-bottom:32px"><p class="kicker">Why two group layers?</p><h2 style="margin:12px 0 15px">Accounts → Global → Domain Local → Permissions</h2><p class="muted">This is the AGDLP pattern. It avoids placing every person's account directly on every shared folder. The relationship is not proof of a successful file operation until a client test checks it.</p><a class="evidence-link" href={base+"people/moyo/"}>Follow Moyo's verified IT path →</a></div>
+  <div class="paper panel" style="margin-bottom:32px"><p class="kicker">Why two group layers?</p><h2 style="margin:12px 0 15px">Accounts → Global → Domain Local → Permissions</h2><p class="muted">This is the AGDLP pattern: I change one group instead of editing every folder. Only a real sign-in test proves the access, and I ran one for Moyo (IT allowed, Finance denied).</p><a class="evidence-link" href={base+"people/moyo/"}>Follow Moyo's verified IT path →</a></div>
   <div class="section-heading"><h2>Department membership groups</h2><span class="muted">Five Global groups</span></div>
   <div class="card-list">{global.map(g=><a class="system-card" href={base+"groups/"+g.slug+"/"}><small>Global Security group</small><h3>{g.name}</h3><p>{g.description}</p><span class="readmore">See direct members and nesting →</span></a>)}</div>
   <div class="section-heading" style="margin-top:48px"><h2>Resource permission groups</h2><span class="muted">Six Domain Local groups</span></div>
   <div class="card-list">{local.map(g=><a class="system-card" href={base+"groups/"+g.slug+"/"}><small>Domain Local · {g.shareRight} / {g.ntfsRight}</small><h3>{g.name}</h3><p>{g.description}</p><span class="readmore">Open the associated share →</span></a>)}</div>
-  <div class="note" style="margin-top:24px"><strong>Full directory scope:</strong> The recorded Active Directory contains 62 security groups, of which 11 were created specifically for this company access model. The remaining 51 built-in/default groups are available in the <a href={accessSources.membership}>technical directory record</a>; they are not being presented as custom Nova Corp creations or silently assigned invented business purposes.</div>
+  <div class="note" style="margin-top:24px"><strong>Full directory scope:</strong> The recorded Active Directory contains 62 security groups, of which 11 were created specifically for this company access model. The remaining 51 built-in/default groups are available in the <a href={accessSources.membership}>technical directory record</a>. They are not ones I created.</div>
 </div></section>
 </BaseLayout>

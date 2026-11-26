@@ -24,7 +24,7 @@ const directShare=shares.find(share=>share.id===group.folder);
   </div>}
   {group.directMemberGroups.length>0&&<div class="paper panel" style="margin-top:20px">
     <h3>Groups nested inside</h3>
-    <p class="muted" style="margin:11px 0 15px">These are recorded direct group-to-group memberships, not an assertion that every user's access was individually tested.</p>
+    <p class="muted" style="margin:11px 0 15px">These are the direct memberships as recorded. I tested access for Moyo, not for every user.</p>
     {group.directMemberGroups.map(name=>{const g=findGroupByName(name);return <p style="margin-bottom:12px"><a href={base+"groups/"+g?.slug+"/"}>{name} →</a></p>})}
   </div>}
   {nested.length>0&&<div class="paper panel" style="margin-top:20px">
