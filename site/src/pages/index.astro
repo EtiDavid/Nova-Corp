@@ -14,15 +14,17 @@ const base = import.meta.env.BASE_URL;
       <div class="atlas-intro-layout">
         <div>
           <h1 id="exp-headline">I built the infrastructure. <em>Then I tested what happens when it fails.</em></h1>
-          <p class="exp-subtitle">Explore how I built an enterprise-style environment inside a single physical host — from nested virtualization to networking, Active Directory and tested recovery.</p>
+          <p class="exp-subtitle">I’m David Eti, a hands-on infrastructure and systems engineer seeking junior roles. Nova Corp is my enterprise-style home lab on one physical host, built to demonstrate troubleshooting, security, automation and recovery.</p>
         </div>
         <div class="atlas-intro-aside">
           <div class="button-row" aria-label="Start exploring the Nova Corp lab">
-            <a class="btn" href="#hx-explorer">Explore the infrastructure <span aria-hidden="true">↘</span></a>
+            <a class="btn" href={base+"tour/#recruiter"}>Two-minute overview <span aria-hidden="true">→</span></a>
             <a class="btn ghost" href={base+"tour/"}>Take the guided tour <span aria-hidden="true">→</span></a>
-          </div>
+          </div><div class="candidate-links"><a href={base+"David_Eti_Systems_Infrastructure_CV.pdf"}>Download CV</a><a href={base+"about/"}>About &amp; contact</a></div>
         </div>
       </div>
+      <div class="candidate-metrics"><span><strong>6</strong> virtual machines</span><span><strong>5</strong> VLANs</span><span><strong>15</strong> documented completed tests and incidents</span></div>
+      <section class="recruiter-feature" aria-label="Featured engineering investigations"><h2>Three things I proved</h2><div class="card-list">{[["A server went offline. Could employees still work?","I verified sign-in and file access through the surviving controller.","dc01-outage"],["A document disappeared. Could I recover it?","I restored a deleted file and verified its contents matched.","backup-target-unavailable"],["An employee could reach management tools.","I corrected firewall rule order and retested required access.","firewall-management-exposure"]].map(([title,desc,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h3>{title}</h3><p>{desc}</p><span class="readmore">Read investigation →</span></a>)}</div><p><a href="#hx-explorer">Explore the infrastructure diagram ↓</a> · <a href={base+"incidents/"}>All investigations →</a></p></section>
     </div>
     <div class="atlas-wide">
       <ScrollableLabSandbox />
@@ -31,3 +33,5 @@ const base = import.meta.env.BASE_URL;
 
   <LabIncidentLibrary />
 </BaseLayout>
+
+<style>.candidate-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}.candidate-metrics{display:flex;flex-wrap:wrap;gap:14px 28px;margin:26px 0;color:var(--muted,#c5c7bb)}.candidate-metrics span{display:flex;align-items:baseline;gap:7px}.candidate-metrics strong{color:#dfc291;font-size:1.55rem}.recruiter-feature{margin:28px 0 34px}.recruiter-feature h2{margin-bottom:14px}.recruiter-feature .card-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.recruiter-feature .system-card{min-width:0}.recruiter-feature p{margin:12px 0}.recruiter-feature .system-card h3{font-size:1.05rem;line-height:1.35}@media(max-width:720px){.recruiter-feature .card-list{grid-template-columns:1fr}}</style>
