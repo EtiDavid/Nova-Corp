@@ -291,3 +291,6 @@ html:not(.js) .xf-controls, html:not(.js) .xf-tabs { display:none; } html:not(.j
 .xf-dot[aria-current="true"]::after { background:var(--accent); inset:7px; }
 .xf-pause { min-height:32px; padding:0 12px; border:1px solid var(--rule); border-radius:8px; background:transparent; color:var(--muted); font:600 .82rem var(--font-sans); cursor:pointer; }
 @media (max-width:640px) { .xf-caption { min-height:10em; } }
+
+.xf-checks { margin-top:10px; } .xf-checks summary { cursor:pointer; font-weight:600; min-height:32px; } .xf-checks p { color:var(--muted); font-size:.9rem; margin:4px 0 8px; max-width:none; }
+.xf-checks table { width:100%; border-collapse:collapse; font-size:.85rem; display:block; overflow-x:auto; } .xf-checks th, .xf-checks td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--rule); vertical-align:top; } .xf-checks code { white-space:pre-wrap; word-break:break-all; }

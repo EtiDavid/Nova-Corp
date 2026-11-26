@@ -7,9 +7,9 @@ export interface Step { say: string; why?: string; term?: [string, string]; do: 
 export interface Scenario { id: string; label: string; steps: Step[] }
 interface Props {
   id: string; title: string; intro: string; scenarios: Scenario[]; start?: string; note?: string;
-  evidence?: { label: string; href: string }[]; viewBox?: string; alt: string;
+  evidence?: { label: string; href: string }[]; checks?: { what: string; cmd: string; where: string }[]; viewBox?: string; alt: string;
 }
-const { id, title, intro, scenarios, start, note, evidence = [], viewBox = "0 0 800 440", alt } = Astro.props;
+const { id, title, intro, scenarios, start, note, evidence = [], checks = [], viewBox = "0 0 800 440", alt } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const data = { start: start ?? scenarios[0].id, scenarios };
 ---
@@ -34,6 +34,10 @@ const data = { start: start ?? scenarios[0].id, scenarios };
   <details class="xf-text"><summary>Read this as a list</summary>
     {scenarios.map(s => <section><h4>{s.label}</h4><ol>{s.steps.map(st => <li>{st.say}{st.why ? " " + st.why : ""}</li>)}</ol></section>)}
   </details>
+  {checks.length > 0 && <details class="xf-checks"><summary>Show technical checks</summary>
+    <p>Commands from the recorded investigations that verify each door.</p>
+    <table><thead><tr><th scope="col">Check</th><th scope="col">Command</th><th scope="col">Run on</th></tr></thead><tbody>
+    {checks.map(c => <tr><td>{c.what}</td><td><code>{c.cmd}</code></td><td>{c.where}</td></tr>)}</tbody></table></details>}
   {note && <p class="xf-note">{note}</p>}
   {evidence.length > 0 && <p class="xf-evidence">{evidence.map((e, i) => <>{i ? " · " : ""}<a href={base + e.href.replace(/^\//, "")}>{e.label}</a></>)}</p>}
   <script type="application/json" class="xf-data" set:html={JSON.stringify(data)}></script>
@@ -105,16 +109,16 @@ const data = { start: start ?? scenarios[0].id, scenarios };
       const instant = reduce || !animate;
       for (const a of sc.steps[n].do) { if (my !== token) return; await apply(a, instant, my); }
     }
-    function buildDots() { dotsEl.innerHTML = ""; sc.steps.forEach((_: any, i: number) => { const d = document.createElement("button"); d.type = "button"; d.className = "xf-dot"; d.setAttribute("aria-label", "Step " + (i + 1)); d.addEventListener("click", () => { setPaused(true); goTo(i, true); }); dotsEl.append(d); }); }
+    function buildDots() { dotsEl.innerHTML = ""; sc.steps.forEach((_: any, i: number) => { const d = document.createElement("button"); d.type = "button"; d.className = "xf-dot"; d.setAttribute("aria-label", "Step " + (i + 1)); d.addEventListener("click", () => { run++; goTo(i, true).then(() => { if (!paused) loop(); }); }); dotsEl.append(d); }); }
     function setPaused(v: boolean) { paused = v; pauseBtn.textContent = v ? "Resume" : "Pause"; pauseBtn.setAttribute("aria-pressed", String(v)); if (!v) loop(); }
     // Plays the steps again and again while the figure is on screen and not paused. Hovering or focusing it also holds it still.
     async function loop() {
       const mine = ++run;
       while (mine === run && !paused && visible && !reduce) {
-        const from = idx >= sc.steps.length - 1 ? 0 : idx + 1;
-        if (idx >= sc.steps.length - 1) await wait(2800); if (mine !== run || paused) return;
-        await goTo(from, true); if (mine !== run) return;
-        let hold = idx >= sc.steps.length - 1 ? 0 : 3200; while (hold > 0 && mine === run) { await wait(200); if (!fig.matches(":hover, :focus-within") && !paused) hold -= 200; }
+        // Rest on the current step so it can be read, then move on. After the last step, start over.
+        let hold = 4200; while (hold > 0 && mine === run) { await wait(200); if (!paused) hold -= 200; }
+        if (mine !== run || paused) return;
+        await goTo(idx >= sc.steps.length - 1 ? 0 : idx + 1, true);
       }
     }
     function pick(id: string) { sc = data.scenarios.find((s: any) => s.id === id); fig.querySelectorAll(".xf-tab").forEach(b => b.setAttribute("aria-pressed", String((b as HTMLElement).dataset.scenario === id))); run++; idx = 0; buildDots(); goTo(0, true).then(() => { if (!paused) loop(); }); }
