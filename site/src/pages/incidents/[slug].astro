@@ -34,7 +34,7 @@ const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-targe
  <p class="lead" style="margin-top:16px">{entry.data.summary}</p>
  <div class="incident-meta" style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{className==="deferred"?"Not performed":className==="controlled"?"Controlled test":"Issue investigated"}</span><span class="muted" style="font-size:.82rem">{entry.data.outcome}</span></div>
 </div></section>
-<section class="section compact"><div class="container">{entry.id==="dns-client-outage" && <DnsReplay />}</div></section>
+<section class="section compact"><div class="container"><div class="paper panel"><p class="kicker">What this investigation establishes</p><p>{className==="deferred"?"This was planned, but the external validation was not performed. The record distinguishes configuration from proof.":className==="controlled"?"A deliberately introduced lab condition, followed by diagnosis and documented verification.":"An unexpected issue investigated during lab work, with the recorded findings and outcome below."}</p><p><strong>Recorded outcome:</strong> {entry.data.outcome}</p><p><a href={journalOnSite}>Read the complete execution record →</a></p></div>{entry.id==="dns-client-outage" && <DnsReplay />}</div></section>
 <section class="section compact"><div class="container grid-main">
   <article class="prose">
      {entry.id==="file-permission-denial" ? <PermissionIncidentPilot /> : <><div class="incident-case-intro"><span class="eyebrow">Quick overview</span><Content /><p><a href="#full-investigation">↓ Read every recorded troubleshooting step and result on this page</a></p></div>

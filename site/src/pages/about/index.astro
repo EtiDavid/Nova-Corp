@@ -17,7 +17,7 @@ const base = import.meta.env.BASE_URL;
   <section class="v4-section"><div class="container prose-narrow">
     <h2>What I did on Nova Corp</h2>
     <p>I designed, built, tested and documented the whole lab myself: a nested Proxmox environment, a pfSense firewall with five VLANs, Windows Server 2025 Active Directory with two Domain Controllers, Group Policy, DFS and SMB file services, a WireGuard VPN, PowerShell administration scripts and tested recovery.</p>
-    <h2>How I work</h2>
+    <h2>Evidence of my work</h2><ul><li><a href={base+"incidents/dc01-outage/"}>Identity and resilience:</a> investigate a controlled domain controller outage.</li><li><a href={base+"incidents/backup-target-unavailable/"}>Recovery:</a> restore a file and verify its integrity.</li><li><a href={base+"incidents/firewall-management-exposure/"}>Network security:</a> investigate and restrict management exposure.</li><li><a href={base+"groups/"}>Windows administration:</a> trace access through the documented group hierarchy.</li></ul><h2>How I work</h2>
     <p>I change one thing at a time, write down the expected result before I test, and keep the failures in the record. When something breaks, I separate the possible causes with a test before I change anything. The <a href={base + "incidents/dns-client-outage/"}>DNS investigation</a> is a good example.</p>
     <h2>What this project is not</h2>
     <p>Nova Corp is a home lab, not an employer's production network. It shows Windows Server and Active Directory, pfSense and VLAN networking, virtualization, PowerShell, recovery and diagnostics. My cloud and DevOps work (Azure, Terraform, GitHub Actions) is in separate projects, such as <a href="https://github.com/EtiDavid/novapredict-devops-case-study">NovaPredict ↗</a>.</p>

@@ -1,7 +1,9 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
+import { labStories } from "../../data/labStories";
 const base = import.meta.env.BASE_URL;
+const kindFor=(id:string)=>labStories.find(s=>s.slug===id)?.kind??"controlled";
 const group: Record<string, string> = {
   "dns-client-outage": "failure", "dc01-outage": "failure", "firewall-management-exposure": "failure",
   "file-permission-denial": "failure", "wireguard-handshake": "failure", "proxmox-storage-pressure": "failure",
@@ -29,13 +31,15 @@ const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-cli
   <section class="v4-section" style="border-top:0"><div class="container">
     <div class="tabs" role="group" aria-label="Filter investigations" id="filters">
       <button type="button" data-f="all" aria-pressed="true">All</button>
+      <button type="button" data-f="controlled" aria-pressed="false">Controlled tests</button>
+      <button type="button" data-f="unplanned" aria-pressed="false">Unexpected issues</button>
       <button type="button" data-f="failure" aria-pressed="false">Failure</button>
       <button type="button" data-f="recovery" aria-pressed="false">Recovery</button>
       <button type="button" data-f="deferred" aria-pressed="false">Deferred</button>
     </div>
     <div class="outcomes" id="case-grid">
-      {cases.map(({ e, g }: {e: CollectionEntry<"incidents">; g: string}) => <article class="outcome" data-g={g}>
-        <span class={"chip " + (g === "deferred" ? "deferred" : "tested")}>{labels[g]}</span>
+      {cases.map(({ e, g }: {e: CollectionEntry<"incidents">; g: string}) => <article class="outcome" data-g={g} data-kind={kindFor(e.id)}>
+        <span class={"chip " + (g === "deferred" ? "deferred" : "tested")}>{kindFor(e.id)==="controlled"?"Controlled test":kindFor(e.id)==="unplanned"?"Unexpected issue":labels[g]}</span>
         <h3>{e.data.title}</h3>
         <p>{e.data.summary}</p>
         <p class="result">{e.data.outcome}</p>
@@ -50,11 +54,11 @@ const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-cli
     var cards = [].slice.call(document.querySelectorAll("#case-grid .outcome"));
     function apply(f) {
       btns.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.f === f ? "true" : "false"); });
-      cards.forEach(function (c) { c.hidden = !(f === "all" || c.dataset.g === f); });
+      cards.forEach(function (c) { c.hidden = !(f === "all" || c.dataset.g === f || c.dataset.kind === f); });
     }
     btns.forEach(function (b) { b.addEventListener("click", function () { apply(b.dataset.f); }); });
     var t = new URLSearchParams(location.search).get("type");
-    apply(["failure", "recovery", "deferred"].indexOf(t) >= 0 ? t : "all");
+    apply(["failure", "recovery", "deferred", "controlled", "unplanned"].indexOf(t) >= 0 ? t : "all");
   })();
   </script>
 </BaseLayout>
