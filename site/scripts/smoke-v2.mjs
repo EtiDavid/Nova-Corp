@@ -27,7 +27,7 @@ try {
     assert.equal(await d.locator(".icard").count(), 3);
     const nums = await d.locator(".counts b").allInnerTexts();
     assert.deepEqual(nums, ["6", "5", "15", "17"]);
-    assert.equal(await d.locator("main > section").count(), 4); // hero, cases, map, counts
+    assert.equal(await d.locator("main > section").count(), 5); // hero, cases, map, proof, counts
   });
   await step("Home: the journey ends on FILES01 and Replay works", async () => {
     await d.locator("#nl-home").scrollIntoViewIfNeeded();
@@ -36,6 +36,31 @@ try {
     await d.locator("#replay").click();
     await d.waitForFunction(() => document.getElementById("tick")?.getAttribute("opacity") === "0", null, { timeout: 3000 });
     await d.waitForFunction(() => document.getElementById("tick")?.getAttribute("opacity") === "1", null, { timeout: 9000 });
+  });
+  await step("Home: every illustration is clickable, and the screenshots load", async () => {
+    await d.goto(host + "/", { waitUntil: "networkidle" });
+    await d.locator('#nl-home a.stn[data-id="nova-dc01"]').click();
+    await d.waitForURL(/\/systems\/nova-dc01\/$/);
+    await d.goto(host + "/", { waitUntil: "networkidle" });
+    await d.locator('#nl-home a.seg-link path[data-seg="network:client-fw01"]').click({ force: true }); // a horizontal stroke has a zero-height box
+    await d.waitForURL(/\/map\/\?line=/);
+    await d.goto(host + "/", { waitUntil: "networkidle" });
+    const imgs = d.locator(".evstrip img"); assert.equal(await imgs.count(), 6);
+    for (const img of await imgs.all()) { await img.scrollIntoViewIfNeeded(); await img.evaluate(async el => { if (!el.complete) await el.decode(); }); assert(await img.evaluate(el => el.naturalWidth > 0), "screenshot must load"); }
+  });
+  await step("Dark theme works on new and archive pages (text stays visible)", async () => {
+    for (const path of ["/incidents/dns-client-outage/", "/systems/nova-fw01/", "/people/moyo/", "/files/"]) {
+      await d.goto(host + path, { waitUntil: "networkidle" });
+      await d.evaluate(() => { document.documentElement.dataset.theme = "dark"; });
+      const bad = await d.evaluate(() => {
+        const lum = c => { const m = c.match(/[\d.]+/g).map(Number); const f = v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }; return .2126 * f(m[0]) + .7152 * f(m[1]) + .0722 * f(m[2]); };
+        const bgOf = el => { for (let e = el; e; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; const m = b.match(/[\d.]+/g); if (m && (m.length < 4 || +m[3] > .6)) return b; } return "rgb(18,22,27)"; };
+        let n = 0; for (const el of document.querySelectorAll("main p, main li, main h1, main h2, main h3, main dd, main dt")) { if (!el.innerText || !el.innerText.trim() || el.closest("pre,svg,[hidden]")) continue; const r = el.getBoundingClientRect(); if (!r.width || !r.height) continue; const a = lum(getComputedStyle(el).color), b = lum(bgOf(el)); const cr = (Math.max(a, b) + .05) / (Math.min(a, b) + .05); if (cr < 2.5) n++; }
+        return n;
+      });
+      assert.equal(bad, 0, path + " has text nearly invisible in dark mode");
+    }
+    await d.evaluate(() => { document.documentElement.dataset.theme = "light"; });
   });
   await step("Theme toggle switches and remembers", async () => {
     const before = await d.evaluate(() => getComputedStyle(document.body).backgroundColor);

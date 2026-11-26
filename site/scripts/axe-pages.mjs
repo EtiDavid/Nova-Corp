@@ -8,7 +8,7 @@ import { chromium } from "playwright-core";
 const require = createRequire(import.meta.url);
 const axeSource = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
 const dist = resolve("dist"), host = "http://127.0.0.1:4390";
-const args = process.argv.slice(2), all = args.includes("--all");
+const args = process.argv.slice(2), all = args.includes("--all"), scheme = args.includes("--dark") ? "dark" : "light";
 const onlyRules = (args.find(a => a.startsWith("--rules=")) || "").replace("--rules=", "").split(",").filter(Boolean);
 const bin = process.env.CHROME_PATH || execFileSync("which", ["google-chrome"]).toString().trim();
 const routes = [];
@@ -21,7 +21,7 @@ try {
   for (let n = 0; n < 60; n++) { try { if ((await fetch(host + "/")).ok) break; } catch {} await new Promise(r => setTimeout(r, 300)); }
   const browser = await chromium.launch({ executablePath: bin, headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
   for (const [label, vp] of [["desktop", { width: 1440, height: 900 }], ["mobile", { width: 390, height: 844 }]]) {
-    const ctx = await browser.newContext({ viewport: vp, colorScheme: "light", reducedMotion: "reduce" });
+    const ctx = await browser.newContext({ viewport: vp, colorScheme: scheme, reducedMotion: "reduce" });
     for (const r of sample) {
       const page = await ctx.newPage();
       try {
@@ -40,7 +40,7 @@ try {
   await browser.close();
 } finally { server.kill("SIGTERM"); }
 const byRule = new Map(); [...results.values()].forEach(r => byRule.set(r.rule, (byRule.get(r.rule) ?? 0) + 1));
-console.log(`axe checked ${pages} page views (${sample.length} routes x 2 sizes).`);
+console.log(`[${scheme} theme] axe checked ${pages} page views (${sample.length} routes x 2 sizes).`);
 [...results.values()].sort((a, b) => a.rule.localeCompare(b.rule)).slice(0, 60).forEach(r => console.log(`- [${r.impact}] ${r.rule}: ${r.target} (${r.pages[0]}) ${r.note}`));
 console.log(results.size ? `\n${results.size} distinct violations: ${[...byRule].map(([k, v]) => `${k} x${v}`).join(", ")}` : "No axe violations in the sampled pages.");
 process.exit(results.size ? 1 : 0);

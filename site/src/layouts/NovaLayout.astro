@@ -67,13 +67,5 @@ const full = title === "Home" ? "Nova Corp: infrastructure I built, broke and fi
       document.addEventListener("click", function (e) { if (current && !pop.contains(e.target) && !e.target.closest(".term")) close(); });
     })();
   </script>
-  <script is:inline>
-    document.getElementById("theme-toggle").addEventListener("click", function () {
-      var cur = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-      var next = cur === "dark" ? "light" : "dark";
-      document.documentElement.dataset.theme = next;
-      try { localStorage.setItem("nova-theme", next); } catch (e) {}
-    });
-  </script>
 </body>
 </html>

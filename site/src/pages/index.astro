@@ -3,6 +3,7 @@ import NovaLayout from "../layouts/NovaLayout.astro";
 import MapSvg from "../components/nova/MapSvg.astro";
 import MobileLines from "../components/nova/MobileLines.astro";
 import { loadNova, typeLabel } from "../lib/nova";
+import EvidenceStrip from "../components/nova/EvidenceStrip.astro";
 const base = import.meta.env.BASE_URL;
 const nova = await loadNova();
 const { counts: c, journey, markers, lines, featured } = nova;
@@ -65,6 +66,19 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     <ol class="tiny" style="margin:14px 0 0;padding-left:18px">{homeMarkers.map((m: any) => <li><a href={base + "incidents/" + m.slug + "/"}>{m.title}</a></li>)}</ol>
     <p class="caption">Diagram of how services depend on each other, not physical cabling.</p>
     <p style="margin-top:16px"><a class="nv-link" href={base + "map/"}>Open the full map <span aria-hidden="true">→</span></a></p>
+  </div></section>
+
+  <section class="sec" aria-labelledby="h-proof"><div class="wrap">
+    <h2 id="h-proof">Proof you can open</h2>
+    <p class="sub">Original screenshots from the journals, each linked to the case it belongs to.</p>
+    <EvidenceStrip items={[
+      { id: "dns-timeout", href: "/incidents/dns-client-outage/" },
+      { id: "backup-sha256-match", href: "/incidents/backup-target-unavailable/" },
+      { id: "replication-rejected-8457", href: "/incidents/replication-divergence/" },
+      { id: "permission-denial-observed", href: "/incidents/file-permission-denial/" },
+      { id: "gpo-disabled-link", href: "/incidents/gpo-link-disabled/" },
+      { id: "two-faults-share-opens", href: "/incidents/two-faults-one-symptom/" }
+    ]} />
   </div></section>
 
   <section class="sec" aria-labelledby="h-lab"><div class="wrap">

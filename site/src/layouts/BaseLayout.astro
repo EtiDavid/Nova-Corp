@@ -31,13 +31,13 @@ const fullTitle = title + " · Nova Corp";
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <title>{fullTitle}</title>
-    <script is:inline>document.documentElement.classList.add("js"); document.documentElement.dataset.theme = "light"; /* archive pages are light only until they are restyled */</script>
+    <script is:inline>document.documentElement.classList.add("js"); try { var t = localStorage.getItem("nova-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
     <slot name="head" />
     <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
   </head>
   <body class="legacy">
     <a class="skip-link" href="#main">Skip to main content</a>
-    <div class="nv"><NovaHeader themeToggle={false} /></div>
+    <div class="nv"><NovaHeader /></div>
     <main id="main">
       {breadcrumbs.length > 0 && <div class="container" style="padding-top:25px">
         <nav class="breadcrumbs" aria-label="Breadcrumb">
