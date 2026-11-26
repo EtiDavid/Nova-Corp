@@ -24,7 +24,7 @@ Prefer to read on GitHub? [Enter Nova Corp →](docs/EXPLORE_NOVACORP.md)
 
 ## Status
 
-- **Done:** Windows infrastructure foundation (CR-001 to CR-015), signed off 21 Nov 2026 with conditions. TODO(David): list the conditions in one line.
+- **Done:** Windows infrastructure foundation (CR-001 to CR-015), signed off 21 Nov 2026 as a conditional pass. Open conditions: external WireGuard validation and privileged-admin isolation moved to CR-016, no centralized monitoring yet, the whole lab shares one physical host, and the second-operator runbook test was waived.
 - **Next:** CR-016, privileged admin VPN and management-plane isolation. Not started.
 - **Later:** Linux, Microsoft 365 and centralized monitoring. This is a nested home lab, not an employer production network.
 

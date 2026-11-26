@@ -37,7 +37,7 @@ flowchart TB
 | Zone | Subnet | Gateway | State |
 | --- | --- | --- | --- |
 | Upstream | `192.168.178.0/24` | `192.168.178.1` | Proxmox management and firewall WAN |
-| Legacy LAN | `10.99.99.0/24` | `10.99.99.1` | Configured older segment. TODO(David): state why it still exists and when it will be removed. |
+| Legacy LAN | `10.99.99.0/24` | `10.99.99.1` | Original CR-002 build network, used before servers moved to VLAN 20 in CR-003. Still configured on pfSense; removing it is an open item. |
 | MGMT / VLAN 10 | `10.10.10.0/24` | `10.10.10.1` | Firewall management |
 | INFRA / VLAN 20 | `10.10.20.0/24` | `10.10.20.1` | Domain Controllers and file server |
 | APP / VLAN 30 | `10.10.30.0/24` | `10.10.30.1` | Reserved segment |

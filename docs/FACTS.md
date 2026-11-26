@@ -9,6 +9,6 @@ The website and the README must match this table. Change it here first.
 | VLANs | Five: MGMT 10, INFRA 20, APP 30, CLIENT 40, DMZ 50 |
 | Hypervisor | Proxmox VE nested on VMware Workstation, on a single Windows 11 host |
 | Next change | CR-016, privileged admin VPN and management-plane isolation (not started) |
-| Phase naming | TODO(David): choose one scheme. Recommended: "Phase 2" for the completed Windows foundation everywhere, matching `PHASE-2-OPERATIONS-RUNBOOK.md`. |
-| Last evidence date | 22 Nov 2026 (TODO(David): confirm) |
-| Sign-off | 21 Nov 2026, conditionally accepted. TODO(David): state the conditions. |
+| Phase naming | "Phase 2" = the completed Windows foundation (CR-001 to CR-015), matching `PHASE-2-OPERATIONS-RUNBOOK.md` |
+| Last evidence date | 22 Nov 2026 (directory snapshot) |
+| Sign-off | 21 Nov 2026, conditional pass. Conditions: external WireGuard validation and privileged-admin isolation deferred to CR-016; no centralized monitoring; single physical host failure domain; second-operator runbook test waived |

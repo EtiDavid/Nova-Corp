@@ -2,7 +2,7 @@
 
 The eight scripts below were built, tested and packaged as `CR-011-v1.0.0` in the lab. See [the full CR-011 journal](../docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md) and the [plain-English summary](../docs/explore/AUTOMATION.md).
 
-TODO(David): the script source is not in this repository yet. Copy the eight `.ps1` files from `C:\NovaCorp\PowerShell\Scripts` into this folder. Check each one first for lab passwords or other secrets; use parameters or `Get-Credential` instead.
+The script source is not published in this repository yet; it is being reviewed for lab-specific values first. Until then, the CR-011 journal documents what each script does, how it was tested and the failures it handled.
 
 | Script | What it does | Change request |
 | --- | --- | --- |
