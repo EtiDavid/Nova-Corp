@@ -2,6 +2,7 @@
 // The top of every system page, generated from the Nova content model: what it does, where it sits, what runs on it,
 // what broke here, which changes built it, and its one limit. The long technical profile follows below it.
 import { loadNova } from "../../lib/nova";
+import DcSignIn from "./xf/DcSignIn.astro";
 interface Props { id: string; asOf: string }
 const { id, asOf } = Astro.props;
 const nova = await loadNova();
@@ -31,5 +32,6 @@ const lineNames = s.lines.map((l: string) => nova.lineMap[l].name);
     {shown.length > 0 && <div><dt>What broke here</dt><dd>{shown.map((i: string, n: number) => <>{n ? "; " : ""}<a href={base + "incidents/" + i + "/"}>{nova.titleOf(i)}</a></>)}{more > 0 && <> · <a href={base + "incidents/"}>and {more} more</a></>}</dd></div>}
     <div><dt>Built in</dt><dd>{s.builtBy.map((c: string, n: number) => <>{n ? ", " : ""}<a href={base + "changes/" + c + "/"}>{c}</a></>)}</dd></div>
   </dl>
+  {(id === "nova-dc01" || id === "nova-dc02") && <DcSignIn />}
   <h2 style="margin-top:40px">Full profile and evidence</h2>
 </div></section>
