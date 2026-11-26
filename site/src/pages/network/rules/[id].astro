@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import EngineeringSourceEmbed from "../../../components/EngineeringSourceEmbed.astro";
+
 import { rules, findZone, aliases, networkEvidence, type Rule } from "../../../data/network";
 export function getStaticPaths(){return rules.map(rule=>({params:{id:rule.id},props:{rule}}));}
 interface Props {rule:Rule}
@@ -14,9 +14,10 @@ const hasManagementEvidence=rule.zone==="client"&&(rule.order===1||rule.order===
 <section class="page-head"><div class="container">
 <div class="eyebrow">{zone?.name} / Ordered firewall rule</div>
 <h1>{rule.description}</h1><p class="lead" style="margin-top:17px">The recorded action is <strong>{rule.action}</strong>, at position <strong>{rule.order}</strong> on the incoming {zone?.name} interface.</p>
-<div style="margin-top:19px"><span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span><span class="muted" style="margin-left:12px;font-size:.83rem">Saved and enabled at the last review (22 Nov 2026)</span></div>
+<div style="margin-top:19px"><span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span><span class="muted" style="margin-left:12px;font-size:.83rem">Saved and enabled in the documented configuration</span></div>
 </div></section>
 <section class="section compact"><div class="container grid-main"><div>
+<section class="content-section"><h2>What does this rule do?</h2><p>{rule.description} It matches traffic entering the {zone?.name} interface from {rule.source} towards {rule.destination}. If it is the applicable matching rule, it {rule.action==="BLOCK"?"blocks":"permits"} that traffic.</p><div class="paper panel" style="margin:18px 0"><p><strong>From:</strong> {rule.source}</p><p><strong>Via:</strong> <a href={base+"systems/nova-fw01/"}>NOVA-FW01</a> · {zone?.name} rule {rule.order}</p><p><strong>To:</strong> {rule.destination}</p><p><strong>Decision:</strong> {rule.action} · {rule.protocol} · {rule.ports}</p></div><p>Rule order, connection state and actual matching fields matter. A single saved rule does not prove a successful end-to-end connection.</p></section>
 <section class="content-section">
  <h2>What traffic does it match?</h2>
  <div class="paper panel" style="margin-top:19px"><dl class="fact-list">
@@ -33,14 +34,15 @@ const hasManagementEvidence=rule.zone==="client"&&(rule.order===1||rule.order===
  <h2>Follow the related objects</h2>
  {related.length>0?<div class="card-list">{related.map(a=><a class="system-card" href={base+"network/aliases/"+a.slug+"/"}><small>{a.kind} alias</small><h3>{a.name}</h3><p>{a.description}</p><span class="readmore">Open alias →</span></a>)}</div>:<div class="note">No reusable alias is recorded on this rule in the selected public model. Its saved source and destination values remain visible in the technical facts above.</div>}
 </section>
-<EngineeringSourceEmbed sourcePath={"docs/explore/network/rules/"+rule.id+".md"} title="Full documented rule explanation" />
+
 <section class="content-section">
  <h2>What does the evidence establish?</h2>
- <div class="paper panel"><p class="muted">{hasManagementEvidence?"These CLIENT management-blocking controls were part of the November hardening review, which tested denied management reachability alongside preserved business access. This rule profile itself is a dated configuration record, not a packet capture for every possible source and target.":"This page records the exact configured rule fields. The presence of a pass or block entry is not evidence that every flow was separately tested end to end. See the original engineering journal for any observed packets and test outcomes."}</p>
+ <div class="paper panel"><p class="muted">{hasManagementEvidence?"These CLIENT management-blocking controls were part of the November hardening review, which tested denied management reachability alongside preserved business access. This rule profile itself is a saved configuration record, not a packet capture for every possible source and target.":"This page records the exact configured rule fields. The presence of a pass or block entry is not evidence that every flow was separately tested end to end. See the original engineering journal for any observed packets and test outcomes."}</p>
  <a class="evidence-link" href={networkEvidence.rule(rule.id)}>Original detailed firewall rule ↗</a>
- {hasManagementEvidence&&<p style="margin-top:15px"><a href={networkEvidence.incident}>See the management-reachability investigation ↗</a></p>}
+ {hasManagementEvidence&&<p style="margin-top:15px"><a href={base+"incidents/firewall-management-exposure/"}>See the management-reachability investigation ↗</a></p>}
  </div>
 </section>
+<section class="content-section"><details><summary>Technical checks</summary><p><strong>Where:</strong> pfSense shell.</p><h3>Review the active rules</h3><pre><code>pfctl -sr</code></pre><p><strong>Expected:</strong> the relevant rule matches the intended action, source, destination and service in the ordered policy. This is a configuration check, not a packet result.</p>{hasManagementEvidence&&<><h3>Test the protected GUI path</h3><p><strong>Where:</strong> NOVA-CLIENT.</p><pre><code>Test-NetConnection 10.10.40.1 -Port 443</code></pre><p><strong>Expected:</strong> TcpTestSucceeded: False for the blocked GUI path. For a separate MGMT network rule, compare the actual destination tested in the original investigation.</p></>}</details></section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"reference/explore/network/rules/"+rule.id+"/"}>Full documented rule explanation →</a></p><p><a href={base+"reference/explore/network/RULES/"}>Complete saved rule inventory →</a></p><p><a href={base+"journals/change_request_cr002/"}>Network installation journal →</a></p></section>
 </div><aside>
  <div class="sidebox"><h3>Position matters</h3><p class="muted">Earlier rules on the same interface are evaluated before later ones. The order here comes from the saved pfSense configuration.</p><a class="evidence-link" href={base+"network/zones/"+rule.zone+"/"}>See full {zone?.name} rule order →</a></div>
  <div class="sidebox"><h3>Engineering identifier</h3><code class="technical">{rule.id}</code><p class="muted" style="margin-top:10px">This exact tracker value is retained only in technical detail so engineers can compare it with the original rule record.</p></div>

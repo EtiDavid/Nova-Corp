@@ -42,10 +42,10 @@ export const rules:Rule[]=[
 ];
 export type FirewallAlias={slug:string;name:string;kind:"Host"|"Port"|"Network";description:string;members:string[]};
 export const aliases:FirewallAlias[]=[
- {slug:"nova-domain-controllers",name:"NOVA_DOMAIN_CONTROLLERS",kind:"Host",description:"Two directory/DNS server hosts targeted by the VPN service rules.",members:["DC01", "DC02"]},
+ {slug:"nova-domain-controllers",name:"NOVA_DOMAIN_CONTROLLERS",kind:"Host",description:"Two directory/DNS server hosts targeted by the VPN service rules.",members:["10.10.20.10","10.10.20.11"]},
  {slug:"nova-ad-tcp-ports",name:"NOVA_AD_TCP_PORTS",kind:"Port",description:"TCP services approved for access to the directory servers from the VPN.",members:["53","88","135","389","445","464","3268","49152–65535"]},
  {slug:"nova-ad-udp-ports",name:"NOVA_AD_UDP_PORTS",kind:"Port",description:"UDP services approved for VPN directory work.",members:["53","88","123","389","464"]},
- {slug:"nova-protected-networks",name:"NOVA_PROTECTED_NETWORKS",kind:"Network",description:"Six network ranges protected from unrestricted remote VPN access.",members:["Management","Application","Employee workstation","DMZ","Legacy LAN","Upstream host network"]},
+ {slug:"nova-protected-networks",name:"NOVA_PROTECTED_NETWORKS",kind:"Network",description:"Six network ranges protected from unrestricted remote VPN access.",members:["10.10.10.0/24","10.10.30.0/24","10.10.40.0/24","10.10.50.0/24","10.99.99.0/24","192.168.178.0/24"]},
  {slug:"nova-pfsense-gui-port",name:"NOVA_PFSENSE_GUI_PORT",kind:"Port",description:"Web-management ports blocked from ordinary company clients.",members:["80","443"]}
 ];
 export const findZone=(slug:string)=>zones.find(x=>x.slug===slug);

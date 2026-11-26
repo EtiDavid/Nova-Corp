@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import EngineeringSourceEmbed from "../../../components/EngineeringSourceEmbed.astro";
+
 import { aliases, rulesForAlias, networkEvidence, type FirewallAlias } from "../../../data/network";
 export function getStaticPaths(){return aliases.map(alias=>({params:{slug:alias.slug},props:{alias}}));}
 interface Props{alias:FirewallAlias}
@@ -13,14 +13,15 @@ const related=rulesForAlias(alias.name);
  <div class="eyebrow">{alias.kind} alias / Firewall object</div><h1>{alias.name}</h1><p class="lead" style="margin-top:17px">{alias.description}</p>
 </div></section>
 <section class="section compact"><div class="container grid-main"><div>
-<section class="content-section"><h2>What is grouped here?</h2>
+<section class="content-section"><h2>What does this alias do?</h2><p>{alias.description} Instead of repeating each {alias.kind.toLowerCase()} entry in every firewall rule, Nova Corp uses one reusable list. A firewall rule still decides whether matching traffic is allowed or blocked.</p><h2 style="margin-top:24px">What is grouped here?</h2>
  <div class="paper panel" style="margin-top:19px"><ul class="plain-list">{alias.members.map(m=><li>{m}</li>)}</ul></div>
 </section>
 <section class="content-section"><h2>Which saved rules refer to this alias?</h2>
  <div class="card-list">{related.map(rule=><a class="system-card" href={base+"network/rules/"+rule.id+"/"}><small>{rule.action} · {rule.zone.toUpperCase()} rule {rule.order}</small><h3>{rule.description}</h3><p>{rule.protocol} · {rule.destination}</p><span class="readmore">Follow the rule →</span></a>)}</div>
 </section>
-<EngineeringSourceEmbed sourcePath={"docs/explore/network/aliases/"+alias.name+".md"} title="Full alias configuration and examples" />
+
 <div class="note">Alias membership is a saved configuration fact. The referenced rule's ordered action and real traffic tests are separate evidence. Having a host on the alias does not by itself prove that a remote client can reach it.</div>
+<section class="content-section"><details><summary>Technical checks</summary><p><strong>Where:</strong> pfSense web interface, Firewall → Aliases. Review the saved members of <code>{alias.name}</code>, then compare the referenced rules.</p><p><strong>Expected:</strong> {alias.members.length} documented entries match the intended list. The alias alone does not permit traffic.</p></details></section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"reference/explore/network/aliases/"+alias.name+"/"}>Full alias configuration and examples →</a></p><p><a href={base+"reference/explore/network/ALIASES/"}>Original alias inventory →</a></p></section>
 </div><aside>
  <div class="sidebox"><h3>Alias profile</h3><dl class="fact-list"><div><dt>Type</dt><dd>{alias.kind}</dd></div><div><dt>Reviewed members</dt><dd>{alias.members.length}</dd></div><div><dt>Rules using alias</dt><dd>{related.length}</dd></div></dl></div>
  <div class="sidebox"><h3>Source and navigation</h3><a href={networkEvidence.alias(alias.name)}>Original alias details ↗</a><p style="margin-top:14px"><a href={base+"network/aliases/"}>← All five aliases</a></p><p style="margin-top:14px"><a href={base+"network/rules/"}>All firewall rules →</a></p></div>

@@ -79,7 +79,7 @@ const payload = { views, ids: systems.map(s => s.id) };
             <h4>What it does</h4><p>{s.summary}</p>
             <h4>What it connects to</h4>
             <ul>{connections(s.id).map(c => <li>{c}</li>)}</ul>
-            <h4>Key facts · as of {s.asOf}</h4>
+            <h4>Technical summary</h4>
             <ul>{s.details.map(d => <li><b>{d.label}:</b> {d.value}</li>)}</ul>
             <h4>Not yet proven</h4>
             <ul>{s.limitations.map(l => <li>{l}</li>)}</ul>

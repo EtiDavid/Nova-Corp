@@ -19,9 +19,9 @@ const segments=zones.filter(z=>z.kind==="VLAN");
    <p>{z.purpose}</p><span class="arrow-label">Explore network →</span>
  </a>)}</div>
  <div class="grid-main" style="margin-top:30px">
-  <div class="paper panel"><p class="kicker">A tested protection</p><h3 style="margin:12px 0">The employee PC cannot open the firewall administration page.</h3><p class="muted" style="margin-top:11px">On CLIENT, two security blocks precede a broad allow rule. The November review tested blocked management reachability alongside working DNS, directory, shared-file and internet paths.</p><a class="evidence-link" href={base+"network/zones/client/"}>Follow the CLIENT rules →</a></div>
+  <div class="paper panel"><p class="kicker">A tested protection</p><h3 style="margin:12px 0">The employee PC cannot open the firewall administration page.</h3><p class="muted" style="margin-top:11px">On CLIENT, two security blocks precede a broad allow rule. The hardening validation tested blocked management reachability alongside working DNS, directory, shared-file and internet paths.</p><a class="evidence-link" href={base+"network/zones/client/"}>Follow the CLIENT rules →</a></div>
   <div class="paper panel"><p class="kicker">A deliberate limitation</p><h3 style="margin:12px 0">Having VLANs does not automatically mean least privilege.</h3><p class="muted" style="margin-top:11px">Management, infrastructure, application and DMZ still contain broad pass rules. The dedicated privileged-admin management isolation work remains deferred.</p><a class="evidence-link" href={base+"network/rules/"}>Explore the rule order →</a></div>
  </div>
- <div class="note" style="margin-top:28px"><strong>A critical distinction:</strong> WireGuard remote access is an encrypted tunnel—not a sixth VLAN. The original five VLANs are MGMT, INFRA, APP, CLIENT and DMZ. <a href={networkEvidence.overview}>Read the documented architecture ↗</a>.</div>
+ <div class="note" style="margin-top:28px"><strong>A critical distinction:</strong> WireGuard remote access is an encrypted tunnel—not a sixth VLAN. The original five VLANs are MGMT, INFRA, APP, CLIENT and DMZ. <a href={base+"reference/explore/NETWORK/"}>Read the documented architecture ↗</a>.</div>
 </div></section>
 </BaseLayout>
