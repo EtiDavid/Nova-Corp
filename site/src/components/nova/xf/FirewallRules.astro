@@ -1,12 +1,12 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
-const scenarios = [
+const scenarios: any[] = [
   { id: "now", label: "Today (after CR-015)", steps: [
     { say: "A workstation on the CLIENT network sends three kinds of traffic at the firewall.", why: "The firewall reads its rules from the top and stops at the first one that matches.", do: [{t:"show",ids:["pc","l-pc","r1","r2","r3","l-r1","l-r2","l-r3"]}] },
-    { say: "Rule 1 blocks attempts to reach the firewall's own admin page.", why: "A workstation has no reason to manage the firewall.", do: [{t:"glide",path:"pa",dot:"d1",ms:1000,keep:false},{t:"state",id:"r1",value:"bad"},{t:"show",ids:["dst1","x1","l-dst1"]}] },
+    { say: "Rule 1 blocks attempts to reach the firewall's own admin page.", term:["Firewall rule","one line saying allow or block for a kind of traffic. The first match wins."], why: "A workstation has no reason to manage the firewall.", do: [{t:"glide",path:"pa",dot:"d1",ms:1000,keep:false},{t:"state",id:"r1",value:"bad"},{t:"show",ids:["dst1","x1","l-dst1"]}] },
     { say: "Rule 2 blocks the management network.", do: [{t:"glide",path:"pb",dot:"d1",ms:1000,keep:false},{t:"state",id:"r2",value:"bad"},{t:"show",ids:["dst2","x2","l-dst2"]}] },
-    { say: "Rule 3 lets everything else through, such as normal internet use.", why: "Because the two block rules sit above it, they win.", do: [{t:"glide",path:"pcn",dot:"d1",ms:1000,keep:false},{t:"state",id:"r3",value:"good"},{t:"show",ids:["dst3","ok3","l-dst3"]}] },
+    { say: "Rule 3 lets everything else through, such as normal internet use.", term:["Order matters","blocks placed above an allow beat it. The same rules in another order behave differently."], why: "Because the two block rules sit above it, they win.", do: [{t:"glide",path:"pcn",dot:"d1",ms:1000,keep:false},{t:"state",id:"r3",value:"good"},{t:"show",ids:["dst3","ok3","l-dst3"]}] },
   ]},
   { id: "before", label: "Before CR-015", steps: [
     { say: "Before CR-015 the CLIENT network had no rules blocking the firewall admin page.", do: [{t:"show",ids:["pc","l-pc","r3","l-r3"]}] },

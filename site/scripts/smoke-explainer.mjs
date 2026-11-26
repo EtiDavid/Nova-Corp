@@ -17,11 +17,14 @@ try {
       await p.goto(`${host}/systems/${sys}/`); const fig = p.locator("#" + id); await fig.waitFor();
       const total = await fig.locator(".xf-text li").count() ? (await p.evaluate(i => JSON.parse(document.querySelector("#" + i + " .xf-data").textContent).scenarios[0].steps.length, id)) : 0;
       assert.ok(total > 1, `${sys} has steps`);
+      assert.equal(await fig.locator(".xf-dot").count(), total, `${sys} has one dot per step`);
       if (reduce === "reduce") { assert.match(await fig.locator(".xf-count").textContent(), new RegExp(`Step ${total} of ${total}`), `${sys} reduced motion shows the final step`); }
       else {
-        await p.click(`#${id} [data-act="restart"]`); assert.match(await fig.locator(".xf-count").textContent(), /Step 1 of/);
-        await p.click(`#${id} [data-act="next"]`); assert.match(await fig.locator(".xf-count").textContent(), /Step 2 of/, `${sys} next advances`);
-        await p.click(`#${id} [data-act="prev"]`); assert.match(await fig.locator(".xf-count").textContent(), /Step 1 of/, `${sys} previous goes back`);
+        assert.equal(await fig.locator('[data-act="play"]').count(), 0, "no play button");
+        await fig.scrollIntoViewIfNeeded(); await p.waitForTimeout(6500);
+        const n = Number((await fig.locator(".xf-count").textContent()).match(/Step (\d+)/)[1]); assert.ok(n >= 2, `${sys} autoplays on its own (step ${n})`);
+        await p.click(`#${id} .xf-dot >> nth=0`); assert.match(await fig.locator(".xf-count").textContent(), /Step 1 of/, `${sys} dot jumps to step 1`);
+        assert.equal(await fig.locator(".xf-pause").textContent(), "Resume", "clicking a dot pauses");
         assert.ok((await fig.locator(".xf-say").textContent()).length > 10, "caption has words");
       }
       assert.ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `${sys} no page overflow at ${w}`);

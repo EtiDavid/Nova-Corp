@@ -3,7 +3,7 @@
 // Honest by design: it replays something recorded in the lab, the user controls the pace, motion is optional,
 // and the same story is available as a plain numbered list.
 export interface Action { t: string; [k: string]: any }
-export interface Step { say: string; why?: string; do: Action[] }
+export interface Step { say: string; why?: string; term?: [string, string]; do: Action[] }
 export interface Scenario { id: string; label: string; steps: Step[] }
 interface Props {
   id: string; title: string; intro: string; scenarios: Scenario[]; start?: string; note?: string;
@@ -25,12 +25,11 @@ const data = { start: start ?? scenarios[0].id, scenarios };
     <p class="xf-count" aria-hidden="true"></p>
     <p class="xf-say" aria-live="polite"></p>
     <p class="xf-why"></p>
+    <p class="xf-term" hidden></p>
   </div>
-  <div class="xf-controls" role="group" aria-label="Playback">
-    <button type="button" class="xf-btn" data-act="prev">Previous</button>
-    <button type="button" class="xf-btn primary" data-act="play" aria-pressed="false">Play</button>
-    <button type="button" class="xf-btn" data-act="next">Next</button>
-    <button type="button" class="xf-btn" data-act="restart">Restart</button>
+  <div class="xf-controls">
+    <div class="xf-dots" role="group" aria-label="Jump to a step"></div>
+    <button type="button" class="xf-pause" data-act="pause" aria-pressed="false">Pause</button>
   </div>
   <details class="xf-text"><summary>Read this as a list</summary>
     {scenarios.map(s => <section><h4>{s.label}</h4><ol>{s.steps.map(st => <li>{st.say}{st.why ? " " + st.why : ""}</li>)}</ol></section>)}
@@ -45,10 +44,10 @@ const data = { start: start ?? scenarios[0].id, scenarios };
     const data = JSON.parse(fig.querySelector(".xf-data")!.textContent || "{}");
     const svg = fig.querySelector("svg") as SVGSVGElement;
     const say = fig.querySelector(".xf-say")!, why = fig.querySelector(".xf-why")!, count = fig.querySelector(".xf-count")!;
-    const playBtn = fig.querySelector('[data-act="play"]') as HTMLButtonElement;
+    const pauseBtn = fig.querySelector('[data-act="pause"]') as HTMLButtonElement; const termEl = fig.querySelector(".xf-term") as HTMLElement; const dotsEl = fig.querySelector(".xf-dots")!;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let sc = data.scenarios.find((s: any) => s.id === data.start) || data.scenarios[0];
-    let idx = 0, token = 0, playing = false;
+    let idx = 0, token = 0, paused = false, visible = false, run = 0;
     const el = (id: string) => svg.querySelector('[data-id="' + id + '"]') as SVGElement | null;
     const wait = (ms: number) => new Promise(r => setTimeout(r, ms));
     function resetAll() {
@@ -96,6 +95,8 @@ const data = { start: start ?? scenarios[0].id, scenarios };
       const st = sc.steps[idx];
       count.textContent = "Step " + (idx + 1) + " of " + sc.steps.length;
       say.textContent = st.say; why.textContent = st.why || "";
+      if (st.term) { termEl.hidden = false; termEl.innerHTML = ""; const b = document.createElement("b"); b.textContent = st.term[0] + ": "; termEl.append(b, st.term[1]); } else termEl.hidden = true;
+      dotsEl.querySelectorAll("button").forEach((d, i) => d.setAttribute("aria-current", String(i === idx)));
     }
     async function goTo(n: number, animate: boolean) {
       token++; const my = token;
@@ -104,26 +105,26 @@ const data = { start: start ?? scenarios[0].id, scenarios };
       const instant = reduce || !animate;
       for (const a of sc.steps[n].do) { if (my !== token) return; await apply(a, instant, my); }
     }
-    function setPlaying(v: boolean) { playing = v; playBtn.textContent = v ? "Pause" : (idx >= sc.steps.length - 1 ? "Replay" : "Play"); playBtn.setAttribute("aria-pressed", String(v)); }
-    async function play() {
-      if (playing) { setPlaying(false); token++; return; }
-      const from = idx >= sc.steps.length - 1 ? 0 : idx + (idx === 0 && !fig.dataset.started ? 0 : 1);
-      fig.dataset.started = "1"; setPlaying(true);
-      for (let i = from; i < sc.steps.length && playing; i++) { await goTo(i, true); if (!playing) break; await wait(reduce ? 900 : 1600); }
-      setPlaying(false);
+    function buildDots() { dotsEl.innerHTML = ""; sc.steps.forEach((_: any, i: number) => { const d = document.createElement("button"); d.type = "button"; d.className = "xf-dot"; d.setAttribute("aria-label", "Step " + (i + 1)); d.addEventListener("click", () => { setPaused(true); goTo(i, true); }); dotsEl.append(d); }); }
+    function setPaused(v: boolean) { paused = v; pauseBtn.textContent = v ? "Resume" : "Pause"; pauseBtn.setAttribute("aria-pressed", String(v)); if (!v) loop(); }
+    // Plays the steps again and again while the figure is on screen and not paused. Hovering or focusing it also holds it still.
+    async function loop() {
+      const mine = ++run;
+      while (mine === run && !paused && visible && !reduce) {
+        const from = idx >= sc.steps.length - 1 ? 0 : idx + 1;
+        if (idx >= sc.steps.length - 1) await wait(2800); if (mine !== run || paused) return;
+        await goTo(from, true); if (mine !== run) return;
+        let hold = idx >= sc.steps.length - 1 ? 0 : 3200; while (hold > 0 && mine === run) { await wait(200); if (!fig.matches(":hover, :focus-within") && !paused) hold -= 200; }
+      }
     }
-    function pick(id: string) { sc = data.scenarios.find((s: any) => s.id === id); fig.querySelectorAll(".xf-tab").forEach(b => b.setAttribute("aria-pressed", String((b as HTMLElement).dataset.scenario === id))); idx = 0; fig.dataset.started = ""; setPlaying(false); goTo(0, true); }
+    function pick(id: string) { sc = data.scenarios.find((s: any) => s.id === id); fig.querySelectorAll(".xf-tab").forEach(b => b.setAttribute("aria-pressed", String((b as HTMLElement).dataset.scenario === id))); run++; idx = 0; buildDots(); goTo(0, true).then(() => { if (!paused) loop(); }); }
     fig.querySelectorAll(".xf-tab").forEach(b => b.addEventListener("click", () => pick((b as HTMLElement).dataset.scenario!)));
-    fig.querySelector('[data-act="prev"]')!.addEventListener("click", () => { setPlaying(false); goTo(idx - 1, true); });
-    fig.querySelector('[data-act="next"]')!.addEventListener("click", () => { setPlaying(false); goTo(idx + 1, true); });
-    fig.querySelector('[data-act="restart"]')!.addEventListener("click", () => { setPlaying(false); fig.dataset.started = ""; goTo(0, true); });
-    playBtn.addEventListener("click", play);
-    // Start at the first step; play once when the figure scrolls into view. Reduced motion jumps to the last step.
-    if (reduce) { goTo(sc.steps.length - 1, false); setPlaying(false); }
+    pauseBtn.addEventListener("click", () => setPaused(!paused));
+    buildDots();
+    if (reduce) { goTo(sc.steps.length - 1, false); pauseBtn.hidden = true; }
     else {
       goTo(0, false);
-      const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { io.disconnect(); play(); } }, { threshold: 0.6 });
-      io.observe(fig);
+      new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v === visible) return; visible = v; if (v && !paused) { goTo(0, true).then(loop); } else run++; }, { threshold: 0.4 }).observe(fig);
     }
   }
   document.querySelectorAll<HTMLElement>("[data-xf]").forEach(init);

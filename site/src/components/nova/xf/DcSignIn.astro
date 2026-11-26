@@ -1,17 +1,17 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
-const scenarios = [
+const scenarios: any[] = [
   { id: "signin", label: "Moyo signs in", steps: [
     { say: "Moyo opens her laptop on the CLIENT network and types her password.", why: "Nothing has left the laptop yet.", do: [{t:"show",ids:["moyo","laptop","l-laptop"]},{t:"show",ids:["b1"]}] },
-    { say: "The laptop asks DNS: where is a domain controller?", why: "DNS answers with the controllers it knows about, DC01 and DC02.", do: [{t:"hide",ids:["b1"]},{t:"show",ids:["dc1","dc2","l-dc1","l-dc2","fw"]},{t:"glide",path:"p-dns",dot:"d1",ms:1100,keep:false},{t:"show",ids:["b2"]}] },
-    { say: "The laptop proves who Moyo is to DC01 and receives a Kerberos ticket.", why: "A ticket is a signed pass. Her password is not sent again after this.", do: [{t:"hide",ids:["b2"]},{t:"glide",path:"p-dc1",dot:"d1",ms:1100,keep:false},{t:"state",id:"dc1",value:"pulse"},{t:"glide",path:"p-dc1",dot:"d2",ms:1100,rev:true,keep:true},{t:"show",ids:["tk1"]}] },
-    { say: "She opens a file share. The laptop shows its ticket and asks for one more, for the file server.", why: "A klist on the laptop lists a ticket for cifs/NOVA-FILES01. That is the recorded proof.", do: [{t:"hide",ids:["d2"]},{t:"glide",path:"p-dc1",dot:"d1",ms:900,keep:false},{t:"show",ids:["tk2"]},{t:"show",ids:["files","l-files"]}] },
-    { say: "The two controllers keep copies of the directory in step.", why: "If one is lost, the other already knows every account.", do: [{t:"glide",path:"p-rep",dot:"d1",ms:1200,keep:false},{t:"glide",path:"p-rep",dot:"d2",ms:1200,rev:true,keep:false},{t:"show",ids:["rep","l-rep"]}] },
+    { say: "The laptop asks DNS: where is a domain controller?", term:["DNS","the lab's phone book. It turns names into addresses."], why: "DNS answers with the controllers it knows about, DC01 and DC02.", do: [{t:"hide",ids:["b1"]},{t:"show",ids:["dc1","dc2","l-dc1","l-dc2","fw"]},{t:"glide",path:"p-dns",dot:"d1",ms:1100,keep:false},{t:"show",ids:["b2"]}] },
+    { say: "The laptop proves who Moyo is to DC01 and receives a Kerberos ticket.", term:["Domain controller","a server that knows every account and checks passwords for the whole company."], why: "A ticket is a signed pass. Her password is not sent again after this.", do: [{t:"hide",ids:["b2"]},{t:"glide",path:"p-dc1",dot:"d1",ms:1100,keep:false},{t:"state",id:"dc1",value:"pulse"},{t:"glide",path:"p-dc1",dot:"d2",ms:1100,rev:true,keep:true},{t:"show",ids:["tk1"]}] },
+    { say: "She opens a file share. The laptop shows its ticket and asks for one more, for the file server.", term:["Kerberos ticket","a short-lived signed pass. Servers trust it, so the password is not sent again."], why: "A klist on the laptop lists a ticket for cifs/NOVA-FILES01. That is the recorded proof.", do: [{t:"hide",ids:["d2"]},{t:"glide",path:"p-dc1",dot:"d1",ms:900,keep:false},{t:"show",ids:["tk2"]},{t:"show",ids:["files","l-files"]}] },
+    { say: "The two controllers keep copies of the directory in step.", term:["Replication","two servers copying changes to each other so both always know the same things."], why: "If one is lost, the other already knows every account.", do: [{t:"glide",path:"p-rep",dot:"d1",ms:1200,keep:false},{t:"glide",path:"p-rep",dot:"d2",ms:1200,rev:true,keep:false},{t:"show",ids:["rep","l-rep"]}] },
   ]},
   { id: "outage", label: "DC01 goes offline", steps: [
     { say: "Everything is working. DC01 is the controller Moyo's laptop has been using.", do: [{t:"show",ids:["moyo","laptop","l-laptop","dc1","dc2","l-dc1","l-dc2","fw","rep","l-rep","files","l-files"]}] },
-    { say: "DC01 is turned off for the test (CR-013).", why: "The test is deliberate. It proves the lab survives losing a controller.", do: [{t:"state",id:"dc1",value:"off"},{t:"show",ids:["b3"]}] },
+    { say: "DC01 is turned off for the test (CR-013).", term:["Failover","when one server stops, another takes over its job."], why: "The test is deliberate. It proves the lab survives losing a controller.", do: [{t:"state",id:"dc1",value:"off"},{t:"show",ids:["b3"]}] },
     { say: "The laptop is told to find a controller again.", why: "It forgets DC01 and asks DNS once more.", do: [{t:"hide",ids:["b3"]},{t:"glide",path:"p-dns",dot:"d1",ms:1100,keep:false},{t:"show",ids:["b4"]}] },
     { say: "It chooses DC02 and signs in there.", why: "The recorded check shows the laptop talking to nova-dc02.", do: [{t:"hide",ids:["b4"]},{t:"glide",path:"p-dc2",dot:"d1",ms:1100,keep:false},{t:"state",id:"dc2",value:"good"},{t:"show",ids:["tk1","b5"]}] },
     { say: "DC01 comes back and the two are checked against each other.", why: "Replication was checked afterwards, so nothing was lost while it was away.", do: [{t:"hide",ids:["b5"]},{t:"state",id:"dc1",value:""},{t:"glide",path:"p-rep",dot:"d2",ms:1200,keep:false},{t:"state",id:"dc1",value:"good"}] },
@@ -19,7 +19,7 @@ const scenarios = [
 ];
 ---
 <Explainer id="xf-dc" title="How a sign-in works, and what happens when DC01 disappears"
-  intro="Press play, or step through at your own pace. Based on the recorded checks, not a simulation."
+  intro="Plays on its own. Pick a story, or click a dot to stop on a step. Based on recorded checks."
   scenarios={scenarios} alt="Animated diagram: a laptop signs in through the firewall to domain controller DC01, gets a Kerberos ticket, and switches to DC02 when DC01 is offline."
   note="This replays what the change records show. The lab has two controllers on a single physical host, so a host failure would take both."
   evidence={[{label:"Change CR-013", href:"/changes/CR-013/"}]}>

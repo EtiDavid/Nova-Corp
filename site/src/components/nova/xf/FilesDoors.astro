@@ -1,13 +1,13 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
-const door = (n: number, on: string[]) => [{t:"show",ids:on},{t:"glide",path:"p"+n,dot:"d1",ms:900,keep:true}];
-const scenarios = [
+const door = (n: number, on: string[]): any[] => [{t:"show",ids:on},{t:"glide",path:"p"+n,dot:"d1",ms:900,keep:true}];
+const scenarios: any[] = [
   { id: "allowed", label: "Allowed in", steps: [
     { say: "A person in the right group wants to open a department folder.", why: "They type the name they always use. They do not need to know which server holds it.", do: [{t:"show",ids:["me","l-me","fldr","l-fldr"]}] },
-    { say: "Door 1: the name is looked up.", why: "DFS turns the friendly name into the real location on the file server.", do: door(1,["k1","l-k1"]).concat([{t:"state",id:"k1",value:"good"}]) },
-    { say: "Door 2: the share checks the list of who may connect.", why: "Their group is on the list, so the door opens.", do: door(2,["k2","l-k2"]).concat([{t:"state",id:"k2",value:"good"}]) },
-    { say: "Door 3: the folder itself checks its own permissions.", why: "Both lists must agree. Here they do.", do: door(3,["k3","l-k3"]).concat([{t:"state",id:"k3",value:"good"}]) },
+    { say: "Door 1: the name is looked up.", term:["DFS","a directory of friendly folder names that points to where each folder really lives."], why: "DFS turns the friendly name into the real location on the file server.", do: door(1,["k1","l-k1"]).concat([{t:"state",id:"k1",value:"good"}]) },
+    { say: "Door 2: the share checks the list of who may connect.", term:["Share permission","the list on the shared folder's front door: who may connect at all."], why: "Their group is on the list, so the door opens.", do: door(2,["k2","l-k2"]).concat([{t:"state",id:"k2",value:"good"}]) },
+    { say: "Door 3: the folder itself checks its own permissions.", term:["NTFS permission","the list on the folder itself: who may read or change what is inside."], why: "Both lists must agree. Here they do.", do: door(3,["k3","l-k3"]).concat([{t:"state",id:"k3",value:"good"}]) },
     { say: "The folder opens.", why: "Recorded as a working access test.", do: [{t:"glide",path:"p4",dot:"d1",ms:900,keep:true},{t:"show",ids:["ok"]},{t:"state",id:"fldr",value:"good"}] },
   ]},
   { id: "denied", label: "Not in the group", steps: [

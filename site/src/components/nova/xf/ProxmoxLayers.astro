@@ -1,16 +1,16 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
-const scenarios = [
+const scenarios: any[] = [
   { id: "stack", label: "What runs on what", steps: [
     { say: "The whole lab runs on one ordinary Windows 11 computer.", why: "This is the single physical host. If it fails, everything in the lab stops.", do: [{t:"show",ids:["host"]}] },
     { say: "VMware Workstation runs on that computer.", do: [{t:"show",ids:["vmw"]}] },
-    { say: "Proxmox VE runs inside VMware and acts as the lab's hypervisor.", why: "This is nested virtualization: a hypervisor inside a hypervisor.", do: [{t:"show",ids:["pve"]}] },
+    { say: "Proxmox VE runs inside VMware and acts as the lab's hypervisor.", term:["Nested virtualization","a hypervisor running inside another hypervisor. Fine for a lab, but slower than real hardware."], why: "This is nested virtualization: a hypervisor inside a hypervisor.", do: [{t:"show",ids:["pve"]}] },
     { say: "Proxmox hosts the lab's machines: two domain controllers, the file server, the firewall and a client.", do: [{t:"show",ids:["v1","v2","v3","v4","v5"]}] },
   ]},
   { id: "space", label: "Freeing disk space", steps: [
     { say: "Proxmox keeps VM disks in a thin pool. It was getting full.", why: "A thin pool only uses space that is written, so it can fill up quietly.", do: [{t:"show",ids:["tank","l-tank","pct"]},{t:"scale",id:"fillbar",y:0.8673},{t:"text",id:"pct",value:"86.73% full"}] },
-    { say: "There were 20 old snapshots.", why: "A snapshot is a saved point to roll back to. Old ones keep disk blocks in use.", do: [{t:"show",ids:["snaps","l-snaps"]}] },
+    { say: "There were 20 old snapshots.", term:["Snapshot","a saved moment of a machine you can return to. It costs disk space the longer it is kept."], why: "A snapshot is a saved point to roll back to. Old ones keep disk blocks in use.", do: [{t:"show",ids:["snaps","l-snaps"]}] },
     { say: "The old snapshots were removed.", do: [{t:"hide",ids:["snaps","l-snaps"]},{t:"scale",id:"fillbar",y:0.5288},{t:"count",id:"pct",from:86.73,to:52.88,dec:2,suffix:"% full",ms:1500}] },
     { say: "About 125.72 GiB was freed.", why: "One snapshot was kept on purpose: the pfSense snapshot taken before CR-016.", do: [{t:"show",ids:["freed","keep"]}] },
   ]},

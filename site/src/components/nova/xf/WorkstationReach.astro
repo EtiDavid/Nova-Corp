@@ -1,8 +1,8 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
-const go = (n: string, id: string, ok: boolean) => [{t:"glide",path:"p"+n,dot:"d1",ms:900,keep:false},{t:"show",ids:[ok?"ok"+n:"x"+n,"t"+n,"l"+n]}];
-const scenarios = [{ id: "reach", label: "What a workstation can reach", steps: [
+const go = (n: string, id: string, ok: boolean): any[] => [{t:"glide",path:"p"+n,dot:"d1",ms:900,keep:false},{t:"show",ids:[ok?"ok"+n:"x"+n,"t"+n,"l"+n]}];
+const scenarios: any[] = [{ id: "reach", label: "What a workstation can reach", steps: [
   { say: "A normal workstation sits on the CLIENT network.", why: "Let's see where it is allowed to go.", do: [{t:"show",ids:["pc","l-pc"]}] },
   { say: "It can ask DNS and sign in to the domain.", why: "Without this, nobody could log in.", do: go("1","dc",true) },
   { say: "It can open file shares.", why: "Only the folders its user is permitted to see (see the FILES01 page).", do: go("2","fs",true) },

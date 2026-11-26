@@ -6,7 +6,6 @@ import Files01Pilot from "../../components/Files01Pilot.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SystemTop from "../../components/nova/SystemTop.astro";
 import EvidencePanel from "../../components/EvidencePanel.astro";
-import OriginalPublicDiagrams from "../../components/OriginalPublicDiagrams.astro";
 import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
 import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
 import { getArea } from "../../data/areas";
@@ -38,7 +37,6 @@ const statusText = system.status === "observed-running" ? `Running at last check
       </section>
       <section class="content-section system-evidence-section" aria-label="Relevant engineering screenshot">
         <h2>Visual evidence</h2>
-        <OriginalPublicDiagrams systemId={system.id} />
         {system.id==="nova-dc01"&&<OriginalPdfEvidenceGallery subject="incidents/dc01-outage" heading="Original DC01 outage and return-to-service evidence" />}
         {system.id==="nova-dc02"&&<OriginalPdfEvidenceGallery subject="incidents/replication-divergence" heading="Original replication failure/recovery screenshots" />}
         {system.id==="nova-files01"&&<OriginalPdfEvidenceGallery subject="incidents/backup-target-unavailable" heading="Original file backup and recovery proof" />}
