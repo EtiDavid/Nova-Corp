@@ -213,3 +213,6 @@ html:not(.js) .sysdata { display:block; border-top:1px solid var(--rule); paddin
 .nv .incident-sidebar-journal { background:none!important; border:0!important; padding:0!important; box-shadow:none!important; }
 .nv .incident-sidebar-journal p { margin:6px 0; }
 .nv .incident-master-link { display:inline!important; background:none!important; border:0!important; padding:0!important; color:var(--ink)!important; font-weight:600; text-decoration:underline; }
+
+/* syntax-highlight comment color: readable on the dark code background */
+.nv pre code span[style*="6A737D" i], .legacy pre code span[style*="6A737D" i] { color:#A9B4C0!important; }

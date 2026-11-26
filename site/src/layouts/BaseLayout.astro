@@ -11,6 +11,7 @@ import "../styles/nova2.css";
 import "../styles/bridge.css";
 import NovaHeader from "../components/nova/NovaHeader.astro";
 import NovaFooter from "../components/nova/NovaFooter.astro";
+import A11yFixes from "../components/nova/A11yFixes.astro";
 import TechnicalTermAutolinks from "../components/TechnicalTermAutolinks.astro";
 import ContextualDocsEmbed from "../components/ContextualDocsEmbed.astro";
 type Crumb = { label: string; href?: string };
@@ -48,6 +49,7 @@ const fullTitle = title + " · Nova Corp";
       <ContextualDocsEmbed />
     </main>
     <div class="nv"><NovaFooter /></div>
+    <A11yFixes />
     <TechnicalTermAutolinks />
   </body>
 </html>
