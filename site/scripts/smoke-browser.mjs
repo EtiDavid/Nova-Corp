@@ -33,7 +33,9 @@ try {
   assert.match(await desktop.locator("h1").innerText(),/I built the infrastructure/i);
   const body=await desktop.locator("body").innerText();
   assert.match(body,/Nova Corp is a fictional company/i);
-  assert(!body.includes("David Eti · Infrastructure"),"requested personal role block removed");
+  assert(body.includes("David Eti"),"candidate identity is immediately available");
+  assert.equal(await desktop.locator(".recruiter-feature .system-card").count(),3);
+  assert(await desktop.locator(".candidate-links a[href$=\"David_Eti_Systems_Infrastructure_CV.pdf\"]").isVisible());
   assert(!body.includes("22 NOV 2026"),"visual date removed from home diagram");
   assert.equal(await desktop.locator(".exp-hero .button-row a").count(),2);
   assert(await desktop.getByRole("link",{name:/Take the guided tour/}).first().isVisible());
@@ -50,6 +52,14 @@ try {
   await desktop.locator("#il-more-unplanned summary").click();
   assert.equal(await desktop.locator(".il-group .il-item:visible").count(),16);
   assert.equal(await desktop.locator("main > section").count(),2,"hero and incident library only");
+ });
+ await step("Recruiter route and technical tour retain links and step navigation",async()=>{
+  await desktop.goto(host+"/tour/#recruiter",{waitUntil:"domcontentloaded"});
+  assert.equal(await desktop.locator("#recruiter .walk-step").count(),3);
+  assert.equal(await desktop.locator("#technical .walk-step").count(),8);
+  await desktop.locator("#recruiter-1 a[href=\"#recruiter-2\"]").click();
+  assert(desktop.url().endsWith("#recruiter-2"));
+  assert(await desktop.locator("#recruiter-2 a[href=\"#recruiter-1\"]").isVisible());
  });
  await step("Sandbox: color logos, real IPs, subtle scroll and genuine profile navigation",async()=>{
   await desktop.goto(host+"/",{waitUntil:"networkidle"});
@@ -145,7 +155,7 @@ try {
  await step("Published engineering docs: original pfSense depth and cross-linked journals",async()=>{
   const response=await desktop.goto(host+"/systems/nova-fw01/",{waitUntil:"networkidle"});
   assert.equal(response?.status(),200);
-  const source=desktop.locator(".inline-source-doc");
+  const source=desktop.locator(".infra-profile");
   assert(await source.isVisible());
   const copy=await source.innerText();
   for(const phrase of ["eight interfaces","five VLANs","17 filter rules","five aliases","six DHCP scopes","one active WireGuard tunnel","automatic outbound NAT"]){
@@ -427,7 +437,7 @@ try {
    await mobile.goto(host+"/systems/nova-fw01/",{waitUntil:"domcontentloaded"});
    let sizes=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert(sizes.scroll<=sizes.inner+3,"FW01 profile overflow: "+JSON.stringify(sizes));
-   await mobile.locator(".engineering-source-label").scrollIntoViewIfNeeded();
+   await mobile.locator(".infra-profile summary").first().scrollIntoViewIfNeeded();
    sizes=await mobile.evaluate(()=>({inner:innerWidth,scroll:document.documentElement.scrollWidth}));
    assert(sizes.scroll<=sizes.inner+3,"FW01 full source overflow: "+JSON.stringify(sizes));
    await mobile.goto(host+"/reference/explore/systems/NOVA-FW01/",{waitUntil:"domcontentloaded"});

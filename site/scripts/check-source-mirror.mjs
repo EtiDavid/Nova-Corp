@@ -25,8 +25,9 @@ for(const doc of m.documents){
 const expectedPages={
  "systems/nova-fw01/index.html":[
   "eight interfaces","five VLANs","17 filter rules","one active WireGuard",
-  "six DHCP scopes","Original engineering records"
+  "six DHCP scopes","Original engineering records","Technical Profile","Technical checks","/reference/explore/systems/NOVA-FW01/"
  ],
+ "systems/nova-prox01/index.html":["Technical Profile","Technical checks","86.73%","52.88%","/reference/explore/systems/NOVA-PROX01/"],
  "systems/nova-dc01/index.html":["Related tests and incidents","Domain Controller","directory","Technical Profile"],
  "systems/nova-files01/index.html":["Technical profile","Backup","shared"],
  "policies/domain-password/index.html":["Complete original Group Policy explanation","Password"],

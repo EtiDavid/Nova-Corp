@@ -35,7 +35,7 @@ auditSection("20 real lab directory account records",names.people.map(x=>"people
 auditSection("11 source-backed group profiles",names.groups.map(x=>"groups/"+x),["Group attributes","/reference/explore/GROUPS/"],"Original documented AGDLP inventory and actual group relationships");
 auditSection("16 original OU source-backed profiles",names.ous.map(x=>"directory/ous/"+x),["What is stored in this OU?","/reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"],"Original 2026-11-22 directory snapshot, not live AD");
 auditSection("4 computer-object profiles",names.computers.map(x=>"computers/"+x),["Directory computer profile","/reference/explore/DIRECTORY_SNAPSHOT_2026-11-22/"],"Original AD inventory distinct from VM status");
-auditSection("5 full server profiles",names.systems.filter(x=>!["nova-files01","nova-dc01","nova-dc02","nova-client"].includes(x)).map(x=>"systems/"+x),["engineer-source-section","source-document"],"Full original per-system engineering Markdown and honest image panels");
+auditSection("Network and hypervisor profiles",["systems/nova-fw01","systems/nova-prox01"],["Technical Profile","Why does Nova Corp need it","Inside this server","Technical checks","Engineering journals","/reference/explore/systems/"],"Source records remain fully preserved in standalone article routes.");
 auditSection("NOVA-CLIENT workstation profile",["systems/nova-client"],["Technical Profile","What is NOVA-CLIENT?","Technical checks","Engineering journals","/reference/explore/systems/NOVA-CLIENT/"]);
 auditSection("Shared domain controller profiles",["systems/nova-dc01","systems/nova-dc02"],["Technical Profile","Inside this server","Engineering journals","dc02-sysvol-available.jpg","Technical checks","Why does Nova Corp need it","netdom query fsmo"]);
 auditSection("1 explanation-first file server profile",["systems/nova-files01"],["Technical Profile","What is NOVA-FILES01?","files01-document-images","Engineering journals","NovaCorp_CR-008_File_Server_Deployment_Journal.pdf","NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf","NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf","CR-012_Windows_Server_Backup_and_Recovery_Journal.pdf","Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"],"Owner-approved concise profile with original evidence and direct full journal access; redundant inline source removed. Standalone source remains verified separately.");
@@ -44,6 +44,8 @@ auditSection("16 full incident analyses",
  ["incident-source-document","incident-master-journal"],"Short case overview is NOT the full original journal");
 const contentPages=all.length;
 if(contentPages<320)errors.push("Expected >=320 generated HTML pages; got "+contentPages);
+auditSection("Recruiter and technical entry points",[""],["Three things I proved","David Eti","tour/#recruiter","Download CV"]);
+auditSection("Two guided tour routes",["tour"],["Two-minute recruiter overview","Technical walkthrough","Previous","Next","Download CV"]);
 const ad=pageAt("learn/active-directory");
 for(const str of ["Organizational units (OUs)","repadmin /replsummary","Resolve-DnsName","16 documented OUs","Engineering journals","/reference/explore/services/ACTIVE_DIRECTORY/"]){
  if(!ad?.includes(str))errors.push("Active Directory glossary missing original source fact: "+str);

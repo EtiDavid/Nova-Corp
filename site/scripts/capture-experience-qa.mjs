@@ -69,7 +69,7 @@ try {
   await desktop.goto(host+"/systems/nova-fw01/",{waitUntil:"domcontentloaded"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
   await desktop.screenshot({path:out+"/fw01-profile-top-desktop.png"});
-  await desktop.locator(".engineer-source-section").scrollIntoViewIfNeeded();
+  await desktop.locator(".infra-profile .content-section").last().scrollIntoViewIfNeeded();
   await desktop.screenshot({path:out+"/fw01-complete-source-desktop.png"});
   await desktop.goto(host+"/reference/explore/systems/NOVA-FW01/",{waitUntil:"domcontentloaded"});
   await desktop.addStyleTag({content:".v4-header{position:relative!important}"});
@@ -80,7 +80,7 @@ try {
   await mobile.goto(host+"/systems/nova-fw01/",{waitUntil:"domcontentloaded"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
   await mobile.screenshot({path:out+"/fw01-profile-top-mobile.png"});
-  await mobile.locator(".engineering-source-label").scrollIntoViewIfNeeded();
+  await mobile.locator(".infra-profile .content-section").last().scrollIntoViewIfNeeded();
   await mobile.screenshot({path:out+"/fw01-complete-source-mobile.png"});
   await mobile.goto(host+"/reference/",{waitUntil:"domcontentloaded"});
   await mobile.addStyleTag({content:".v4-header{position:relative!important}"});
