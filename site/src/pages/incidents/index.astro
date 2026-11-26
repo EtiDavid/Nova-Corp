@@ -40,8 +40,8 @@ const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-cli
     <div class="outcomes" id="case-grid">
       {cases.map(({ e, g }: {e: CollectionEntry<"incidents">; g: string}) => <article class="outcome" data-g={g} data-kind={kindFor(e.id)}>
         <span class={"chip " + (g === "deferred" ? "deferred" : "tested")}>{kindFor(e.id)==="controlled"?"Controlled test":kindFor(e.id)==="unplanned"?"Unexpected issue":labels[g]}</span>
-        <h3>{e.data.title}</h3>
-        <p>{e.data.summary}</p>
+        <h3>{e.data.shortTitle ?? e.data.title}</h3>
+        <p>{e.data.saw ?? e.data.summary}</p>
         <p class="result">{e.data.outcome}</p>
         <a href={base + "incidents/" + e.id + "/"}>{g === "deferred" ? "Read what was not tested" : "Read the investigation"}</a>
       </article>)}

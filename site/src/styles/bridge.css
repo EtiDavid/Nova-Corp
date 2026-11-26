@@ -1,0 +1,27 @@
+/* Bridge: archive pages (system, people, network, files, policies, learn, journals) keep their own content styles
+   but take the Nova tokens, fonts and header. Light only until each component is restyled. */
+body.legacy { background:var(--paper); color:var(--ink); font-family:var(--font-sans); font-size:1.0625rem; line-height:1.65; }
+.legacy { --bg:var(--paper); --surface:#FFFFFF; --surface-alt:var(--soft); --text:var(--ink); --muted:var(--muted); --border:var(--rule); --blue:var(--accent); --blue-dark:#0A5A8C; --font-ui:var(--font-sans); }
+.legacy a { color:var(--ink); text-decoration-color:color-mix(in srgb,var(--ink) 40%,transparent); text-underline-offset:3px; }
+.legacy a:hover { color:var(--ink); text-decoration-color:currentColor; }
+.legacy .btn { background:var(--accent); border-color:var(--accent); color:#fff; border-radius:10px; }
+.legacy .btn:hover { background:#0A5A8C; border-color:#0A5A8C; color:#fff; }
+.legacy .btn.ghost { background:#fff; color:var(--ink); border-color:#B9C7DC; }
+.legacy h1, .legacy h2, .legacy h3 { letter-spacing:-.01em; }
+.legacy .eyebrow { color:var(--muted); font:600 .8rem var(--font-mono); text-transform:uppercase; letter-spacing:.08em; }
+.legacy .eyebrow::before { display:none; }
+.legacy .skip-link { background:var(--ink); color:var(--paper); }
+/* glossary links: dotted underline, same color, never in headings (rule 6 of the voice guide) */
+.legacy .technical-link { color:inherit!important; font-weight:inherit; border-bottom:0; text-decoration:underline dotted!important; text-decoration-thickness:1.5px!important; text-underline-offset:4px!important; }
+.legacy .technical-link:hover, .legacy .technical-link:focus-visible { color:inherit!important; text-decoration-style:solid!important; }
+/* code blocks stay dark on every page, with light text */
+.legacy pre, .legacy pre.astro-code, .legacy .reference-content pre { background:#0F1720!important; color:#E8EEF5; border-color:#0F1720; }
+.legacy pre code, .legacy .reference-content pre code { color:#E8EEF5; }
+.legacy pre code span:not([style]) { color:#E8EEF5; }
+/* the shared header lines up with the archive pages' 1280 px container */
+.legacy .nv-head .wrap { width:min(100% - 48px,1280px); }
+.legacy .nv-foot .wrap { width:min(100% - 48px,1280px); }
+@media (max-width:760px) { .legacy .nv-head .wrap, .legacy .nv-foot .wrap { width:min(100% - 30px,1280px); } }
+
+/* links must be at least 24 px tall (WCAG 2.2 target size) */
+.legacy .card-list a, .legacy .sidebox a, .legacy .source-line a { display:inline-block; min-height:24px; line-height:24px; }

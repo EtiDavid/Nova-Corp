@@ -37,8 +37,10 @@ export const serviceSchema = z.object({
 
 export const changeSchema = z.object({
   id: cr, title: z.string(), goal: z.string(), status: z.enum(["done", "next", "planned"]),
-  journal: z.string().url().optional(), pdf: z.string().url().optional(), time: z.string().optional()
-}).strict().refine(c => c.status !== "done" || !!c.journal, { message: "a done change needs a journal link" });
+  journal: z.string().url().optional(), pdf: z.string().url().optional(), time: z.string().optional(),
+  built: z.array(z.string()).optional(), validated: z.string().optional()
+}).strict().refine(c => c.status !== "done" || !!c.journal, { message: "a done change needs a journal link" })
+  .refine(c => c.status !== "done" || (c.built && c.built.length > 0), { message: "a done change needs a \"built\" list" });
 
 export const glossarySchema = z.object({
   id: id, term: z.string(), aliases: z.array(z.string()).default([]), short: z.string().min(10), inNova: z.string().min(10),
@@ -65,6 +67,6 @@ export const incidentExtra = {
   segment: z.object({ from: id, to: id, line: z.enum(lineIds) }).nullable().optional(),
   pin: z.object({ col: z.number(), row: z.number() }).nullable().optional(),
   featured: z.number().int().positive().optional(), shortTitle: z.string().optional(),
-  saw: z.string().optional(), cause: z.string().optional(), fix: z.string().optional(), proof: z.string().optional(),
+  limits: z.string().optional(), saw: z.string().optional(), cause: z.string().optional(), fix: z.string().optional(), proof: z.string().optional(),
   copyStatus: copy.optional()
 };

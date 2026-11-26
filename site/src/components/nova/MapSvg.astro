@@ -10,7 +10,7 @@ const base = import.meta.env.BASE_URL;
 const shownMarkers = showMarkers === "none" ? [] : markers.filter((m: any) => showMarkers === "all" || m.home);
 const dim = (st: string) => emphasise && !emphasise.includes(st);
 ---
-<svg class={"nl" + (interactive ? "" : " static") + (mini ? " mini" : "")} id={id} viewBox={viewBox} role={interactive ? "group" : "img"} aria-label={label}>
+<svg class={"nl" + (interactive ? "" : " static") + (mini ? " mini" : "")} id={id} viewBox={viewBox} role={interactive || shownMarkers.length > 0 ? "group" : "img"} aria-label={label}>
   {zones.map((z: any) => <g class="zone-g"><rect class="zone" x={z.x} y={z.y} width={z.w} height={z.h} rx="14" /><text class="zone-label" x={z.end ? z.x + z.w - 14 : z.x + 14} y={z.y + 22} text-anchor={z.end ? "end" : "start"}>{z.name}</text></g>)}
   {segments.filter((sg: any) => !linesOn || linesOn.includes(sg.line)).map((sg: any) => (
     <path class={"seg line-" + sg.line + (broken === sg.id ? " broken" : "") + (emphasise && !(emphasise.includes(sg.from) && emphasise.includes(sg.to)) && sg.line !== "platform" ? " dim" : "")}

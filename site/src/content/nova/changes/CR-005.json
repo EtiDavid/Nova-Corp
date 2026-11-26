@@ -3,5 +3,9 @@
   "title": "AD organisational structure and identity management",
   "goal": "Departments, OUs and AGDLP access groups.",
   "status": "done",
-  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-005.md"
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-005.md",
+  "built": [
+    "An organizational unit structure by department instead of the default containers",
+    "The groundwork for group-based access (AGDLP)"
+  ]
 }

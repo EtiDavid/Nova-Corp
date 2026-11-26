@@ -13,21 +13,11 @@ services: ["nested-virtualization"]
 lines: ["platform"]
 segment: null
 pin: null
-copyStatus: "migrated"
+shortTitle: "Proxmox stayed reachable locally but lost internet access."
+saw: "Proxmox answered on the local network but could not reach the internet."
+cause: "The default gateway on vmbr0 was set to 192.168.178.254 instead of 192.168.178.1."
+fix: "I set the gateway back to 192.168.178.1 and reapplied the network configuration."
+proof: "Connectivity and package updates worked again."
+limits: "I misconfigured the gateway on purpose to practice recovery. It was not an unplanned outage."
+copyStatus: "rewritten"
 ---
-
-## The controlled failure
-
-During FT-001, the Proxmox default gateway was deliberately changed from `192.168.178.1` to `192.168.178.254`.
-
-## What the tests showed
-
-Local gateway and same-subnet tests did not behave like external routing. Proxmox's management web interface could remain accessible locally while external ping and package updates failed.
-
-## Restoration
-
-The correct `192.168.178.1` default gateway was restored and route/connectivity checks repeated.
-
-## What this teaches
-
-A local web interface working does not prove that a host has a valid upstream default route. Full commands and expected/actual observations appear in FT-001's published journal.

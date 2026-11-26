@@ -14,7 +14,7 @@ const unique=aliases.filter(x=>{const k=x.text.toLowerCase();if(seen.has(k))retu
 (function(){
  var item=document.getElementById("novacorp-link-targets");if(!item)return;
  var aliases=JSON.parse(item.textContent);
- var lookup=Object.create(null);
+ var lookup=Object.create(null);var done=Object.create(null);
  aliases.forEach(function(v){lookup[v.text.toLowerCase()]=v.href;});
  function escape(s){return s.replace(/[.*+?^$\u007b\u007d()|[\]\\]/g,"\\$&");}
  // The regex operates on individual text nodes, never on raw HTML strings.
@@ -22,7 +22,7 @@ const unique=aliases.filter(x=>{const k=x.text.toLowerCase();if(seen.has(k))retu
  function eligible(node){
    if(!node.nodeValue||!node.nodeValue.trim())return false;
    var el=node.parentElement;
-   if(!el||el.closest("a,button,summary,pre,code,script,style,textarea,option,select,svg,[data-no-tech-links]"))return false;
+   if(!el||el.closest("a,button,summary,pre,code,script,style,textarea,option,select,svg,h1,h2,h3,h4,h5,h6,[data-no-tech-links]"))return false;
    if(!el.closest("main"))return false;
    return true;
  }
@@ -34,7 +34,7 @@ const unique=aliases.filter(x=>{const k=x.text.toLowerCase();if(seen.has(k))retu
      var raw=t.nodeValue;if(!raw)return;
      rx.lastIndex=0;var match,at=0,fragment=document.createDocumentFragment(),found=false;
      while((match=rx.exec(raw))){
-       var url=lookup[match[0].toLowerCase()];if(!url)continue;
+       var key=match[0].toLowerCase();var url=lookup[key];if(!url||done[key])continue;done[key]=true;
        if(match.index>at)fragment.append(document.createTextNode(raw.slice(at,match.index)));
        var a=document.createElement("a");a.href=url;a.className="technical-link";
        a.textContent=match[0];a.setAttribute("title","Open the explanation or documented system profile for "+match[0]);

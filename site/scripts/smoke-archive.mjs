@@ -28,12 +28,12 @@ try {
  desktop.on("pageerror",e=>errors.push(e.message));
 
  await step("Technical terms: auto-link servers and jargon to explainer pages",async()=>{
-  await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"networkidle"});
+  await desktop.goto(host+"/reference/explore/incidents/domain-controller-outage/",{waitUntil:"networkidle"});
   assert((await desktop.locator('a.technical-link[href$="/systems/nova-dc01/"]').count())>=1);
   assert((await desktop.locator('a.technical-link[href$="/learn/ldap/"]').count())>=1);
   assert((await desktop.locator('a.technical-link[href$="/learn/kerberos/"]').count())>=1);
   assert((await desktop.locator('a.technical-link[href$="/learn/sysvol/"]').count())>=1);
-  assert(await desktop.locator(".incident-sidebar-journal .incident-master-link").isVisible(),"actual full journal is linked");
+  assert((await desktop.locator("main h1 .technical-link, main h2 .technical-link, main h3 .technical-link").count())===0,"glossary links never appear in headings");
   await desktop.goto(host+"/learn/sysvol/",{waitUntil:"networkidle"});
   assert.match(await desktop.locator(".page-head h1").innerText(),/SYSVOL/i);
   assert.match(await desktop.locator("main").innerText(),/NOVA-DC02/);
@@ -86,7 +86,7 @@ try {
   for(const phrase of ["eight interfaces","five VLANs","17 filter rules","five aliases","six DHCP scopes","one active WireGuard tunnel","automatic outbound NAT"]){
     assert(copy.toLowerCase().includes(phrase.toLowerCase()),"missing actual pfSense source fact: "+phrase);
   }
-  assert((await desktop.locator(".evidence-placeholder").count())>0,"visual evidence placeholder still present");
+  assert((await desktop.locator(".evidence-placeholder").count())===0,"unresolved placeholder boxes must not be public");
   const docLink=desktop.locator('a[href$="/reference/explore/network/RULES/"]').first();
   assert(await docLink.isVisible(),"public source crosslinks stay inside website");
   await docLink.click();

@@ -1,5 +1,5 @@
 ---
-title: "One failed file share concealed two independent faults."
+title: "One failed file share hid two separate faults."
 summary: "A controlled incident combined a wrong AD-integrated DNS record with removed IT group membership; repairing DNS exposed a separate access-denied cause."
 date: "Engineering journal"
 outcome: "DNS and authorization repaired in sequence; access retested"
@@ -12,21 +12,11 @@ services: ["dns", "smb-ntfs"]
 lines: ["identity", "files"]
 segment: null
 pin: null
-copyStatus: "migrated"
+shortTitle: "One failed file share hid two separate faults."
+saw: "The IT share looked as if it did not exist."
+cause: "Two unrelated faults: the file server's DNS record on both domain controllers pointed at 192.0.2.44, and Moyo had been removed from IT_Users while her old logon token still listed the group."
+fix: "I corrected the DNS record to 10.10.20.20 and replicated it, added Moyo back to IT_Users, refreshed her session and tested again."
+proof: "The IT share opened again and a CIFS ticket was issued."
+limits: "Fixing the first fault only exposed the second. This shows the method on a deliberate lab exercise, not a production outage."
+copyStatus: "rewritten"
 ---
-
-## The combined fault
-
-The file server's AD-integrated DNS record had been set to `192.0.2.44` on both Domain Controllers, while the actual file server still answered at `10.10.20.20`. Separately, an IT user had been removed from live IT-group membership.
-
-## Diagnose one layer at a time
-
-The hostname lookup returned the wrong address; direct SMB on `10.10.20.20:445` succeeded. Correcting the DNS record restored name and TCP reachability but did not restore file access: the request now returned **Access is denied**.
-
-## Why the second fault was subtle
-
-The user's cached local token could still list an old group while live Active Directory membership had changed. Repair required validating the authorization state independently of DNS and network health.
-
-## Boundary
-
-A working port test does not prove folder authorization. The original journal includes the sequential commands, evidence and final retests.

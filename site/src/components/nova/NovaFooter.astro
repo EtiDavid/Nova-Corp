@@ -1,0 +1,11 @@
+---
+const base = import.meta.env.BASE_URL;
+const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
+const updated = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+---
+  <footer class="nv-foot"><div class="wrap">
+    <div class="row">
+      <a href={cv}>CV</a><a href="mailto:etidavid26@gmail.com">Email</a><a href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a><a href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
+    </div>
+    <p class="tiny" style="margin-top:14px">Last updated {updated}. Nova Corp is a fictional company; the infrastructure, tests and failures are real.</p>
+  </div></footer>

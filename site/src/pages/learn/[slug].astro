@@ -51,7 +51,7 @@ const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":t
       <section class="term-source-index" aria-label="Related original engineering records">
        <span class="eyebrow">Continue into the real source</span>
        <h2>{filePilot||identityPilot?"Engineering journals":"More configuration and recorded tests"}</h2>
-       <p>These links go to the <strong>real, published technical documents</strong>. Any outcome here is a historical observation, not live telemetry.</p>
+       <p>These links go to the <strong>real, published technical documents</strong>. </p>
        {(filePilot||identityPilot)&&<p><a href={base+"pdf-journals/"+(filePilot||identityPilot).pdf+".pdf"}>Open the complete original engineering PDF →</a></p>}<div class="term-source-links">
         {evidence.supporting.map(path=><a href={internalArticle(path,base)}><small>ORIGINAL SOURCE / {path.split("/").at(-1)}</small><strong>{path.replace(/^explore\//,"").replace(/^Documentation\//,"").replace(/\.md$/,"").replaceAll("_"," ")}</strong><span>Read entire document ↗</span></a>)}
         {evidence.journal&&<a class="term-journal" href={internalArticle(evidence.journal,base)}><small>COMPLETE CHANGE REQUEST / ORIGINAL JOURNAL</small><strong>{evidence.journal.split("/").at(-1)?.replace(/\.md$/,"").replaceAll("_"," ")}</strong><span>Read the full original journal on this website ↗</span></a>}
@@ -73,4 +73,4 @@ const realImage=term.slug==="group-policy"?"05-firewall-gpo-configuration.png":t
   </div></section>}
 </BaseLayout>
 
-<style>.term-block h2:not(:first-child){margin-top:38px}.term-block p{line-height:1.7;margin-bottom:16px}.term-story .term-block{margin-bottom:40px}.file-problem{color:#edb4a2}.file-solution{color:#c6dcb4}.term-block h3{margin-top:20px}</style>
+<style>.term-block h2:not(:first-child){margin-top:38px}.term-block p{line-height:1.7;margin-bottom:16px}.term-story .term-block{margin-bottom:40px}.file-problem{color:#A33E00}.file-solution{color:#00674B}.term-block h3{margin-top:20px}</style>

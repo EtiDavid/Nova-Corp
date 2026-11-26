@@ -12,21 +12,11 @@ services: ["vlan-segmentation"]
 lines: ["network"]
 segment: null
 pin: null
-copyStatus: "migrated"
+shortTitle: "DC01 lost its route after moving to the infrastructure VLAN."
+saw: "After DC01 moved to VLAN 20 it could not reach its gateway, although pfSense could reach DC01."
+cause: "The new INFRA interface on pfSense had no allow rules yet, so DC01's traffic hit the default block."
+fix: "I added and applied the first INFRA pass rule."
+proof: "The gateway, the pfSense web interface, internet, Active Directory and DNS all worked again."
+limits: "The first INFRA rules were broad on purpose to finish the build, and INFRA still has broad pass rules."
+copyStatus: "rewritten"
 ---
-
-## What broke
-
-DC01 had the intended address and Proxmox VLAN tag, and pfSense had the infrastructure gateway `10.10.20.1`. Yet traffic from DC01 toward the gateway failed while pfSense could still reach the server.
-
-## How the engineer narrowed it down
-
-The investigation checked Windows `ipconfig /all`, the Proxmox bridge and tag, and the pfSense VLAN interface. A directional ping comparison exposed the policy difference: pfSense-to-DC01 worked but DC01-to-gateway did not.
-
-## What resolved it
-
-A matching interface firewall rule was applied to permit the intended infrastructure traffic. Gateway reachability, the web interface, internet access and the relevant AD/DNS services were retested.
-
-## What this proves — and what it does not
-
-A VM can have correct IP configuration and still fail because of an interface policy. This is a historical migration problem, not a claim of an ongoing outage. The linked original journal has the exact checks and commands.

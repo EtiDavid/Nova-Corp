@@ -4,17 +4,11 @@ import "@fontsource/ibm-plex-sans/600.css";
 import "@fontsource/ibm-plex-sans/700.css";
 import "@fontsource/ibm-plex-mono/400.css";
 import "../styles/nova2.css";
+import NovaHeader from "../components/nova/NovaHeader.astro";
+import NovaFooter from "../components/nova/NovaFooter.astro";
 interface Props { title: string; description: string; current?: string }
 const { title, description, current = "" } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const nav = [
-  { label: "Incidents", href: "incidents/", key: "incidents" },
-  { label: "Map", href: "map/", key: "map" },
-  { label: "Changes", href: "changes/", key: "changes" }, 
-  { label: "About", href: "about/", key: "about" }
-];
-const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
-const updated = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 const full = title === "Home" ? "Nova Corp: infrastructure I built, broke and fixed" : title + " · Nova Corp";
 ---
 <!doctype html>
@@ -32,31 +26,9 @@ const full = title === "Home" ? "Nova Corp: infrastructure I built, broke and fi
 </head>
 <body class="nv">
   <a class="skip" href="#main">Skip to main content</a>
-  <header class="nv-head"><div class="wrap bar">
-    <a class="nv-logo" href={base} aria-label="Nova Corp, home">
-      <svg viewBox="0 0 34 34" aria-hidden="true"><rect x="1" y="1" width="32" height="32" rx="8" fill="var(--ink)"/><path d="M7 24 L13 24 L17 14 L21 14 L27 10" fill="none" stroke="var(--line-network)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="24" r="3" fill="var(--paper)"/><circle cx="27" cy="10" r="3" fill="var(--paper)"/></svg>
-      <span>Nova Corp</span>
-    </a>
-    <nav class="nv-nav" aria-label="Primary">
-      {nav.map(i => <a href={base + i.href} aria-current={current === i.key ? "page" : undefined}>{i.label}</a>)}
-      <a class="nv-btn primary small" href={cv}>Download CV</a>
-    </nav>
-    <button class="nv-theme" id="theme-toggle" type="button" aria-label="Switch between light and dark theme"><span aria-hidden="true">◐</span></button>
-    <details class="nv-menu">
-      <summary>Menu</summary>
-      <nav aria-label="Mobile">
-        {nav.map(i => <a href={base + i.href} aria-current={current === i.key ? "page" : undefined}>{i.label}</a>)}
-        <a href={cv}>Download CV</a>
-      </nav>
-    </details>
-  </div></header>
+  <NovaHeader current={current} />
   <main id="main"><slot /></main>
-  <footer class="nv-foot"><div class="wrap">
-    <div class="row">
-      <a href={cv}>CV</a><a href="mailto:etidavid26@gmail.com">Email</a><a href="https://www.linkedin.com/in/eti-david">LinkedIn ↗</a><a href="https://github.com/EtiDavid/Nova-Corp">GitHub ↗</a>
-    </div>
-    <p class="tiny" style="margin-top:14px">Last updated {updated}. Nova Corp is a fictional company; the infrastructure, tests and failures are real.</p>
-  </div></footer>
+  <NovaFooter />
   <div id="term-pop" role="tooltip" hidden></div>
   <script is:inline define:vars={{ dataUrl: base + "glossary.json", glossUrl: base + "glossary/" }}>
     // Glossary marks: dotted underline on the first mention per page. Never in headings, links or buttons.

@@ -3,5 +3,10 @@
   "title": "DFS and Shadow Copies",
   "goal": "One path to all shares; users can restore their own files.",
   "status": "done",
-  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf",
+  "built": [
+    "A DFS namespace, \\\\nova.corp\\shares, in front of the five department shares",
+    "Shadow Copies on the data volume, daily at 07:00 and 12:00"
+  ],
+  "validated": "I restored a deleted file from Previous Versions, and took the IT and Sales folder targets offline to show that one target per folder is not high availability."
 }

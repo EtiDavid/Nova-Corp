@@ -4,5 +4,9 @@
   "goal": "Repeatable scripts for joiners, movers and leavers.",
   "status": "done",
   "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md",
-  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.pdf"
+  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.pdf",
+  "built": [
+    "Eight PowerShell scripts for account lifecycle, access review, lockout investigation, password reset and computer inventory"
+  ],
+  "validated": "Each script was tested with controlled input. I recorded the 11 failures I hit while building them."
 }

@@ -21,15 +21,13 @@ const prev = nova.done[i - 1], nextC = nova.done[i + 1];
     <p class="lead" style="margin-top:12px"><span class="mono">{c.id}</span> · {c.goal}</p>
   </div></section>
   <div class="wrap prose-narrow" style="padding-bottom:40px">
-    {(b.systems.length > 0 || b.services.length > 0) && <>
-      <h2 style="margin-top:20px">What I built</h2>
-      <ul class="plainlist">
-        {b.systems.map((s: any) => <li><a href={base + "systems/" + s.id + "/"}>{s.name}</a>: {s.role}</li>)}
-        {b.services.map((v: any) => <li><a href={base + "services/" + v.id + "/"}>{v.name}</a>: {v.summary}</li>)}
-      </ul></>}
+    <h2 style="margin-top:20px">What I built</h2>
+    <ul>{(c.built ?? []).map((x: string) => <li>{x}</li>)}</ul>
+    {(b.systems.length > 0 || b.services.length > 0) && <p class="tiny" style="margin-top:10px">On the map: {[...b.systems.map((s: any) => <a href={base + "systems/" + s.id + "/"}>{s.name}</a>), ...b.services.map((v: any) => <a href={base + "services/" + v.id + "/"}>{v.name}</a>)].reduce((a: any, x: any) => a === null ? [x] : [...a, ", ", x], null)}.</p>}
     {b.incidents.length > 0 && <>
       <h2 style="margin-top:28px">What broke</h2>
       <ul class="plainlist">{b.incidents.map((n: any) => <li><span class={"type " + n.type} style="margin-right:8px">{typeLabel[n.type]}</span><a href={base + "incidents/" + n.slug + "/"}>{n.shortTitle ?? n.title}</a></li>)}</ul></>}
+    {c.validated && <><h2 style="margin-top:28px">How it was validated</h2><p style="margin-top:6px">{c.validated}</p></>}
     <h2 style="margin-top:28px">Original journal</h2>
     <p style="margin-top:6px"><a class="nv-link" href={journal.href}>Full journal ({c.id}){journal.external ? " ↗" : " →"}</a></p>
     <p class="tiny" style="margin-top:28px">{prev && <a href={base + "changes/" + prev.id + "/"}>← {prev.id}</a>}{prev && nextC && "  ·  "}{nextC && <a href={base + "changes/" + nextC.id + "/"}>{nextC.id} →</a>}</p>

@@ -4,5 +4,9 @@
   "goal": "Workstation rules applied centrally.",
   "status": "done",
   "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-006.md",
-  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-006_Group_Policy_Management_Beautified.pdf"
+  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-006_Group_Policy_Management_Beautified.pdf",
+  "built": [
+    "Group Policy standards: scope each policy to the right group, separate settings by purpose, and check the effective result"
+  ],
+  "validated": "A policy counts as done only when its effective result is proven. I also reasoned through one incident on paper: a lockdown policy that blocked an administrator."
 }

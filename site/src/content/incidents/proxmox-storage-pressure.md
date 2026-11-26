@@ -1,5 +1,5 @@
 ---
-title: "Old snapshots were consuming the virtualization storage."
+title: "Old snapshots filled the storage."
 summary: "Proxmox thin-pool use reached 86.73%. A deliberate cleanup removed obsolete checkpoints while preserving approved rollback and backup archives."
 date: "November 2026"
 outcome: "Storage pressure reduced; archives retained"
@@ -12,28 +12,11 @@ services: ["proxmox-backups"]
 lines: ["platform"]
 segment: null
 pin: { col: 30, row: 50 }
-shortTitle: "Old snapshots filled the storage"
-copyStatus: "migrated"
+shortTitle: "Old snapshots filled the storage."
+saw: "Proxmox storage was 86.73% full while I was preparing a rollback point."
+cause: "Twenty old snapshots were kept long after their changes were finished. CR-008 had already warned that the thin volumes could outgrow the pool."
+fix: "I deleted the 20 obsolete snapshots and kept the current pre-CR-016 pfSense snapshot and the existing backup archives."
+proof: "Usage fell from 86.73% to 52.88%, about 125.72 GiB freed, and a later check showed 53.67%."
+limits: "Deleting snapshots is not a backup and not a restore test. A whole-VM restore from the Proxmox archives has not been demonstrated."
+copyStatus: "rewritten"
 ---
-
-## The symptom
-
-The Proxmox thin-storage pool showed **86.73% used**. Twenty old VM snapshots had accumulated.
-
-A snapshot is not an independent backup. Leaving many snapshots in place reduces free capacity and can complicate future changes.
-
-## What was checked before cleanup
-
-The engineer examined the thin-pool utilization and listed snapshots for the affected virtual machines. The approved pre-change firewall rollback and separate backup archives were deliberately protected.
-
-## What changed
-
-Twenty obsolete snapshots were removed through Proxmox's normal snapshot management command, without deleting the separate backup archives.
-
-## Actual measured result
-
-Utilization dropped to **52.88%** immediately after cleanup. A later check recorded **53.67%**, showing that the capacity improvement remained.
-
-## What this demonstrates
-
-Infrastructure maintenance is not simply deleting files until a chart looks better. The decision required verifying snapshot dependencies, retaining rollback and measuring capacity both before and after the operation.

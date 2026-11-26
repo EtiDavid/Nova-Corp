@@ -1,5 +1,5 @@
 ---
-title: "A bulk onboarding script left half-created AD accounts."
+title: "A bulk onboarding script left half-created accounts."
 summary: "The first onboarding run failed password policy checks after creating five disabled accounts. The script was repaired to roll back incomplete users."
 date: "Engineering journal"
 outcome: "Rollback and clean five-user onboarding verified"
@@ -12,21 +12,11 @@ services: ["active-directory"]
 lines: ["identity"]
 segment: null
 pin: null
-copyStatus: "migrated"
+shortTitle: "A bulk onboarding script left half-created accounts."
+saw: "My bulk onboarding script reported a password error but left disabled, half-built accounts in Active Directory."
+cause: "It created each account before setting a valid password, so a failed password step stopped the script without removing the account."
+fix: "I added a rollback that deletes the half-made account when a later step fails, then ran the weak-password test again."
+proof: "A valid import created five users in the right OU and group, and running it again skipped all five."
+limits: "This covers the bulk-user script only. The other scripts have their own failure records in CR-011."
+copyStatus: "rewritten"
 ---
-
-## The unexpected result
-
-The `New-BulkUsers` PowerShell toolkit operation reported a password failure, but five disabled directory objects remained with `pwdLastSet=0` and missing intended memberships.
-
-## Why it mattered
-
-A failed onboarding run should not leave ambiguous partial accounts for an administrator to discover later. The team compared the configured 12-character password policy with the script's input and listed the orphaned objects.
-
-## The correction and proof
-
-Rollback logic was added for mandatory-creation failures. A second intentionally invalid-password run produced successful rollback log messages for the five affected accounts. With a valid password, five users were created, enabled and verified in the correct OUs and global groups.
-
-## Boundary
-
-This proves the documented test cases for the onboarding script, not that arbitrary input and concurrent failures have all been covered. The full CR-011 command sequence is in the linked journal.

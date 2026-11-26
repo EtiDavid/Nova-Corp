@@ -1,42 +1,42 @@
 /* Incident source reconciliation. Source prose is always rendered in full;
    the journal action links directly to the actual published CR/fault-test record. */
-.incident-case-intro{border-bottom:1px solid #494C40;padding-bottom:25px;margin-bottom:32px;}
-.incident-case-intro>.eyebrow{display:block;color:#D1B88E;margin-bottom:12px;}
+.incident-case-intro{border-bottom:1px solid #D9D4C9;padding-bottom:25px;margin-bottom:32px;}
+.incident-case-intro>.eyebrow{display:block;color:#8A5509;margin-bottom:12px;}
 .incident-case-intro>p:last-child{margin-top:20px;font-size:.86rem;font-weight:740;}
-.incident-case-intro>p:last-child a{color:#E2BD8B;text-underline-offset:3px;}
+.incident-case-intro>p:last-child a{color:#8A5509;text-underline-offset:3px;}
 .incident-full-source{min-width:0;max-width:100%;}
-.incident-full-heading{padding:21px 21px 19px;background:#24271F;border:1px solid #55584A;border-radius:9px;margin:0 0 22px;}
+.incident-full-heading{padding:21px 21px 19px;background:#E6F4EE;border:1px solid #D9D4C9;border-radius:9px;margin:0 0 22px;}
 .incident-full-heading h2{font-size:clamp(1.5rem,2.2vw,2.15rem);line-height:1.21;letter-spacing:-.035em;margin:10px 0 10px;}
-.incident-full-heading p{font-size:.91rem;line-height:1.7;color:#C6C8BB;}
+.incident-full-heading p{font-size:.91rem;line-height:1.7;color:#17202A;}
 .incident-record-controls,.incident-journal-actions{display:flex;gap:11px 20px;flex-wrap:wrap;align-items:center;margin-top:18px;}
-.incident-record-controls a{font-size:.78rem;font-weight:760;color:#E7C68F;text-underline-offset:3px;}
-.incident-source-jumps{margin:15px 0 25px;padding:0;background:#282B24;border:1px solid #5D6053;border-radius:7px;}
-.incident-source-jumps summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:13px 16px;color:#E6C99C;font-size:.86rem;font-weight:740;}
+.incident-record-controls a{font-size:.78rem;font-weight:760;color:#8A5509;text-underline-offset:3px;}
+.incident-source-jumps{margin:15px 0 25px;padding:0;background:#FFFFFF;border:1px solid #D9D4C9;border-radius:7px;}
+.incident-source-jumps summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:13px 16px;color:#8A5509;font-size:.86rem;font-weight:740;}
 .incident-source-jumps summary::-webkit-details-marker{display:none;}
 .incident-source-jumps[open] summary span{transform:rotate(180deg);}
-.incident-source-jumps nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:13px;border-top:1px solid #4B5042;}
-.incident-source-jumps a{font-size:.77rem;color:#D2D3C5;line-height:1.5;text-decoration:none;padding:8px;border-radius:4px;}
-.incident-source-jumps a:hover{background:#363A31;color:#F6D39B;}
+.incident-source-jumps nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:13px;border-top:1px solid #D9D4C9;}
+.incident-source-jumps a{font-size:.77rem;color:#17202A;line-height:1.5;text-decoration:none;padding:8px;border-radius:4px;}
+.incident-source-jumps a:hover{background:#FFFFFF;color:#8A5509;}
 .incident-source-document{padding:3px 0 25px;}
 .incident-source-document>h1:first-child{font-size:1.55rem;}
-.incident-master-journal{padding:27px 25px;background:linear-gradient(130deg,#272C26,#1B201C);border:1px solid #69705C;border-left:4px solid #D5B68A;border-radius:8px;margin:23px 0 30px;}
+.incident-master-journal{padding:27px 25px;background:linear-gradient(130deg,#FFFFFF,#FFFFFF);border:1px solid #D9D4C9;border-left:4px solid #D5B68A;border-radius:8px;margin:23px 0 30px;}
 .incident-master-journal>h2{font-size:1.5rem;line-height:1.25;letter-spacing:-.028em;margin:11px 0;}
-.incident-master-journal>p{font-size:.89rem;line-height:1.7;color:#D0D3C4;}
+.incident-master-journal>p{font-size:.89rem;line-height:1.7;color:#17202A;}
 .incident-journal-actions .btn{max-width:100%;white-space:normal;text-align:center;line-height:1.4;}
-.incident-associated-records{border-top:1px solid #54594B;margin-top:22px;padding-top:17px;}
+.incident-associated-records{border-top:1px solid #D9D4C9;margin-top:22px;padding-top:17px;}
 .incident-associated-records h3{font-size:1rem;margin:0 0 9px;}
 .incident-associated-records ul{padding-left:20px;margin:0;}
-.incident-associated-records a{color:#E9C68E;font-size:.82rem;line-height:1.7;}
-.incident-journal-figures{border-top:1px solid #4C5145;padding:25px 0 28px;}
+.incident-associated-records a{color:#8A5509;font-size:.82rem;line-height:1.7;}
+.incident-journal-figures{border-top:1px solid #D9D4C9;padding:25px 0 28px;}
 .incident-journal-figures h3{font-size:1.4rem;margin:8px 0;}
-.incident-journal-figures p{font-size:.83rem;color:#C5C9BA;line-height:1.65;}
+.incident-journal-figures p{font-size:.83rem;color:#17202A;line-height:1.65;}
 .incident-journal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:21px;}
-.incident-journal-grid figure{margin:0;overflow:hidden;background:#252922;border:1px solid #4F5546;border-radius:8px;}
+.incident-journal-grid figure{margin:0;overflow:hidden;background:#FFFFFF;border:1px solid #D9D4C9;border-radius:8px;}
 .incident-journal-grid figure>a{display:flex;align-items:center;min-height:170px;background:#F5F2E8;}
 .incident-journal-grid img{width:100%;height:auto;max-height:320px;object-fit:contain;display:block;}
-.incident-journal-grid figcaption{padding:11px 14px;color:#CBD0BF;font-size:.75rem;line-height:1.6;}
-.incident-journal-grid figcaption a{color:#E8C797;}
-.incident-sidebar-journal{border-color:#6D6555;background:#262820;}
+.incident-journal-grid figcaption{padding:11px 14px;color:#17202A;font-size:.75rem;line-height:1.6;}
+.incident-journal-grid figcaption a{color:#8A5509;}
+.incident-sidebar-journal{border-color:#D9D4C9;background:#E6F4EE;}
 .incident-sidebar-journal .incident-master-link{display:block;background:#D6B88C;color:#161A15!important;border-radius:5px;padding:13px 12px;font-size:.84rem;font-weight:770;text-decoration:none;}
 .incident-sidebar-journal .incident-master-link:hover{background:#EECDA0;}
 .incident-sidebar-journal p a{font-size:.82rem;line-height:1.5;}

@@ -204,3 +204,8 @@ html:not(.js) .sysdata { display:block; border-top:1px solid var(--rule); paddin
 .nv .incident-source-document pre, .nv .reference-content pre { max-width:100%; overflow-x:auto; white-space:pre; }
 .nv .incident-source-document table, .nv .reference-content table { display:block; max-width:100%; overflow-x:auto; }
 .nv .incident-source-document img, .nv .reference-content img, .nv .pdf-evidence-gallery img { max-width:100%; height:auto; }
+
+/* code inside embedded original records stays dark with light text */
+.nv .incident-source-document pre, .nv .reference-content pre, .nv .incident-full-source pre { background:#0F1720!important; color:#E8EEF5; }
+.nv .incident-source-document pre code, .nv .reference-content pre code { color:#E8EEF5; }
+.nv .incident-source-document pre code span:not([style]), .nv .reference-content pre code span:not([style]) { color:#E8EEF5; }

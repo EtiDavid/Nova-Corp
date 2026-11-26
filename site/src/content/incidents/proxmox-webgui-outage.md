@@ -1,5 +1,5 @@
 ---
-title: "The Proxmox web GUI stopped, but the virtual machines kept running."
+title: "The Proxmox web interface stopped, but the VMs kept running."
 summary: "Controlled management-service faults separated browser administration loss from Proxmox guest and network availability."
 date: "Fault-test journal"
 outcome: "Management service recovered; guests remained online in tested scope"
@@ -13,21 +13,11 @@ services: ["nested-virtualization"]
 lines: ["platform"]
 segment: null
 pin: null
-copyStatus: "migrated"
+shortTitle: "The Proxmox web interface stopped, but the VMs kept running."
+saw: "The Proxmox web interface stopped answering while SSH, the host network and the VMware console still worked."
+cause: "I had stopped the pveproxy service on purpose."
+fix: "I started pveproxy again."
+proof: "The service showed active (running) and the browser worked again."
+limits: "This was one service stopped on purpose. It does not show how I would handle a failure of the whole host."
+copyStatus: "rewritten"
 ---
-
-## The injected problem
-
-During FT-003 / FT-005, the Proxmox web management service was stopped. The browser interface became unavailable.
-
-## Isolation
-
-Service status showed the management process inactive while SSH remained available. Network checks and separately observed guest behavior distinguished web administration failure from full host/VM failure.
-
-## Recovery
-
-The management service was restarted, its active status verified and the browser interface rechecked.
-
-## Boundary
-
-The test demonstrates recovery of a stopped web management service. It is not a whole-host restart, disaster-recovery rehearsal or proof that every guest scenario was unaffected.

@@ -25,7 +25,7 @@ const sectionName=entry.data.section==="explore"?"Infrastructure explorer":entry
   <div class="sidebox"><h2>On this page</h2>
    {readableHeadings.length>0?<nav aria-label="Document table of contents"><ul class="ref-toc">{readableHeadings.filter(h=>h.depth<=3).slice(0,45).map(h=><li class={"ref-toc-level-"+h.depth}><a href={"#"+h.slug}>{h.text}</a></li>)}</ul></nav>:<p>Read the complete original document in the main column.</p>}
   </div>
-  <div class="sidebox"><h2>Original evidence</h2><p>This is a published historical record, not live monitoring or a claim that planned work was completed.</p>
+  <div class="sidebox"><h2>Original evidence</h2><p>This is a published historical record.</p>
   <p><a href={entry.data.sourceUrl} target="_blank" rel="noopener noreferrer">Compare with GitHub source ↗</a></p>
   <p><a href={base+"reference/"}>← Browse all documentation</a></p></div>
  </aside>

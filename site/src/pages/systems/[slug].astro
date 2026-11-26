@@ -28,7 +28,7 @@ const [yy,mm,dd]=String(system.asOf).split("-").map(Number);
 const asOf=yy&&mm&&dd?`${dd} ${months[mm-1]} ${yy}`:String(system.asOf);
 const statusText = system.status === "observed-running" ? `Running at last check: ${asOf}` : `Configuration as of ${asOf}`;
 ---
-<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Explore",href:"map/"},{label:area?.name||"Systems",href:"map/"},{label:system.name}]}>
+<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Map",href:"map/"},{label:area?.name||"Systems",href:"map/"},{label:system.name}]}>
   <section class="page-head"><div class="container">
     <div class="eyebrow">{system.category}</div>
     <h1>{system.name}</h1>

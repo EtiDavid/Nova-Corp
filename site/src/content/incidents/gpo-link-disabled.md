@@ -1,5 +1,5 @@
 ---
-title: "Company wallpaper vanished because its GPO link was disabled."
+title: "The company wallpaper vanished because its GPO link was disabled."
 summary: "A deliberately disabled policy link stopped wallpaper application even though Domain Controller discovery, SYSVOL and general GPO processing continued."
 date: "Engineering journal"
 outcome: "Policy link re-enabled; processing verified"
@@ -12,21 +12,11 @@ services: ["group-policy"]
 lines: ["identity"]
 segment: null
 pin: null
-copyStatus: "migrated"
+shortTitle: "Company wallpaper vanished because its GPO link was disabled."
+saw: "The company wallpaper disappeared for one user while other policies still applied."
+cause: "The wallpaper policy's link on the Nova Users OU was disabled. The policy itself and SYSVOL were fine."
+fix: "I re-enabled the existing link without rebuilding the policy and refreshed the user policy."
+proof: "The wallpaper policy applied again after the refresh."
+limits: "This was one broken link on one OU, not a domain-wide policy fault. The policy is named \"Nova Corp - Coperate wallpaper\", typo included."
+copyStatus: "rewritten"
 ---
-
-## The controlled fault
-
-The company wallpaper Group Policy link was disabled. The test workstation could still locate DC02 and access policy files, but the wallpaper GPO no longer appeared in the applied policy list.
-
-## The evidence
-
-`gpresult` listed the wallpaper under **Filtered GPOs: Disabled (Link)**. Separate checks confirmed SYSVOL accessibility and successful client-side user and computer policy refresh.
-
-## Repair and validation
-
-The correct link was enabled again. After refreshing policies, wallpaper and departmental drive mapping appeared in the applied list. The configured wallpaper path resolved, and the expected desktop registry values were present.
-
-## Boundary
-
-This demonstrates historical processing in the tested session. It does not establish that every current workstation receives the image. Read the linked journal for exact outputs and remediation steps.
