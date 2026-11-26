@@ -1,0 +1,16 @@
+{
+  "id": "kerberos",
+  "term": "Kerberos",
+  "aliases": [
+    "Kerberos",
+    "Kerberos tickets"
+  ],
+  "short": "A ticket-based authentication protocol used by Active Directory environments.",
+  "inNova": "During controlled DC01 failover, new Kerberos tickets identified NOVA-DC02 as the serving Domain Controller.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-dc02",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

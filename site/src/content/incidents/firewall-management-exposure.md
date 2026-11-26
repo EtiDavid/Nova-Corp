@@ -6,6 +6,14 @@ outcome: "Management path blocked; business access retained"
 status: "tested"
 systems: ["nova-client", "nova-fw01", "nova-dc01", "nova-files01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/pfsense-management-exposure.md"
+type: "real"
+cr: "CR-015"
+services: ["pfsense-firewall"]
+lines: ["network"]
+segment: null
+pin: { col: 33, row: 24.4 }
+shortTitle: "An employee PC could reach firewall admin"
+copyStatus: "migrated"
 ---
 
 ## The symptom

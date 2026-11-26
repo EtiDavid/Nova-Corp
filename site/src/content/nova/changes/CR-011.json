@@ -1,0 +1,8 @@
+{
+  "id": "CR-011",
+  "title": "PowerShell administration toolkit",
+  "goal": "Repeatable scripts for joiners, movers and leavers.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md",
+  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.pdf"
+}

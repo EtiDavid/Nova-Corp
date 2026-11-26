@@ -6,6 +6,13 @@ outcome: "Policy link re-enabled; processing verified"
 status: "tested"
 systems: ["nova-dc01", "nova-dc02", "nova-client"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/gpo-link-disabled.md"
+type: "blind"
+cr: "CR-014"
+services: ["group-policy"]
+lines: ["identity"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## The controlled fault

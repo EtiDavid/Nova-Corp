@@ -1,0 +1,42 @@
+{
+  "id": "nova-prox01",
+  "name": "NOVA-PROX01",
+  "role": "Proxmox VE, nested in VMware Workstation on one Windows 11 host",
+  "sub": "Hosts all five virtual machines",
+  "kind": "hypervisor",
+  "zone": "Hosts all five virtual machines",
+  "os": "Proxmox VE 9.2.2",
+  "status": "live",
+  "services": [
+    "nested-virtualization",
+    "proxmox-backups"
+  ],
+  "builtBy": [
+    "CR-001",
+    "CR-015"
+  ],
+  "map": {
+    "col": 38,
+    "row": 54.5,
+    "w": 17,
+    "h": 4.4
+  },
+  "limit": "Archives exist for some VMs, but a whole-VM restore has not been demonstrated.",
+  "links": [
+    {
+      "line": "platform",
+      "to": "nova-prox01",
+      "meaning": "Proxmox hosts every virtual machine above it",
+      "path": [
+        [
+          4,
+          54.5
+        ],
+        [
+          88,
+          54.5
+        ]
+      ]
+    }
+  ]
+}

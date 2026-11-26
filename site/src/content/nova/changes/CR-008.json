@@ -1,0 +1,7 @@
+{
+  "id": "CR-008",
+  "title": "File server deployment",
+  "goal": "Central file storage on NOVA-FILES01.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf"
+}

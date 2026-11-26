@@ -1,0 +1,16 @@
+{
+  "id": "active-directory",
+  "term": "Active Directory",
+  "aliases": [
+    "Active Directory",
+    "AD DS"
+  ],
+  "short": "A directory of company users, computers and groups, hosted on the Domain Controllers.",
+  "inNova": "NOVA-DC01 and NOVA-DC02 hold the nova.corp directory; a workstation uses it to discover services and verify a user's identity.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-dc02",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

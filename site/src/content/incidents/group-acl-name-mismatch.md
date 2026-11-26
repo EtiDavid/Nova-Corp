@@ -6,6 +6,13 @@ outcome: "Group-name normalization fixed; positive and negative checks passed"
 status: "tested"
 systems: ["nova-dc01", "nova-files01", "nova-client"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/group-acl-name-mismatch.md"
+type: "real"
+cr: "CR-011"
+services: ["smb-ntfs"]
+lines: ["files"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## What was wrong

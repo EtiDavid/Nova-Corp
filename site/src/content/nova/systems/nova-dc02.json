@@ -1,0 +1,30 @@
+{
+  "id": "nova-dc02",
+  "name": "NOVA-DC02",
+  "role": "Second domain controller",
+  "sub": "Domain controller",
+  "kind": "server",
+  "zone": "INFRA, VLAN 20",
+  "ip": "10.10.20.11",
+  "os": "Windows Server 2025",
+  "status": "live",
+  "services": [
+    "active-directory",
+    "dns",
+    "kerberos",
+    "replication",
+    "group-policy"
+  ],
+  "builtBy": [
+    "CR-004",
+    "CR-013"
+  ],
+  "map": {
+    "col": 62,
+    "row": 28,
+    "w": 13,
+    "h": 4.4
+  },
+  "limit": "Taking over sign-ins during an outage is not the same as restoring a server.",
+  "links": []
+}

@@ -6,6 +6,13 @@ outcome: "DNS and authorization repaired in sequence; access retested"
 status: "tested"
 systems: ["nova-client", "nova-dc01", "nova-dc02", "nova-files01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/two-faults-one-symptom.md"
+type: "blind"
+cr: "CR-014"
+services: ["dns", "smb-ntfs"]
+lines: ["identity", "files"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## The combined fault

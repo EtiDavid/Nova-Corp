@@ -1,5 +1,6 @@
 import { defineCollection, z } from "astro:content";
-import { glob } from "astro/loaders";
+import { glob, file } from "astro/loaders";
+import { lineSchema, zoneSchema, systemSchema, serviceSchema, changeSchema, glossarySchema, journeySchema, factsSchema, incidentExtra } from "./lib/novaSchemas.mjs";
 
 const incidents = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/incidents" }),
@@ -10,7 +11,8 @@ const incidents = defineCollection({
     outcome: z.string(),
     status: z.enum(["tested", "deferred"]),
     systems: z.array(z.string()),
-    sourceUrl: z.string().url()
+    sourceUrl: z.string().url(),
+    ...incidentExtra
   })
 });
 
@@ -37,4 +39,13 @@ const pdfJournals = defineCollection({
   })
 });
 
-export const collections = { incidents, reference, pdfJournals };
+const nova = (folder: string, schema: any, pattern = "*.json") => defineCollection({
+  loader: glob({ pattern, base: "./src/content/nova/" + folder, generateId: ({ entry }) => entry.replace(/\.json$/i, "") }), schema
+});
+export const collections = {
+  incidents, reference, pdfJournals,
+  novaLines: defineCollection({ loader: file("src/content/nova/lines.json"), schema: lineSchema }),
+  novaZones: defineCollection({ loader: file("src/content/nova/zones.json"), schema: zoneSchema }),
+  novaSystems: nova("systems", systemSchema), novaServices: nova("services", serviceSchema), novaChanges: nova("changes", changeSchema),
+  novaGlossary: nova("glossary", glossarySchema), novaJourneys: nova("journeys", journeySchema)
+};

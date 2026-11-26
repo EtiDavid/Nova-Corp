@@ -1,0 +1,80 @@
+{
+  "id": "nova-client",
+  "name": "NOVA-CLIENT",
+  "role": "Employee workstation",
+  "sub": "Workstation",
+  "kind": "workstation",
+  "zone": "CLIENT, VLAN 40",
+  "ip": "10.10.40.100",
+  "os": "Windows 11",
+  "status": "live",
+  "services": [
+    "group-policy"
+  ],
+  "builtBy": [
+    "CR-006",
+    "CR-009"
+  ],
+  "map": {
+    "col": 10,
+    "row": 28,
+    "w": 13,
+    "h": 4.4
+  },
+  "limit": "Its Proxmox VM is labeled nova-client01; Windows and Active Directory know it as NOVA-CLIENT.",
+  "links": [
+    {
+      "line": "network",
+      "to": "nova-fw01",
+      "meaning": "Workstation traffic reaches the firewall",
+      "path": [
+        [
+          16.5,
+          28.8
+        ],
+        [
+          26.5,
+          28.8
+        ]
+      ]
+    },
+    {
+      "line": "identity",
+      "to": "nova-dc01",
+      "meaning": "DNS lookups and Kerberos tickets from the domain controllers",
+      "path": [
+        [
+          9,
+          25.8
+        ],
+        [
+          9,
+          12.2
+        ],
+        [
+          55.5,
+          12.2
+        ]
+      ]
+    },
+    {
+      "line": "files",
+      "to": "nova-files01",
+      "meaning": "The workstation opens shared folders on FILES01 (SMB), a separate path from sign-in",
+      "path": [
+        [
+          9,
+          30.2
+        ],
+        [
+          9,
+          43.6
+        ],
+        [
+          55.5,
+          43.6
+        ]
+      ]
+    }
+  ]
+}

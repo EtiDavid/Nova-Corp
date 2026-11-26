@@ -6,6 +6,13 @@ outcome: "Not tested — deferred to a later security gate"
 status: "deferred"
 systems: ["nova-fw01", "nova-client"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/vpn-external-validation-deferred.md"
+type: "deferred"
+cr: "CR-014"
+services: []
+lines: ["network"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## What was planned

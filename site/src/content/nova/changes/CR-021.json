@@ -1,0 +1,7 @@
+{
+  "id": "CR-021",
+  "title": "Linux foundation: intranet and Engineering build server",
+  "goal": "Two Ubuntu servers run real company services: an intranet with the staff handbook and IT knowledge base, and a build server for the developers, both administered the way a Linux admin would in real life.",
+  "status": "planned",
+  "time": "2–3 weeks"
+}

@@ -1,0 +1,88 @@
+{
+  "id": "nova-fw01",
+  "name": "NOVA-FW01",
+  "role": "pfSense firewall",
+  "sub": "Firewall",
+  "kind": "firewall",
+  "zone": "Between all five VLANs",
+  "os": "pfSense CE",
+  "status": "live",
+  "services": [
+    "pfsense-firewall",
+    "vlan-segmentation"
+  ],
+  "builtBy": [
+    "CR-002",
+    "CR-015"
+  ],
+  "map": {
+    "col": 33,
+    "row": 28,
+    "w": 13,
+    "h": 4.4
+  },
+  "limit": "Broad pass rules remain on MGMT, INFRA, APP and DMZ. Tighter control is the next planned change, CR-016.",
+  "links": [
+    {
+      "line": "network",
+      "to": "nova-dc01",
+      "meaning": "Firewall to DC01",
+      "path": [
+        [
+          39.5,
+          28.8
+        ],
+        [
+          48,
+          28.8
+        ],
+        [
+          48,
+          14.8
+        ],
+        [
+          55.5,
+          14.8
+        ]
+      ]
+    },
+    {
+      "line": "network",
+      "to": "nova-dc02",
+      "meaning": "Firewall to DC02",
+      "path": [
+        [
+          39.5,
+          28.8
+        ],
+        [
+          55.5,
+          28.8
+        ]
+      ]
+    },
+    {
+      "line": "network",
+      "to": "nova-files01",
+      "meaning": "Firewall to FILES01",
+      "path": [
+        [
+          39.5,
+          28.8
+        ],
+        [
+          48,
+          28.8
+        ],
+        [
+          48,
+          42.8
+        ],
+        [
+          55.5,
+          42.8
+        ]
+      ]
+    }
+  ]
+}

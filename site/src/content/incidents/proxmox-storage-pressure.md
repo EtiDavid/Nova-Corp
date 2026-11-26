@@ -6,6 +6,14 @@ outcome: "Storage pressure reduced; archives retained"
 status: "tested"
 systems: ["nova-prox01", "nova-fw01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/proxmox-snapshot-pressure.md"
+type: "real"
+cr: "CR-015"
+services: ["proxmox-backups"]
+lines: ["platform"]
+segment: null
+pin: { col: 30, row: 50 }
+shortTitle: "Old snapshots filled the storage"
+copyStatus: "migrated"
 ---
 
 ## The symptom

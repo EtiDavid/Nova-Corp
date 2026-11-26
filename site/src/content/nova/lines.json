@@ -1,0 +1,42 @@
+[
+  {
+    "id": "platform",
+    "name": "Platform",
+    "question": "What runs everything?",
+    "token": "--line-platform",
+    "order": 1,
+    "blurb": "Proxmox runs every virtual machine."
+  },
+  {
+    "id": "network",
+    "name": "Network",
+    "question": "How do the networks connect?",
+    "token": "--line-network",
+    "order": 2,
+    "blurb": "Traffic passes the firewall between VLANs."
+  },
+  {
+    "id": "identity",
+    "name": "Identity",
+    "question": "Who is signing in, and where do names resolve?",
+    "token": "--line-identity",
+    "order": 3,
+    "blurb": "DNS and sign-in come from the domain controllers."
+  },
+  {
+    "id": "files",
+    "name": "Files",
+    "question": "How does a person reach a folder?",
+    "token": "--line-files",
+    "order": 4,
+    "blurb": "Shared folders are opened on FILES01."
+  },
+  {
+    "id": "recovery",
+    "name": "Recovery",
+    "question": "What can be restored?",
+    "token": "--line-recovery",
+    "order": 5,
+    "blurb": "Backups and restore points."
+  }
+]

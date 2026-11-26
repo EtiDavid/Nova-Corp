@@ -1,0 +1,15 @@
+{
+  "id": "domain-controller",
+  "term": "Domain Controller",
+  "aliases": [
+    "Domain Controller",
+    "Domain Controllers"
+  ],
+  "short": "A Windows server that provides identity and directory services for a domain.",
+  "inNova": "During the controlled DC01 outage, a workstation discovered NOVA-DC02 and continued the recorded sign-in and shared-resource checks.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "copyStatus": "migrated"
+}

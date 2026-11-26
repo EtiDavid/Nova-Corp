@@ -6,6 +6,14 @@ outcome: "Management service recovered; guests remained online in tested scope"
 status: "tested"
 systems: ["nova-prox01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/proxmox-webgui-outage.md"
+type: "controlled"
+cr: null
+ft: "FT-003"
+services: ["nested-virtualization"]
+lines: ["platform"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## The injected problem

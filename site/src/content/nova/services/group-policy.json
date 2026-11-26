@@ -1,0 +1,18 @@
+{
+  "id": "group-policy",
+  "name": "Group Policy",
+  "line": "identity",
+  "runsOn": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "dependsOn": [
+    "active-directory"
+  ],
+  "summary": "Applies settings centrally to company computers and users.",
+  "inNova": "Seven GPOs exist: wallpaper, password and lockout, workstation baseline, contractor USB, drive mapping, keyboard and the default domain controller policy.",
+  "builtBy": [
+    "CR-006"
+  ],
+  "copyStatus": "migrated"
+}

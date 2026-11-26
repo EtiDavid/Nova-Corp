@@ -6,6 +6,19 @@ outcome: "DNS and shared-folder access restored"
 status: "tested"
 systems: ["nova-client", "nova-dc01", "nova-dc02", "nova-files01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/dns-client-outage.md"
+type: "blind"
+cr: "CR-014"
+services: ["dns", "smb-ntfs"]
+lines: ["identity", "files"]
+segment: { from: "nova-client", to: "nova-dc01", line: "identity" }
+pin: { col: 33, row: 12.2 }
+featured: 1
+shortTitle: "The file server looked down. It was DNS."
+saw: "The IT shared folder would not open by name, so the file server looked down."
+cause: "The workstation's DNS pointed at a wrong server (192.0.2.53). The file server was fine."
+fix: "I set the DNS servers back to the two domain controllers and cleared the resolver cache."
+proof: "The original request worked again, and the domain controllers advertised themselves."
+copyStatus: "rewritten"
 ---
 
 ## The symptom

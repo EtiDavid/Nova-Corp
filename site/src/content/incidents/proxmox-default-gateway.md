@@ -6,6 +6,14 @@ outcome: "Correct gateway restored; connectivity rechecked"
 status: "tested"
 systems: ["nova-prox01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/proxmox-default-gateway.md"
+type: "controlled"
+cr: null
+ft: "FT-001"
+services: ["nested-virtualization"]
+lines: ["platform"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## The controlled failure

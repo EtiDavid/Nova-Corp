@@ -1,0 +1,14 @@
+{
+  "id": "firewall",
+  "term": "Firewall",
+  "aliases": [
+    "firewall",
+    "pfSense"
+  ],
+  "short": "A system that allows or blocks network connections according to configured rules.",
+  "inNova": "NOVA-FW01 uses pfSense; a validation found employee-to-management access and corrected specific rule ordering.",
+  "seeAlso": [
+    "nova-fw01"
+  ],
+  "copyStatus": "migrated"
+}

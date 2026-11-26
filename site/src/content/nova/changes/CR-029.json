@@ -1,0 +1,7 @@
+{
+  "id": "CR-029",
+  "title": "Monitoring that opens tickets",
+  "goal": "One monitoring stack watches Windows, Linux, network and business services, and real problems become Jira tickets before an employee calls.",
+  "status": "planned",
+  "time": "3 weeks"
+}

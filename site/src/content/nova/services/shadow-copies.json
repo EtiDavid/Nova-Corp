@@ -1,0 +1,17 @@
+{
+  "id": "shadow-copies",
+  "name": "Shadow Copies",
+  "line": "recovery",
+  "runsOn": [
+    "nova-files01"
+  ],
+  "dependsOn": [
+    "smb-ntfs"
+  ],
+  "summary": "Earlier versions of files, kept on the file server.",
+  "inNova": "Snapshots run daily at 07:00 and 12:00. A deleted file was restored from Previous Versions in CR-010.",
+  "builtBy": [
+    "CR-010"
+  ],
+  "copyStatus": "migrated"
+}

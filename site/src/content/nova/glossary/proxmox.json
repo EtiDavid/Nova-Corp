@@ -1,0 +1,14 @@
+{
+  "id": "proxmox",
+  "term": "Proxmox",
+  "aliases": [
+    "Proxmox",
+    "Proxmox VE"
+  ],
+  "short": "A virtualization environment that runs and manages virtual machines and storage.",
+  "inNova": "NOVA-PROX01 is a Proxmox virtual machine nested in VMware Workstation on the Windows host; it hosts the depicted pfSense and Windows guests.",
+  "seeAlso": [
+    "nova-prox01"
+  ],
+  "copyStatus": "migrated"
+}

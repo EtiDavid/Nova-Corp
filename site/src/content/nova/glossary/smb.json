@@ -1,0 +1,14 @@
+{
+  "id": "smb",
+  "term": "SMB",
+  "aliases": [
+    "SMB"
+  ],
+  "short": "Server Message Block is the protocol used to access Windows shared files and folders over a network.",
+  "inNova": "NOVA-CLIENT used TCP port 445 to reach NOVA-FILES01 at 10.10.20.20, even when its hostname lookup was broken.",
+  "seeAlso": [
+    "nova-files01",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "ntfs",
+  "term": "NTFS permissions",
+  "aliases": [
+    "NTFS",
+    "NTFS permissions"
+  ],
+  "short": "File system access rules applied to Windows files and directories.",
+  "inNova": "An intentionally placed explicit DENY on an IT test subfolder blocked a user despite inherited Modify access.",
+  "seeAlso": [
+    "nova-files01",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

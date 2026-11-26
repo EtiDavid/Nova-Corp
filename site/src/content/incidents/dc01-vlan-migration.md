@@ -6,6 +6,13 @@ outcome: "VLAN policy corrected; reachability restored"
 status: "tested"
 systems: ["nova-dc01", "nova-fw01", "nova-prox01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/dc01-vlan-migration.md"
+type: "real"
+cr: "CR-003"
+services: ["vlan-segmentation"]
+lines: ["network"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## What broke

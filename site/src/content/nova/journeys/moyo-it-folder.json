@@ -1,0 +1,22 @@
+{
+  "id": "moyo-it-folder",
+  "title": "Moyo opens the IT folder",
+  "featured": true,
+  "steps": [
+    {
+      "at": "nova-client",
+      "segment": null,
+      "text": "Moyo opens \\\\nova.corp\\shares\\IT from NOVA-CLIENT."
+    },
+    {
+      "at": "nova-dc01",
+      "segment": "identity:client-dc01",
+      "text": "DNS finds the file server and Kerberos issues a ticket, both from the domain controllers."
+    },
+    {
+      "at": "nova-files01",
+      "segment": "files:client-files01",
+      "text": "FILES01 checks the SMB share and NTFS permissions for IT_Users. Access allowed. Finance's folder was denied in the test."
+    }
+  ]
+}

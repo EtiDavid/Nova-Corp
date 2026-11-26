@@ -1,0 +1,14 @@
+{
+  "id": "dfs",
+  "term": "DFS namespace",
+  "aliases": [
+    "DFS",
+    "DFS namespace"
+  ],
+  "short": "A stable shared folder path that can point to different file-share targets.",
+  "inNova": "Nova Corp exposes department folders through a DFS namespace served by the file infrastructure.",
+  "seeAlso": [
+    "nova-files01"
+  ],
+  "copyStatus": "migrated"
+}

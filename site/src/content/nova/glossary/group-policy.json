@@ -1,0 +1,16 @@
+{
+  "id": "group-policy",
+  "term": "Group Policy",
+  "aliases": [
+    "Group Policy",
+    "GPO",
+    "GPOs"
+  ],
+  "short": "A Windows domain mechanism for centrally configuring selected computer and user settings.",
+  "inNova": "Nova Corp's workstation baseline configures Windows Firewall and SMBv1 settings. A separate controlled exercise disabled the wallpaper GPO link and recovered its application.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

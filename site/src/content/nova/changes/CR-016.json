@@ -1,0 +1,7 @@
+{
+  "id": "CR-016",
+  "title": "Privileged admin VPN and management-plane isolation",
+  "goal": "Proxmox, pfSense and server administration can only be reached through a separate admin tunnel used by David’s admin identity; staff VPN users and workstations cannot reach any management interface.",
+  "status": "next",
+  "time": "1–2 weeks"
+}

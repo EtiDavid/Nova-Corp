@@ -1,0 +1,51 @@
+{
+  "id": "nova-files01",
+  "name": "NOVA-FILES01",
+  "role": "File server (SMB, NTFS, DFS, Shadow Copies)",
+  "sub": "File server",
+  "kind": "server",
+  "zone": "INFRA, VLAN 20",
+  "ip": "10.10.20.20",
+  "os": "Windows Server 2025",
+  "status": "live",
+  "services": [
+    "smb-ntfs",
+    "dfs",
+    "shadow-copies",
+    "windows-server-backup"
+  ],
+  "builtBy": [
+    "CR-008",
+    "CR-009",
+    "CR-010",
+    "CR-012"
+  ],
+  "map": {
+    "col": 62,
+    "row": 42,
+    "w": 13,
+    "h": 4.4
+  },
+  "limit": "Its Windows backups sit on the same nested lab host, so this is not off-site disaster recovery.",
+  "links": [
+    {
+      "line": "recovery",
+      "to": "nova-prox01",
+      "meaning": "FILES01 backups and Shadow Copies",
+      "path": [
+        [
+          60,
+          44.2
+        ],
+        [
+          60,
+          53
+        ],
+        [
+          46.5,
+          53
+        ]
+      ]
+    }
+  ]
+}

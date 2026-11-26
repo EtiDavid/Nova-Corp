@@ -1,0 +1,7 @@
+{
+  "id": "CR-025",
+  "title": "Microsoft 365 workloads: Exchange, Teams, SharePoint and OneDrive",
+  "goal": "Every employee has a mailbox, departments have Teams and SharePoint sites with the same access boundaries as on the file server, and one department share is migrated to SharePoint.",
+  "status": "planned",
+  "time": "2–3 weeks"
+}

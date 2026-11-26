@@ -6,6 +6,14 @@ outcome: "Object converged with matching GUID and SID; replication errors return
 status: "tested"
 systems: ["nova-dc01", "nova-dc02"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/replication-divergence.md"
+type: "controlled"
+cr: "CR-013"
+services: ["replication"]
+lines: ["identity"]
+segment: { from: "nova-dc01", to: "nova-dc02", line: "identity" }
+pin: { col: 64, row: 21 }
+shortTitle: "Two online domain controllers disagreed about a new object"
+copyStatus: "migrated"
 ---
 
 ## The controlled divergence

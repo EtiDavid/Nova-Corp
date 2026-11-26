@@ -6,6 +6,14 @@ outcome: "Targeted permission repair verified"
 status: "tested"
 systems: ["nova-files01", "nova-client", "nova-dc01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/file-permission-denial.md"
+type: "blind"
+cr: "CR-014"
+services: ["smb-ntfs"]
+lines: ["files"]
+segment: null
+pin: null
+shortTitle: "The folder was visible, but access was denied"
+copyStatus: "migrated"
 ---
 
 ## The symptom

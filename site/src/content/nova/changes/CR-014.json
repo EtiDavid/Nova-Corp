@@ -1,0 +1,8 @@
+{
+  "id": "CR-014",
+  "title": "Phase incident exercises",
+  "goal": "Practised cross-service incident response.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-014_Phase_2_Incident_Exercises.md",
+  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"
+}

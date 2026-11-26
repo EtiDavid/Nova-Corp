@@ -1,0 +1,7 @@
+{
+  "id": "CR-002",
+  "title": "Deploy pfSense firewall and network foundation",
+  "goal": "Separate networks with a default-deny firewall between them.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-002.md"
+}

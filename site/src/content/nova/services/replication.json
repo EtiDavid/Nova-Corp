@@ -1,0 +1,19 @@
+{
+  "id": "replication",
+  "name": "Active Directory replication",
+  "line": "identity",
+  "runsOn": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "dependsOn": [
+    "active-directory"
+  ],
+  "summary": "Keeps the two domain controllers' copies of the directory in step.",
+  "inNova": "DC01 and DC02 replicate with each other. In CR-013 replication was disabled on DC02 on purpose to see the divergence, then repaired and checked.",
+  "builtBy": [
+    "CR-004",
+    "CR-013"
+  ],
+  "copyStatus": "migrated"
+}

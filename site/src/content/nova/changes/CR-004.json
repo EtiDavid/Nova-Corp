@@ -1,0 +1,7 @@
+{
+  "id": "CR-004",
+  "title": "Additional domain controller and high availability",
+  "goal": "Logins keep working when one domain controller is down.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-004.md"
+}

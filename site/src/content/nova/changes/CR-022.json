@@ -1,0 +1,7 @@
+{
+  "id": "CR-022",
+  "title": "Internal certificate authority (AD CS)",
+  "goal": "Nova Corp has its own two-tier certificate authority, the intranet loads without warnings on every domain computer, and the domain controllers serve LDAPS for the Linux servers.",
+  "status": "planned",
+  "time": "2 weeks"
+}

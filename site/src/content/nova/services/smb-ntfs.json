@@ -1,0 +1,18 @@
+{
+  "id": "smb-ntfs",
+  "name": "SMB and NTFS permissions",
+  "line": "files",
+  "runsOn": [
+    "nova-files01"
+  ],
+  "dependsOn": [
+    "active-directory"
+  ],
+  "summary": "The two checks that decide who can open a shared folder.",
+  "inNova": "FILES01 shares five department folders. Access needs both a share permission and an NTFS permission, so a user can see a folder and still be denied.",
+  "builtBy": [
+    "CR-008",
+    "CR-009"
+  ],
+  "copyStatus": "migrated"
+}

@@ -1,0 +1,7 @@
+{
+  "id": "CR-035",
+  "title": "Hyper-V and vSphere familiarisation",
+  "goal": "Basic confidence with Hyper-V and vSphere consoles by translating Proxmox concepts, without building a second company.",
+  "status": "planned",
+  "time": "1–2 weeks"
+}

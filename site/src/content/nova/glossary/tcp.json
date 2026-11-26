@@ -1,0 +1,15 @@
+{
+  "id": "tcp",
+  "term": "TCP port",
+  "aliases": [
+    "TCP",
+    "TCP port"
+  ],
+  "short": "A numbered endpoint used by applications to accept certain types of network connection.",
+  "inNova": "TCP port 445 was checked directly on NOVA-FILES01 to isolate SMB reachability from client DNS resolution.",
+  "seeAlso": [
+    "nova-files01",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

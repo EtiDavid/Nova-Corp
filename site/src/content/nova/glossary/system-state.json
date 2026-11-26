@@ -1,0 +1,14 @@
+{
+  "id": "system-state",
+  "term": "System State backup",
+  "aliases": [
+    "System State",
+    "System State backup"
+  ],
+  "short": "A Windows backup of critical system configuration components.",
+  "inNova": "NOVA-DC01 has System State backup configuration and recorded versions, but a complete System State restore was not demonstrated.",
+  "seeAlso": [
+    "nova-dc01"
+  ],
+  "copyStatus": "migrated"
+}

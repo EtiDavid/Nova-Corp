@@ -6,6 +6,13 @@ outcome: "Authenticated tunnel restored in historical test"
 status: "tested"
 systems: ["nova-fw01", "nova-client", "nova-dc01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/wireguard-handshake.md"
+type: "real"
+cr: "CR-007"
+services: []
+lines: ["network"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## The symptom

@@ -6,6 +6,19 @@ outcome: "Directory continuity verified"
 status: "tested"
 systems: ["nova-dc01", "nova-dc02", "nova-client"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/domain-controller-outage.md"
+type: "controlled"
+cr: "CR-013"
+services: ["active-directory", "dns", "kerberos"]
+lines: ["identity"]
+segment: null
+pin: { col: 70.8, row: 10.8 }
+featured: 2
+shortTitle: "DC01 went offline. Sign-ins kept working through DC02."
+saw: "I took the main domain controller offline on purpose."
+cause: "A controlled outage: the question was whether sign-ins depend on DC01."
+fix: "No repair was needed: the workstation found DC02 and kept working."
+proof: "I checked Active Directory replication after DC01 came back."
+copyStatus: "rewritten"
 ---
 
 ## The situation

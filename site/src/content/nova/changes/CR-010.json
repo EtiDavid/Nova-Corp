@@ -1,0 +1,7 @@
+{
+  "id": "CR-010",
+  "title": "DFS and Shadow Copies",
+  "goal": "One path to all shares; users can restore their own files.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"
+}

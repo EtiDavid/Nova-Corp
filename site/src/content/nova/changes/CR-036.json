@@ -1,0 +1,7 @@
+{
+  "id": "CR-036",
+  "title": "Incident campaign and timed rebuild",
+  "goal": "Nova Corp keeps operating through a day of simultaneous, unscripted faults, and one Windows and one Linux server are rebuilt from code and backup within a measured time.",
+  "status": "planned",
+  "time": "3–4 weeks"
+}

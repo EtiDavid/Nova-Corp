@@ -6,6 +6,13 @@ outcome: "Rollback and clean five-user onboarding verified"
 status: "tested"
 systems: ["nova-dc01", "nova-dc02"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/bulk-users-partial-rollback.md"
+type: "real"
+cr: "CR-011"
+services: ["active-directory"]
+lines: ["identity"]
+segment: null
+pin: null
+copyStatus: "migrated"
 ---
 
 ## The unexpected result

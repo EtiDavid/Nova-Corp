@@ -1,0 +1,17 @@
+{
+  "id": "dns",
+  "name": "DNS",
+  "line": "identity",
+  "runsOn": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "dependsOn": [],
+  "summary": "Turns names into addresses for the whole domain.",
+  "inNova": "DNS for nova.corp runs on DC01 (10.10.20.10) and DC02 (10.10.20.11), and workstations use both. When a workstation could not resolve FILES01, the share looked down even though the server was fine.",
+  "builtBy": [
+    "CR-003",
+    "CR-004"
+  ],
+  "copyStatus": "migrated"
+}

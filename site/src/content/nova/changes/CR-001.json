@@ -1,0 +1,7 @@
+{
+  "id": "CR-001",
+  "title": "Deploy Proxmox Virtual Environment",
+  "goal": "A platform to run every company server on.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-001.md"
+}

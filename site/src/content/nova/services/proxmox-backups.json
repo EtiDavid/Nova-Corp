@@ -1,0 +1,15 @@
+{
+  "id": "proxmox-backups",
+  "name": "Proxmox backups",
+  "line": "recovery",
+  "runsOn": [
+    "nova-prox01"
+  ],
+  "dependsOn": [],
+  "summary": "Archives and snapshots of the virtual machines.",
+  "inNova": "A monthly job archives VMs 100 and 101. Snapshots are rollback points, not backups; retiring 20 old ones took the storage from 86.73% to 52.88%.",
+  "builtBy": [
+    "CR-015"
+  ],
+  "copyStatus": "migrated"
+}
