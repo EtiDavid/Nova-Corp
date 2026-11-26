@@ -258,7 +258,7 @@ html:not(.js) .sysdata { display:block; border-top:1px solid var(--rule); paddin
 .xf-svg .guide { fill:none; stroke:var(--rule); stroke-width:3; stroke-dasharray:3 9; stroke-linecap:round; }
 .xf-svg .lbl { font-size:15px; font-weight:700; text-anchor:middle; } .xf-svg .sub { font-size:12.5px; fill:var(--muted); text-anchor:middle; }
 .xf-svg .small { font-size:13px; font-weight:600; text-anchor:middle; }
-.xf-svg .bubble { fill:var(--surface); stroke:var(--ink); stroke-width:2.2; } .xf-svg .bubble-t { font-size:13.5px; font-weight:600; text-anchor:middle; }
+.xf-svg .bubble { fill:var(--surface); stroke:var(--st,var(--ink)); stroke-width:2.2; } .xf-svg .bubble-t { font-size:13.5px; font-weight:600; text-anchor:middle; }
 .xf-svg .pill { fill:var(--soft); stroke:var(--ink); stroke-width:2; }
 .xf-svg .dot { stroke:var(--surface); stroke-width:3; }
 .xf-svg .band { fill:var(--soft); stroke:var(--rule); }

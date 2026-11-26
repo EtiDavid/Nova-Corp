@@ -1,0 +1,47 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const door = (n: number, on: string[]) => [{t:"show",ids:on},{t:"glide",path:"p"+n,dot:"d1",ms:900,keep:true}];
+const scenarios = [
+  { id: "allowed", label: "Allowed in", steps: [
+    { say: "A person in the right group wants to open a department folder.", why: "They type the name they always use. They do not need to know which server holds it.", do: [{t:"show",ids:["me","l-me","fldr","l-fldr"]}] },
+    { say: "Door 1: the name is looked up.", why: "DFS turns the friendly name into the real location on the file server.", do: door(1,["k1","l-k1"]).concat([{t:"state",id:"k1",value:"good"}]) },
+    { say: "Door 2: the share checks the list of who may connect.", why: "Their group is on the list, so the door opens.", do: door(2,["k2","l-k2"]).concat([{t:"state",id:"k2",value:"good"}]) },
+    { say: "Door 3: the folder itself checks its own permissions.", why: "Both lists must agree. Here they do.", do: door(3,["k3","l-k3"]).concat([{t:"state",id:"k3",value:"good"}]) },
+    { say: "The folder opens.", why: "Recorded as a working access test.", do: [{t:"glide",path:"p4",dot:"d1",ms:900,keep:true},{t:"show",ids:["ok"]},{t:"state",id:"fldr",value:"good"}] },
+  ]},
+  { id: "denied", label: "Not in the group", steps: [
+    { say: "Someone who is not in the group tries the same folder.", do: [{t:"show",ids:["me","l-me","fldr","l-fldr"]}] },
+    { say: "Doors 1 and 2 may let them reach the share.", why: "Finding the folder and connecting to the share are not the same as being allowed to read it.", do: door(1,["k1","l-k1"]).concat(door(2,["k2","l-k2"])) },
+    { say: "Door 3 stays shut.", why: "The folder permissions do not list their group, so access is denied.", do: door(3,["k3","l-k3"]).concat([{t:"state",id:"k3",value:"bad"},{t:"show",ids:["no3"]}]) },
+  ]},
+  { id: "deny", label: "One folder blocked on purpose", steps: [
+    { say: "A person who may use the department share opens a subfolder that was blocked on purpose.", do: [{t:"show",ids:["me","l-me","fldr","l-fldr"]}] },
+    { say: "Doors 1 and 2 let them in.", do: door(1,["k1","l-k1"]).concat(door(2,["k2","l-k2"])) },
+    { say: "At door 3 an explicit Deny rule on that subfolder wins.", why: "In Windows a Deny beats an Allow. CR-014 tested this and recorded the result.", do: door(3,["k3","l-k3"]).concat([{t:"state",id:"k3",value:"bad"},{t:"show",ids:["no3"]}]) },
+  ]},
+];
+---
+<Explainer id="xf-files" title="Three doors between a person and a folder"
+  intro="To open a folder on the file server, three checks must all say yes."
+  scenarios={scenarios} alt="Animated diagram: a person passes three doors, name lookup, share permission and folder permission, to reach a folder on FILES01."
+  note="Based on the permission tests recorded in CR-014. Nothing here is live."
+  evidence={[{label:"Change CR-014", href:"/changes/CR-014/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <path class="guide" data-id="p1" d="M110 220 L230 220"/>
+  <path class="guide" data-id="p2" d="M230 220 L400 220"/>
+  <path class="guide" data-id="p3" d="M400 220 L570 220"/>
+  <path class="guide" data-id="p4" d="M570 220 L690 220"/>
+  <g data-id="me" data-hide><use href="#ic-person" x="50" y="190" width="50" height="55"/></g><text data-id="l-me" data-hide class="small" x="75" y="268">A person</text>
+  <g data-id="k1" data-hide><rect class="bubble" x="190" y="130" width="80" height="180" rx="10"/><use href="#ic-globe" x="206" y="190" width="48" height="48"/></g>
+  <text data-id="l-k1" data-hide class="small" x="230" y="104">1 · Where is it?</text>
+  <g data-id="k2" data-hide><rect class="bubble" x="360" y="130" width="80" height="180" rx="10"/><use href="#ic-lock" x="380" y="190" width="40" height="48"/></g>
+  <text data-id="l-k2" data-hide class="small" x="400" y="104">2 · Share list</text>
+  <g data-id="k3" data-hide><rect class="bubble" x="530" y="130" width="80" height="180" rx="10"/><use href="#ic-lock" x="550" y="190" width="40" height="48"/></g>
+  <text data-id="l-k3" data-hide class="small" x="570" y="104">3 · Folder list</text>
+  <g data-id="fldr" data-hide><use href="#ic-folder" x="680" y="190" width="80" height="64"/></g><text data-id="l-fldr" data-hide class="small" x="720" y="278">Folder on FILES01</text>
+  <g data-id="ok" data-hide><use href="#ic-check" x="700" y="130" width="40" height="40"/></g>
+  <g data-id="no3" data-hide><use href="#ic-x" x="550" y="322" width="40" height="40"/><text class="small" x="570" y="388">Denied</text></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-files)"/>
+</Explainer>

@@ -3,6 +3,10 @@
 // what broke here, which changes built it, and its one limit. The long technical profile follows below it.
 import { loadNova } from "../../lib/nova";
 import DcSignIn from "./xf/DcSignIn.astro";
+import FilesDoors from "./xf/FilesDoors.astro";
+import FirewallRules from "./xf/FirewallRules.astro";
+import ProxmoxLayers from "./xf/ProxmoxLayers.astro";
+import WorkstationReach from "./xf/WorkstationReach.astro";
 interface Props { id: string; asOf: string }
 const { id, asOf } = Astro.props;
 const nova = await loadNova();
@@ -33,5 +37,9 @@ const lineNames = s.lines.map((l: string) => nova.lineMap[l].name);
     <div><dt>Built in</dt><dd>{s.builtBy.map((c: string, n: number) => <>{n ? ", " : ""}<a href={base + "changes/" + c + "/"}>{c}</a></>)}</dd></div>
   </dl>
   {(id === "nova-dc01" || id === "nova-dc02") && <DcSignIn />}
+  {id === "nova-files01" && <FilesDoors />}
+  {id === "nova-fw01" && <FirewallRules />}
+  {id === "nova-prox01" && <ProxmoxLayers />}
+  {id === "nova-client" && <WorkstationReach />}
   <h2 style="margin-top:40px">Full profile and evidence</h2>
 </div></section>

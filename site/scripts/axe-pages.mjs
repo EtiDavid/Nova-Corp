@@ -14,7 +14,8 @@ const bin = process.env.CHROME_PATH || execFileSync("which", ["google-chrome"]).
 const routes = [];
 (function walk(d) { for (const e of readdirSync(d, { withFileTypes: true })) { const p = join(d, e.name); if (e.isDirectory()) { if (!["_astro", "audit", "pdf-evidence", "journal-figures", "references", "evidence", "pdf-journals"].includes(e.name)) walk(p); } else if (e.name === "index.html") { const t = readFileSync(p, "utf8"); if (!/http-equiv="refresh"/i.test(t)) routes.push("/" + p.slice(dist.length + 1, -10)); } } })(dist);
 const sections = new Map(); routes.sort().forEach(r => { const k = r.split("/")[1] || "home"; (sections.get(k) ?? sections.set(k, []).get(k)).push(r); });
-const sample = all ? routes : [...sections.values()].flatMap(list => list.length > 3 ? [list[0], list[Math.floor(list.length / 2)], list.at(-1)] : list);
+const only = args.find(a => a.startsWith("--only="))?.slice(7);
+const sample = only ? routes.filter(r => r.startsWith(only)) : all ? routes : [...sections.values()].flatMap(list => list.length > 3 ? [list[0], list[Math.floor(list.length / 2)], list.at(-1)] : list);
 const server = spawn("npm", ["run", "preview", "--", "--host", "127.0.0.1", "--port", "4390"], { stdio: "ignore" });
 const results = new Map(); let pages = 0;
 try {
