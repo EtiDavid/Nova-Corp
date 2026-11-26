@@ -1,38 +1,125 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import ScrollableLabSandbox from "../components/ScrollableLabSandbox.astro";
-import {labStories} from "../data/labStories";
-import LabIncidentLibrary from "../components/LabIncidentLibrary.astro";
+import NovaLayout from "../layouts/NovaLayout.astro";
+import MapSvg from "../components/nova/MapSvg.astro";
+import MobileLines from "../components/nova/MobileLines.astro";
+import { stations, zoneVlans, markers, journey, lines } from "../data/novaMap";
+import road from "../data/roadmap.json";
+import { getCollection } from "astro:content";
 const base = import.meta.env.BASE_URL;
+const incidents = (await getCollection("incidents")).filter((e: any) => e.data.status !== "deferred");
+const cases = [
+  { slug: "dns-client-outage", type: "blind", label: "Blind test", title: "The file server looked down. It was DNS.",
+    saw: "The IT share would not open, so it looked like the file server had failed.",
+    wrong: "The workstation's DNS pointed at a wrong server. The file server itself answered on port 445.",
+    fix: "I put the two domain controllers back as the DNS servers and cleared the resolver cache.",
+    proof: "The share opened again: Test-Path returned True." },
+  { slug: "dc01-outage", type: "controlled", label: "Controlled", title: "DC01 went offline. The company kept working.",
+    saw: "I took the main domain controller offline on purpose.",
+    wrong: "Nothing was broken beyond that; the test asked whether sign-ins depend on DC01.",
+    fix: "No repair was needed: the workstation found DC02 and kept working.",
+    proof: "I checked Active Directory replication after DC01 came back." },
+  { slug: "backup-target-unavailable", type: "blind", label: "Blind test", title: "The backup disk disappeared. The file came back.",
+    saw: "The backup target was gone and the backup failed.",
+    wrong: "The backup destination was unavailable, so no new backup could be written.",
+    fix: "I repaired the target and ran a fresh backup.",
+    proof: "A deleted file was restored with the same SHA-256 hash as the original." }
+];
+const homeMarkers = markers.filter(m => m.home);
+const counts = [
+  { n: stations.length, t: "systems on the map" }, { n: zoneVlans.length, t: "VLANs, from 10 to 50" },
+  { n: road.done.length, t: "change requests completed" }, { n: incidents.length, t: "incidents documented" }
+];
+const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
 ---
-<BaseLayout title="Home" description="Explore the enterprise infrastructure David Eti built, validated and deliberately tested through real troubleshooting investigations.">
-  <section class="exp-hero atlas-home" aria-labelledby="exp-headline">
-    <div class="container atlas-intro" data-reveal>
-      <div class="atlas-intro-top">
-        <span class="exp-eyebrow">Nova Corp / A real infrastructure home lab</span>
-        <span class="atlas-portfolio-mark">BUILT · BROKEN · RECOVERED</span>
-      </div>
-      <div class="atlas-intro-layout">
-        <div>
-          <h1 id="exp-headline">I built the infrastructure. <em>Then I tested what happens when it fails.</em></h1>
-          <p class="exp-subtitle">I’m David Eti, a hands-on infrastructure and systems engineer seeking junior roles. Nova Corp is my enterprise-style home lab on one physical host, built to demonstrate troubleshooting, security, automation and recovery.</p>
-        </div>
-        <div class="atlas-intro-aside">
-          <div class="button-row" aria-label="Start exploring the Nova Corp lab">
-            <a class="btn" href={base+"tour/#recruiter"}>Two-minute overview <span aria-hidden="true">→</span></a>
-            <a class="btn ghost" href={base+"tour/"}>Take the guided tour <span aria-hidden="true">→</span></a>
-          </div><div class="candidate-links"><a href={base+"David_Eti_Systems_Infrastructure_CV.pdf"}>Download CV</a><a href={base+"about/"}>About &amp; contact</a></div>
-        </div>
-      </div>
-      <div class="candidate-metrics"><span><strong>6</strong> virtual machines</span><span><strong>5</strong> VLANs</span><span><strong>{labStories.filter(s=>s.kind!=="deferred").length}</strong> documented completed tests and incidents</span></div>
-      <section class="recruiter-feature" aria-label="Featured engineering investigations"><h2>Three things I proved</h2><div class="card-list">{[["A server went offline. Could employees still work?","I verified sign-in and file access through the surviving controller.","dc01-outage"],["A document disappeared. Could I recover it?","I restored a deleted file and verified its contents matched.","backup-target-unavailable"],["An employee could reach management tools.","I corrected firewall rule order and retested required access.","firewall-management-exposure"]].map(([title,desc,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h3>{title}</h3><p>{desc}</p><span class="readmore">Read investigation →</span></a>)}</div><p><a href="#hx-explorer">Explore the infrastructure diagram ↓</a> · <a href={base+"incidents/"}>All investigations →</a></p></section>
+<NovaLayout title="Home" description="David Eti built a small company's IT infrastructure and then tested what happens when it fails. Windows Server, Active Directory, pfSense and Proxmox, with the incidents and proof." current="">
+  <section class="hero2"><div class="wrap">
+    <div class="eyebrow">Nova Corp · built and tested by David Eti</div>
+    <h1>I built the infrastructure. Then I tested what happens when it fails.</h1>
+    <p class="lead">I'm David Eti. Nova Corp is a small fictional company whose IT runs on a real lab I built: Windows Server, Active Directory, pfSense and Proxmox.</p>
+    <p class="availability">Looking for sysadmin / infrastructure / DevOps roles in Belgium &amp; the Netherlands. Available now.</p>
+    <div class="actions">
+      <a class="nv-btn primary" href={cv}>Download CV</a>
+      <a class="nv-btn secondary" href="#broke">See what broke</a>
+      <a class="nv-link" href="mailto:etidavid26@gmail.com">Contact</a>
     </div>
-    <div class="atlas-wide">
-      <ScrollableLabSandbox />
+  </div></section>
+
+  <section class="sec" id="broke" aria-labelledby="h-broke"><div class="wrap">
+    <h2 id="h-broke">What broke, and how I fixed it</h2>
+    <p class="sub">Three of the strongest cases. Each one has the commands and results behind it.</p>
+    <div class="cards3">
+      {cases.map(c => (
+        <article class="icard">
+          <span class={"type " + c.type}>{c.label}</span>
+          <h3>{c.title}</h3>
+          <dl>
+            <dt>What I saw</dt><dd>{c.saw}</dd>
+            <dt>What was wrong</dt><dd>{c.wrong}</dd>
+            <dt>How I fixed it</dt><dd>{c.fix}</dd>
+            <dt>How I proved it</dt><dd>{c.proof}</dd>
+          </dl>
+          <a class="more" href={base + "incidents/" + c.slug + "/"}>Read the case <span aria-hidden="true">→</span></a>
+        </article>
+      ))}
     </div>
-  </section>
+    <p style="margin-top:20px"><a class="nv-link" href={base + "incidents/"}>All {incidents.length} incidents <span aria-hidden="true">→</span></a></p>
+  </div></section>
 
-  <LabIncidentLibrary />
-</BaseLayout>
+  <section class="sec" aria-labelledby="h-map"><div class="wrap nl-wrap">
+    <h2 id="h-map">How the lab fits together</h2>
+    <p class="sub">Each colored line is one thing the lab does. Numbered pins mark where something broke.</p>
+    <div class="map-card">
+      <MapSvg id="nl-home" showMarkers="home" journey label="Line map of the Nova Corp lab: a workstation, a firewall, two domain controllers, a file server and the Proxmox host that runs them, with three incident pins." />
+      <div class="legend2" aria-label="Lines">
+        {(Object.keys(lines) as (keyof typeof lines)[]).map(l => <span><i class={l === "recovery" ? "dotted" : ""} style={`border-color:var(${lines[l].token})`}></i>{lines[l].name}</span>)}
+        <span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="var(--broken)"/></svg>Incident pin</span>
+      </div>
+      <p class="journey-text" id="journey-text" aria-live="polite"></p>
+      <div class="journey-controls"><button class="nv-btn secondary small" id="replay" type="button">Replay: {journey.title}</button></div>
+      <ol class="journey-ol tiny">{journey.steps.map(s => <li>{s.text}</li>)}</ol>
+    </div>
+    <MobileLines />
+    <ol class="tiny" style="margin:14px 0 0;padding-left:18px">{homeMarkers.map(m => <li><a href={base + "incidents/" + m.slug + "/"}>{m.title}</a></li>)}</ol>
+    <p class="caption">Diagram of how services depend on each other, not physical cabling.</p>
+    <p style="margin-top:16px"><a class="nv-link" href={base + "map/"}>Open the full map <span aria-hidden="true">→</span></a></p>
+  </div></section>
 
-<style>.candidate-links{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}.candidate-metrics{display:flex;flex-wrap:wrap;gap:14px 28px;margin:26px 0;color:var(--muted,#c5c7bb)}.candidate-metrics span{display:flex;align-items:baseline;gap:7px}.candidate-metrics strong{color:#dfc291;font-size:1.55rem}.recruiter-feature{margin:28px 0 34px}.recruiter-feature h2{margin-bottom:14px}.recruiter-feature .card-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.recruiter-feature .system-card{min-width:0}.recruiter-feature p{margin:12px 0}.recruiter-feature .system-card h3{font-size:1.05rem;line-height:1.35}@media(max-width:720px){.recruiter-feature .card-list{grid-template-columns:1fr}}</style>
+  <section class="sec" aria-labelledby="h-lab"><div class="wrap">
+    <h2 id="h-lab">What's in the lab</h2>
+    <div class="counts" style="margin-top:16px">{counts.map(c => <div><b>{c.n}</b><span>{c.t}</span></div>)}</div>
+  </div></section>
+
+  <script is:inline define:vars={{ steps: journey.steps }}>
+  (function () {
+    var svg = document.getElementById("nl-home"), dot = document.getElementById("dot"), tick = document.getElementById("tick");
+    var text = document.getElementById("journey-text"), replay = document.getElementById("replay");
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, running = false;
+    document.querySelector(".journey-ol").style.display = "";
+    function seg(id) { return svg.querySelector('[data-seg="' + id + '"]'); }
+    function setDot(p, pt) { p.setAttribute("cx", pt.x); p.setAttribute("cy", pt.y); }
+    function endState() { var f = seg("files:client-files01"); setDot(dot, f.getPointAtLength(f.getTotalLength())); tick.setAttribute("opacity", "1"); text.textContent = steps[2].text; }
+    function glide(path, forward, ms) {
+      return new Promise(function (res) {
+        var L = path.getTotalLength(), t0 = performance.now();
+        (function frame(now) {
+          var k = Math.min(1, (now - t0) / ms); var d = forward ? k * L : (1 - k) * L;
+          setDot(dot, path.getPointAtLength(d)); if (k < 1) requestAnimationFrame(frame); else res();
+        })(t0);
+      });
+    }
+    var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+    async function play() {
+      if (running) return; running = true; tick.setAttribute("opacity", "0");
+      var a = seg("identity:client-dc01"), f = seg("files:client-files01");
+      text.textContent = steps[0].text; setDot(dot, a.getPointAtLength(0)); await wait(500);
+      text.textContent = steps[1].text; await glide(a, true, 1100); await wait(700); await glide(a, false, 700);
+      text.textContent = steps[2].text; await glide(f, true, 1300); tick.setAttribute("opacity", "1"); running = false;
+    }
+    if (reduce) { endState(); } else {
+      var seen = false; var io = new IntersectionObserver(function (e) { if (e[0].isIntersecting && !seen) { seen = true; play(); } }, { threshold: .5 });
+      io.observe(svg); setDot(dot, seg("identity:client-dc01").getPointAtLength(0)); text.textContent = steps[0].text;
+    }
+    replay.addEventListener("click", function () { if (reduce) { endState(); } else { play(); } });
+  })();
+  </script>
+</NovaLayout>

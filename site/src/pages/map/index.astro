@@ -1,0 +1,84 @@
+---
+import NovaLayout from "../../layouts/NovaLayout.astro";
+import MapSvg from "../../components/nova/MapSvg.astro";
+import MobileLines from "../../components/nova/MobileLines.astro";
+import { stations, lines, incidentTitles, type LineId } from "../../data/novaMap";
+const base = import.meta.env.BASE_URL;
+const titleOf = (slug: string) => incidentTitles[slug] ?? slug.replace(/-/g, " ");
+const lineIds = Object.keys(lines) as LineId[];
+---
+<NovaLayout title="Map" description="The Nova Corp lab drawn as a line map: select a system to see what it does, what it connects to and what broke there." current="map">
+  <section class="hero2" style="padding-bottom:16px"><div class="wrap">
+    <div class="eyebrow">Map</div>
+    <h1>How does everything connect?</h1>
+    <p class="lead">Pick a line to follow one thing the lab does, or select a system.</p>
+  </div></section>
+  <section class="wrap" style="padding-bottom:40px">
+    <div class="maplay">
+      <div class="nl-wrap">
+        <div class="map-card">
+          <div class="legend2" id="line-filter" role="group" aria-label="Show one line">
+            {lineIds.map(l => <button type="button" data-line={l} aria-pressed="false"><i class={l === "recovery" ? "dotted" : ""} style={`border-color:var(${lines[l].token})`}></i>{lines[l].name}</button>)}
+          </div>
+          <p class="tiny" id="line-note" aria-live="polite" style="padding:0 6px">All lines shown.</p>
+          <MapSvg id="nl-full" interactive showMarkers="all" label="Interactive line map of the Nova Corp lab. Select a system to see its details." />
+          <p class="caption">Diagram of how services depend on each other, not physical cabling. Numbered pins mark incidents.</p>
+        </div>
+        <MobileLines />
+      </div>
+      <aside class="panel" id="panel" aria-live="polite" aria-label="Selected system">
+        <p id="panel-empty" class="tiny">Select a system on the map, or from the list below, to see what it does and what broke there.</p>
+        {stations.map(s => (
+          <div class="sysdata" id={"sys-" + s.id} data-id={s.id} tabindex="-1">
+            <h2>{s.name}</h2>
+            <p>{s.role}</p>
+            <h4>Where</h4><p>{s.zone}{s.ip ? " · " + s.ip : ""}</p>
+            <h4>On these lines</h4>
+            <p>{s.lines.map(l => lines[l].name).join(", ")}</p>
+            <h4>What broke here</h4>
+            <ul>{s.incidents.map(i => <li><a href={base + "incidents/" + i + "/"}>{titleOf(i)}</a></li>)}</ul>
+            <h4>Built in</h4><p class="mono">{s.builtBy.join(", ")}</p>
+            <h4>Limit</h4><p>{s.limit}</p>
+            <p style="margin-top:14px"><a class="nv-link" href={base + "systems/" + s.slug + "/"}>Open the full record <span aria-hidden="true">→</span></a></p>
+          </div>
+        ))}
+      </aside>
+    </div>
+    <h2 style="margin-top:40px;font-size:1.25rem">All systems</h2>
+    <ul class="tiny" style="margin:10px 0 0;padding-left:18px;font-size:1rem">
+      {stations.map(s => <li><a href={base + "systems/" + s.slug + "/"}>{s.name}</a>: {s.role}</li>)}
+    </ul>
+  </section>
+  <script is:inline define:vars={{ ids: stations.map(s => s.id), lineNames: Object.fromEntries(Object.entries(lines).map(([k, v]) => [k, v.question])) , stLines: Object.fromEntries(stations.map(s => [s.id, s.lines]))}}>
+  (function () {
+    var svg = document.getElementById("nl-full");
+    var nodes = [].slice.call(svg.querySelectorAll(".stn")), segs = [].slice.call(svg.querySelectorAll(".seg"));
+    var panels = [].slice.call(document.querySelectorAll(".sysdata")), empty = document.getElementById("panel-empty");
+    var chips = [].slice.call(document.querySelectorAll("#line-filter button")), note = document.getElementById("line-note");
+    var state = { line: null, focus: null }, opener = null;
+    function url() { var q = new URLSearchParams(); if (state.line) q.set("line", state.line); if (state.focus) q.set("focus", state.focus); var s = q.toString(); return location.pathname + (s ? "?" + s : ""); }
+    function render() {
+      chips.forEach(function (c) { c.setAttribute("aria-pressed", c.dataset.line === state.line ? "true" : "false"); });
+      note.textContent = state.line ? lineNames[state.line] : "All lines shown.";
+      segs.forEach(function (s) { s.classList.toggle("dim", !!state.line && s.dataset.line !== state.line); });
+      nodes.forEach(function (n) {
+        var inLine = !state.line || stLines[n.dataset.id].indexOf(state.line) >= 0;
+        n.classList.toggle("dim", !inLine); var sel = n.dataset.id === state.focus;
+        n.classList.toggle("sel", sel); n.setAttribute("aria-pressed", sel ? "true" : "false");
+      });
+      panels.forEach(function (p) { p.classList.toggle("on", p.dataset.id === state.focus); });
+      empty.style.display = state.focus ? "none" : "";
+    }
+    function set(next, push) { var ch = next.line !== state.line || next.focus !== state.focus; state = next; render(); if (push && ch) history.pushState(null, "", url()); }
+    function read() { var q = new URLSearchParams(location.search); var l = q.get("line"), f = q.get("focus"); return { line: lineNames[l] ? l : null, focus: ids.indexOf(f) >= 0 ? f : null }; }
+    nodes.forEach(function (n) {
+      n.addEventListener("click", function () { opener = n; set({ line: state.line, focus: n.dataset.id }, true); });
+      n.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); opener = n; set({ line: state.line, focus: n.dataset.id }, true); } });
+    });
+    chips.forEach(function (c) { c.addEventListener("click", function () { set({ line: state.line === c.dataset.line ? null : c.dataset.line, focus: state.focus }, true); }); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && state.focus) { var o = opener; set({ line: state.line, focus: null }, true); if (o) o.focus(); } });
+    window.addEventListener("popstate", function () { state = read(); render(); });
+    state = read(); render();
+  })();
+  </script>
+</NovaLayout>

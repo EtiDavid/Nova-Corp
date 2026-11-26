@@ -1,0 +1,22 @@
+---
+import { stations, lines, stationById, type LineId } from "../../data/novaMap";
+// Mobile replacement for the map: one vertical list per line, generated from the same data.
+const order: Record<LineId, string[]> = {
+  platform: ["nova-prox01"], network: ["nova-client", "nova-fw01", "nova-dc01", "nova-dc02", "nova-files01"],
+  identity: ["nova-client", "nova-dc01", "nova-dc02"], files: ["nova-client", "nova-files01"], recovery: ["nova-files01", "nova-dc01", "nova-prox01"]
+};
+const base = import.meta.env.BASE_URL;
+const why: Record<LineId, string> = {
+  platform: "Proxmox runs every virtual machine.", network: "Traffic passes the firewall between VLANs.",
+  identity: "DNS and sign-in come from the domain controllers.", files: "Shared folders are opened on FILES01.", recovery: "Backups and restore points."
+};
+---
+<div class="mobile-lines">
+  {(Object.keys(lines) as LineId[]).map(l => (
+    <section class={"mline" + (l === "recovery" ? " rec" : "")} style={`--c:var(${lines[l].token})`} aria-labelledby={"ml-" + l}>
+      <h3 id={"ml-" + l}><i style={`border-color:var(${lines[l].token})`}></i>{lines[l].name} line</h3>
+      <p class="tiny" style="margin:0 0 8px">{why[l]}</p>
+      <ol>{order[l].map(id => { const s = stationById(id); return <li><a href={base + "systems/" + s.slug + "/"}>{s.name}</a><small>{s.role}</small></li>; })}</ol>
+    </section>
+  ))}
+</div>

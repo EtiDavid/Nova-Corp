@@ -1,0 +1,34 @@
+---
+title: "Shadow Copies & VSS — Earlier versions of files"
+sourcePath: "docs/explore/services/VSS.md"
+sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/services/VSS.md"
+section: "explore"
+---
+
+# Shadow Copies & VSS — Earlier versions of files
+
+**VSS (Volume Shadow Copy Service)** helps Windows create consistent snapshots for backup and previous-version recovery.
+
+Nova Corp uses Shadow Copies for file-service recovery alongside Windows Server Backup. These are different layers.
+
+## Two recovery questions
+
+**"I changed a document and want an older version."** Check Previous Versions / Shadow Copies where available.
+
+**"The file is gone or the earlier version isn't available."** Use the Windows Server Backup recovery path.
+
+**[View the 30 recorded Shadow Copy points](/reference/explore/files/VSS/)**. They are recorded across two Windows volume identifiers; their existence alone is not a full-restore test.
+
+## Where it runs
+
+[NOVA-FILES01](/reference/explore/systems/NOVA-FILES01/).
+
+VSS may be stopped when idle because it uses an on-demand service model; a stopped/manual service alone is not evidence of a failure.
+
+## Related tests
+
+An earlier-version test saved a Shadow Copy of a file, changed the live version, then retrieved the earlier content from the snapshot. The earlier version's SHA-256 matched the original while the changed live file's hash did not. [Explore the actual previous-version recovery](/reference/explore/files/SHADOW_COPY_RECOVERY/).
+
+In a separate [backup incident](/reference/explore/incidents/backup-target-disappears/), Windows Server Backup lost its target disk, recovered after the disk returned, and restored a deleted file. That result must not be confused with the Shadow Copy test.
+
+[Read DFS/Shadow Copies PDF](/journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED/) · [Backup and restore](/reference/explore/services/BACKUPS/).
