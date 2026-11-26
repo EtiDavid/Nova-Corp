@@ -209,3 +209,7 @@ html:not(.js) .sysdata { display:block; border-top:1px solid var(--rule); paddin
 .nv .incident-source-document pre, .nv .reference-content pre, .nv .incident-full-source pre { background:#0F1720!important; color:#E8EEF5; }
 .nv .incident-source-document pre code, .nv .reference-content pre code { color:#E8EEF5; }
 .nv .incident-source-document pre code span:not([style]), .nv .reference-content pre code span:not([style]) { color:#E8EEF5; }
+/* old incident-record chrome, restyled for the Nova pages */
+.nv .incident-sidebar-journal { background:none!important; border:0!important; padding:0!important; box-shadow:none!important; }
+.nv .incident-sidebar-journal p { margin:6px 0; }
+.nv .incident-master-link { display:inline!important; background:none!important; border:0!important; padding:0!important; color:var(--ink)!important; font-weight:600; text-decoration:underline; }
