@@ -1,0 +1,43 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const base = import.meta.env.BASE_URL;
+const all = ["pc","l-pc","fw","l-fw","dc1","l-dc1","dc2","l-dc2","fs","l-fs","host","rep"];
+const scenarios: any[] = [
+  { id: "open", label: "Opening a shared file", steps: [
+    { say: "Moyo opens the IT folder from her workstation.", why: "These are the five machines of the lab. Click any of them to open its page.", do: [{t:"show",ids:all}] },
+    { say: "The request reaches the firewall first.", term:["Firewall","the gatekeeper between networks. It decides what may pass."], do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true},{t:"state",id:"fw",value:"pulse"}] },
+    { say: "A domain controller confirms who she is.", term:["Domain controller","the server that knows every account and checks passwords."], why: "It hands her a signed ticket, so her password is not sent again.", do: [{t:"glide",path:"p2",dot:"d2",ms:1000,keep:false},{t:"glide",path:"p2",dot:"d2",ms:1000,rev:true,keep:false},{t:"state",id:"dc1",value:"good"},{t:"show",ids:["tk"]}] },
+    { say: "The file server checks its permission lists.", why: "Both the share list and the folder list must say yes.", do: [{t:"glide",path:"p3",dot:"d1",ms:1100,keep:true},{t:"state",id:"fs",value:"good"}] },
+    { say: "The folder opens. Every machine here runs on one Windows PC.", why: "That is the lab's biggest limit: if that PC fails, everything stops.", do: [{t:"show",ids:["ok"]},{t:"state",id:"host",value:"pulse"}] },
+  ]},
+  { id: "fail", label: "A server fails", steps: [
+    { say: "Everything is working. DC01 is the controller in use.", do: [{t:"show",ids:all}] },
+    { say: "DC01 is switched off on purpose to test the lab (CR-013).", do: [{t:"state",id:"dc1",value:"off"}] },
+    { say: "The request goes to DC02 instead.", term:["Failover","when one server stops, another takes over its job."], do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true},{t:"glide",path:"p2b",dot:"d2",ms:1000,keep:false},{t:"glide",path:"p2b",dot:"d2",ms:1000,rev:true,keep:false},{t:"state",id:"dc2",value:"good"},{t:"show",ids:["tk"]}] },
+    { say: "The folder still opens.", why: "Sign-ins kept working through DC02. That is why the lab has two controllers.", do: [{t:"glide",path:"p3",dot:"d1",ms:1100,keep:true},{t:"state",id:"fs",value:"good"},{t:"show",ids:["ok"]}] },
+  ]},
+];
+const node = (id: string, href: string, label: string, x: number, y: number, w: number, h: number, ic: string, lx: number, ly: number) => ({id, href, label, x, y, w, h, ic, lx, ly});
+const nodes = [node("pc","systems/nova-client/","Workstation",30,150,100,72,"#ic-laptop",80,246), node("fw","systems/nova-fw01/","Firewall",210,146,52,62,"#ic-shield",236,232), node("dc1","systems/nova-dc01/","DC01",400,40,70,86,"#ic-server",435,148), node("dc2","systems/nova-dc01/","DC02",400,190,70,86,"#ic-server",435,298), node("fs","systems/nova-files01/","FILES01 file server",640,108,80,98,"#ic-server",680,230)];
+nodes[3].href = "systems/nova-dc02/";
+---
+<Explainer id="xf-home" title="The lab at a glance" intro="Five machines, one request. Click a machine to open its page."
+  scenarios={scenarios} alt="Animated map of the Nova Corp lab: a workstation, the firewall, two domain controllers and the file server, all running on one Windows PC. A request travels through them, and a second story shows a controller failing."
+  note="Replays recorded behavior of the lab, not live traffic."
+  evidence={[{label:"The full map", href:"/map/"}, {label:"Change CR-013", href:"/changes/CR-013/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="300" rx="12"/>
+  <path class="guide" data-id="p1" d="M135 186 L210 178"/>
+  <path class="guide" data-id="p2" d="M262 170 L400 90"/>
+  <path class="guide" data-id="p2b" d="M262 190 L400 235"/>
+  <path class="guide" data-id="p3" d="M262 186 C440 186 520 160 640 160"/>
+  <path class="guide" data-id="rep" d="M435 128 L435 188" data-hide/>
+  {nodes.map(n => <a href={base + n.href} data-id={n.id} data-hide aria-label={n.label + ": open its page"} class="xf-link"><use href={n.ic} x={n.x} y={n.y} width={n.w} height={n.h}/><circle class="halo" cx={n.x + n.w / 2} cy={n.y + n.h / 2} r={Math.max(n.w, n.h) * 0.75}/></a>)}
+  {nodes.map(n => <text data-id={"l-" + n.id} data-hide class="small" x={n.lx} y={n.ly}>{n.label}</text>)}
+  <g data-id="tk" data-hide><use href="#ic-ticket" x="300" y="116" width="46" height="26"/></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="700" y="64" width="36" height="36"/></g>
+  <a href={base + "systems/nova-prox01/"} data-id="host" data-hide aria-label="The Windows PC and Proxmox host: open the Proxmox page" class="xf-link"><rect class="bubble" x="40" y="340" width="720" height="70" rx="12"/><text class="bubble-t" x="400" y="370">One Windows 11 PC runs VMware, which runs Proxmox,</text><text class="bubble-t" x="400" y="392">and Proxmox runs all five machines above.</text></a>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/>
+  <circle data-id="d2" data-dot class="dot" r="10" fill="var(--line-identity)"/>
+</Explainer>

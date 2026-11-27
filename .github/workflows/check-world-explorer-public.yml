@@ -1,0 +1,58 @@
+name: Check public Nova Corp preview URL
+on:
+  push:
+    branches: [feature/world-explorer-site]
+    paths:
+      - ".github/workflows/check-world-explorer-public.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Inspect public HTTP and HTTPS responses
+        shell: bash
+        run: |
+          set -u
+          for SCHEME in http https; do
+            echo "::group::${SCHEME}://novacorp.davideti.dev"
+            curl --verbose --location --max-time 20 --retry 3 --retry-delay 5 \
+              --output "/tmp/novacorp-${SCHEME}.html" \
+              --write-out "STATUS=%{http_code} URL=%{url_effective} SSL_VERIFY=%{ssl_verify_result}\\n" \
+              "${SCHEME}://novacorp.davideti.dev/" 2>&1 | tail -45
+            if grep -Fq "Explore Nova Corp" "/tmp/novacorp-${SCHEME}.html"; then
+              echo "PUBLIC_CONTENT_CHECK=${SCHEME}_PASS"
+            else
+              echo "PUBLIC_CONTENT_CHECK=${SCHEME}_NOT_YET_VERIFIED"
+            fi
+            echo "::endgroup::"
+          done
+      - name: Verify at least one public entry point serves actual site HTML
+        shell: bash
+        run: |
+          if grep -Fq "Explore Nova Corp" /tmp/novacorp-http.html 2>/dev/null || \
+             grep -Fq "Explore Nova Corp" /tmp/novacorp-https.html 2>/dev/null; then
+            echo "PASS: custom domain returns Nova Corp website HTML"
+          else
+            echo "::error::Custom domain did not return Nova Corp website HTML in this external test"
+            exit 1
+          fi
+      - name: Verify real HTTPS deep links and original public evidence image
+        shell: bash
+        run: |
+          set -euo pipefail
+          HOST="https://novacorp.davideti.dev"
+          for ITEM in "incidents/:When something breaks" "policies/contractor-usb/:Contractor" "files/permissions/technical/:Who is actually listed"; do
+            PATH_PART="${ITEM%%:*}"
+            EXPECT="${ITEM#*:}"
+            curl --fail --silent --show-error --location --retry 3 --max-time 20 "${HOST}/${PATH_PART}" -o /tmp/novacorp-deep.html
+            grep -Fqi "${EXPECT}" /tmp/novacorp-deep.html
+            echo "HTTPS deep-link PASS: /${PATH_PART}"
+          done
+          curl --fail --silent --show-error --location --retry 3 --max-time 20 \
+            "${HOST}/evidence/03-contractor-user-gpresult.png" -o /tmp/novacorp-original-evidence.png
+          head -c 8 /tmp/novacorp-original-evidence.png | od -An -t x1 | grep -F "89 50 4e 47 0d 0a 1a 0a"
+          echo "HTTPS original image PASS: 03-contractor-user-gpresult.png"

@@ -1,0 +1,174 @@
+---
+/**
+ * Nova Corp illustrated lab stage.
+ * Hosting hierarchy: physical Windows host -> VMware Workstation ->
+ * nested Proxmox VE (NOVA-PROX01) -> five depicted lab VMs.
+ * Connection highlights are conceptual, never live packet telemetry.
+ */
+import { systems } from "../data/model";
+const base=import.meta.env.BASE_URL;
+const serverIds=["nova-fw01","nova-dc01","nova-dc02","nova-files01","nova-client"];
+const cards=serverIds.map(id=>systems.find(s=>s.id===id)).filter((s):s is NonNullable<typeof s>=>!!s);
+const inspect:Record<string,{title:string;description:string;incident:string;caseUrl:string;record:string}>={
+  "host-windows":{title:"The physical Windows host",description:"The outer Windows machine runs VMware Workstation. It is the single physical failure domain for this nested lab. The illustration is generic and does not assert a brand or hardware specifications.",incident:"Explore the documented virtualization host",caseUrl:"systems/nova-prox01/",record:"systems/nova-prox01/"},
+  "vmware-workstation":{title:"The outer hypervisor layer",description:"VMware Workstation runs the nested Proxmox guest on the physical Windows host. The Proxmox virtual machine then hosts the illustrated pfSense, Windows Server and client guests.",incident:"Inspect the nested lab topology",caseUrl:"systems/nova-prox01/",record:"systems/nova-prox01/"},
+  "nova-prox01":{title:"The virtualization foundation",description:"One physical Windows host runs VMware Workstation, with NOVA-PROX01 nested inside it. Proxmox hosts the five shown guests; all share the outer machine's failure domain.",incident:"See a storage-pressure investigation",caseUrl:"incidents/proxmox-storage-pressure/",record:"systems/nova-prox01/"},
+  "nova-fw01":{title:"The network boundary",description:"pfSense routes and filters traffic between the documented VLANs. Employee-to-management access was tested and corrected; privileged VPN isolation is still planned.",incident:"Inspect the firewall investigation",caseUrl:"incidents/firewall-management-exposure/",record:"systems/nova-fw01/"},
+  "nova-dc01":{title:"Identity and DNS",description:"NOVA-DC01 serves Active Directory and DNS. During a controlled outage, the second Domain Controller served the documented client checks.",incident:"Replay the DC01 outage",caseUrl:"incidents/dc01-outage/",record:"systems/nova-dc01/"},
+  "nova-dc02":{title:"Second Domain Controller",description:"NOVA-DC02 is a writable Domain Controller and Global Catalog. During the documented DC01 outage, the workstation selected DC02.",incident:"View the resilience evidence",caseUrl:"incidents/dc01-outage/",record:"systems/nova-dc02/"},
+  "nova-files01":{title:"Shared files and tested recovery",description:"NOVA-FILES01 serves five department shares. A recovered test file matched its original SHA-256; whole-server restoration is not claimed.",incident:"Inspect the verified file recovery",caseUrl:"incidents/backup-target-unavailable/",record:"systems/nova-files01/"},
+  "nova-client":{title:"Employee test workstation",description:"The client was used to verify logon, DNS, shared-file access, Group Policy and selected firewall restrictions.",incident:"Work through the DNS investigation",caseUrl:"incidents/dns-client-outage/",record:"systems/nova-client/"}
+};
+const titles:Record<string,string>={
+ "nova-fw01":"Network & security","nova-dc01":"Identity / DNS","nova-dc02":"Identity resilience","nova-files01":"File services","nova-client":"Employee endpoint"
+};
+---
+<div class="hx atlas" id="hx-explorer" data-base={base} aria-label="Clickable illustrated Nova Corp home lab">
+  <div class="atlas-topline">
+    <span><i class="atlas-pip" aria-hidden="true"></i> THE LAB, FROM THE PHYSICAL MACHINE OUT</span>
+    <span>ILLUSTRATED TOPOLOGY / 22 NOV 2026</span>
+  </div>
+  <div class="atlas-stage" aria-label="The physical Windows host runs VMware Workstation, which hosts nested Proxmox and five illustrated virtual machines. Select a system to see source-backed details.">
+    <svg class="atlas-links" viewBox="0 0 1200 540" preserveAspectRatio="none" aria-hidden="true">
+      <path class="atlas-host-link" d="M300 271 C350 271 365 271 400 271"/>
+      <path class="atlas-host-link" d="M651 271 C685 271 693 271 721 271"/>
+      <path class="hx-path atlas-flow" data-path="client-fw" d="M1060 435 C1160 428 1160 120 1027 120"/>
+      <path class="hx-path atlas-flow" data-path="fw-dc01" d="M951 120 C1080 150 1110 218 950 262"/>
+      <path class="hx-path atlas-flow" data-path="fw-dc02" d="M950 120 C1090 174 1100 333 948 362"/>
+      <path class="hx-path atlas-flow" data-path="fw-files" d="M940 120 C1050 177 1045 433 891 435"/>
+      <path class="hx-path atlas-flow" data-path="dc-repl" d="M1030 250 C1090 274 1105 304 1026 346"/>
+      <path class="hx-path atlas-flow" data-path="files-dc" d="M845 434 C759 356 775 284 829 256"/>
+    </svg>
+    <div class="atlas-hardware">
+      <p class="atlas-step-label"><span>01</span> / THE MACHINE</p>
+      <a class="atlas-tower-hit hx-node" data-id="host-windows" href={base+"systems/nova-prox01/"} aria-label="Inspect the physical Windows host and VMware Workstation architecture">
+      <div class="atlas-tower-art" role="img" aria-label="Original conceptual illustration of a generic Windows workstation-style tower, not a photograph of the owner's equipment">
+        <svg viewBox="0 0 360 480" aria-hidden="true">
+          <defs>
+            <linearGradient id="tower-front" x1="0" x2="1"><stop offset="0" stop-color="#353631"/><stop offset=".32" stop-color="#242521"/><stop offset="1" stop-color="#0E0F0E"/></linearGradient>
+            <linearGradient id="tower-side" x1="0" x2="1"><stop offset="0" stop-color="#1A1B19"/><stop offset="1" stop-color="#0B0C0B"/></linearGradient>
+            <linearGradient id="metal-edge" x1="0" x2="1"><stop stop-color="#A19D91"/><stop offset=".65" stop-color="#4B4A43"/><stop offset="1" stop-color="#1D1D1A"/></linearGradient>
+            <pattern id="metal-mesh" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.1" fill="#4A4C47"/></pattern>
+            <filter id="tower-shadow"><feGaussianBlur stdDeviation="12"/></filter>
+          </defs>
+          <ellipse cx="178" cy="443" rx="125" ry="19" fill="#000" opacity=".7" filter="url(#tower-shadow)"/>
+          <path d="M89 54 L236 42 L281 65 L281 407 L233 438 L90 419Z" fill="url(#tower-side)" stroke="#626158" stroke-width="1.3"/>
+          <path d="M236 42 L281 65 L281 407 L233 438Z" fill="#161713" stroke="#4B4B43"/>
+          <path d="M90 54 L236 42 L236 436 L90 420Z" fill="url(#tower-front)" stroke="url(#metal-edge)" stroke-width="3"/>
+          <path d="M103 66 L222 56 L222 424 L103 411Z" fill="#171816" stroke="#3C3D37"/>
+          <path d="M116 99 L210 92 L210 294 L116 298Z" fill="url(#metal-mesh)" stroke="#33352F" stroke-width="1"/>
+          <path d="M116 99 L210 92 L210 108 L116 115Z" fill="#363832"/>
+          <path d="M116 281 L210 280 L210 297 L116 298Z" fill="#30312D"/>
+          <path d="M125 121 L202 117 M125 140 L202 136 M125 159 L202 155 M125 178 L202 174 M125 197 L202 193 M125 216 L202 212 M125 235 L202 231 M125 254 L202 250 M125 273 L202 269" stroke="#0A0C09" stroke-width="3" opacity=".65"/>
+          <path d="M112 315 L214 311 L214 388 L112 393Z" fill="#20211D" stroke="#41423B"/>
+          <path d="M123 325 L203 322" stroke="#71736B" opacity=".3"/>
+          <rect x="126" y="345" width="61" height="4" rx="2" fill="#54564E"/>
+          <rect x="126" y="358" width="49" height="3" rx="1.5" fill="#383A33"/>
+          <circle cx="199" cy="355" r="5" fill="#8A9A80" opacity=".86"/>
+          <circle cx="199" cy="355" r="2" fill="#D0D7B6"/>
+          <path d="M91 60 L91 418 M235 44 L235 432" stroke="#BAB4A5" opacity=".25" stroke-width="2"/>
+          <path d="M238 80 L266 94 L266 362 L238 393" stroke="#3A3B36" fill="none"/>
+          <path d="M243 127 L261 135 M243 150 L261 158 M243 173 L261 181 M243 196 L261 204 M243 219 L261 227 M243 242 L261 250 M243 265 L261 273 M243 288 L261 296 M243 311 L261 319" stroke="#4A4C46" opacity=".55"/>
+          <path d="M109 420 L109 435 L124 440 L124 426 M212 436 L212 446 L225 444 L225 437" stroke="#67675F" stroke-width="4" fill="#191A18"/>
+        </svg>
+      </div>
+      <div class="atlas-tower-caption">
+        <span>ONE PHYSICAL FAILURE DOMAIN</span>
+        <strong>Windows host</strong>
+        <small>VMware Workstation</small>
+      </div>
+      </a>
+    </div>
+    <div class="atlas-hypervisor">
+      <p class="atlas-step-label"><span>02</span> / VIRTUALIZATION</p>
+      <div class="atlas-host-stack" aria-label="Nested virtualization stack">
+        <a class="atlas-virtual-badge hx-node" data-id="vmware-workstation" href={base+"systems/nova-prox01/"} aria-label="Inspect VMware Workstation outer virtualization layer">VMware Workstation <span>OUTER ↗</span></a>
+        <a class="hx-node atlas-prox" data-id="nova-prox01" href={base+"systems/nova-prox01/"} aria-label="Inspect NOVA-PROX01 and the documented Proxmox VE host">
+          <span class="atlas-prox-symbol" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="atlas-system-overline">NESTED HYPERVISOR</span>
+          <strong>NOVA-PROX01</strong>
+          <span class="atlas-system-description">Proxmox VE</span>
+          <span class="atlas-prox-foot">Five guests shown <b aria-hidden="true">↗</b></span>
+        </a>
+        <p class="atlas-host-context">A virtual data center.<br/>Not five physical servers.</p>
+      </div>
+    </div>
+    <div class="atlas-services">
+      <p class="atlas-step-label"><span>03</span> / THE VIRTUAL MACHINES</p>
+      <div class="atlas-service-grid">
+        {cards.map((s,i)=><a class="hx-node atlas-service" data-id={s.id} href={base+"systems/"+s.slug+"/"} aria-label={"Inspect "+s.name}>
+          <span class="atlas-service-ord">{String(i+1).padStart(2,"0")} <span class="atlas-node-indicator" aria-hidden="true"></span></span>
+          <span class="atlas-service-name">{s.name.toUpperCase()}</span>
+          <span class="atlas-service-kind">{titles[s.id]}</span>
+          <span class="atlas-service-arrow" aria-hidden="true">↗</span>
+        </a>)}
+      </div>
+      <p class="atlas-vm-note">Documented guests hosted inside Proxmox · select any system</p>
+      <div class="hx-mobile-list" aria-label="Select a documented system on a mobile device">
+      {cards.map(s=><a href={base+"systems/"+s.slug+"/"} data-id={s.id}><span>{s.name.toUpperCase()}</span><small>{s.category}</small><span class="hx-marrow" aria-hidden="true">↗</span></a>)}
+    </div>
+    </div>
+  </div>
+  <div class="atlas-bottom">
+    <div class="atlas-controls">
+      <span class="atlas-control-label">TRACE A PATH</span>
+      <div class="hx-actions" role="group" aria-label="Highlight documented service relationships">
+        <button class="hx-mode is-current" type="button" data-mode="all" aria-pressed="true">All systems</button>
+        <button class="hx-mode" type="button" data-mode="identity" aria-pressed="false">Identity / DNS</button>
+        <button class="hx-mode" type="button" data-mode="files" aria-pressed="false">File access</button>
+      </div>
+    </div>
+    <div class="atlas-inspector" aria-live="polite">
+      <div class="hx-readout">
+        <span class="hx-readout-label" id="hx-label">START HERE</span>
+        <strong id="hx-title">Select a machine to understand what it does.</strong>
+        <p id="hx-description">The visual starts with the Windows host, then VMware, then nested Proxmox and five lab guests. Choose a system to inspect evidence, or trace a documented service path.</p>
+      </div>
+      <div class="hx-readout-actions">
+        <a id="hx-case" href={base+"map/"}>Explore every connection <span aria-hidden="true">↗</span></a>
+        <a id="hx-record" href={base+"sources/"}>Read the original sources ↗</a>
+      </div>
+    </div>
+
+    <p class="atlas-integrity">Original illustration, not a photograph · Paths are architectural relationships, not live traffic · <a href={base+"map/#workflow-lab"}>Follow a real incident trace →</a></p>
+  </div>
+  <noscript><p class="atlas-integrity">Each labeled machine links directly to its documented system page. JavaScript adds in-place inspection.</p></noscript>
+  <script is:inline type="application/json" id="hx-data" set:html={JSON.stringify(inspect)}></script>
+</div>
+<script is:inline>
+(function(){
+ var root=document.getElementById("hx-explorer");if(!root)return;
+ var base=root.dataset.base;
+ var desc=JSON.parse(document.getElementById("hx-data").textContent);
+ var buttons=[].slice.call(root.querySelectorAll("[data-mode]"));
+ var nodes=[].slice.call(root.querySelectorAll("[data-id]"));
+ var paths=[].slice.call(root.querySelectorAll("[data-path]"));
+ var label=root.querySelector("#hx-label"),title=root.querySelector("#hx-title"),text=root.querySelector("#hx-description"),caseLink=root.querySelector("#hx-case"),recordLink=root.querySelector("#hx-record");
+ var mode="all",selected=null;
+ var modes={
+  all:{title:"Select a machine to understand what it does.",text:"Start with the Windows host, then VMware Workstation, nested Proxmox VE and five virtual machines. Each has a real documented role.",url:"company/",link:"Explore every connection",paths:[],nodes:[]},
+  identity:{title:"From employee workstation to internal DNS and identity.",text:"Client and firewall reach the Domain Controllers. DC01 and DC02 provided the documented identity-continuity test; the highlighted paths are conceptual.",url:"company/?view=identity",link:"Inspect the identity path",paths:["client-fw","fw-dc01","fw-dc02","dc-repl"],nodes:["nova-client","nova-fw01","nova-dc01","nova-dc02"]},
+  files:{title:"How a workstation opens a company share.",text:"DNS and identity services are separate from the SMB connection to NOVA-FILES01. Share and NTFS permissions also matter.",url:"company/?view=files",link:"Inspect file-access dependencies",paths:["client-fw","fw-dc01","fw-files","files-dc"],nodes:["nova-client","nova-fw01","nova-dc01","nova-files01"]}
+ };
+ function render(){
+  var current=modes[mode];
+  buttons.forEach(function(b){var on=b.dataset.mode===mode;b.setAttribute("aria-pressed",String(on));b.classList.toggle("is-current",on);});
+  nodes.forEach(function(n){n.classList.toggle("is-selected",n.dataset.id===selected);n.classList.toggle("is-muted",!selected&&current.nodes.length>0&&current.nodes.indexOf(n.dataset.id)<0);});
+  paths.forEach(function(p){p.classList.toggle("is-active",current.paths.indexOf(p.dataset.path)>=0);p.classList.toggle("is-muted",current.paths.length>0&&current.paths.indexOf(p.dataset.path)<0);});
+  if(selected){
+   var d=desc[selected];label.textContent="SELECTED / "+selected.toUpperCase();title.textContent=d.title;text.textContent=d.description;
+   caseLink.href=base+d.caseUrl;caseLink.firstChild.textContent=d.incident+" ";
+   recordLink.href=base+d.record;recordLink.textContent="Full system record ↗";
+  }else{
+   label.textContent=mode==="all"?"START HERE":"CONCEPTUAL PATH / "+mode.toUpperCase();
+   title.textContent=current.title;text.textContent=current.text;
+   caseLink.href=base+current.url;caseLink.firstChild.textContent=current.link+" ";
+   recordLink.href=base+"sources/";recordLink.textContent="Read the original sources ↗";
+  }
+ }
+ buttons.forEach(function(b){b.addEventListener("click",function(){mode=b.dataset.mode;selected=null;render();});});
+ nodes.forEach(function(n){n.addEventListener("click",function(e){if(e.metaKey||e.ctrlKey||e.altKey||e.shiftKey||e.button!==0)return;e.preventDefault();selected=n.dataset.id;render();});});
+ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&selected){selected=null;render();}});
+ render();
+})();
+</script>

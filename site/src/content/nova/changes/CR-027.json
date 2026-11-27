@@ -1,0 +1,7 @@
+{
+  "id": "CR-027",
+  "title": "Endpoint security: Defender, BitLocker and the lost laptop",
+  "goal": "Devices are protected by Defender policies and disk encryption, access depends on device compliance, and a lost laptop can be contained within an agreed time.",
+  "status": "planned",
+  "time": "2 weeks"
+}

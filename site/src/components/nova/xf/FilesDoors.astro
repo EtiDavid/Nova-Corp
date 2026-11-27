@@ -1,0 +1,80 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+// Everything named here is recorded: Moyo is in IT_Users, which carries DL_FS_IT_Modify (directory snapshot, PEOPLE_AND_DEPARTMENTS);
+// NOVA-FILES01 is 10.10.20.20; CR-014 found an explicit NTFS Deny for NOVA\moyo on IT\CR014-IncidentLab.
+const who = (v: string) => ({t:"text",id:"who",value:v});
+const door = (n: number, res: string, state: string, chk: string): any[] => [
+  {t:"text",id:"chk",value:chk},{t:"glide",path:"p"+n,dot:"d1",ms:900,keep:true},
+  {t:"state",id:"k"+n,value:state},{t:"text",id:"r"+n,value:res},{t:"show",ids:["r"+n,"chk"]}];
+const intro = (dest: string, whoText: string): any[] => [{t:"show",ids:["me","l-me","fldr","l-fldr","who","k1","k2","k3","h1","h2","h3","chk"]},{t:"text",id:"dest",value:dest},who(whoText),{t:"text",id:"chk",value:"Three checks stand between Moyo and the folder."}];
+const scenarios: any[] = [
+  { id: "allowed", label: "Allowed in", steps: [
+    { say: "Moyo wants to open her IT department's folder.", why: "Her account is in the IT_Users group, and that group is in DL_FS_IT_Modify.", do: intro("IT folder", "Moyo  →  IT_Users  →  DL_FS_IT_Modify") },
+    { say: "Door 1: find the file server.", term:["DNS","the lab's phone book. It turns the name NOVA-FILES01 into an address."], why: "Finding the server proves nothing about permission yet.", do: door(1,"Found","good","DNS answers: NOVA-FILES01 is at 10.10.20.20.") },
+    { say: "Door 2: check the share's permission list.", term:["Share (SMB)","the folder's front door on the network. It has its own list of who may connect."], why: "Moyo's IT group is on the list, so the door opens.", do: door(2,"Allowed","good","The share lists Moyo's IT group, so she can connect.") },
+    { say: "Door 3: check the folder's own permissions.", term:["NTFS","the permissions stored on the folder itself. Both lists must say yes."], why: "IT_Users carries Modify here, so she can read and change files.", do: door(3,"Allowed","good","The folder lists IT_Users (Modify) through DL_FS_IT_Modify.") },
+    { say: "Access granted. Moyo can open and edit IT documents.", do: [{t:"glide",path:"p4",dot:"d1",ms:900,keep:true},{t:"state",id:"fldr",value:"good"},{t:"show",ids:["ok"]},{t:"text",id:"chk",value:"All three doors said yes."}] },
+  ]},
+  { id: "denied", label: "Wrong department", steps: [
+    { say: "Same person, different folder: Moyo tries to open Finance.", why: "Being in IT does not make her part of Finance.", do: intro("Finance folder", "Moyo  →  IT_Users  →  (not in any Finance group)") },
+    { say: "Door 1: the server is found.", why: "Everyone can find a server. Finding it grants nothing.", do: door(1,"Found","good","DNS answers: NOVA-FILES01 is at 10.10.20.20.") },
+    { say: "Door 2: Moyo's group is not on Finance's list.", term:["Access list","Finance's lists name Finance groups such as DL_FS_Finance_Modify, not IT_Users."], why: "The request stops here. The last door never has to open.", do: door(2,"Denied","bad","IT_Users is not on the Finance list. Request refused.").concat([{t:"show",ids:["no2"]},{t:"state",id:"k3",value:"off"}]) },
+    { say: "Access denied. Finance documents stay protected.", do: [{t:"state",id:"fldr",value:"bad"},{t:"text",id:"chk",value:"Recorded result: IT access did not grant Finance access."}] },
+  ]},
+  { id: "deny", label: "Restricted subfolder", steps: [
+    { say: "Moyo opens a subfolder inside the IT share: CR014-IncidentLab.", why: "This is the real CR-014 investigation, not an invented example.", do: intro("IT subfolder", "Moyo  →  IT_Users  →  DL_FS_IT_Modify   +   a Deny entry for Moyo") },
+    { say: "Door 1: the server is found.", do: door(1,"Found","good","DNS answers: NOVA-FILES01 is at 10.10.20.20.") },
+    { say: "Door 2: she may use the IT share.", why: "Her group is on the share's list, so she can connect.", do: door(2,"Allowed","good","Her IT group is on the share's list.") },
+    { say: "Door 3: an explicit Deny entry for Moyo blocks this folder.", term:["Explicit Deny","a rule that names one person and says no. In Windows a Deny beats any Allow."], why: "It overrides the Modify she inherits from her IT group.", do: door(3,"Denied","bad","Deny for NOVA\\moyo on this folder overrides her group's Modify.").concat([{t:"show",ids:["no3"]}]) },
+    { say: "She can use the IT share, but not this folder.", why: "Access to a share does not mean access to everything inside it.", do: [{t:"state",id:"fldr",value:"bad"},{t:"text",id:"chk",value:"Cause found in CR-014: one explicit Deny entry."}] },
+  ]},
+  { id: "dns", label: "Server not found (DNS)", steps: [
+    { say: "The IT folder will not open by its name. Employees think the server is down.", why: "This is the recorded incident INC-CR014-02.", do: intro("IT folder", "Moyo's laptop  →  asks a DNS server for NOVA-FILES01") },
+    { say: "Door 1 fails: nobody answers the name lookup.", term:["Resolver","the DNS server a laptop asks. This one had been set to 192.0.2.53, not to the lab's domain controllers."], why: "The other two doors are never reached.", do: [{t:"text",id:"chk",value:"Resolve-DnsName timed out. The folder path returned False."},{t:"glide",path:"p1",dot:"d1",ms:900,keep:true},{t:"state",id:"k1",value:"bad"},{t:"text",id:"r1",value:"No answer"},{t:"show",ids:["r1","chk","no1"]},{t:"state",id:"k2",value:"off"},{t:"state",id:"k3",value:"off"}] },
+    { say: "The server itself was healthy all along.", why: "Connecting by its address (10.10.20.20, port 445) worked, so the fault was the lookup, not the server.", do: [{t:"state",id:"k2",value:"off"},{t:"state",id:"k3",value:"off"},{t:"state",id:"k1",value:"bad"},{t:"show",ids:["r1","no1"]},{t:"text",id:"r1",value:"No answer"},{t:"text",id:"chk",value:"Test-NetConnection 10.10.20.20 -Port 445: TcpTestSucceeded True."}] },
+    { say: "Fix: point the laptop's DNS back at the two domain controllers.", why: "After that the name resolved again and the folder opened.", do: [{t:"hide",ids:["no1"]},{t:"state",id:"k1",value:"good"},{t:"text",id:"r1",value:"Found"},{t:"state",id:"k2",value:""},{t:"state",id:"k3",value:""},{t:"text",id:"chk",value:"DNS set to 10.10.20.10 and 10.10.20.11. NOVA-FILES01 resolves again."}] },
+  ]},
+];
+const checks = [
+  { what: "Door 1: does the name resolve?", cmd: "Resolve-DnsName nova-files01.nova.corp", where: "NOVA-CLIENT" },
+  { what: "Door 1: can the server be reached?", cmd: "Test-NetConnection 10.10.20.20 -Port 445", where: "NOVA-CLIENT" },
+  { what: "Which groups is Moyo in?", cmd: "whoami /groups", where: "Moyo's session" },
+  { what: "Door 2: who may use the share?", cmd: "Get-SmbShareAccess -Name IT", where: "NOVA-FILES01" },
+  { what: "Door 3: who may use the folder?", cmd: "icacls D:\\NovaData\\IT", where: "NOVA-FILES01" },
+  { what: "The restricted subfolder (CR-014)", cmd: "icacls D:\\NovaData\\IT\\CR014-IncidentLab", where: "NOVA-FILES01" },
+];
+const doors = [{n:1,x:190,t:"Locate the server",s:"DNS",ic:"#ic-globe"},{n:2,x:360,t:"Share permissions",s:"SMB",ic:"#ic-lock"},{n:3,x:530,t:"Folder permissions",s:"NTFS",ic:"#ic-lock"}];
+---
+<Explainer id="xf-files" start={start} title="Three doors between a person and a folder"
+  intro="To open a folder on the file server, three checks must all say yes."
+  scenarios={scenarios} alt="Animated diagram: Moyo passes three checks, finding the file server, share permissions and folder permissions, to reach a folder on NOVA-FILES01. Three stories: allowed, wrong department, restricted subfolder."
+  note="Based on the CR-014 permission tests and the directory snapshot. The recorded Finance test shows IT access did not grant Finance access; both permission lists must agree, so either can refuse."
+  evidence={[{label:"Change CR-014", href:"/changes/CR-014/"}]}
+  checks={checks}>
+  <Icons />
+  <rect class="band" x="10" y="10" width="780" height="420" rx="12"/>
+  <text data-id="who" data-hide class="bubble-t" x="400" y="44" style="font-size:15px"></text>
+  <path class="guide" data-id="p1" d="M110 215 L190 215"/>
+  <path class="guide" data-id="p2" d="M270 215 L360 215"/>
+  <path class="guide" data-id="p3" d="M440 215 L530 215"/>
+  <path class="guide" data-id="p4" d="M610 215 L700 215"/>
+  <g data-id="me" data-hide><use href="#ic-person" x="50" y="185" width="50" height="55"/></g><text data-id="l-me" data-hide class="small" x="75" y="262">Moyo</text>
+  {doors.map(d => <g>
+    <text data-id={"h"+d.n} data-hide class="small" x={d.x+40} y="96">Door {d.n}</text>
+    <text data-id={"h"+d.n} data-hide class="sub" x={d.x+40} y="114" style="fill:var(--ink)">{d.t}</text>
+    <g data-id={"k"+d.n} data-hide><rect class="bubble" x={d.x} y="128" width="80" height="170" rx="10"/><use href={d.ic} x={d.x+16} y="170" width="48" height="48"/><text class="sub" x={d.x+40} y="262">{d.s}</text></g>
+    <text data-id={"r"+d.n} data-hide class="lbl" x={d.x+40} y="324"></text>
+  </g>)}
+  <g data-id="no1" data-hide><use href="#ic-x" x="236" y="112" width="30" height="30"/></g>
+  <g data-id="no2" data-hide><use href="#ic-x" x="406" y="112" width="30" height="30"/></g>
+  <g data-id="no3" data-hide><use href="#ic-x" x="576" y="112" width="30" height="30"/></g>
+  <g data-id="fldr" data-hide><use href="#ic-folder" x="700" y="185" width="70" height="56"/></g>
+  <text data-id="l-fldr" data-hide class="small" x="735" y="262"><tspan data-id="dest" x="735" dy="0"></tspan></text>
+  <text data-id="l-fldr" data-hide class="sub" x="735" y="280">on NOVA-FILES01</text>
+  <g data-id="ok" data-hide><use href="#ic-check" x="715" y="130" width="40" height="40"/></g>
+  <rect class="bubble" x="40" y="350" width="720" height="56" rx="12" style="stroke:var(--rule)"/>
+  <text data-id="chk" data-hide class="bubble-t" x="400" y="384" style="font-size:15px"></text>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-files)"/>
+</Explainer>

@@ -1,0 +1,53 @@
+{
+  "id": "nova-files01",
+  "name": "NOVA-FILES01",
+  "role": "File server (SMB, NTFS, DFS, Shadow Copies)",
+  "sub": "File server",
+  "kind": "server",
+  "zone": "INFRA, VLAN 20",
+  "ip": "10.10.20.20",
+  "os": "Windows Server 2025",
+  "status": "live",
+  "services": [
+    "smb-ntfs",
+    "dfs",
+    "shadow-copies",
+    "windows-server-backup"
+  ],
+  "builtBy": [
+    "CR-008",
+    "CR-009",
+    "CR-010",
+    "CR-012"
+  ],
+  "map": {
+    "col": 62,
+    "row": 42,
+    "w": 13,
+    "h": 4.4
+  },
+  "limit": "Its Windows backups go to a separate hard drive outside the lab, but restoring a whole server from them has not been demonstrated.",
+  "links": [
+    {
+      "line": "recovery",
+      "to": "nova-prox01",
+      "meaning": "FILES01 backups and Shadow Copies",
+      "path": [
+        [
+          60,
+          44.2
+        ],
+        [
+          60,
+          53
+        ],
+        [
+          46.5,
+          53
+        ]
+      ]
+    }
+  ],
+  "story": "FILES01 is the file server, on 10.10.20.20. It shares five department folders (Finance, HR, IT, Management and Sales) through one DFS path, \\\\nova.corp\\shares, and checks both the share permission and the NTFS permission before a folder opens. It keeps Shadow Copies at 07:00 and 12:00, and Windows Server Backup writes to a separate disk. I restored a deleted file from backup with a matching SHA-256 hash (CR-012, CR-014).",
+  "copyStatus": "rewritten"
+}

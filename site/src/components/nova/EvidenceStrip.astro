@@ -1,0 +1,19 @@
+---
+// Original screenshots from the engineering journals, each linked to the page that explains it.
+import approved from "../../data/approvedPdfEvidence.json";
+interface Props { items: { id: string; href: string }[]; label?: string }
+const { items, label = "Original screenshots from the journals" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const entries = items.map(i => ({ ...i, e: (approved.entries as any[]).find(x => x.id === i.id) })).filter(i => i.e);
+const src = (e: any) => base + "pdf-evidence/" + e.id + "." + (e.ext === "jpeg" ? "jpg" : "png");
+---
+<ul class="evstrip" aria-label={label}>
+  {entries.map(({ e, href }) => (
+    <li>
+      <a href={base + href.replace(/^\//, "")}>
+        <img src={src(e)} alt={e.alt} loading="lazy" decoding="async" />
+        <span>{e.title}</span>
+      </a>
+    </li>
+  ))}
+</ul>

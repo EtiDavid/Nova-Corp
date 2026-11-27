@@ -1,0 +1,32 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [
+  { id: "bug", label: "Half-made accounts", steps: [
+    { say: "A bulk script creates new user accounts, one at a time.", do: [{t:"show",ids:["s1","s2","s3"]}] },
+    { say: "Step 1: it creates the account.", do: [{t:"state",id:"s1",value:"good"},{t:"show",ids:["acc"]}] },
+    { say: "Step 2: setting the password fails.", why: "The password was weak, so Active Directory refused it.", do: [{t:"state",id:"s2",value:"bad"},{t:"show",ids:["x"]}] },
+    { say: "The script stops, but the account is left behind, disabled and half-built.", do: [{t:"show",ids:["left"]}] },
+  ]},
+  { id: "fix", label: "With rollback", steps: [
+    { say: "The script now undoes its work when a later step fails.", do: [{t:"show",ids:["s1","s2","s3"]},{t:"state",id:"s1",value:"good"},{t:"show",ids:["acc"]}] },
+    { say: "The password step fails again.", do: [{t:"state",id:"s2",value:"bad"},{t:"show",ids:["x"]}] },
+    { say: "The rollback deletes the half-made account.", term:["Rollback","undoing the steps already done when a later step fails, so nothing is left half-finished."], do: [{t:"hide",ids:["acc"]},{t:"show",ids:["clean"]}] },
+    { say: "A valid import creates five users; running it again skips all five.", do: [{t:"show",ids:["ok"]}] },
+  ]},
+];
+---
+<Explainer id="xf-rollback" title="When step two fails, step one must be undone" intro="The bulk onboarding script."
+  scenarios={scenarios} alt="Animated diagram: a script creates an account, fails to set the password, and either leaves a half-built account or rolls it back."
+  note="From the recorded CR-011 toolkit tests. Other scripts have their own failure records." evidence={[{label:"Change CR-011", href:"/changes/CR-011/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="s1" data-hide><rect class="bubble" x="60" y="120" width="190" height="60" rx="12"/><text class="bubble-t" x="155" y="156">1 · Create account</text></g>
+  <g data-id="s2" data-hide><rect class="bubble" x="300" y="120" width="190" height="60" rx="12"/><text class="bubble-t" x="395" y="156">2 · Set password</text></g>
+  <g data-id="s3" data-hide><rect class="bubble" x="540" y="120" width="190" height="60" rx="12"/><text class="bubble-t" x="635" y="156">3 · Add to group</text></g>
+  <g data-id="acc" data-hide><use href="#ic-person" x="130" y="220" width="40" height="44"/><text class="sub" x="155" y="286">new account</text></g>
+  <g data-id="x" data-hide><use href="#ic-x" x="376" y="196" width="36" height="36"/></g>
+  <g data-id="left" data-hide><rect class="bubble" x="250" y="320" width="300" height="40" rx="12"/><text class="bubble-t" x="400" y="346">Disabled, half-built account left behind</text></g>
+  <g data-id="clean" data-hide><rect class="bubble" x="250" y="320" width="300" height="40" rx="12"/><text class="bubble-t" x="400" y="346">Account deleted. Nothing left behind.</text></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="760" y="100" width="30" height="30"/></g>
+</Explainer>

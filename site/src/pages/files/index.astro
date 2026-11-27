@@ -1,0 +1,32 @@
+---
+import FileShare from "../../components/nova/xf/FileShare.astro";
+import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { shares, fileEvidence } from "../../data/fileCentre";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Company files" description="Explore the actual five shared departmental folders, identity-based access, DFS paths and permission checks." breadcrumbs={[{label:"Map",href:"map/"},{label:"Files"}]}>
+<section class="page-head"><div class="container">
+  <div class="eyebrow">Company files / Five departments</div>
+  <h1>Company File Center</h1>
+  <p class="lead" style="margin-top:18px">Nova Corp's file server holds five department folders. Each team has its own space, and company accounts decide who can open what.</p>
+</div></section>
+<section class="section compact"><div class="container"><FileShare /></div></section>
+<section class="section compact"><div class="container">
+  <section class="content-section"><h2>Why does it exist?</h2><h3 class="file-problem">Problem</h3><p>Imagine <a href={base+"people/moyo/"}>Moyo</a> needs a support document but does not know which colleague or computer holds it. Even if she remembers a server name, a future storage move could change that address.</p><h3 class="file-solution">Solution</h3><p>I created a company file address with one folder for each department. <a href={base+"people/moyo/"}>Moyo</a> can open her department drive and find the shared document without asking a colleague where it is stored. DFS locates the folder; Windows checks whether she is authorized to open it.</p><Files01DocumentImages ids={["dfs-namespace-gui","dfs-client-mapped-drive"]}/></section><div class="section-heading"><div><div class="eyebrow">Choose a department</div><h2>Open a shared folder</h2></div><a class="text-link" href={base+"files/permissions/"}>Compare permissions →</a></div>
+  <div class="area-grid">
+  {shares.map((share,index)=><a class="area-card" href={base+"files/shares/"+share.id+"/"} style={"--accent:"+(share.id==="finance"?"#7C3AED":"#2563EB")}>
+    <div class="number"><span>{String(index+1).padStart(2,"0")} / SHARED FOLDER</span><span aria-hidden="true">→</span></div>
+    <h3>{share.name}</h3><p>{share.purpose}</p>
+    <span class="arrow-label">Open folder →</span>
+  </a>)}
+  </div>
+  <p class="muted" style="margin:18px 0"><a href={base+"files/permissions/technical/"}>Need the exact Windows access entries? Explore the complete 100-rule technical permission browser →</a></p>
+
+</div></section>
+<section class="section soft-band"><div class="container">
+<section class="content-section"><h2>Related tests and incidents</h2><div class="card-list">{[["Controlled · Folder access denied","An explicit deny blocked Moyo from an IT test folder.","file-permission-denial"],["Controlled · DNS failure","A wrong DNS setting stopped access by server name.","dns-client-outage"],["Controlled · Two independent faults","DNS repair revealed missing IT group membership.","two-faults-one-symptom"],["Unexpected · Access checker error","A script wrongly predicted denial because group names were compared in different formats.","group-acl-name-mismatch"]].map(([title,description,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h3>{title}</h3><p>{description}</p><span class="readmore">Read investigation →</span></a>)}</div></section><section class="content-section"><details><summary>Related file services</summary><p><a href={base+"files/dfs/"}>Company file addresses</a> · <a href={base+"files/permissions/"}>Folder permissions</a> · <a href={base+"files/backup/"}>Backup and recovery</a> · <a href={base+"learn/acl/"}>Access control lists</a></p></details></section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf"}>CR-009 · Departmental shares</a></p><p><a href={base+"pdf-journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"}>CR-010 · DFS and Shadow Copies</a></p><p><a href={base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"}>CR-014 · Incident exercises</a></p><p><a href={base+"reference/explore/FILE_SERVICES/"}>Complete original file services reference</a></p></section><p class="source-line">The detailed access lists cover specified shares and folder levels, not every file recursively. <a href={fileEvidence.full}>Original engineering journal ↗</a></p>
+</div></section>
+</BaseLayout>
+
+<style>.content-section h2{font-size:clamp(1.65rem,2.6vw,2.35rem);line-height:1.2;margin:34px 0 16px}.content-section p{line-height:1.7;margin:0 0 15px}.content-section{margin-bottom:42px}.area-card{min-width:0}.section-heading{margin-top:44px}.file-problem{color:var(--c-red);margin:24px 0 8px;font-size:1.05rem}.file-solution{color:var(--c-green);margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>

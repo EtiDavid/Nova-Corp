@@ -1,0 +1,12 @@
+{
+  "id": "CR-004",
+  "title": "Additional domain controller and high availability",
+  "goal": "Logins keep working when one domain controller is down.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-004.md",
+  "built": [
+    "A second domain controller, DC02, in the same domain",
+    "Replication between the two, FSMO roles moved, and failure tests"
+  ],
+  "validated": "It had to pass controlled failure tests to count as done. The build hit a 24-hour failure I never fully explained, and I finished it after restoring snapshots."
+}

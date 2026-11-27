@@ -1,0 +1,14 @@
+[
+  {"from":"nova-prox01","to":"nova-fw01","type":"hosts","label":"hosts virtual machine"},
+  {"from":"nova-prox01","to":"nova-dc01","type":"hosts","label":"hosts virtual machine"},
+  {"from":"nova-prox01","to":"nova-dc02","type":"hosts","label":"hosts virtual machine"},
+  {"from":"nova-prox01","to":"nova-files01","type":"hosts","label":"hosts virtual machine"},
+  {"from":"nova-prox01","to":"nova-client","type":"hosts","label":"hosts virtual machine"},
+  {"from":"nova-client","to":"nova-fw01","type":"routes-through","label":"traffic passes through"},
+  {"from":"nova-client","to":"nova-dc01","type":"uses-service","label":"discovers domain services"},
+  {"from":"nova-client","to":"nova-dc02","type":"uses-service","label":"uses during failover"},
+  {"from":"nova-client","to":"nova-files01","type":"accesses","label":"opens authorized shared files"},
+  {"from":"nova-dc01","to":"nova-dc02","type":"replicates-with","label":"replicates Active Directory"},
+  {"from":"nova-files01","to":"nova-dc01","type":"depends-on","label":"uses domain identity and DNS"},
+  {"from":"nova-fw01","to":"nova-dc01","type":"routes-to","label":"allows approved infrastructure services"}
+]

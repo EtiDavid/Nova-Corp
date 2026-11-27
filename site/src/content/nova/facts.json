@@ -1,0 +1,44 @@
+{
+  "hypervisor": "Proxmox VE nested in VMware Workstation on a single Windows 11 host",
+  "vlans": [
+    {
+      "name": "MGMT",
+      "id": 10,
+      "state": "configured"
+    },
+    {
+      "name": "INFRA",
+      "id": 20,
+      "state": "in use"
+    },
+    {
+      "name": "APP",
+      "id": 30,
+      "state": "reserved"
+    },
+    {
+      "name": "CLIENT",
+      "id": 40,
+      "state": "in use"
+    },
+    {
+      "name": "DMZ",
+      "id": 50,
+      "state": "reserved"
+    }
+  ],
+  "wireguardNote": "A WireGuard network exists but is not used yet. It is left off the site for now (DEC-08).",
+  "lastEvidenceDate": "2026-11-22",
+  "signOff": {
+    "date": "2026-11-21",
+    "result": "conditional pass",
+    "conditions": [
+      "External WireGuard validation and privileged-admin isolation moved to CR-016",
+      "No centralized monitoring yet",
+      "The whole lab shares one physical host",
+      "The second-operator runbook test was waived"
+    ]
+  },
+  "nextChange": "CR-016",
+  "nextChangeStatus": "not started"
+}

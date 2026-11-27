@@ -1,0 +1,17 @@
+---
+import { loadNova, type LineId } from "../../lib/nova";
+// Mobile replacement for the map: one vertical list per line, generated from the same data.
+const { lines, lineStops, stationById } = await loadNova();
+const base = import.meta.env.BASE_URL;
+const { level = 3 } = Astro.props;
+const H: any = level === 2 ? "h2" : "h3";
+---
+<div class="mobile-lines">
+  {lines.map((l: any) => (
+    <section class={"mline" + (l.id === "recovery" ? " rec" : "")} style={`--c:var(${l.token})`} aria-labelledby={"ml-" + l.id}>
+      <H id={"ml-" + l.id}><i style={`border-color:var(${l.token})`}></i>{l.name} line</H>
+      <p class="tiny" style="margin:0 0 8px">{l.blurb}</p>
+      <ol>{lineStops[l.id].map((id: string) => { const s = stationById(id); return <li><a href={base + "systems/" + s.id + "/"}>{s.name}</a><small>{s.role}</small></li>; })}</ol>
+    </section>
+  ))}
+</div>

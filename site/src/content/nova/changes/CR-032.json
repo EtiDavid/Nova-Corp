@@ -1,0 +1,7 @@
+{
+  "id": "CR-032",
+  "title": "Remote monitoring and management: MSP-style support",
+  "goal": "Nova Corp IT supports two simulated customer organizations with an RMM tool, scripted fixes and strictly separated customer data.",
+  "status": "planned",
+  "time": "2 weeks"
+}

@@ -1,0 +1,136 @@
+---
+// A step-by-step animated illustration. The SVG goes in the slot; steps and scenarios are data.
+// Honest by design: it replays something recorded in the lab, the user controls the pace, motion is optional,
+// and the same story is available as a plain numbered list.
+export interface Action { t: string; [k: string]: any }
+export interface Step { say: string; why?: string; term?: [string, string]; do: Action[] }
+export interface Scenario { id: string; label: string; steps: Step[] }
+interface Props {
+  id: string; title: string; intro: string; scenarios: Scenario[]; start?: string; note?: string;
+  evidence?: { label: string; href: string }[]; checks?: { what: string; cmd: string; where: string }[]; viewBox?: string; alt: string;
+}
+const { id, title, intro, scenarios, start, note, evidence = [], checks = [], viewBox = "0 0 800 440", alt } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const data = { start: start ?? scenarios[0].id, scenarios };
+---
+<figure class="xf" id={id} data-xf>
+  <figcaption class="xf-head"><b>{title}</b><span>{intro}</span></figcaption>
+  {scenarios.length > 1 && <div class="xf-tabs" role="group" aria-label="Choose a story">
+    {scenarios.map(s => <button type="button" class="xf-tab" data-scenario={s.id} aria-pressed={s.id === data.start ? "true" : "false"}>{s.label}</button>)}
+  </div>}
+  <div class="xf-stage" tabindex="0" role="region" aria-label={title + " (scrolls sideways on small screens)"}>
+    <svg class="xf-svg" viewBox={viewBox} role="group" aria-label={alt}><slot /></svg>
+  </div>
+  <div class="xf-caption">
+    <p class="xf-count" aria-hidden="true"></p>
+    <p class="xf-say" aria-live="polite"></p>
+    <p class="xf-why"></p>
+    <p class="xf-term" hidden></p>
+  </div>
+  <div class="xf-controls">
+    <div class="xf-dots" role="group" aria-label="Jump to a step"></div>
+    <button type="button" class="xf-pause" data-act="pause" aria-pressed="false">Pause</button>
+  </div>
+  <details class="xf-text"><summary>Read this as a list</summary>
+    {scenarios.map(s => <section><h4>{s.label}</h4><ol>{s.steps.map(st => <li>{st.say}{st.why ? " " + st.why : ""}</li>)}</ol></section>)}
+  </details>
+  {checks.length > 0 && <details class="xf-checks"><summary>Show technical checks</summary>
+    <p>Commands from the recorded investigations that verify each door.</p>
+    <table><thead><tr><th scope="col">Check</th><th scope="col">Command</th><th scope="col">Run on</th></tr></thead><tbody>
+    {checks.map(c => <tr><td>{c.what}</td><td><code>{c.cmd}</code></td><td>{c.where}</td></tr>)}</tbody></table></details>}
+  {note && <p class="xf-note">{note}</p>}
+  {evidence.length > 0 && <p class="xf-evidence">{evidence.map((e, i) => <>{i ? " · " : ""}<a href={base + e.href.replace(/^\//, "")}>{e.label}</a></>)}</p>}
+  <script type="application/json" class="xf-data" set:html={JSON.stringify(data)}></script>
+</figure>
+<script>
+  type Act = { t: string; [k: string]: any };
+  function init(fig: HTMLElement) {
+    const data = JSON.parse(fig.querySelector(".xf-data")!.textContent || "{}");
+    const svg = fig.querySelector("svg") as SVGSVGElement;
+    const say = fig.querySelector(".xf-say")!, why = fig.querySelector(".xf-why")!, count = fig.querySelector(".xf-count")!;
+    const pauseBtn = fig.querySelector('[data-act="pause"]') as HTMLButtonElement; const termEl = fig.querySelector(".xf-term") as HTMLElement; const dotsEl = fig.querySelector(".xf-dots")!;
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let sc = data.scenarios.find((s: any) => s.id === data.start) || data.scenarios[0];
+    let idx = 0, token = 0, paused = false, visible = false, run = 0;
+    const el = (id: string) => svg.querySelector('[data-id="' + id + '"]') as SVGElement | null;
+    const SPEED = 2; // everything plays at twice the original pace
+    const wait = (ms: number) => new Promise(r => setTimeout(r, ms / SPEED));
+    function resetAll() {
+      svg.querySelectorAll("[data-hide]").forEach(e => e.classList.remove("xf-on"));
+      svg.querySelectorAll("[data-state]").forEach(e => e.removeAttribute("data-state"));
+      svg.querySelectorAll("[data-dot]").forEach(e => (e as SVGElement).style.opacity = "0");
+      svg.querySelectorAll("[data-text0]").forEach(e => e.textContent = e.getAttribute("data-text0"));
+      svg.querySelectorAll("[data-scale0]").forEach(e => (e as SVGElement).style.transform = "scaleY(" + e.getAttribute("data-scale0") + ")");
+    }
+    function glide(path: SVGPathElement, dot: SVGElement, ms: number, rev: boolean, keep: boolean, instant: boolean, my: number) {
+      const L = path.getTotalLength();
+      const put = (d: number) => { const p = path.getPointAtLength(d); dot.setAttribute("cx", String(p.x)); dot.setAttribute("cy", String(p.y)); };
+      dot.style.opacity = "1";
+      if (instant) { put(rev ? 0 : L); if (!keep) dot.style.opacity = "0"; return Promise.resolve(); }
+      return new Promise<void>(res => {
+        const t0 = performance.now();
+        const frame = (now: number) => {
+          if (my !== token) return res();
+          const k = Math.min(1, (now - t0) * SPEED / ms); put(rev ? (1 - k) * L : k * L);
+          if (k < 1) requestAnimationFrame(frame); else { if (!keep) dot.style.opacity = "0"; res(); }
+        };
+        requestAnimationFrame(frame);
+      });
+    }
+    async function apply(a: Act, instant: boolean, my: number) {
+      if (my !== token) return;
+      const e = a.id ? el(a.id) : null;
+      switch (a.t) {
+        case "show": (a.ids as string[]).forEach(i => el(i)?.classList.add("xf-on")); break;
+        case "hide": (a.ids as string[]).forEach(i => el(i)?.classList.remove("xf-on")); break;
+        case "state": if (e) { if (a.value) e.setAttribute("data-state", a.value); else e.removeAttribute("data-state"); } break;
+        case "text": if (e) e.textContent = a.value; break;
+        case "scale": if (e) (e as SVGElement).style.transform = "scaleY(" + a.y + ")"; break;
+        case "count": if (e) {
+          const dec = a.dec ?? 0, suf = a.suffix ?? "";
+          if (instant) { e.textContent = a.to.toFixed(dec) + suf; break; }
+          const t0 = performance.now();
+          await new Promise<void>(res => { const f = (now: number) => { if (my !== token) return res(); const k = Math.min(1, (now - t0) * SPEED / a.ms); e.textContent = (a.from + (a.to - a.from) * k).toFixed(dec) + suf; k < 1 ? requestAnimationFrame(f) : res(); }; requestAnimationFrame(f); });
+        } break;
+        case "glide": { const path = el(a.path) as unknown as SVGPathElement, dot = el(a.dot); if (path && dot) await glide(path, dot, a.ms ?? 1100, !!a.rev, !!a.keep, instant, my); break; }
+        case "wait": if (!instant) await wait(a.ms ?? 400); break;
+      }
+    }
+    function caption() {
+      const st = sc.steps[idx];
+      count.textContent = "Step " + (idx + 1) + " of " + sc.steps.length;
+      say.textContent = st.say; why.textContent = st.why || "";
+      if (st.term) { termEl.hidden = false; termEl.innerHTML = ""; const b = document.createElement("b"); b.textContent = st.term[0] + ": "; termEl.append(b, st.term[1]); } else termEl.hidden = true;
+      dotsEl.querySelectorAll("button").forEach((d, i) => d.setAttribute("aria-current", String(i === idx)));
+    }
+    async function goTo(n: number, animate: boolean) {
+      token++; const my = token;
+      n = Math.max(0, Math.min(sc.steps.length - 1, n)); idx = n; resetAll(); caption();
+      for (let i = 0; i < n; i++) for (const a of sc.steps[i].do) await apply(a, true, my);
+      const instant = reduce || !animate;
+      for (const a of sc.steps[n].do) { if (my !== token) return; await apply(a, instant, my); }
+    }
+    function buildDots() { dotsEl.innerHTML = ""; sc.steps.forEach((_: any, i: number) => { const d = document.createElement("button"); d.type = "button"; d.className = "xf-dot"; d.setAttribute("aria-label", "Step " + (i + 1)); d.addEventListener("click", () => { run++; goTo(i, true).then(() => { if (!paused) loop(); }); }); dotsEl.append(d); }); }
+    function setPaused(v: boolean) { paused = v; pauseBtn.textContent = v ? "Resume" : "Pause"; pauseBtn.setAttribute("aria-pressed", String(v)); if (!v) loop(); }
+    // Plays the steps again and again while the figure is on screen and not paused. Hovering or focusing it also holds it still.
+    async function loop() {
+      const mine = ++run;
+      while (mine === run && !paused && visible && !reduce) {
+        // Rest on the current step so it can be read, then move on. After the last step, start over.
+        let hold = 4200; while (hold > 0 && mine === run) { await wait(200); if (!paused) hold -= 200; }
+        if (mine !== run || paused) return;
+        await goTo(idx >= sc.steps.length - 1 ? 0 : idx + 1, true);
+      }
+    }
+    function pick(id: string) { sc = data.scenarios.find((s: any) => s.id === id); fig.querySelectorAll(".xf-tab").forEach(b => b.setAttribute("aria-pressed", String((b as HTMLElement).dataset.scenario === id))); run++; idx = 0; buildDots(); goTo(0, true).then(() => { if (!paused) loop(); }); }
+    fig.querySelectorAll(".xf-tab").forEach(b => b.addEventListener("click", () => pick((b as HTMLElement).dataset.scenario!)));
+    pauseBtn.addEventListener("click", () => setPaused(!paused));
+    buildDots();
+    if (reduce) { goTo(sc.steps.length - 1, false); pauseBtn.hidden = true; }
+    else {
+      goTo(0, false);
+      new IntersectionObserver(es => { const v = es[0].isIntersecting; if (v === visible) return; visible = v; if (v && !paused) { goTo(0, true).then(loop); } else run++; }, { threshold: 0.4 }).observe(fig);
+    }
+  }
+  document.querySelectorAll<HTMLElement>("[data-xf]").forEach(init);
+</script>

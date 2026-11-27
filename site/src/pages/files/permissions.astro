@@ -1,0 +1,57 @@
+---
+import FolderAccess from "../../components/nova/xf/FolderAccess.astro";
+import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { shares, fileEvidence } from "../../data/fileCentre";
+import { findGroupByName } from "../../data/groups";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Shared-folder permissions" description="Compare group membership, SMB access and NTFS folder rights for all five departments, including Finance's management exception." breadcrumbs={[{label:"Map",href:"map/"},{label:"Files",href:"files/"},{label:"Permissions"}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">Files / Access controls</div>
+<h1>Who can open each folder?</h1>
+<p class="lead" style="margin-top:17px">I do not give folder permissions to individual people. Each person is in a department group, the department group sits inside a resource group, and the resource group holds the permission. Windows checks the share permission and the NTFS permission separately.</p>
+</div></section>
+<section class="section compact"><div class="container"><FolderAccess /></div></section>
+<section class="section compact"><div class="container">
+  <section class="content-section"><h2>Why does the company need folder permissions?</h2><h3 class="file-problem">Problem</h3><p><a href={base+"people/moyo/"}>Moyo</a> needs to modify IT documents, while Finance must keep sensitive records private.</p><h3 class="file-solution">Solution</h3><p>IT uses AGDLP (Accounts → Global groups → Domain Local groups → Permissions) to assign rights to resource groups instead of individual accounts. Windows checks both share and folder permissions. The IT group grants the required access, but it does not grant Finance access. The following matrix describes recorded root configuration rather than a live authorization simulator.</p></section><div class="paper" style="overflow-x:auto">
+  <table class="data-table" style="min-width:690px">
+   <caption>Reviewed departmental root permissions. Select a share or group for the full access path.</caption>
+   <thead><tr><th scope="col">Department</th><th scope="col">Global membership group</th><th scope="col">Domain Local permission group</th><th scope="col">SMB</th><th scope="col">NTFS</th></tr></thead>
+   <tbody>{shares.map(s=><tr>
+      <th scope="row"><a href={base+"files/shares/"+s.id+"/"}>{s.name}</a></th>
+      <td><a href={base+"groups/"+findGroupByName(s.group)?.slug+"/"}>{s.group}</a></td>
+      <td><a href={base+"groups/"+findGroupByName(s.resourceGroup)?.slug+"/"}>{s.resourceGroup}</a></td>
+      <td>Allow · Change</td><td>Allow · Modify</td>
+   </tr>)}</tbody>
+  </table></div>
+  <div class="paper panel" style="margin-top:22px">
+    <p class="kicker">Finance has an additional exception</p>
+    <h3 style="margin:11px 0 12px">Authorized management accounts use a separate FullControl path.</h3>
+    <p class="muted"><a href={base+"groups/management-users/"}>Management_Users</a> is nested into <a href={base+"groups/dl-fs-finance-fullcontrol/"}>DL_FS_Finance_FullControl</a>. That group has <strong>SMB Full</strong> and <strong>NTFS FullControl</strong> at the Finance root, unlike the regular Finance Modify access.</p>
+    <a class="evidence-link" href={base+"files/shares/finance/"}>Explore Finance in context →</a>
+  </div>
+  <div class="paper panel" style="margin-top:21px">
+  <p class="kicker">Look deeper / 100 recorded access entries</p>
+  <h3 style="margin:12px 0">Inspect every share and folder access rule</h3>
+  <p class="muted" style="margin:10px 0 18px">Browse all 27 SMB and 73 NTFS access entries with individual principals, inherited flags and propagation settings. The evidence covers selected scopes, not a recursive audit.</p>
+  <a class="btn small" href={base+"files/permissions/technical/"}>Open the technical permission explorer →</a>
+  </div>
+  <div class="grid-main" style="margin-top:35px">
+    <div>
+    <h2>How Windows decides whether to allow access</h2>
+    <ol class="walkthrough">
+      <li class="walk-step"><h3>Identity</h3><p>The user signs in using a domain account. This alone does not grant access to every company folder.</p></li>
+      <li class="walk-step"><h3>Department membership</h3><p>The account is a direct member of a Global Security group, for example IT_Users.</p></li>
+      <li class="walk-step"><h3>Resource group nesting</h3><p>The department group is nested into a Domain Local group associated with the folder.</p></li>
+      <li class="walk-step"><h3>SMB share permission</h3><p>The share ACL allows the resource group to cross the network share boundary with Change or Full access.</p></li>
+      <li class="walk-step"><h3>NTFS folder permission</h3><p>The actual folder ACL is evaluated too. A child folder can have additional or inherited rules that change the outcome.</p></li>
+    </ol>
+    </div>
+    <aside><div class="sidebox"><h3>What was actually inspected?</h3><p class="muted">The detailed source records 27 SMB permission entries and 73 NTFS access entries across 11 shares and 14 reviewed folder scopes. It is not a recursive audit of all files.</p><a class="evidence-link" href={fileEvidence.technical}>Open every recorded permission ↗</a></div>
+    <div class="sidebox"><h3>Real incident</h3><p class="muted">A controlled IT folder-denial test was later repaired. The restored snapshot shows inherited Modify and no remaining Moyo-specific explicit DENY.</p><a class="evidence-link" href={base+"incidents/file-permission-denial/"}>See the repair evidence ↗</a></div></aside>
+  </div>
+<section class="content-section"><Files01DocumentImages ids={["permission-positive-baseline","permission-denial-observed"]}/><details><summary>Show more images · Diagnosing the separate folder denial</summary><Files01DocumentImages ids={["file-permission-isolation","permission-explicit-deny","permission-repair-pass"]}/></details><details><summary>Technical checks · read-only verification</summary><p>Run these read-only checks to see the same facts yourself.</p><h3>Inspect share permissions</h3><p><strong>Run on:</strong> NOVA-FILES01</p><pre><code>Get-SmbShareAccess -Name IT</code></pre><p><strong>Expected:</strong> The IT resource group has the recorded Change access; compare every returned entry with the source inventory.</p><h3>Inspect folder permissions</h3><p><strong>Run on:</strong> NOVA-FILES01</p><pre><code>icacls D:\NovaData\IT</code></pre><p><strong>Expected:</strong> The IT resource group has Modify at the department root, subject to recorded flags and other entries.</p><h3>Check employee-visible path</h3><p><strong>Run on:</strong> NOVA-CLIENT, Moyo’s authorized session</p><pre><code>Test-Path '\\nova.corp\shares\IT'</code></pre><p><strong>Expected:</strong> True when the target is reachable and the session has authorized access; Test-Path alone does not establish write access.</p></details><h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf"}>CR-009 original access tests →</a> · <a href={base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"}>CR-014 controlled denial and repair →</a></p></section></div></section>
+</BaseLayout>
+
+<style>.content-section h2,.prose h2{font-size:clamp(1.65rem,2.6vw,2.35rem);line-height:1.2;margin:40px 0 16px}.content-section p,.prose p{line-height:1.7;margin:0 0 15px}.content-section{margin-bottom:44px}.walkthrough{list-style:none;padding-left:0}.walkthrough>li::marker{content:""}.prose h3{margin:25px 0 10px}.grid-main>*{min-width:0}.prose code{overflow-wrap:anywhere}.prose pre code{overflow-wrap:normal}.file-problem{color:var(--c-red);margin:24px 0 8px;font-size:1.05rem}.file-solution{color:var(--c-green);margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>

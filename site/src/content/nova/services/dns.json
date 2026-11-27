@@ -1,0 +1,17 @@
+{
+  "id": "dns",
+  "name": "DNS",
+  "line": "identity",
+  "runsOn": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "dependsOn": [],
+  "summary": "DNS turns names like nova-files01.nova.corp into addresses.",
+  "inNova": "DNS for nova.corp runs on both domain controllers, DC01 (10.10.20.10) and DC02 (10.10.20.11), and NOVA-CLIENT is set to use both. The records that let a computer find a domain controller live there too. So when NOVA-CLIENT was pointed at a wrong DNS server, the IT share looked down even though FILES01 answered on port 445. That is the one case on this site where DNS was the whole problem.",
+  "builtBy": [
+    "CR-003",
+    "CR-004"
+  ],
+  "copyStatus": "rewritten"
+}

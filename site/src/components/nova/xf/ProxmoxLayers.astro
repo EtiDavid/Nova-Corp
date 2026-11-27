@@ -1,0 +1,43 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "stack", label: "What runs on what", steps: [
+    { say: "The whole lab runs on one ordinary Windows 11 computer.", why: "This is the single physical host. If it fails, everything in the lab stops.", do: [{t:"show",ids:["host"]}] },
+    { say: "VMware Workstation runs on that computer.", do: [{t:"show",ids:["vmw"]}] },
+    { say: "Proxmox VE runs inside VMware and acts as the lab's hypervisor.", term:["Nested virtualization","a hypervisor running inside another hypervisor. Fine for a lab, but slower than real hardware."], why: "This is nested virtualization: a hypervisor inside a hypervisor.", do: [{t:"show",ids:["pve"]}] },
+    { say: "Proxmox hosts the lab's machines: two domain controllers, the file server, the firewall and a client.", do: [{t:"show",ids:["v1","v2","v3","v4","v5"]}] },
+  ]},
+  { id: "space", label: "Freeing disk space", steps: [
+    { say: "Proxmox keeps VM disks in a thin pool. It was getting full.", why: "A thin pool only uses space that is written, so it can fill up quietly.", do: [{t:"show",ids:["tank","l-tank","pct"]},{t:"scale",id:"fillbar",y:0.8673},{t:"text",id:"pct",value:"86.73% full"}] },
+    { say: "There were 20 old snapshots.", term:["Snapshot","a saved moment of a machine you can return to. It costs disk space the longer it is kept."], why: "A snapshot is a saved point to roll back to. Old ones keep disk blocks in use.", do: [{t:"show",ids:["snaps","l-snaps"]}] },
+    { say: "The old snapshots were removed.", do: [{t:"hide",ids:["snaps","l-snaps"]},{t:"scale",id:"fillbar",y:0.5288},{t:"count",id:"pct",from:86.73,to:52.88,dec:2,suffix:"% full",ms:1500}] },
+    { say: "About 125.72 GiB was freed.", why: "One snapshot was kept on purpose: the pfSense snapshot taken before CR-016.", do: [{t:"show",ids:["freed","keep"]}] },
+  ]},
+];
+---
+<Explainer id="xf-prox" start={start} title="What the lab runs on, and how space was freed"
+  intro="Two short stories about PROX01 and the host underneath it."
+  scenarios={scenarios} alt="Animated diagram: a Windows 11 host runs VMware, which runs Proxmox, which runs five lab machines; a second story shows the thin pool dropping from 86.73 to 52.88 percent after old snapshots were removed."
+  note="Figures are the values recorded before and after the cleanup."
+  evidence={[{label:"All change requests", href:"/changes/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="host" data-hide><rect class="bubble" x="60" y="340" width="480" height="60" rx="10"/><text class="bubble-t" x="300" y="376">Windows 11 computer (the one physical host)</text></g>
+  <g data-id="vmw" data-hide><rect class="bubble" x="90" y="270" width="420" height="56" rx="10"/><text class="bubble-t" x="300" y="304">VMware Workstation</text></g>
+  <g data-id="pve" data-hide><rect class="bubble" x="120" y="200" width="360" height="56" rx="10"/><text class="bubble-t" x="300" y="234">Proxmox VE (PROX01)</text></g>
+  <g data-id="v1" data-hide><use href="#ic-server" x="125" y="90" width="50" height="62"/><text class="sub" x="150" y="170">DC01</text></g>
+  <g data-id="v2" data-hide><use href="#ic-server" x="190" y="90" width="50" height="62"/><text class="sub" x="215" y="170">DC02</text></g>
+  <g data-id="v3" data-hide><use href="#ic-server" x="255" y="90" width="50" height="62"/><text class="sub" x="280" y="170">FILES01</text></g>
+  <g data-id="v4" data-hide><use href="#ic-shield" x="330" y="94" width="40" height="48"/><text class="sub" x="350" y="170">Firewall</text></g>
+  <g data-id="v5" data-hide><use href="#ic-laptop" x="395" y="96" width="70" height="50"/><text class="sub" x="430" y="170">Client</text></g>
+  <g data-id="tank" data-hide><rect x="360" y="70" width="70" height="280" rx="10" style="fill:var(--soft);stroke:var(--ink);stroke-width:2.6"/>
+    <rect data-id="fillbar" data-scale0="0" x="362" y="72" width="66" height="276" rx="8" style="fill:var(--line-recovery);transform-box:fill-box;transform-origin:bottom;transform:scaleY(0);transition:transform .7s ease"/></g>
+  <text data-id="l-tank" data-hide class="small" x="395" y="52">Thin pool</text>
+  <text data-id="pct" data-hide class="lbl" x="395" y="382" data-text0="">86.73% full</text>
+  <g data-id="snaps" data-hide><rect class="pill" x="150" y="90" width="64" height="16" rx="4"/><rect class="pill" x="150" y="112" width="64" height="16" rx="4"/><rect class="pill" x="150" y="134" width="64" height="16" rx="4"/><rect class="pill" x="150" y="156" width="64" height="16" rx="4"/><rect class="pill" x="150" y="178" width="64" height="16" rx="4"/></g>
+  <text data-id="l-snaps" data-hide class="sub" x="182" y="214">20 old snapshots</text>
+  <text data-id="freed" data-hide class="lbl" x="620" y="190" style="font-size:20px">About 125.72 GiB freed</text>
+  <g data-id="keep" data-hide><use href="#ic-check" x="480" y="250" width="28" height="28"/><text class="sub" x="516" y="270" style="text-anchor:start">kept: pre-CR-016 pfSense snapshot</text></g>
+</Explainer>

@@ -1,0 +1,13 @@
+{
+  "id": "wireguard",
+  "term": "WireGuard",
+  "aliases": [
+    "WireGuard"
+  ],
+  "short": "A VPN protocol used to create an encrypted network tunnel between an authorized client and gateway.",
+  "inNova": "Nova Corp's historical WireGuard troubleshooting proved packets reached pfSense but no handshake occurred until a mismatched peer key was corrected.",
+  "seeAlso": [
+    "nova-fw01"
+  ],
+  "copyStatus": "migrated"
+}

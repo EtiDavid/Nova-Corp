@@ -1,0 +1,31 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "both", label: "Allowed by both", steps: [
+    { say: "A remote laptop tries to reach the lab over the internet.", do: [{t:"show",ids:["lap","l-lap","up","l-up","fw","l-fw","lab"]}] },
+    { say: "Stage 1: the upstream firewall in front of the lab decides first.", term:["Two-stage firewall","traffic must pass the home network's router and then pfSense. Either can stop it."], do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true},{t:"state",id:"up",value:"good"}] },
+    { say: "Stage 2: pfSense applies its own rules.", do: [{t:"glide",path:"p2",dot:"d1",ms:1000,keep:true},{t:"state",id:"fw",value:"good"}] },
+    { say: "Only traffic allowed at both stages reaches the lab.", do: [{t:"glide",path:"p3",dot:"d1",ms:1000,keep:true},{t:"show",ids:["ok"]}] },
+  ]},
+  { id: "blocked", label: "Blocked at one stage", steps: [
+    { say: "The same laptop, but one stage does not allow it.", do: [{t:"show",ids:["lap","l-lap","up","l-up","fw","l-fw","lab"]}] },
+    { say: "The first firewall lets it in.", do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true},{t:"state",id:"up",value:"good"}] },
+    { say: "pfSense blocks it. The connection never reaches the lab.", why: "Passing one firewall is not enough. That is why troubleshooting checks both.", do: [{t:"glide",path:"p2",dot:"d1",ms:1000,keep:true},{t:"state",id:"fw",value:"bad"},{t:"show",ids:["x"]}] },
+  ]},
+];
+---
+<Explainer id="xf-two-stage" start={start} title="Two firewalls between the internet and the lab" intro="Why a VPN connection has to be allowed twice."
+  scenarios={scenarios} alt="Animated diagram: traffic from a remote laptop must pass the upstream firewall and then pfSense before reaching the lab."
+  note="Illustrates the design documented in CR-007. The test from an outside network is deferred to CR-016." evidence={[{label:"Change CR-007", href:"/changes/CR-007/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="lap" data-hide><use href="#ic-laptop" x="40" y="170" width="100" height="72"/></g><text data-id="l-lap" data-hide class="small" x="90" y="266">Remote laptop</text>
+  <g data-id="up" data-hide><use href="#ic-shield" x="260" y="160" width="60" height="72"/></g><text data-id="l-up" data-hide class="small" x="290" y="256">Upstream firewall</text>
+  <g data-id="fw" data-hide><use href="#ic-shield" x="450" y="160" width="60" height="72"/></g><text data-id="l-fw" data-hide class="small" x="480" y="256">NOVA-FW01 (pfSense)</text>
+  <g data-id="lab" data-hide><use href="#ic-server" x="650" y="150" width="70" height="86"/><text class="small" x="685" y="258">The lab</text></g>
+  <path class="guide" data-id="p1" d="M145 206 L260 196"/><path class="guide" data-id="p2" d="M325 196 L450 196"/><path class="guide" data-id="p3" d="M515 196 L650 196"/>
+  <g data-id="x" data-hide><use href="#ic-x" x="530" y="120" width="40" height="40"/></g><g data-id="ok" data-hide><use href="#ic-check" x="560" y="120" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-network)"/>
+</Explainer>

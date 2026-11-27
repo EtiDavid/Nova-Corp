@@ -1,0 +1,13 @@
+---
+import type { Area } from "../data/areas";
+interface Props { area: Area }
+const {area} = Astro.props;
+const base = import.meta.env.BASE_URL;
+const color = {blue:"#2563EB",teal:"#0F766E",purple:"#7C3AED",sky:"#0369A1",amber:"#B45309"}[area.accent];
+---
+<a class="area-card" href={base+"areas/"+area.id+"/"} style={"--accent:"+color} aria-label={"Explore "+area.name}>
+  <div class="number"><span>{area.number} / NOVA CORP</span><span aria-hidden="true">→</span></div>
+  <h3>{area.name}</h3>
+  <p>{area.description}</p>
+  <span class="arrow-label">Enter this area <span aria-hidden="true">→</span></span>
+</a>

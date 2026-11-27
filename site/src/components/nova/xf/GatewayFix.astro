@@ -1,0 +1,29 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [
+  { id: "bug", label: "Wrong gateway", steps: [
+    { say: "Proxmox answers on the local network but has no internet.", do: [{t:"show",ids:["px","l-px","lan","l-lan","gw","l-gw","net"]}] },
+    { say: "Its default gateway was set to 192.168.178.254.", term:["Default gateway","the router a computer sends all non-local traffic to."], why: "That address is not the router. The correct one is 192.168.178.1.", do: [{t:"show",ids:["wrong"]},{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true},{t:"show",ids:["x"]}] },
+  ]},
+  { id: "fix", label: "Gateway restored", steps: [
+    { say: "The gateway is set back to 192.168.178.1 and the network reapplied.", why: "The misconfiguration was made on purpose, to practice recovery.", do: [{t:"show",ids:["px","l-px","lan","l-lan","gw","l-gw","net","right"]}] },
+    { say: "Traffic reaches the internet again. Package updates work.", do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:false},{t:"glide",path:"p2",dot:"d1",ms:1000,keep:false},{t:"show",ids:["ok"]}] },
+  ]},
+];
+---
+<Explainer id="xf-gateway" title="Local network fine, internet gone" intro="A wrong default gateway on Proxmox."
+  scenarios={scenarios} alt="Animated diagram: Proxmox sends internet traffic to a wrong gateway address and gets nowhere; with the correct gateway it reaches the internet."
+  note="A deliberate lab fault, not an unplanned outage." evidence={[{label:"All incidents", href:"/incidents/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="px" data-hide><use href="#ic-server" x="60" y="160" width="74" height="90"/></g><text data-id="l-px" data-hide class="small" x="97" y="272">Proxmox</text>
+  <g data-id="gw" data-hide><use href="#ic-shield" x="400" y="170" width="56" height="68"/></g><text data-id="l-gw" data-hide class="small" x="428" y="260">Router 192.168.178.1</text>
+  <g data-id="net" data-hide><use href="#ic-globe" x="650" y="170" width="64" height="64"/></g>
+  <g data-id="lan" data-hide><rect class="pill" x="170" y="296" width="170" height="26" rx="6"/></g><text data-id="l-lan" data-hide class="sub" x="255" y="340">local network works</text>
+  <path class="guide" data-id="p1" d="M140 204 L400 204"/><path class="guide" data-id="p2" d="M460 204 L650 204"/>
+  <g data-id="wrong" data-hide><rect class="bubble" x="190" y="110" width="200" height="34" rx="10"/><text class="bubble-t" x="290" y="132">gateway 192.168.178.254</text></g>
+  <g data-id="right" data-hide><rect class="bubble" x="190" y="110" width="200" height="34" rx="10"/><text class="bubble-t" x="290" y="132">gateway 192.168.178.1</text></g>
+  <g data-id="x" data-hide><use href="#ic-x" x="300" y="224" width="36" height="36"/></g><g data-id="ok" data-hide><use href="#ic-check" x="680" y="130" width="36" height="36"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-network)"/>
+</Explainer>

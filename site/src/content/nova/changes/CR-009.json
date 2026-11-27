@@ -1,0 +1,12 @@
+{
+  "id": "CR-009",
+  "title": "Departmental shares and drive mapping",
+  "goal": "Each department has its own private folder.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf",
+  "built": [
+    "Five department folders with SMB and NTFS permissions",
+    "AGDLP groups, and a logon script that maps each user's department drive"
+  ],
+  "validated": "The work included authorization and isolation tests and drive-mapping acceptance tests."
+}

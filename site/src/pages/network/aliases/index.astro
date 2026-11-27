@@ -1,0 +1,14 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { aliases, networkEvidence } from "../../../data/network";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Firewall aliases" description="Understand five reusable lists of hosts, networks and ports in Nova Corp firewall rules." breadcrumbs={[{label:"Network",href:"network/"},{label:"Aliases"}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">Network / Reusable rule objects</div><h1>One name can stand for many destinations.</h1>
+<p class="lead" style="margin-top:17px">An alias groups servers, networks or ports so firewall rules can refer to them by name. On its own it allows and blocks nothing.</p></div></section>
+<section class="section compact"><div class="container">
+<div class="card-list">{aliases.map(a=><a class="system-card" href={base+"network/aliases/"+a.slug+"/"}><small>{a.kind} alias · {a.members.length} entries</small><h2>{a.name}</h2><p>{a.description}</p><span class="readmore">Open alias and related rules →</span></a>)}</div>
+<div class="note" style="margin-top:22px">The original engineering source preserves exact host addresses, subnet entries and ports. Open each alias to see its exact documented entries and the rules that reference it. <a href={networkEvidence.aliases}>See the documented source ↗</a>.</div>
+</div></section>
+</BaseLayout>

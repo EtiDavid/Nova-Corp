@@ -1,0 +1,7 @@
+{
+  "id": "CR-018",
+  "title": "Server patching with WSUS",
+  "goal": "Every Windows server receives approved updates on a monthly schedule, a pilot server goes first, domain controllers are patched one at a time, and compliance is reported.",
+  "status": "planned",
+  "time": "1 week"
+}

@@ -1,0 +1,7 @@
+{
+  "id": "CR-019",
+  "title": "Automated tests for the PowerShell toolkit",
+  "goal": "Every change to the scripts in the repo is checked by a GitHub Actions pipeline with PSScriptAnalyzer and Pester, and a failing check blocks the merge.",
+  "status": "planned",
+  "time": "2–3 evenings"
+}

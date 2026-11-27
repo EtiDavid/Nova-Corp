@@ -1,0 +1,27 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [{ id: "dns", label: "The server looked down", steps: [
+  { say: "An employee tries to open the IT folder by the server's name. It fails.", why: "Test-Path returned False, so it looked as if the file server was down.", do: [{t:"show",ids:["pc","l-pc","fs","l-fs","l-fs2"]},{t:"show",ids:["bub"]}] },
+  { say: "The laptop asks a DNS server for the name NOVA-FILES01. Nobody answers.", term:["DNS resolver","the DNS server a computer asks. This one had been set to 192.0.2.53, which is not a Nova Corp server."], do: [{t:"hide",ids:["bub"]},{t:"show",ids:["bad","l-bad","pbad"]},{t:"glide",path:"pbad",dot:"d1",ms:1200,keep:false},{t:"show",ids:["x1"]}] },
+  { say: "But the file server is healthy: connecting by its address works.", why: "Test-NetConnection to 10.10.20.20 on port 445 succeeded.", do: [{t:"show",ids:["bad","l-bad","pbad","x1"]},{t:"glide",path:"pip",dot:"d2",ms:1200,keep:false},{t:"state",id:"fs",value:"good"}] },
+  { say: "The real DNS server, DC01, answers correctly: 10.10.20.20.", do: [{t:"show",ids:["bad","l-bad","pbad","x1","dc","l-dc"]},{t:"glide",path:"pdc",dot:"d1",ms:1200,keep:false},{t:"state",id:"dc",value:"good"}] },
+  { say: "Fix: point the laptop at the two domain controllers for DNS.", why: "DNS set to 10.10.20.10 and 10.10.20.11. The name resolved again and the folder opened.", do: [{t:"show",ids:["dc","l-dc"]},{t:"hide",ids:["bad","l-bad","pbad","x1"]},{t:"state",id:"dc",value:"good"},{t:"show",ids:["ok"]}] },
+]}];
+---
+<Explainer id="xf-dnsclient" start={start} title="The file server looks down, but it is only DNS" intro="The recorded investigation, step by step."
+  scenarios={scenarios} alt="Animated diagram: a laptop asks a wrong DNS server and gets no answer, yet the file server answers by address; the domain controller's DNS gives the right answer after the fix."
+  note="From the recorded incident INC-CR014-02 (CR-014)." evidence={[{label:"Change CR-014", href:"/changes/CR-014/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="40" y="190" width="100" height="72"/></g><text data-id="l-pc" data-hide class="small" x="90" y="284">NOVA-CLIENT</text>
+  <g data-id="bub" data-hide><rect class="bubble" x="40" y="120" width="190" height="40" rx="12"/><text class="bubble-t" x="135" y="146">Folder will not open</text></g>
+  <g data-id="bad" data-hide><use href="#ic-globe" x="380" y="60" width="56" height="56"/></g><text data-id="l-bad" data-hide class="small" x="408" y="140">DNS 192.0.2.53 (wrong)</text>
+  <g data-id="x1" data-hide><use href="#ic-x" x="452" y="64" width="36" height="36"/><text class="sub" x="498" y="88" style="text-anchor:start">no answer</text></g>
+  <g data-id="dc" data-hide><use href="#ic-server" x="380" y="300" width="56" height="70"/></g><text data-id="l-dc" data-hide class="small" x="408" y="392">DC01 · DNS 10.10.20.10</text>
+  <g data-id="fs" data-hide><use href="#ic-server" x="660" y="170" width="70" height="86"/></g><text data-id="l-fs" data-hide class="small" x="695" y="280">NOVA-FILES01</text><text data-id="l-fs2" data-hide class="sub" x="695" y="298">10.10.20.20</text>
+  <path class="guide" data-hide data-id="pbad" d="M140 210 C250 150 300 90 380 90"/><path class="guide" data-id="pip" d="M140 226 L660 214"/><path class="guide" data-id="pdc" d="M140 245 C250 300 300 335 380 335"/>
+  <g data-id="ok" data-hide><use href="#ic-check" x="700" y="120" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--line-files)"/>
+</Explainer>

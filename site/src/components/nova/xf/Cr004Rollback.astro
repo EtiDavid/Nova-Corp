@@ -1,0 +1,27 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [{ id: "cr4", label: "What happened", steps: [
+  { say: "DC02 needs to reach DC01 to join the domain.", do: [{t:"show",ids:["d2","l-d2","d1","l-d1"]}] },
+  { say: "Ping works both ways.", do: [{t:"glide",path:"p1",dot:"dotA",ms:900,keep:false},{t:"show",ids:["r1"]}] },
+  { say: "But SMB and RPC connections to DC01 fail.", why: "So DC02 cannot be joined or promoted.", do: [{t:"show",ids:["r1","r2","r3"]},{t:"glide",path:"p1",dot:"dotB",ms:900,keep:false}] },
+  { say: "Every layer tested looked healthy. The cause was never proven.", why: "I now think it was the same subnet mismatch found later in CR-008, but I cannot prove it.", do: [{t:"show",ids:["r1","r2","r3","unk"]}] },
+  { say: "Fix: both controllers are restored from their pre-CR-004 snapshots and the build is run again.", why: "On the clean baseline, ports 445 and 135 connected at once, the join and promotion worked, and replication was healthy.", do: [{t:"hide",ids:["unk","r1","r2","r3"]},{t:"show",ids:["snap","ok"]},{t:"state",id:"d1",value:"good"},{t:"state",id:"d2",value:"good"}] },
+]}];
+---
+<Explainer id="xf-cr4" title="DC02 could not reach DC01, but ping worked" intro="An unexplained fault, and the rollback that fixed it."
+  scenarios={scenarios} alt="Animated diagram: ping between two domain controllers works but SMB and RPC fail for an unproven reason; restoring both from snapshots fixes the build."
+  note="The cause is not proven. This figure shows what was observed, not a diagnosis." evidence={[{label:"Change CR-004", href:"/changes/CR-004/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="d2" data-hide><use href="#ic-server" x="80" y="150" width="74" height="90"/></g><text data-id="l-d2" data-hide class="small" x="117" y="262">DC02</text>
+  <g data-id="d1" data-hide><use href="#ic-server" x="640" y="150" width="74" height="90"/></g><text data-id="l-d1" data-hide class="small" x="677" y="262">DC01</text>
+  <path class="guide" data-id="p1" d="M160 195 L640 195"/>
+  <g data-id="r1" data-hide><use href="#ic-check" x="260" y="100" width="30" height="30"/><text class="sub" x="300" y="120" style="text-anchor:start">ping works</text></g>
+  <g data-id="r2" data-hide><use href="#ic-x" x="260" y="270" width="30" height="30"/><text class="sub" x="300" y="290" style="text-anchor:start">SMB (445) fails</text></g>
+  <g data-id="r3" data-hide><use href="#ic-x" x="260" y="310" width="30" height="30"/><text class="sub" x="300" y="330" style="text-anchor:start">RPC (135) fails</text></g>
+  <g data-id="unk" data-hide><rect class="bubble" x="470" y="280" width="250" height="44" rx="12"/><text class="bubble-t" x="595" y="308">Cause: not proven</text></g>
+  <g data-id="snap" data-hide><rect class="bubble" x="250" y="360" width="300" height="40" rx="12"/><text class="bubble-t" x="400" y="386">Restored from pre-CR-004 snapshots</text></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="380" y="120" width="40" height="40"/></g>
+  <circle data-id="dotA" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="dotB" data-dot class="dot" r="10" fill="var(--broken)"/>
+</Explainer>

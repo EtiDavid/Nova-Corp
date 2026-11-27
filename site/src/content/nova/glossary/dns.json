@@ -1,0 +1,15 @@
+{
+  "id": "dns",
+  "term": "DNS",
+  "aliases": [
+    "DNS"
+  ],
+  "short": "Domain Name System translates names into addresses and helps a workstation locate network services.",
+  "inNova": "NOVA-FILES01 resolves to 10.10.20.20. In a controlled fault, a wrong client DNS resolver stopped name-based folder access although TCP 445 by IP still worked.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-files01",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

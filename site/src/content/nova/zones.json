@@ -1,0 +1,46 @@
+[
+  {
+    "id": "client",
+    "name": "VLAN 40",
+    "vlan": 40,
+    "kind": "vlan",
+    "box": {
+      "col": 2,
+      "row": 21.5,
+      "w": 20,
+      "h": 15
+    },
+    "labelEnd": true
+  },
+  {
+    "id": "infra",
+    "name": "INFRA · VLAN 20",
+    "vlan": 20,
+    "kind": "vlan",
+    "box": {
+      "col": 54,
+      "row": 6.6,
+      "w": 33,
+      "h": 41.4
+    },
+    "labelEnd": false
+  },
+  {
+    "id": "mgmt",
+    "name": "MGMT · VLAN 10",
+    "vlan": 10,
+    "kind": "vlan"
+  },
+  {
+    "id": "app",
+    "name": "APP · VLAN 30 (reserved)",
+    "vlan": 30,
+    "kind": "vlan"
+  },
+  {
+    "id": "dmz",
+    "name": "DMZ · VLAN 50 (reserved)",
+    "vlan": 50,
+    "kind": "vlan"
+  }
+]

@@ -1,0 +1,80 @@
+---
+import InfrastructureProfile from "../../components/InfrastructureProfile.astro";
+import ClientProfile from "../../components/ClientProfile.astro";
+import DC01Profile from "../../components/DC01Profile.astro";
+import Files01Pilot from "../../components/Files01Pilot.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SystemTop from "../../components/nova/SystemTop.astro";
+import EvidencePanel from "../../components/EvidencePanel.astro";
+import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
+import EngineeringSourceEmbed from "../../components/EngineeringSourceEmbed.astro";
+import { getArea } from "../../data/areas";
+import { systems, connectedTo, type Entity } from "../../data/model";
+import { linksForSystem } from "../../data/policies";
+import { getComputer } from "../../data/computers";
+export function getStaticPaths() {
+  return systems.map((system) => ({params:{slug:system.slug},props:{system}}));
+}
+interface Props { system: Entity }
+const { system } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const area = getArea(system.area);
+const connected = connectedTo(system.id);
+const associatedPolicies=linksForSystem(system.slug);
+const computer=getComputer(system.slug);
+const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const [yy,mm,dd]=String(system.asOf).split("-").map(Number);
+const asOf=yy&&mm&&dd?`${dd} ${months[mm-1]} ${yy}`:String(system.asOf);
+const statusText = system.status === "observed-running" ? `Running at last check: ${asOf}` : `Configuration as of ${asOf}`;
+---
+<BaseLayout title={system.name} description={system.summary} breadcrumbs={[{label:"Map",href:"map/"},{label:area?.name||"Systems",href:"map/"},{label:system.name}]}>
+  <SystemTop id={system.id} asOf={asOf} />
+  {system.id==="nova-files01" ? <Files01Pilot/> : ["nova-dc01","nova-dc02"].includes(system.id) ? <DC01Profile secondary={system.id==="nova-dc02"}/> : system.id==="nova-client" ? <ClientProfile/> : ["nova-fw01","nova-prox01"].includes(system.id) ? <InfrastructureProfile firewall={system.id==="nova-fw01"}/> : <section class="section compact"><div class="container grid-main deep-system-profile">
+    <div>
+      <section class="content-section">
+        <h2>Key facts</h2>
+        <dl class="fact-list" style="margin-top:14px">{system.details.map(fact=><div><dt>{fact.label}</dt><dd>{fact.value}</dd></div>)}</dl>
+      </section>
+      <section class="content-section system-evidence-section" aria-label="Relevant engineering screenshot">
+        <h2>Visual evidence</h2>
+        {system.id==="nova-dc01"&&<OriginalPdfEvidenceGallery subject="incidents/dc01-outage" heading="Original DC01 outage and return-to-service evidence" />}
+        {system.id==="nova-dc02"&&<OriginalPdfEvidenceGallery subject="incidents/replication-divergence" heading="Original replication failure/recovery screenshots" />}
+        {system.id==="nova-files01"&&<OriginalPdfEvidenceGallery subject="incidents/backup-target-unavailable" heading="Original file backup and recovery proof" />}
+        {system.id==="nova-files01"&&<OriginalPdfEvidenceGallery subject="systems/nova-files01" heading="Original CR-008 deployment and CR-012 file-level recovery screenshots" />}
+        <p class="muted" style="margin:9px 0 15px">Only reviewed public screenshots are displayed as evidence. When the correct image is not available, this site shows a labeled placeholder instead.</p>
+        {system.id==="nova-client"
+          ? <EvidencePanel subject="Windows workstation Group Policy baseline" filename="05-firewall-gpo-configuration.png" caption="Actual original Windows Defender Firewall policy configuration screenshot. The image establishes the GPO setting, not proof that every workstation applied it." />
+          : !["nova-dc01","nova-dc02","nova-files01"].includes(system.id)&&<EvidencePanel subject={system.name.toUpperCase()+" engineering verification"} requested={"A real redacted screenshot from the "+system.name.toUpperCase()+" system or validation journal. Exact image not present in the current reviewed public evidence set."} />
+        }
+      </section>
+      <EngineeringSourceEmbed sourcePath={"docs/explore/systems/"+system.name.toUpperCase()+".md"} title={"How "+system.name.toUpperCase()+" actually works"} />
+      <section class="content-section">
+        <h2>How it connects</h2>
+        <ul class="plain-list" style="margin-top:14px">
+          {connected.map(rel=>rel.other && <li><a href={base+"systems/"+rel.other.slug+"/"}>{rel.other.name.toUpperCase()}</a> — {rel.label}</li>)}
+        </ul>
+      </section>
+      {computer&&<section class="content-section"><div class="paper panel"><p class="kicker">Directory object / Virtual machine</p>
+        <h2 style="margin:12px 0">This server also has an Active Directory computer identity.</h2>
+        <p class="muted" style="margin:12px 0 18px">The directory computer object links to a specific Organizational Unit and possible Group Policy scope. That object is not the same as the VM that runs Windows services.</p>
+        <a class="btn small" href={base+"computers/"+computer.slug+"/"}>Open the directory computer →</a>
+      </div></section>}
+      {associatedPolicies.length>0&&<section class="content-section">
+        <h2>Workstation rules and related policies</h2>
+        <p class="muted" style="margin:12px 0 17px">These policies connect to this machine or its workflows. Some are user-side policies processed on a workstation; a connection here is <strong>not proof that every setting applied to this device</strong>.</p>
+        <div class="card-list">{associatedPolicies.map(policy=><a class="system-card" href={base+"policies/"+policy.slug+"/"}><small>{policy.side} · {policy.link?"Linked to "+policy.link.label:"Not linked"}</small><h3>{policy.name}</h3><p>{policy.summary}</p><span class="readmore">Inspect settings and verification →</span></a>)}</div>
+      </section>}
+      <section class="content-section">
+        <h2>Not yet proven</h2>{["nova-dc01","nova-dc02","nova-fw01","nova-prox01"].includes(system.id)&&<p><a href={base+"incidents/fileserver-subnet/"}>Related investigation: CR-008 subnet mismatch →</a></p>}
+        <div class="paper panel">
+          <a class="evidence-link" href={system.sourceUrl} target="_blank" rel="noopener noreferrer">Read the original engineering record ↗</a>
+          <ul class="plain-list">{system.limitations.map(item=><li>{item}</li>)}</ul>
+        </div>
+      </section>
+    </div>
+    <aside>
+      <div class="sidebox"><h3>System at a glance</h3><dl class="fact-list"><div><dt>Purpose</dt><dd>{system.category}</dd></div><div><dt>Company area</dt><dd>{area?.name || "Systems"}</dd></div></dl></div>
+      <div class="sidebox"><h3>Next steps</h3><a href={base+"map/"}>Explore {area?.name} →</a><p style="margin-top:14px"><a href={base+"sources/"}>Browse engineering evidence →</a></p></div>
+    </aside>
+  </div></section>}
+</BaseLayout>

@@ -1,0 +1,16 @@
+{
+  "id": "pfsense-firewall",
+  "name": "pfSense firewall",
+  "line": "network",
+  "runsOn": [
+    "nova-fw01"
+  ],
+  "dependsOn": [],
+  "summary": "Routes between the VLANs and decides which connections cross.",
+  "inNova": "17 rules are recorded. Two block rules sit ahead of a broad allow so an employee PC cannot reach firewall administration.",
+  "builtBy": [
+    "CR-002",
+    "CR-015"
+  ],
+  "copyStatus": "migrated"
+}

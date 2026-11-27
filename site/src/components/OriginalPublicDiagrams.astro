@@ -1,0 +1,24 @@
+---
+/** Only pre-existing PUBLIC original journal figures. These are illustrations,
+ * not evidence that the depicted traffic was observed in a packet capture.
+ */
+interface Props{systemId:string}
+const {systemId}=Astro.props;
+const raw="https://raw.githubusercontent.com/EtiDavid/Nova-Corp/main/docs/Documentation/Change-Requests/";
+const page="https://github.com/EtiDavid/Nova-Corp/tree/main/docs/Documentation/Change-Requests/cr007_assets";
+const visual=systemId==="nova-fw01" ? [
+ {file:"03_two_stage_firewall.png",title:"Two-stage firewall decision",alt:"Original published CR-007 network diagram explaining how upstream and pfSense firewalls affect the VPN packet path"},
+ {file:"04_rule_order.png",title:"Firewall rule ordering",alt:"Original published CR-007 conceptual rule ordering and packet filtering diagram"}
+]:[];
+---
+{visual.length>0&&<section class="source-illustration-gallery" aria-labelledby="fw-figures">
+  <div class="source-illustration-title">
+    <span class="eyebrow">Public CR-007 training figures</span>
+    <h3 id="fw-figures">Understanding the network visually</h3>
+    <p>These are the project's original explanatory diagrams from the published VPN journal. They illustrate the design and troubleshooting method; they are <strong>not screenshots proving live pfSense settings or packet results</strong>.</p>
+  </div>
+  <div class="source-illustration-grid">{visual.map(item=><figure>
+    <a href={raw+"cr007_assets/"+item.file} target="_blank" rel="noopener noreferrer"><img src={raw+"cr007_assets/"+item.file} loading="lazy" decoding="async" alt={item.alt} /></a>
+    <figcaption><strong>{item.title}</strong> · Original source diagram · <a href={page} target="_blank" rel="noopener noreferrer">Open journal image directory ↗</a></figcaption>
+  </figure>)}</div>
+</section>}

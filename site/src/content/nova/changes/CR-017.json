@@ -1,0 +1,7 @@
+{
+  "id": "CR-017",
+  "title": "Active Directory hardening and tiered admin accounts",
+  "goal": "No daily account has admin rights, domain admin accounts can only sign in to domain controllers, every computer has a unique rotating local admin password, and an independent AD security scan shows a measurable improvement.",
+  "status": "planned",
+  "time": "2 weeks"
+}

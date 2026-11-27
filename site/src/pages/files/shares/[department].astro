@@ -1,0 +1,92 @@
+---
+import FolderAccess from "../../../components/nova/xf/FolderAccess.astro";
+import Files01DocumentImages from "../../../components/Files01DocumentImages.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import EvidencePanel from "../../../components/EvidencePanel.astro";
+import { shares, type Share } from "../../../data/fileCentre";
+import { findGroupByName } from "../../../data/groups";
+import { identities } from "../../../data/directory";
+export function getStaticPaths(){ return shares.map(share=>({params:{department:share.id},props:{share}})); }
+interface Props{share:Share}
+const {share}=Astro.props;
+const base=import.meta.env.BASE_URL;
+const group=findGroupByName(share.group);
+const access=findGroupByName(share.resourceGroup);
+const users=identities.filter(i=>i.directGroups.includes(share.group));
+const scenarios:Record<string,{problem:string;solution:string}>={
+it:{problem:"Without a dedicated IT folder, support guides and troubleshooting notes could be scattered across computers. Finding the right document and controlling who can open it would become difficult.",solution:"Nova Corp created one dedicated IT folder. Authorized IT employees can store and work on the same documents, while Windows controls who can open or change them."},
+finance:{problem:"Financial reports and sensitive records need to be kept together without making them available to every employee.",solution:"Nova Corp created a Finance folder where authorized Finance employees can work on financial documents. Management has a separate authorized access path for oversight."},
+hr:{problem:"Personnel records and HR documents could become scattered across computers and email attachments, making them difficult to organize and protect.",solution:"Nova Corp created a dedicated HR folder where authorized HR staff can maintain documents together while restricting access from other departments."},
+management:{problem:"Internal plans and management documents need a private place where managers can collaborate without sharing confidential material across the company.",solution:"Nova Corp created a dedicated Management folder where authorized management employees can share and update internal documents in one place."},
+sales:{problem:"Proposals and sales documents stored on separate computers can become outdated or difficult for colleagues to locate.",solution:"Nova Corp created a dedicated Sales folder where authorized sales staff can maintain and use the same documents."}};
+const controlled=[
+["A folder suddenly denies Moyo access","An explicit NTFS deny on an IT test subfolder prevented reading and writing despite correct group membership. Removing that entry restored access.","file-permission-denial"],
+["One broken folder hides two faults","A wrong DNS record concealed missing IT group membership. Both faults were repaired and the IT folder opened again.","two-faults-one-symptom"],
+["The file server appears unavailable","An incorrect workstation DNS setting made the IT path fail even though SMB was reachable by IP. Correcting DNS restored access.","dns-client-outage"],
+["The primary domain controller goes offline","During a deliberate DC01 outage, the IT share remained accessible through DC02.","dc01-outage"]];
+const unexpected=[["The access checker gives the wrong answer","The administration script compared two formats of the same group name. It incorrectly predicted denial. Correcting the comparison and retesting confirmed IT allowed and Finance denied.","group-acl-name-mismatch"]];
+const encode=(slug:string)=>base+"groups/"+slug+"/";
+---
+<BaseLayout title={share.name+" shared folder"} description={"Explore "+share.name+" folder access at Nova Corp: directory groups, DFS, SMB and NTFS permissions."} breadcrumbs={[{label:"Map",href:"map/"},{label:"Files",href:"files/"},{label:share.name}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">Files / {share.name}</div>
+<h1>{share.name} shared folder</h1>
+<p class="lead" style="margin-top:17px">The shared folder for documents belonging to the {share.name} department.</p>
+
+</div></section>
+<section class="section compact"><div class="container"><FolderAccess /></div></section>
+<section class="section compact"><div class="container grid-main share-page">
+<div>
+  <section class="content-section">
+    <h2>What is the {share.name} folder?</h2><p>This is the shared folder that holds files and documents related to the {share.name} department. It is stored on <a href={base+"systems/nova-files01/"}>NOVA-FILES01</a>.</p><h2>Why does the team need it?</h2><h3 class="file-problem">Problem</h3><p>{scenarios[share.id].problem}</p><h3 class="file-solution">Solution</h3><p>{scenarios[share.id].solution}</p></section><section class="content-section"><h2>How does an employee access the {share.name} folder?</h2>
+    <p class="muted" style="margin:12px 0 19px">When an employee opens the shared folder, Windows identifies them, finds the folder on the file server and checks their permissions.</p>
+    <ol class="walkthrough access-steps">
+      <li class="walk-step">
+        <h3>The employee signs in with a company account</h3>
+        <p><a href={group?encode(group.slug):base+"groups/"}><strong>{share.group}</strong></a> contains the recorded department identities.</p>
+        <ul class="plain-list" style="margin-top:8px">{users.map(user=><li><a href={base+"people/"+user.slug+"/"}>{user.name}</a></li>)}</ul>
+      </li>
+      <li class="walk-step"><h3>Windows uses the employee’s group membership</h3>
+        <p><a href={access?encode(access.slug):base+"groups/"}><strong>{share.resourceGroup}</strong></a> is assigned the folder permissions. The department group itself does not need a separate direct ACL entry.</p>
+      </li>
+      <li class="walk-step"><h3>The employee opens the company folder address</h3>
+        <p><code class="technical">{share.dfs}</code> resolves to <code class="technical">{share.smb}</code>.</p>
+        <a class="evidence-link" href={base+"files/dfs/"}>Follow the DFS namespace →</a>
+      </li>
+      <li class="walk-step"><h3>Windows checks network share access (SMB)</h3>
+        <p>The resource group is allowed <strong>Change</strong> through SMB. This checks permission to access the share across the network.</p>
+      </li>
+      <li class="walk-step"><h3>Windows checks the actual folder rights (NTFS)</h3>
+        <p>At <code class="technical">{share.ntfs}</code>, the same resource group has <strong>Modify</strong> on the NTFS root. Administrators and SYSTEM have their separately recorded administrative permissions.</p>
+      </li>
+    </ol>
+    <div class="note warning" style="margin-top:20px">DFS routing and group membership alone are not a claim that any particular file operation succeeds. Selected allowed and denied outcomes were tested historically; the present page represents the recorded share/root configuration.</div>
+  </section>
+  <Files01DocumentImages ids={["dfs-targets-online-audit"]}/><p>The shared target inventory shows all five configured departments, including {share.name}. It does not establish a separate end-to-end test for every user.</p>
+  {share.exception && <section class="content-section">
+    <div class="paper panel">
+      <div class="eyebrow">An additional authorized path</div>
+      <h2 style="margin:15px 0">Management can have broader Finance access.</h2>
+      <p class="muted"><a href={base+"groups/management-users/"}>{share.exception.member}</a> is nested into <a href={base+"groups/dl-fs-finance-fullcontrol/"}>{share.exception.group}</a>. The latter has <strong>{share.exception.smb}</strong> at the SMB layer and <strong>{share.exception.ntfs}</strong> at the NTFS root.</p>
+      <div class="definition">{share.exception.description}</div>
+      <a class="evidence-link" href={base+"people/maria-manager/"}>Follow Maria Manager's identity →</a>
+    </div>
+  </section>}
+<section class="content-section"><h2>Related tests and incidents</h2>
+<h3>Normal access validation</h3>{share.id==="it"||share.id==="finance"?<p><a href={base+"people/moyo/"}>Moyo</a> successfully opened IT; Finance was denied in her recorded session.</p>:<p>The recorded configuration grants access to the {share.name} resource group. A department-specific workstation screenshot still needs review.</p>}
+{share.id==="it"&&<><Files01DocumentImages ids={["fileserver-client-baseline"]}/><h3>Controlled incidents</h3><div class="card-list">{controlled.map(([title,description,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h4>{title}</h4><p>{description}</p><span class="readmore">Read investigation →</span></a>)}</div><Files01DocumentImages ids={["permission-denial-observed","permission-explicit-deny"]}/></>}
+{(share.id==="it"||share.id==="finance")&&<><h3>Unexpected incidents</h3><div class="card-list">{unexpected.map(([title,description,slug])=><a class="system-card" href={base+"incidents/"+slug+"/"}><h4>{title}</h4><p>{description}</p><span class="readmore">Read investigation →</span></a>)}</div></>}
+{share.id!=="it"&&<p><a href={base+"incidents/file-permission-denial/"}>Related learning: how an IT child-folder denial was diagnosed →</a> (not a test of this department).</p>}
+<EvidencePanel subject={share.name+" workstation access"} requested="A clearer reviewed screenshot of department-specific access is needed."/>
+</section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"reference/explore/files/"+share.id+"/"}>Original folder configuration →</a></p><p><a href={base+"pdf-journals/NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf"}>CR-009 · Departmental shares and drive mapping →</a></p><p><a href={base+"pdf-journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"}>CR-010 · DFS and Shadow Copies →</a></p>{(share.id==="it"||share.id==="finance")&&<><p><a href={base+"reference/Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit/"}>CR-011 · PowerShell administration toolkit →</a></p><p><a href={base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"}>CR-014 · Incident exercises →</a></p></>}</section>
+</div>
+<aside>
+  <div class="sidebox"><h3>Folder addresses</h3><dl class="fact-list"><div><dt>Company address (DFS)</dt><dd><code class="technical">{share.dfs}</code></dd></div><div><dt>Server share</dt><dd><code class="technical">{share.smb}</code></dd></div><div><dt>NTFS folder</dt><dd><code class="technical">{share.ntfs}</code></dd></div></dl></div>
+  <div class="sidebox"><h3>Rights at a glance</h3><dl class="fact-list"><div><dt>Department group</dt><dd>{share.group}</dd></div><div><dt>Resource group</dt><dd>{share.resourceGroup}</dd></div><div><dt>SMB access</dt><dd>Change</dd></div><div><dt>NTFS access</dt><dd>Modify</dd></div></dl><a class="evidence-link" href={base+"files/permissions/"}>All five department groups →</a></div>
+  <div class="sidebox"><h3>Original source</h3><p class="muted">This page reflects the reviewed departmental file-server configuration. Detailed original rules and exceptions remain in the linked public record.</p><a class="evidence-link" href={base+"files/permissions/technical/?q="+encodeURIComponent(share.name)}>Inspect the exact access entries →</a><p style="margin-top:13px"><a href={share.evidence}>Department source record ↗</a></p></div>
+  <div class="sidebox"><a href={base+"files/"}>← Back to Files</a><p style="margin-top:12px"><a href={base+"systems/nova-files01/"}>Open the file server →</a></p></div>
+</aside>
+</div></section>
+</BaseLayout>
+
+<style>.share-page>div,.share-page aside{min-width:0}.share-page .content-section{margin-bottom:52px}.share-page .content-section h2{font-size:clamp(1.65rem,2.6vw,2.35rem);line-height:1.18;margin:0 0 18px}.share-page .content-section h3{margin-top:28px;margin-bottom:10px}.share-page .content-section p{margin:0 0 14px;line-height:1.7}.share-page .access-steps{list-style:none;padding-left:0;margin:24px 0}.share-page .access-steps li::marker{content:""}.share-page .access-steps h3{margin:0 0 8px}.share-page .system-card h4{font-size:1.1rem;margin:0 0 10px}.share-page code,.share-page .fact-list dd{overflow-wrap:anywhere}.file-problem{color:var(--c-red);margin:24px 0 8px;font-size:1.05rem}.file-solution{color:var(--c-green);margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>

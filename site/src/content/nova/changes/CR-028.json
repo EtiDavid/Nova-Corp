@@ -1,0 +1,7 @@
+{
+  "id": "CR-028",
+  "title": "Rocky Linux: the Finance reporting service",
+  "goal": "A hardened Rocky Linux server, built with Ansible, runs a reporting application that Finance owns, with SELinux enforcing and storage that can grow without downtime.",
+  "status": "planned",
+  "time": "2 weeks"
+}

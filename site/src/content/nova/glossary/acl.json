@@ -1,0 +1,17 @@
+{
+  "id": "acl",
+  "term": "Access Control List (ACL)",
+  "aliases": [
+    "ACL",
+    "ACLs",
+    "Access Control List",
+    "Access Control Lists"
+  ],
+  "short": "A list of rules that tells Windows who may access a file, folder or other resource and what they may do.",
+  "inNova": "The IT folder allows the DL_FS_IT_Modify group to modify files. A controlled incident added an explicit deny for Moyo on one test subfolder, preventing access until the deny was removed.",
+  "seeAlso": [
+    "nova-files01",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

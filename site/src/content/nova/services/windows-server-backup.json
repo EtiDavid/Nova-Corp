@@ -1,0 +1,16 @@
+{
+  "id": "windows-server-backup",
+  "name": "Windows Server Backup",
+  "line": "recovery",
+  "runsOn": [
+    "nova-files01",
+    "nova-dc01"
+  ],
+  "dependsOn": [],
+  "summary": "Scheduled backups of the file server and of DC01's System State.",
+  "inNova": "FILES01 backs up to a separate disk and a deleted file was restored with a matching SHA-256 hash. A DC01 backup was once 48.82 hours old because DC01 was off, which led to a monitor.",
+  "builtBy": [
+    "CR-012"
+  ],
+  "copyStatus": "migrated"
+}

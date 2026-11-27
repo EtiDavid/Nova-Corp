@@ -1,0 +1,12 @@
+{
+  "id": "CR-007",
+  "title": "Remote access VPN with WireGuard",
+  "goal": "Staff can work from home.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-007.md",
+  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-007_Remote_Access_VPN_WireGuard.pdf",
+  "built": [
+    "WireGuard remote access on pfSense, with firewall rules for what a remote peer may and may not reach"
+  ],
+  "validated": "I traced a failed first handshake layer by layer to a wrong peer key, fixed it, and tested both allowed and blocked access."
+}

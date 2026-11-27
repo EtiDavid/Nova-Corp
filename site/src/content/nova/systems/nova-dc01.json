@@ -1,0 +1,73 @@
+{
+  "id": "nova-dc01",
+  "name": "NOVA-DC01",
+  "role": "Domain controller (AD, DNS, Kerberos, LDAP)",
+  "sub": "Domain controller",
+  "kind": "server",
+  "zone": "INFRA, VLAN 20",
+  "ip": "10.10.20.10",
+  "os": "Windows Server 2025",
+  "status": "live",
+  "services": [
+    "active-directory",
+    "dns",
+    "kerberos",
+    "replication",
+    "group-policy",
+    "windows-server-backup"
+  ],
+  "builtBy": [
+    "CR-003",
+    "CR-004",
+    "CR-013"
+  ],
+  "map": {
+    "col": 62,
+    "row": 14,
+    "w": 13,
+    "h": 4.4
+  },
+  "limit": "A complete System State restore has not been demonstrated.",
+  "links": [
+    {
+      "line": "identity",
+      "to": "nova-dc02",
+      "meaning": "DC01 and DC02 replicate Active Directory",
+      "path": [
+        [
+          64,
+          16.2
+        ],
+        [
+          64,
+          25.8
+        ]
+      ]
+    },
+    {
+      "line": "recovery",
+      "to": "nova-prox01",
+      "meaning": "DC01 System State backup and Proxmox archives",
+      "path": [
+        [
+          68.5,
+          13
+        ],
+        [
+          82,
+          13
+        ],
+        [
+          82,
+          56
+        ],
+        [
+          46.5,
+          56
+        ]
+      ]
+    }
+  ],
+  "story": "DC01 is the first domain controller for nova.corp. It runs Active Directory, DNS, Kerberos and LDAP on 10.10.20.10 in the INFRA network. When Moyo signs in, DC01 or DC02 issues her Kerberos ticket, and workstations ask both for DNS. I took DC01 offline on purpose to show that sign-ins survive (CR-013). Its System State is backed up (CR-012), but I have not demonstrated a full restore.",
+  "copyStatus": "rewritten"
+}

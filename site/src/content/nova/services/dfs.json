@@ -1,0 +1,17 @@
+{
+  "id": "dfs",
+  "name": "DFS namespace",
+  "line": "files",
+  "runsOn": [
+    "nova-files01"
+  ],
+  "dependsOn": [
+    "smb-ntfs"
+  ],
+  "summary": "One stable path that points to the department shares.",
+  "inNova": "The namespace \\\\nova.corp\\shares points to the five shares. Each has one target, so it hides the server name but is not high availability: CR-010 took the IT and Sales targets offline to show it.",
+  "builtBy": [
+    "CR-010"
+  ],
+  "copyStatus": "migrated"
+}

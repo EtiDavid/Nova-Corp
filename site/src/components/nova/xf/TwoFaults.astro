@@ -1,0 +1,27 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [{ id: "two", label: "Two faults, one symptom", steps: [
+  { say: "The IT share looks as if it does not exist.", do: [{t:"show",ids:["me","l-me","k1","k2","h1","h2","fldr"]}] },
+  { say: "Fault 1: the file server's DNS record points at 192.0.2.44.", why: "The record on both domain controllers was wrong.", do: [{t:"glide",path:"p1",dot:"d1",ms:900,keep:true},{t:"state",id:"k1",value:"bad"},{t:"show",ids:["no1","c1"]}] },
+  { say: "Fix 1: the record is corrected to 10.10.20.20.", why: "The server is found now. But the share still refuses Moyo.", do: [{t:"hide",ids:["no1"]},{t:"state",id:"k1",value:"good"},{t:"text",id:"c1",value:"DNS record: 10.10.20.20"},{t:"glide",path:"p2",dot:"d1",ms:900,keep:true},{t:"state",id:"k2",value:"bad"},{t:"show",ids:["no2","c2"]}] },
+  { say: "Fault 2: Moyo had been removed from IT_Users.", term:["Logon token","the list of groups a session was started with. Her old token still listed the group, which hid the problem until it was refreshed."], do: [{t:"hide",ids:["no1"]},{t:"state",id:"k1",value:"good"},{t:"state",id:"k2",value:"bad"},{t:"show",ids:["no2","c2","c1"]},{t:"text",id:"c1",value:"DNS record: 10.10.20.20"}] },
+  { say: "Fix 2: she is added back and her session is refreshed. The share opens.", why: "A CIFS ticket was issued for the file server.", do: [{t:"hide",ids:["no2"]},{t:"state",id:"k1",value:"good"},{t:"state",id:"k2",value:"good"},{t:"text",id:"c1",value:"DNS record: 10.10.20.20"},{t:"show",ids:["c1","c2"]},{t:"text",id:"c2",value:"Moyo is in IT_Users again"},{t:"glide",path:"p3",dot:"d1",ms:900,keep:true},{t:"show",ids:["ok"]}] },
+]}];
+---
+<Explainer id="xf-two" start={start} title="One failed share hid two separate faults" intro="Fixing the first problem exposed the second."
+  scenarios={scenarios} alt="Animated diagram: a wrong DNS record and a removed group membership each block access to the IT share; both have to be fixed."
+  note="A deliberate lab exercise showing the method, not a production outage." evidence={[{label:"Change CR-014", href:"/changes/CR-014/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="me" data-hide><use href="#ic-person" x="50" y="190" width="50" height="55"/></g><text data-id="l-me" data-hide class="small" x="75" y="268">Moyo</text>
+  <path class="guide" data-id="p1" d="M110 215 L240 215"/><path class="guide" data-id="p2" d="M320 215 L470 215"/><path class="guide" data-id="p3" d="M550 215 L660 215"/>
+  <text data-id="h1" data-hide class="small" x="280" y="120">Fault 1 · Name lookup</text><text data-id="h2" data-hide class="small" x="510" y="120">Fault 2 · Permission</text>
+  <g data-id="k1" data-hide><rect class="bubble" x="240" y="140" width="80" height="150" rx="10"/><use href="#ic-globe" x="256" y="190" width="48" height="48"/></g>
+  <g data-id="k2" data-hide><rect class="bubble" x="470" y="140" width="80" height="150" rx="10"/><use href="#ic-lock" x="490" y="190" width="40" height="48"/></g>
+  <g data-id="no1" data-hide><use href="#ic-x" x="262" y="146" width="36" height="36"/></g><g data-id="no2" data-hide><use href="#ic-x" x="492" y="146" width="36" height="36"/></g>
+  <text data-id="c1" data-hide class="sub" x="280" y="320">DNS record: 192.0.2.44 (wrong)</text><text data-id="c2" data-hide class="sub" x="510" y="320">Moyo removed from IT_Users</text>
+  <g data-id="fldr" data-hide><use href="#ic-folder" x="660" y="190" width="70" height="56"/></g><g data-id="ok" data-hide><use href="#ic-check" x="675" y="140" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-files)"/>
+</Explainer>

@@ -1,0 +1,139 @@
+---
+import PolicyDelivery from "../../components/nova/xf/PolicyDelivery.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+import {
+ companyPolicies,policySourceIndex,policyImageSource,
+ type CompanyPolicy
+} from "../../data/policies";
+import { organizationalUnits, identities } from "../../data/directory";
+export function getStaticPaths(){return companyPolicies.map(policy=>({params:{slug:policy.slug},props:{policy}}));}
+interface Props {policy:CompanyPolicy}
+const {policy}=Astro.props;
+const base=import.meta.env.BASE_URL;
+const targetOu=organizationalUnits.find(o=>o.slug===policy.link?.ouSlug);
+const children=targetOu?organizationalUnits.filter(o=>o.parent===targetOu.slug):[];
+const scopedPeople=targetOu?identities.filter(i=>i.ou===targetOu.slug || children.some(o=>o.slug===i.ou)):[];
+const isUnlinked=!policy.link;
+const hasTest=policy.observations.some(o=>o.level==="Observed policy processing"||o.level==="Historical behavior test");
+const settingsCount=policy.sections.reduce((count,section)=>count+section.settings.length,0);
+---
+<BaseLayout title={policy.name+" · Group Policy"} description={policy.summary} breadcrumbs={[{label:"Directory",href:"directory/"},{label:"Policies",href:"policies/"},{label:policy.name}]}>
+<section class="page-head"><div class="container">
+<div class="eyebrow">Group Policy / {policy.side} configuration</div>
+<h1>{policy.name}</h1>
+<p class="lead" style="margin-top:17px">{policy.summary}</p>
+<div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:22px">
+ <span class={"rule-action "+(isUnlinked?"block":"pass")}>{isUnlinked?"Unlinked / empty":"Linked / configured"}</span>
+ <span class="muted" style="font-size:.85rem">Saved configuration</span>
+</div>
+</div></section>
+<section class="section compact"><div class="container"><PolicyDelivery /></div></section>
+<section class="section compact"><div class="container grid-main">
+<div>
+<section class="content-section">
+ <h2>What it does</h2><p>{policy.summary}</p><h2 style="margin-top:24px">Why Nova Corp has it</h2><p class="muted" style="margin:12px 0 18px">{policy.why}</p>
+ <div class="paper panel">
+  <p class="kicker">Where it is linked</p>
+  <h3 style="margin:11px 0">{isUnlinked?"It is not linked to anything.":policy.link?.label}</h3>
+  {targetOu?<p class="muted">The link is enabled and points to <a href={base+"directory/ous/"+targetOu.slug+"/"}>{policy.link?.path}</a>. It is <strong>not enforced</strong>.</p>
+  :isUnlinked?<p class="muted">Its user and computer sections are on, but the saved report lists no settings and no links, so it changes nothing.</p>
+  :<p class="muted">The link is enabled, not enforced, and covers the whole <strong>nova.corp</strong> domain, not one OU.</p>}
+  {!isUnlinked&&<p class="muted" style="margin-top:12px">Security filter: <strong>Authenticated Users</strong> can apply it. No WMI filter. That does not mean every account was checked.</p>}
+ </div>
+</section>
+<section class="content-section">
+ <div class="section-heading"><h2>What it sets</h2><span class="muted">{settingsCount} featured settings</span></div>
+ <p class="muted" style="margin:12px 0 16px">These are the main saved values. The full policy profile has more, including the 24 rights assignments on the Domain Controller policy.</p>
+ <label class="search-label" for="policy-setting-filter">Find a setting in this policy</label>
+ <div class="searchbox" style="margin:10px 0 15px"><span aria-hidden="true">⌕</span><input id="policy-setting-filter" type="search" data-policy-filter placeholder="Search firewall, lockout, AutoPlay..." autocomplete="off" /></div>
+ <p class="muted" style="font-size:.85rem;margin-bottom:14px" role="status" aria-live="polite" data-filter-count>{settingsCount} settings</p>
+ {policy.sections.map(section=><section class="paper panel policy-section" style="margin-bottom:17px" data-setting-section>
+  <h3 style="margin:0 0 16px">{section.heading}</h3>
+  <dl class="fact-list">
+   {section.settings.map(setting=><div data-setting-row data-setting-text={(setting.name+" "+setting.value+" "+(setting.explanation??"")).toLowerCase()}>
+      <dt>{setting.name}</dt><dd><strong>{setting.value}</strong>{setting.explanation&&<p class="muted" style="margin-top:6px">{setting.explanation}</p>}</dd>
+   </div>)}
+  </dl>
+ </section>)}
+ <p data-filter-empty hidden class="note">No setting matches this search. Try another word.</p>
+</section>
+
+<section class="content-section">
+ <h2>Did it reach anyone?</h2>
+ <p class="muted" style="margin:12px 0 20px">A saved setting, a link, a <code>gpresult</code> entry and a real behavior test each prove something different. This is what I recorded.</p>
+ <div class="proof-grid vertical">
+  <div class="proof-item"><strong>Configuration</strong><p>{isUnlinked?"No settings and no links.":"Settings, link and security filter are in the saved policy report."}</p></div>
+  <div class="proof-item"><strong>Link/scope</strong><p>{isUnlinked?"No link, so no user or computer receives it.":policy.link?.path+" (enabled, not enforced). That is who could get it, not who did."}</p></div>
+  <div class="proof-item"><strong>Client evidence</strong><p>{hasTest?"I have a recorded gpresult or behavior test. The limits are below.":"I have no recorded test that this policy reached a user or computer."}</p></div>
+ </div>
+ <div class="card-list" style="margin-top:20px">
+  {policy.observations.map(o=><div class="paper panel">
+    <p class="kicker">{o.level}</p><p style="margin:10px 0">{o.text}</p>
+    <a class="evidence-link" href={o.sourceUrl}>Inspect the supporting record ↗</a>
+  </div>)}
+ </div>
+</section>
+{policy.evidenceImages && policy.evidenceImages.length>0&&<section class="content-section">
+ <div class="policy-original-images">{policy.evidenceImages.map(img=><figure>
+   
+    <img src={base+"evidence/"+img.filename} loading="lazy" alt={img.alt} decoding="async" />
+   <figcaption><strong>{img.caption}</strong><p>{img.proves}</p></figcaption>
+ </figure>)}</div>
+</section>}
+<section class="content-section">
+ <h2>Connections and what remains unknown</h2>
+ {targetOu&&<div class="paper panel">
+   <h3>Directory objects inside the linked location</h3>
+   <p class="muted" style="margin:10px 0">These objects are located in the target OU or its directly documented children; this is <strong>not a list of proven policy recipients</strong>.</p>
+   {scopedPeople.length>0?<ul class="plain-list">{scopedPeople.map(p=><li><a href={base+"people/"+p.slug+"/"}>{p.name}</a> — {p.category.replace("-"," ")}</li>)}</ul>:<p class="muted">This is primarily a computer policy location. See the related system profiles below.</p>}
+ </div>}
+ {policy.relatedSystemSlugs&&policy.relatedSystemSlugs.length>0&&<div class="paper panel" style="margin-top:17px">
+  <h3>Related company systems</h3>
+  <div class="button-row" style="margin-top:14px">{policy.relatedSystemSlugs.map(slug=><a class="btn ghost small" href={base+"systems/"+slug+"/"}>{slug.toUpperCase()} →</a>)}</div>
+ </div>}
+ {policy.slug==="drive-mapping"&&<div class="paper panel" style="margin-top:17px"><h3>Follow the file-service handoff</h3><p class="muted" style="margin:10px 0 16px">The configured logon script points to NETLOGON. Share mapping still requires an accessible server, correct group membership and SMB/NTFS rights. The actual last-logon execution was not established by the GPO export.</p><a class="btn small" href={base+"files/"}>Explore the Files →</a></div>}
+ {policy.slug==="keyboard"&&<div class="paper panel" style="margin-top:17px"><h3>Where the keyboard settings were actually found</h3><p class="muted">Two registry preferences appear in the Domain Controllers policy instead. Do not interpret that as a keyboard layout applied to all staff.</p><a class="evidence-link" href={base+"policies/domain-controllers/"}>Open the actual policy →</a></div>}
+ <div class="note warning" style="margin-top:20px"><strong>Limits on this claim</strong><ul class="plain-list" style="margin-top:12px">{policy.limitations.map(limit=><li>{limit}</li>)}</ul></div>
+</section>
+<section class="content-section"><details><summary>Technical checks</summary><h3>Inspect the saved GPO object</h3><p><strong>Where:</strong> Domain controller or management PC with the GroupPolicy module.</p><pre><code>{"Get-GPO -Name \""+policy.technicalName+"\""}</code></pre><p><strong>Expected:</strong> The correct name and GPO ID are returned. This verifies the object, not its effective settings.</p><h3>Review actual processing</h3><p><strong>Where:</strong> NOVA-CLIENT in the intended user session; elevate for computer scope.</p><pre><code>{policy.side==="User"?"gpresult /scope user /r":policy.side==="Computer"?"gpresult /scope computer /r":"gpresult /r"}</code></pre><p><strong>Expected:</strong> {isUnlinked?"The empty/unlinked GPO should not appear as applied.":"An eligible and successfully processed GPO appears in the Applied Group Policy Objects list. For actual behavior, perform an approved test."}</p></details></section><section class="content-section"><h2>Related tests and incidents</h2>{policy.slug==="corporate-wallpaper"?<a class="system-card" href={base+"incidents/gpo-link-disabled/"}><h3>Controlled · Wallpaper policy link disabled</h3><p>The missing policy was traced to its link.</p><span class="readmore">Read investigation →</span></a>:policy.slug==="contractor-usb"?<p><a href={base+"people/john-shaw/"}>John Shaw’s recorded policy-processing test →</a></p>:<p>See the documented observations above. No independent per-device behavior test is inferred from this GPO record.</p>}</section><section class="content-section"><h2>Engineering journals</h2><p><a href={base+"reference/"+policy.sourceUrl.split("/blob/main/docs/")[1].replace(/\.md$/,"")+"/"}>Complete original Group Policy explanation →</a></p><p><a href={base+"journals/CR-006_Group_Policy_Management_Beautified/"}>Group Policy implementation journal →</a></p></section>
+</div>
+<aside>
+ <div class="sidebox"><h3>Policy details</h3>
+  <dl class="fact-list">
+   <div><dt>Exact configured name</dt><dd>{policy.technicalName}</dd></div>
+   <div><dt>Settings side</dt><dd>{policy.side}</dd></div>
+   <div><dt>OU or domain link</dt><dd>{policy.link?.path??"None"}</dd></div>
+   <div><dt>Link status</dt><dd>{policy.link?"Enabled; not enforced":"Not linked"}</dd></div>
+   <div><dt>Security filter (ACL)</dt><dd>Authenticated Users — Apply Group Policy</dd></div>
+   <div><dt>Reported WMI filter</dt><dd>No named filter</dd></div>
+  </dl>
+  <details class="detail-disclosure" style="margin-top:12px"><summary>Technical GPO identifier</summary><code class="technical">{policy.guid}</code></details>
+ </div>
+ <div class="sidebox"><h3>Source</h3><a href={policy.sourceUrl}>Exact saved policy record ↗</a><p class="muted" style="margin-top:12px">Original data: seven verified GPO XML/HTML reports. This page separates configured settings from observed processing.</p></div>
+ <div class="sidebox"><a href={base+"policies/"}>← All company policies</a><p style="margin-top:14px"><a href={base+"directory/"}>Directory tree →</a></p><p style="margin-top:14px"><a href={policySourceIndex}>Technical GPO index ↗</a></p></div>
+</aside>
+</div></section>
+<script>
+ const search=document.querySelector<HTMLInputElement>("[data-policy-filter]");
+ const sections=[...document.querySelectorAll<HTMLElement>("[data-setting-section]")];
+ const count=document.querySelector<HTMLElement>("[data-filter-count]");
+ const empty=document.querySelector<HTMLElement>("[data-filter-empty]");
+ search?.addEventListener("input",()=>{
+  const query=search.value.trim().toLowerCase();
+  let visible=0;
+  for(const section of sections){
+   let found=0;
+   for(const row of section.querySelectorAll<HTMLElement>("[data-setting-row]")){
+     const matched=(row.dataset.settingText||"").includes(query);
+     row.hidden=!matched;
+     if(matched){found++;visible++;}
+   }
+   section.hidden=found===0;
+  }
+  if(count) count.textContent=visible+" "+(visible===1?"setting":"settings");
+  if(empty)empty.hidden=visible!==0;
+ });
+</script>
+</BaseLayout>
+<style>.policy-original-images figure{margin:26px 0 32px}.policy-original-images img{width:100%;height:auto;display:block}.policy-original-images figcaption{text-align:center;color:var(--ink);font-size:.84rem;margin-top:10px}.policy-original-images figcaption p{margin:5px 0}</style>

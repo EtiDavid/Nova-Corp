@@ -1,0 +1,19 @@
+---
+import LegacyRedirect from "../../components/LegacyRedirect.astro";
+import { areas } from "../../data/areas";
+export function getStaticPaths() {
+  const dest: Record<string, [string, string]> = {
+    "control-room": ["map/", "Map"],
+    "identity-office": ["map/?line=identity", "Explore: identity"],
+    "department-offices": ["map/?line=identity", "Explore: identity and access"],
+    "network-gatehouse": ["map/?line=network", "Explore: network"],
+    "file-records": ["map/?line=files", "Explore: files"],
+    "recovery-centre": ["map/?line=recovery", "Explore: recovery"],
+    "incident-lab": ["incidents/", "Investigations"],
+    "roadmap-wing": ["roadmap/", "Roadmap"]
+  };
+  return areas.map(a => ({ params: { slug: a.id }, props: { to: (dest[a.id] ?? ["map/", "Explore"])[0], label: (dest[a.id] ?? ["map/", "Explore"])[1] } }));
+}
+const { to, label } = Astro.props;
+---
+<LegacyRedirect to={to} label={label} />

@@ -1,0 +1,15 @@
+{
+  "id": "sysvol",
+  "term": "SYSVOL",
+  "aliases": [
+    "SYSVOL"
+  ],
+  "short": "A shared folder on Domain Controllers containing Group Policy and certain shared domain files.",
+  "inNova": "During the controlled DC01 outage, SYSVOL remained accessible to the documented workstation through the surviving DC service.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-dc02",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

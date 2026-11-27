@@ -1,0 +1,99 @@
+---
+// The generic, data-driven incident page. Any incident that has no hand-mapped legacy record renders here,
+// so adding an incident is: add one Markdown file with front matter. See HOW-TO/add-an-incident.md.
+import NovaLayout from "../../layouts/NovaLayout.astro";
+import MapSvg from "../../components/nova/MapSvg.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import "../../styles/incident-records.css";
+import "../../styles/reference-library.css";
+import IncidentOriginalRecord from "../../components/IncidentOriginalRecord.astro";
+import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
+import { incidentDocuments, originalSourceURL, siteArticle } from "../../data/incidentDocuments";
+import DcSignIn from "../../components/nova/xf/DcSignIn.astro";
+import FirewallRules from "../../components/nova/xf/FirewallRules.astro";
+import ProxmoxLayers from "../../components/nova/xf/ProxmoxLayers.astro";
+import FileRecovery from "../../components/nova/xf/FileRecovery.astro";
+import WireguardKeys from "../../components/nova/xf/WireguardKeys.astro";
+import GpoLink from "../../components/nova/xf/GpoLink.astro";
+import ReplicationGap from "../../components/nova/xf/ReplicationGap.astro";
+import TwoFaults from "../../components/nova/xf/TwoFaults.astro";
+import InterfaceRules from "../../components/nova/xf/InterfaceRules.astro";
+import NameMatch from "../../components/nova/xf/NameMatch.astro";
+import GatewayFix from "../../components/nova/xf/GatewayFix.astro";
+import ServiceStopped from "../../components/nova/xf/ServiceStopped.astro";
+import Rollback from "../../components/nova/xf/Rollback.astro";
+import TestNotRun from "../../components/nova/xf/TestNotRun.astro";
+import Cr004Rollback from "../../components/nova/xf/Cr004Rollback.astro";
+import { loadNova, typeLabel, segmentId, journalHref } from "../../lib/nova";
+export async function getStaticPaths() {
+  const entries = await getCollection("incidents");
+  // dns-client-outage, fileserver-subnet and file-permission-denial have a hand-built page of their own.
+  return entries.filter((e: CollectionEntry<"incidents">) => !["dns-client-outage", "fileserver-subnet", "file-permission-denial"].includes(e.id)).map((e: CollectionEntry<"incidents">) => ({ params: { nova: e.id }, props: { entry: e } }));
+}
+const { entry } = Astro.props as unknown as { entry: CollectionEntry<"incidents"> };
+const d = entry.data as any;
+const { Content } = await render(entry);
+const base = import.meta.env.BASE_URL;
+const nova = await loadNova();
+const involved = d.systems.map(nova.stationById).filter(Boolean);
+const change = d.cr ? nova.changes.find((c: any) => c.id === d.cr) : null;
+const journal = change?.journal ? await journalHref(change.journal, base) : null;
+const related = nova.relatedIncidents(entry.id);
+const hasTwenty = d.saw && d.cause && d.fix && d.proof;
+const legacy = incidentDocuments[entry.id];
+const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticle(legacy.journal, base) : base + "journals/" + legacy.journal.split("/").at(-1)?.replace(/\.pdf$/i, "") + "/") : null;
+---
+<NovaLayout title={d.shortTitle ?? d.title} description={d.summary} current="incidents">
+  <section class="incident-head"><div class="wrap">
+    <p class="tiny"><a href={base + "incidents/"}>← All incidents</a></p>
+    <h1 style="margin-top:10px">{d.shortTitle ?? d.title}</h1>
+    <div class="meta">
+      <span class={"type " + d.type}>{typeLabel[d.type]}</span>
+      <span>{involved.map((s: any) => <a class="chip" href={base + "systems/" + s.id + "/"}>{s.name}</a>)}</span>
+      {d.cr && <a class="chip" href={base + "changes/" + d.cr + "/"}>{d.cr}</a>}
+    </div>
+  </div></section>
+  <div class="wrap">
+    {hasTwenty ? (
+      <section class="v20" aria-labelledby="h-20"><h2 id="h-20" style="grid-column:1/-1;font-size:1.05rem">The 20-second version</h2>
+        <div><h3>What users saw</h3><p>{d.saw}</p></div><div><h3>What was actually wrong</h3><p>{d.cause}</p></div>
+        <div><h3>What fixed it</h3><p>{d.fix}</p></div><div><h3>How I proved it</h3><p>{d.proof}</p></div>
+      </section>) : <p class="lead">{d.summary}</p>}
+    <div class="inc-grid">
+      {d.segment && <aside class="inc-map" aria-label="Where it broke"><div class="map-card">
+        <MapSvg id="nl-inc" broken={segmentId(d.segment.line, d.segment.from, d.segment.to)} emphasise={[d.segment.from, d.segment.to]} linesOn={[d.segment.line]} viewBox="0 20 920 560" mini
+          label={`Line map showing the ${d.segment.line} line between ${d.segment.from} and ${d.segment.to} drawn broken in red.`} />
+        <p class="caption"><b style="color:var(--broken-text)">Red dashed:</b> the segment that failed.</p></div></aside>}
+      <div class="inc-main md" style={d.segment ? "" : "grid-column:1/-1"}>
+        {entry.id === "dc01-outage" && <DcSignIn start="outage" />}
+        {entry.id === "firewall-management-exposure" && <FirewallRules start="before" />}
+        {entry.id === "proxmox-storage-pressure" && <ProxmoxLayers start="space" />}
+        {entry.id === "backup-target-unavailable" && <FileRecovery start="backup" />}
+        {entry.id === "wireguard-handshake" && <WireguardKeys />}
+        {entry.id === "gpo-link-disabled" && <GpoLink />}
+        {entry.id === "replication-divergence" && <ReplicationGap />}
+        {entry.id === "two-faults-one-symptom" && <TwoFaults />}
+        {entry.id === "dc01-vlan-migration" && <InterfaceRules />}
+        {entry.id === "group-acl-name-mismatch" && <NameMatch />}
+        {entry.id === "proxmox-default-gateway" && <GatewayFix />}
+        {entry.id === "proxmox-webgui-outage" && <ServiceStopped />}
+        {entry.id === "bulk-users-partial-rollback" && <Rollback />}
+        {entry.id === "vpn-validation-deferred" && <TestNotRun />}
+        {entry.id === "dc02-cannot-reach-dc01" && <Cr004Rollback />}
+        {!legacy && <Content />}
+        {d.limits && <><h2 style="margin-top:32px">What this doesn't prove</h2><p class="boxnote" style="margin-top:10px">{d.limits}</p></>}
+        {legacy && <>
+          <h2 style="margin-top:32px">Evidence</h2>
+          <div class="incident-sidebar-journal" style="margin-top:8px">
+            {journalOnSite && <p><a class="nv-link" href={journalOnSite}>Read the complete original {legacy.journalFormat === "pdf" ? "PDF, all pages and images," : "Markdown journal"} on this site →</a></p>}
+            <p class="tiny"><a href="#full-investigation">↓ Every recorded step</a> · <a class="incident-master-link" href={originalSourceURL(legacy.journal)} target="_blank" rel="noopener noreferrer">Open {legacy.journalFormat === "pdf" ? "original PDF" : "full Markdown"} journal on GitHub ↗</a> · <a href={originalSourceURL(legacy.source)} target="_blank" rel="noopener noreferrer">Original incident record ↗</a></p>
+          </div>
+          <OriginalPdfEvidenceGallery subject={"incidents/" + entry.id} heading="Original recorded results from the journal" />
+          <details class="orig-record" open style="margin-top:16px"><summary><b>The complete original investigation</b> (every recorded step)</summary><IncidentOriginalRecord slug={entry.id} /></details>
+        </>}
+        {!legacy && journal && <><h2 style="margin-top:32px">Evidence</h2><p style="margin-top:8px"><a class="nv-link" href={journal.href}>Full journal ({change.id}){journal.external ? " ↗" : " →"}</a></p></>}
+        {related.length > 0 && <><h2 style="margin-top:32px">Related</h2><div class="related">{related.map((r: any) => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div></>}
+      </div>
+    </div>
+  </div>
+</NovaLayout>

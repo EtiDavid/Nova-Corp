@@ -1,0 +1,238 @@
+[
+  {
+    "id": "nova-prox01",
+    "slug": "nova-prox01",
+    "name": "nova-prox01",
+    "category": "Virtualization platform",
+    "summary": "The Proxmox host that runs every other virtual machine in the lab.",
+    "area": "control-room",
+    "status": "observed-running",
+    "asOf": "2026-11-22",
+    "details": [
+      {
+        "label": "Platform",
+        "value": "Proxmox VE 9.2.2, nested inside VMware Workstation"
+      },
+      {
+        "label": "Virtual machines",
+        "value": "6 configured; 5 running, 1 stopped at last review"
+      },
+      {
+        "label": "Backup archives",
+        "value": "6 in the documented storage repository (4 pfSense, 2 DC01)"
+      },
+      {
+        "label": "Boundary",
+        "value": "Nested lab shares the outer host's physical failure domain"
+      }
+    ],
+    "related": [
+      "nova-fw01",
+      "nova-dc01",
+      "nova-dc02",
+      "nova-files01",
+      "nova-client"
+    ],
+    "sourceUrl": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-PROX01.md",
+    "limitations": [
+      "Backup archives exist, but a whole-VM restore has not been demonstrated.",
+      "The lab shares the failure domain of its one Windows host."
+    ]
+  },
+  {
+    "id": "nova-fw01",
+    "slug": "nova-fw01",
+    "name": "nova-fw01",
+    "category": "Company firewall",
+    "summary": "The pfSense firewall between all of Nova Corp's networks.",
+    "area": "network-gatehouse",
+    "status": "observed-running",
+    "asOf": "2026-11-22",
+    "details": [
+      {
+        "label": "Platform",
+        "value": "pfSense CE 2.8.1, VM 100"
+      },
+      {
+        "label": "Network segmentation",
+        "value": "Five VLANs; WireGuard is a tunnel, not a sixth VLAN"
+      },
+      {
+        "label": "Firewall configuration",
+        "value": "17 recorded filter rules (13 pass, 4 block)"
+      },
+      {
+        "label": "Security boundary",
+        "value": "Dedicated privileged management isolation not yet completed"
+      }
+    ],
+    "related": [
+      "nova-prox01",
+      "nova-client",
+      "nova-dc01",
+      "nova-files01"
+    ],
+    "sourceUrl": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-FW01.md",
+    "limitations": [
+      "The 17 rules are configured; I have not packet-tested every one.",
+      "Broad pass rules remain on MGMT, INFRA, APP and DMZ. Tightening them is the next planned change, CR-016."
+    ]
+  },
+  {
+    "id": "nova-dc01",
+    "slug": "nova-dc01",
+    "name": "NOVA-DC01",
+    "category": "Identity and DNS server",
+    "summary": "The first domain controller: sign-in, DNS and the directory.",
+    "area": "identity-office",
+    "status": "observed-running",
+    "asOf": "2026-11-22",
+    "details": [
+      {
+        "label": "Operating system",
+        "value": "Windows Server 2025 Standard"
+      },
+      {
+        "label": "Services",
+        "value": "Active Directory Domain Services, DNS, Kerberos, LDAP"
+      },
+      {
+        "label": "Network",
+        "value": "INFRA / VLAN 20"
+      },
+      {
+        "label": "Recovery",
+        "value": "System State backup configured; 3 recovery versions at last check"
+      },
+      {
+        "label": "Partner",
+        "value": "NOVA-DC02, a second writable Domain Controller"
+      }
+    ],
+    "related": [
+      "nova-dc02",
+      "nova-client",
+      "nova-files01",
+      "nova-prox01"
+    ],
+    "sourceUrl": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-DC01.md",
+    "limitations": [
+      "A complete System State restore has not been demonstrated.",
+      "Linking a policy to an OU does not prove a client applied it."
+    ]
+  },
+  {
+    "id": "nova-dc02",
+    "slug": "nova-dc02",
+    "name": "NOVA-DC02",
+    "category": "Second identity and DNS server",
+    "summary": "The second domain controller, which kept sign-ins working when DC01 was offline.",
+    "area": "identity-office",
+    "status": "observed-running",
+    "asOf": "2026-11-22",
+    "details": [
+      {
+        "label": "Operating system",
+        "value": "Windows Server 2025 Standard"
+      },
+      {
+        "label": "Directory",
+        "value": "Writable Domain Controller and Global Catalog"
+      },
+      {
+        "label": "Network",
+        "value": "INFRA / VLAN 20"
+      },
+      {
+        "label": "Resilience test",
+        "value": "Client selected DC02 during controlled DC01 outage"
+      }
+    ],
+    "related": [
+      "nova-dc01",
+      "nova-client",
+      "nova-prox01"
+    ],
+    "sourceUrl": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-DC02.md",
+    "limitations": [
+      "Taking over sign-ins is not the same as restoring a server."
+    ]
+  },
+  {
+    "id": "nova-files01",
+    "slug": "nova-files01",
+    "name": "NOVA-FILES01",
+    "category": "Company file server",
+    "summary": "The file server for the five department folders.",
+    "area": "file-records",
+    "status": "observed-running",
+    "asOf": "2026-11-22",
+    "details": [
+      {
+        "label": "Operating system",
+        "value": "Windows Server 2025 Standard"
+      },
+      {
+        "label": "Company folders",
+        "value": "Five departmental shares under a DFS namespace"
+      },
+      {
+        "label": "Access",
+        "value": "SMB share and NTFS folder permissions both matter"
+      },
+      {
+        "label": "Backups",
+        "value": "Windows Backup D: to B:, 20 recovery versions at last check"
+      },
+      {
+        "label": "Tested recovery",
+        "value": "Deleted file restored with the same SHA-256 fingerprint"
+      }
+    ],
+    "related": [
+      "nova-dc01",
+      "nova-client",
+      "nova-prox01"
+    ],
+    "sourceUrl": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-FILES01.md",
+    "limitations": [
+      "Its Windows backups go to a separate hard drive outside the lab.",
+      "One Shadow Copy recovery does not validate every stored copy."
+    ]
+  },
+  {
+    "id": "nova-client",
+    "slug": "nova-client",
+    "name": "NOVA-CLIENT",
+    "category": "Employee test workstation",
+    "summary": "The Windows 11 workstation I test everything from.",
+    "area": "control-room",
+    "status": "observed-running",
+    "asOf": "2026-11-22",
+    "details": [
+      {
+        "label": "Platform",
+        "value": "Windows client guest; Proxmox VM 103 named nova-client01"
+      },
+      {
+        "label": "Network",
+        "value": "CLIENT / VLAN 40"
+      },
+      {
+        "label": "Tests",
+        "value": "Directory discovery, Group Policy, shared-file access and network isolation"
+      }
+    ],
+    "related": [
+      "nova-dc01",
+      "nova-dc02",
+      "nova-files01",
+      "nova-fw01",
+      "nova-prox01"
+    ],
+    "sourceUrl": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-CLIENT.md",
+    "limitations": [
+      "Its Proxmox VM is named nova-client01; it is the same machine as NOVA-CLIENT."
+    ]
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "id": "vlan",
+  "term": "VLAN",
+  "aliases": [
+    "VLAN",
+    "VLANs"
+  ],
+  "short": "Virtual LAN: a logical grouping that separates network traffic over shared network infrastructure.",
+  "inNova": "NOVA-DC01 is on INFRA VLAN 20; NOVA-CLIENT is on CLIENT VLAN 40. pfSense controls applicable traffic between zones.",
+  "seeAlso": [
+    "nova-fw01",
+    "nova-dc01",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

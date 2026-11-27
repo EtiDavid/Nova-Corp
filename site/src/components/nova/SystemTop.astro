@@ -1,0 +1,45 @@
+---
+// The top of every system page, generated from the Nova content model: what it does, where it sits, what runs on it,
+// what broke here, which changes built it, and its one limit. The long technical profile follows below it.
+import { loadNova } from "../../lib/nova";
+import DcSignIn from "./xf/DcSignIn.astro";
+import FilesDoors from "./xf/FilesDoors.astro";
+import FirewallRules from "./xf/FirewallRules.astro";
+import ProxmoxLayers from "./xf/ProxmoxLayers.astro";
+import WorkstationReach from "./xf/WorkstationReach.astro";
+interface Props { id: string; asOf: string }
+const { id, asOf } = Astro.props;
+const nova = await loadNova();
+const s = nova.stationById(id);
+const base = import.meta.env.BASE_URL;
+const svcs = nova.services.filter((v: any) => s.services.includes(v.id));
+// The incidents most worth opening first: featured, then pinned, then the rest. At most five are listed here.
+const rank = (slug: string) => { const i: any = nova.incidents.find((x: any) => x.slug === slug); return (i?.featured ? 0 : i?.pin ? 1 : 2); };
+const broke = [...s.incidents].sort((a: string, b: string) => rank(a) - rank(b) || a.localeCompare(b));
+const shown = broke.slice(0, 5), more = broke.length - shown.length;
+const lineNames = s.lines.map((l: string) => nova.lineMap[l].name);
+---
+<section class="page-head"><div class="container">
+  <div class="eyebrow">{s.role}</div>
+  <h1>{s.name}</h1>
+  <p class="lead" style="margin-top:17px">{s.story}</p>
+  <div class="sys-chips">
+    <span class="chip">{s.zone}</span>
+    {s.ip && <span class="chip mono">{s.ip}</span>}
+    {s.os && <span class="chip">{s.os}</span>}
+    <span class="chip">Running at last check</span>
+  </div>
+  <div class="note" style="margin-top:20px"><strong>The one limit:</strong> {s.limit}</div>
+  <dl class="sys-links">
+    <div><dt>On the map</dt><dd>{lineNames.join(", ")} · <a href={base + "map/?focus=" + s.id}>Show on the map</a></dd></div>
+    {svcs.length > 0 && <div><dt>What runs here</dt><dd>{svcs.map((v: any, i: number) => <>{i ? ", " : ""}<a href={base + "services/" + v.id + "/"}>{v.name}</a></>)}</dd></div>}
+    {shown.length > 0 && <div><dt>What broke here</dt><dd>{shown.map((i: string, n: number) => <>{n ? "; " : ""}<a href={base + "incidents/" + i + "/"}>{nova.titleOf(i)}</a></>)}{more > 0 && <> · <a href={base + "incidents/"}>and {more} more</a></>}</dd></div>}
+    <div><dt>Built in</dt><dd>{s.builtBy.map((c: string, n: number) => <>{n ? ", " : ""}<a href={base + "changes/" + c + "/"}>{c}</a></>)}</dd></div>
+  </dl>
+  {(id === "nova-dc01" || id === "nova-dc02") && <DcSignIn />}
+  {id === "nova-files01" && <FilesDoors />}
+  {id === "nova-fw01" && <FirewallRules />}
+  {id === "nova-prox01" && <ProxmoxLayers />}
+  {id === "nova-client" && <WorkstationReach />}
+  <h2 style="margin-top:40px">Full profile and evidence</h2>
+</div></section>

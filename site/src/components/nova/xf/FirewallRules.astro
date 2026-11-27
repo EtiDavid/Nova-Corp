@@ -1,0 +1,42 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "now", label: "Today (after CR-015)", steps: [
+    { say: "A workstation on the CLIENT network sends three kinds of traffic at the firewall.", why: "The firewall reads its rules from the top and stops at the first one that matches.", do: [{t:"show",ids:["pc","l-pc","r1","r2","r3","l-r1","l-r2","l-r3"]}] },
+    { say: "Rule 1 blocks attempts to reach the firewall's own admin page.", term:["Firewall rule","one line saying allow or block for a kind of traffic. The first match wins."], why: "A workstation has no reason to manage the firewall.", do: [{t:"glide",path:"pa",dot:"d1",ms:1000,keep:false},{t:"state",id:"r1",value:"bad"},{t:"show",ids:["dst1","x1","l-dst1"]}] },
+    { say: "Rule 2 blocks the management network.", do: [{t:"glide",path:"pb",dot:"d1",ms:1000,keep:false},{t:"state",id:"r2",value:"bad"},{t:"show",ids:["dst2","x2","l-dst2"]}] },
+    { say: "Rule 3 lets everything else through, such as normal internet use.", term:["Order matters","blocks placed above an allow beat it. The same rules in another order behave differently."], why: "Because the two block rules sit above it, they win.", do: [{t:"glide",path:"pcn",dot:"d1",ms:1000,keep:false},{t:"state",id:"r3",value:"good"},{t:"show",ids:["dst3","ok3","l-dst3"]}] },
+  ]},
+  { id: "before", label: "Before CR-015", steps: [
+    { say: "Before CR-015 the CLIENT network had no rules blocking the firewall admin page.", do: [{t:"show",ids:["pc","l-pc","r3","l-r3"]}] },
+    { say: "A workstation could still reach the firewall's admin page.", why: "CR-015 added the two block rules above the allow rule.", do: [{t:"glide",path:"pa",dot:"d1",ms:1000,keep:false},{t:"state",id:"r3",value:"bad"},{t:"show",ids:["dst1","l-dst1","x1"]}] },
+  ]},
+];
+---
+<Explainer id="xf-fw" start={start} title="How the firewall decides, one rule at a time"
+  intro="Rules are checked from the top. The first match wins."
+  scenarios={scenarios} alt="Animated diagram: traffic from the CLIENT network meets three firewall rules in order; two block admin and management access, the third allows normal traffic."
+  note="Rule order as recorded for the CLIENT network in CR-015."
+  evidence={[{label:"Change CR-015", href:"/changes/CR-015/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="40" y="190" width="100" height="72"/></g><text data-id="l-pc" data-hide class="small" x="90" y="284">CLIENT workstation</text>
+  <path class="guide" data-id="pa" d="M140 215 C200 215 230 100 290 100"/>
+  <path class="guide" data-id="pb" d="M140 225 C200 225 230 200 290 200"/>
+  <path class="guide" data-id="pcn" d="M140 235 C200 235 230 300 290 300"/>
+  <g data-id="r1" data-hide><rect class="bubble" x="290" y="70" width="220" height="60" rx="10"/><text class="bubble-t" x="400" y="105">Block firewall admin page</text></g>
+  <g data-id="r2" data-hide><rect class="bubble" x="290" y="170" width="220" height="60" rx="10"/><text class="bubble-t" x="400" y="205">Block management network</text></g>
+  <g data-id="r3" data-hide><rect class="bubble" x="290" y="270" width="220" height="60" rx="10"/><text class="bubble-t" x="400" y="305">Allow everything else</text></g>
+  <text data-id="l-r1" data-hide class="sub" x="270" y="62" style="text-anchor:end">rule 1</text>
+  <text data-id="l-r2" data-hide class="sub" x="270" y="162" style="text-anchor:end">rule 2</text>
+  <text data-id="l-r3" data-hide class="sub" x="270" y="262" style="text-anchor:end">rule 3</text>
+  <g data-id="dst1" data-hide><use href="#ic-shield" x="620" y="64" width="44" height="52"/></g><text data-id="l-dst1" data-hide class="small" x="642" y="136">Firewall admin</text>
+  <g data-id="dst2" data-hide><use href="#ic-server" x="615" y="160" width="54" height="66"/></g><text data-id="l-dst2" data-hide class="small" x="642" y="246">Management network</text>
+  <g data-id="dst3" data-hide><use href="#ic-globe" x="618" y="266" width="48" height="48"/></g><text data-id="l-dst3" data-hide class="small" x="642" y="334">Internet</text>
+  <g data-id="x1" data-hide><use href="#ic-x" x="530" y="80" width="40" height="40"/></g>
+  <g data-id="x2" data-hide><use href="#ic-x" x="530" y="180" width="40" height="40"/></g>
+  <g data-id="ok3" data-hide><use href="#ic-check" x="530" y="280" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-network)"/>
+</Explainer>

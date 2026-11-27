@@ -1,0 +1,7 @@
+{
+  "id": "CR-031",
+  "title": "Patching at scale and software updates",
+  "goal": "Workstations, Linux servers and applications are updated in rings with approval and rollback, extending the server process from CR-018.",
+  "status": "planned",
+  "time": "2 weeks"
+}

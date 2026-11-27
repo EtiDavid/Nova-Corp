@@ -1,0 +1,59 @@
+---
+import PermissionIncidentPilot from "../../components/PermissionIncidentPilot.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FilesDoors from "../../components/nova/xf/FilesDoors.astro";
+import EvidencePanel from "../../components/EvidencePanel.astro";
+import IncidentOriginalRecord from "../../components/IncidentOriginalRecord.astro";
+import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
+import approvedEvidence from "../../data/approvedPdfEvidence.json";
+import { incidentDocuments, originalSourceURL, siteArticle } from "../../data/incidentDocuments";
+import { labStories } from "../../data/labStories";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+interface Props { entry: CollectionEntry<"incidents">; }
+export async function getStaticPaths() {
+  const entries = await getCollection("incidents");
+  return entries.filter((entry: CollectionEntry<"incidents">)=>entry.id==="file-permission-denial").map((entry: CollectionEntry<"incidents">)=>({params:{slug:entry.id},props:{entry}}));
+}
+const {entry} = Astro.props;
+const {Content} = await render(entry);
+const base=import.meta.env.BASE_URL;
+const source=incidentDocuments[entry.id];
+if(!source)throw Error("Every incident needs a canonical full-journal mapping: "+entry.id);
+const journalURL=originalSourceURL(source.journal);
+const summaryURL=siteArticle(source.source,base);
+const journalOnSite=source.journalFormat==="markdown"?siteArticle(source.journal,base):base+"journals/"+source.journal.split("/").at(-1)?.replace(/\.pdf$/i,"")+"/";
+
+const className=labStories.find(s=>s.slug===entry.id)?.kind||"controlled";
+const originalImagesAvailable=approvedEvidence.entries.some(image=>image.subject==="incidents/"+entry.id);
+const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-target-unavailable","replication-divergence","firewall-management-exposure","file-permission-denial","proxmox-storage-pressure","gpo-link-disabled"]);
+---
+<BaseLayout title={entry.data.title} description={entry.data.summary} breadcrumbs={[{label:"Investigations",href:"incidents/"},{label:entry.data.title}]}>
+<section class="page-head incident-head"><div class="container">
+ <div class="eyebrow">Investigation</div>
+ <h1>{entry.data.title}</h1>
+ <p class="lead" style="margin-top:16px">{entry.data.summary}</p>
+ <div class="incident-meta" style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{className==="deferred"?"Not performed":className==="controlled"?"Controlled test":"Issue investigated"}</span><span class="muted" style="font-size:.82rem">{entry.data.outcome}</span></div>
+</div></section>
+<section class="section compact"><div class="container"><FilesDoors start="deny" /></div></section>
+<section class="section compact"><div class="container"><div class="paper panel"><p class="kicker">What this investigation establishes</p><p>{className==="deferred"?"This was planned, but the external validation was not performed. The record distinguishes configuration from proof.":className==="controlled"?"A deliberately introduced lab condition, followed by diagnosis and documented verification.":"An unexpected issue investigated during lab work, with the recorded findings and outcome below."}</p><p><strong>Recorded outcome:</strong> {entry.data.outcome}</p><p><a href={journalOnSite}>Read the complete execution record →</a></p></div></div></section>
+<section class="section compact"><div class="container grid-main">
+  <article class="prose">
+     {entry.id==="file-permission-denial" ? <PermissionIncidentPilot /> : <><div class="incident-case-intro"><span class="eyebrow">Quick overview</span><Content /><p><a href="#full-investigation">↓ Read every recorded troubleshooting step and result on this page</a></p></div>
+     <OriginalPdfEvidenceGallery subject={"incidents/"+entry.id} heading="See the original recorded failure and recovery" />
+     <IncidentOriginalRecord slug={entry.id} />
+     {evidenceRequested.has(entry.id)&&!originalImagesAvailable&&entry.id!=="wireguard-handshake"&&<div class="incident-proof-slot"><h2>Diagnostic screenshots</h2><EvidencePanel subject={entry.data.title} requested={"A redacted original diagnostic screenshot from the "+entry.data.title+" execution journal. The full primary journal link above preserves any existing PDF images."}/></div>}
+   </>}
+   </article>
+  <aside>
+   {entry.id!=="file-permission-denial"&&<div class="sidebox incident-sidebar-journal">
+    <h3>The full engineering journal</h3>
+    <p class="muted" style="font-size:.88rem">The full execution journal is the actual change/fault-test record, not the shorter incident summary. The complete public investigation is also reproduced directly below.</p>
+    <a class="evidence-link incident-master-link" href={journalURL} target="_blank" rel="noopener noreferrer">Open {source.journalFormat==="pdf"?"original PDF":"full Markdown"} journal on GitHub ↗</a>
+    {journalOnSite&&<p><a href={journalOnSite}>Read complete original {source.journalFormat==="pdf"?"PDF, all pages and images":"Markdown journal"} on this website ↗</a></p>}
+    <p><a href="#full-investigation">↓ Full step-by-step incident investigation</a></p>
+    <p><a href={summaryURL}>Original detailed incident record ↗</a></p>
+   </div>}
+   <div class="sidebox"><h3>Continue exploring</h3>{entry.data.systems.map((slug:string)=><p style="margin-bottom:12px"><a href={base+"systems/"+slug+"/"}>{slug.toUpperCase()} →</a></p>)}<a href={base+"incidents/"}>← All investigations</a></div>
+  </aside>
+</div></section>
+</BaseLayout>

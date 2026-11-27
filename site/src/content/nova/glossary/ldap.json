@@ -1,0 +1,14 @@
+{
+  "id": "ldap",
+  "term": "LDAP",
+  "aliases": [
+    "LDAP"
+  ],
+  "short": "Lightweight Directory Access Protocol is used to query and work with directory information.",
+  "inNova": "During the DC01 outage, a TCP 389 test to DC01 failed, while NOVA-DC02 answered the documented directory connection check.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "copyStatus": "migrated"
+}

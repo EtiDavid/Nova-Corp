@@ -1,0 +1,19 @@
+{
+  "id": "vlan-segmentation",
+  "name": "VLAN segmentation",
+  "line": "network",
+  "runsOn": [
+    "nova-fw01",
+    "nova-prox01"
+  ],
+  "dependsOn": [
+    "pfsense-firewall"
+  ],
+  "summary": "Splits the lab into separate networks.",
+  "inNova": "Five VLANs: MGMT 10, INFRA 20, APP 30 and DMZ 50 (the last two reserved) and CLIENT 40. Proxmox tags the VM ports and pfSense receives the trunk.",
+  "builtBy": [
+    "CR-002",
+    "CR-003"
+  ],
+  "copyStatus": "migrated"
+}

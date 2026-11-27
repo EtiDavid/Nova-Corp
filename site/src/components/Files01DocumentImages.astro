@@ -1,0 +1,30 @@
+---
+import approved from "../data/approvedPdfEvidence.json";
+interface Props {ids:string[]}
+const {ids}=Astro.props;
+const captions:Record<string,string>={
+"fileserver-proxmox-hardware":"The Proxmox hypervisor view of the file server, showing its virtual hardware specifications, including CPU, memory and disks.",
+"fileserver-department-inventory":"PowerShell displays the file server’s running services and the five departmental shared folders.",
+"fileserver-installer-missing-virtio":"Windows Setup cannot see the virtual disks until the storage driver is installed.",
+"fileserver-virtio-loaded-disks":"Both virtual disks become available after loading the VirtIO storage driver.",
+"fileserver-qemu-guest":"The guest agent and virtual network adapter are working inside Windows.",
+"fileserver-smb-session":"The server displays a recorded SMB connection using SMB 3.1.1.",
+"dfs-targets-online-audit":"All five department addresses point to reachable shared folders on the file server.",
+"dfs-client-mapped-drive":"Moyo’s mapped department drive is accessible from her workstation.",
+"fileserver-client-baseline":"Moyo can access her IT folder. The Finance check is visible, but its result is not shown in this screenshot.",
+"permission-denial-observed":"In a separate permission test, Windows refuses to open a restricted test folder in IT.",
+"vss-previous-versions":"Windows displays an earlier saved version of a Finance document that can be restored.",
+"fileserver-backup-gui":"Windows Server Backup protects the company data drive (D:) to the backup drive (B:) each evening at 10 PM.",
+"backup-original-recovered-hash":"The restored file matches the original file’s SHA-256 fingerprint, confirming that its contents were recovered intact.",
+"fileserver-scheduled-backup-pass":"Windows records the start and successful completion of a scheduled backup.",
+"fileserver-backup-schedule":"The backup schedule protects company data on D: to B: at 22:00.",
+"backup-disk-offline":"When the backup disk is offline, Windows cannot locate the backup destination.",
+"backup-sha256-match":"The recovered file’s fingerprint matches the original."};
+const items=ids.map(id=>{const item=approved.entries.find(x=>x.id===id);if(!item)throw Error("Unknown reviewed image "+id);return item;});
+---
+<div class="files01-document-images">
+{items.map(item=><figure data-original-title={item.title} data-original-pdf={item.pdf}><img src={import.meta.env.BASE_URL+"pdf-evidence/"+item.id+"."+(item.ext==="jpeg"?"jpg":"png")} alt={item.alt} loading="lazy" decoding="async"/><figcaption><strong>{item.title.replace(/^CR-\d+ /,"").replace(/^Original /,"")}</strong><p>{captions[item.id]??item.caption.replace(/\bCR-\d+\b\s*/g,"")}</p></figcaption></figure>)}
+</div>
+<style>
+.files01-document-images{min-width:0;max-width:100%}.files01-document-images figure{margin:26px 0 32px;min-width:0}.files01-document-images img{display:block;width:100%;height:auto;max-width:100%;border:1px solid var(--rule);border-radius:4px;background:var(--surface)}.files01-document-images figcaption{text-align:center;padding:10px 0 0;color:var(--ink);font-size:.84rem;line-height:1.5}.files01-document-images figcaption strong{display:block;color:var(--ink);font-size:.92rem}.files01-document-images figcaption p{margin:5px 0 0;font-size:.84rem}
+</style>

@@ -1,0 +1,21 @@
+---
+// Small accessibility repairs for content that comes from rendered Markdown (original journals, records).
+---
+<script is:inline>
+  (function () {
+    // Scrollable code blocks and tables must be reachable with the keyboard.
+    [].slice.call(document.querySelectorAll("pre, table")).forEach(function (el) {
+      if (el.scrollWidth > el.clientWidth + 1 && !el.hasAttribute("tabindex")) { el.tabIndex = 0; if (!el.getAttribute("aria-label")) el.setAttribute("aria-label", el.tagName === "PRE" ? "Code, scrollable" : "Table, scrollable"); }
+    });
+    // Any other scrollable region (for example a tall sidebar) also needs keyboard access.
+    [].slice.call(document.querySelectorAll("main aside, main .sidebox, main [style*='overflow']")).forEach(function (el) {
+      var o = getComputedStyle(el).overflowY;
+      if ((o === "auto" || o === "scroll") && el.scrollHeight > el.clientHeight + 1 && !el.hasAttribute("tabindex")) { el.tabIndex = 0; if (!el.getAttribute("aria-label") && !el.getAttribute("aria-labelledby")) el.setAttribute("aria-label", "Scrollable region"); }
+    });
+    // Checklist boxes from Markdown task lists need a name.
+    [].slice.call(document.querySelectorAll('.task-list-item > input[type="checkbox"]')).forEach(function (box) {
+      var text = (box.parentElement.textContent || "").trim().slice(0, 120);
+      box.setAttribute("aria-label", text || "Checklist item");
+    });
+  })();
+</script>

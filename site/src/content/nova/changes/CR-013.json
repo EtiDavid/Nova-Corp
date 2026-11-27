@@ -1,0 +1,13 @@
+{
+  "id": "CR-013",
+  "title": "Secondary domain controller and AD resilience",
+  "goal": "A tested failover and repair procedure for identity.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md",
+  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.pdf",
+  "built": [
+    "No new server: it tested and hardened the existing two-controller design",
+    "Checks of replication, DNS settings on every system and Windows time"
+  ],
+  "validated": "I took DC01 offline on purpose, then broke replication on DC02 and repaired it."
+}

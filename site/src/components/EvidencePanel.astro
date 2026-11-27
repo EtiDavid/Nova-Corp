@@ -1,0 +1,11 @@
+---
+interface Props{subject:string;filename?:string;caption?:string;requested?:string}
+const {subject,filename,caption,requested}=Astro.props;
+const base=import.meta.env.BASE_URL;
+---
+{filename ? <figure class="evidence-figure" data-no-tech-links>
+    <a href={base+"evidence/"+filename} target="_blank" rel="noopener noreferrer" aria-label={"Open original evidence image for "+subject}>
+      <img src={base+"evidence/"+filename} loading="lazy" decoding="async" alt={"Original historical policy screenshot relevant to "+subject} />
+    </a>
+    <figcaption><strong>{subject}</strong><p>{caption||"A historical source image of a configured policy. It does not prove every workstation applied it."}</p></figcaption>
+  </figure> : null}

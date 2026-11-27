@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { systems } from "../data/model";
+import { internalArticle,publicDocsRoot } from "../data/termEvidence";
+const base=import.meta.env.BASE_URL;
+const docs=publicDocsRoot;
+const records=[
+ {name:"Identity failover",why:"DC01 outage, DC02 discovery, LDAP/Kerberos checks, replication after recovery.",source:"explore/incidents/domain-controller-outage.md",journal:"Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",kind:"PDF"},
+ {name:"Deleted-file restoration",why:"Backup target failure and repair, recovery commands and byte-identical SHA-256.",source:"explore/incidents/backup-target-disappears.md",journal:"Documentation/Change-Requests/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf",kind:"PDF"},
+ {name:"WireGuard handshake investigation",why:"WAN packets passed firewall, listener active; peer authentication failure isolated and repaired.",source:"explore/incidents/wireguard-handshake.md",journal:"Documentation/Change-Requests/Journal-CR-007.md",kind:"Markdown"},
+ {name:"Earlier-version recovery",why:"One Shadow Copy test with matching original fingerprint.",source:"explore/files/SHADOW_COPY_RECOVERY.md",journal:"Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md",kind:"Markdown"},
+ {name:"Network configuration",why:"Five VLANs, WireGuard tunnel and documented pfSense interface/rule scope.",source:"explore/NETWORK.md",journal:"Documentation/Change-Requests/Journal-CR-007.md",kind:"Markdown"},
+ {name:"File access and permissions",why:"Departmental share access, SMB + NTFS, group nesting and tested denials.",source:"explore/FILE_SERVICES.md",journal:"Documentation/Change-Requests/CR-011_PowerShell_Administration_Toolkit.md",kind:"Markdown"},
+ {name:"Proxmox backup archives",why:"VM archive coverage, schedules and unresolved restore limitations.",source:"explore/virtualization/BACKUPS.md",journal:"Documentation/Change-Requests/Journal-CR-001.md",kind:"Markdown"}
+];
+const original=(path:string)=>docs+path.split("/").map(encodeURIComponent).join("/");
+---
+<BaseLayout title="Engineering evidence" description="Original public engineering files, exact change-request journals and real test artifacts behind Nova Corp's infrastructure claims." breadcrumbs={[{label:"Engineering evidence"}]}>
+<section class="page-head"><div class="container"><div class="eyebrow">Engineering records</div><h1>Read the engineering record, not just the outcome.</h1><p class="lead" style="margin-top:17px">Explore the investigations, detailed engineering journals and supporting evidence. Original records are available in Markdown or PDF.</p></div></section>
+<section class="section compact"><div class="container">
+ <h2 style="margin-bottom:22px">Investigations and full journals</h2>
+ <div class="card-list">{records.map(r=><article class="system-card">
+   <small>PUBLIC LAB SOURCE / {r.kind==="PDF"?"PDF JOURNAL":"FULL MARKDOWN JOURNAL"}</small>
+   <h3>{r.name}</h3><p>{r.why}</p>
+   <p><a href={internalArticle(r.source,base)}>Complete source explanation on this website ↗</a></p>
+   <p><a href={r.kind==="PDF"?base+"journals/"+r.journal.split("/").at(-1)?.replace(/\.pdf$/i,"")+"/":internalArticle(r.journal,base)}>Read complete original {r.kind==="PDF"?"PDF with every screenshot and page":"Markdown journal"} on this website ↗</a></p>
+   <p><a href={original(r.journal)} target="_blank" rel="noopener noreferrer">Open original full {r.kind} journal on GitHub ↗</a></p>
+ </article>)}</div>
+ <h2 style="margin:48px 0 18px">Original system documentation</h2>
+ <div class="card-list">{systems.map(system=><article class="system-card">
+ <small>{system.category}</small><h3>{system.name}</h3><p>{system.summary}</p>
+ <p><a href={base+"systems/"+system.slug+"/"}>Complete documented system profile →</a></p>
+ <p><a href={internalArticle("explore/systems/"+system.name.toUpperCase()+".md",base)}>Original detailed Markdown on this site ↗</a></p>
+ </article>)}</div>
+ <div class="note" style="margin-top:24px"><strong>Documentation boundary:</strong> All 161 public Markdown documents are available in the <a href={base+"reference/"}>complete engineering library</a>. All 14 published PDF journals are now directly readable in their complete original form and source-native text. Individually extracted screenshots are displayed only with verified provenance and suitable context.</div>
+</div></section>
+</BaseLayout>

@@ -1,0 +1,13 @@
+{
+  "id": "CR-012",
+  "title": "Windows Server Backup and recovery",
+  "goal": "Backups on a separate disk, with a hash-verified restore.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.md",
+  "pdf": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-012_Windows_Server_Backup_and_Recovery_Journal.pdf",
+  "built": [
+    "A dedicated backup repository on the Proxmox host",
+    "Windows Server Backup for FILES01 and DC01, with monitoring"
+  ],
+  "validated": "I made the backup target unavailable on purpose to prove it is detected, and restored a deleted file with a matching hash."
+}

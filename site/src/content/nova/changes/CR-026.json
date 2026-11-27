@@ -1,0 +1,7 @@
+{
+  "id": "CR-026",
+  "title": "Intune: managed devices from enrolment to retirement",
+  "goal": "Windows 11 devices enrol automatically, receive apps, settings and compliance policies, and Nora’s laptop is ready without manual setup.",
+  "status": "planned",
+  "time": "3–4 weeks"
+}

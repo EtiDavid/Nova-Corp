@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://novacorp.davideti.dev/sitemap.xml

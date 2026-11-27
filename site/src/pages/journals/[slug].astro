@@ -1,0 +1,69 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {getCollection,render,type CollectionEntry} from "astro:content";
+export async function getStaticPaths(){
+ const docs:CollectionEntry<"pdfJournals">[]=await getCollection("pdfJournals");
+ return docs.map(entry=>({params:{slug:entry.id},props:{entry}}));
+}
+interface Props {entry:CollectionEntry<"pdfJournals">}
+const {entry}=Astro.props;
+const {Content}=await render(entry);
+const base=import.meta.env.BASE_URL;
+const pdf=base+"pdf-journals/"+entry.data.originalName;
+const source=entry.data.sourceUrl;
+const step=entry.data.pageCount>45?8:5;
+const jumps=Array.from({length:Math.ceil(entry.data.pageCount/step)},(_,i)=>Math.min(1+i*step,entry.data.pageCount));
+---
+<BaseLayout title={entry.data.title+" · Complete original PDF journal"} description={"All "+entry.data.pageCount+" pages of the actual published "+entry.data.title+" engineering PDF and its original native-text transcription, with full visual evidence."} breadcrumbs={[{label:"Engineering library",href:"reference/"},{label:"Original PDF journals",href:"journals/"},{label:entry.data.title}]}>
+<section class="page-head original-pdf-head"><div class="container">
+  <div class="eyebrow">Complete source journal / Original PDF + selectable text</div>
+  <h1>{entry.data.title}</h1>
+  <p class="lead">All {entry.data.pageCount} original pages are available here, including the journal's actual diagrams, screenshots, commands, tables, and recorded failures. Below the PDF is a page-by-page native-text reading copy; the original visual document remains authoritative.</p>
+  <div class="pdf-source-actions">
+   <a class="btn" href={pdf} target="_blank" rel="noopener noreferrer">Open original PDF in a new tab ↗</a>
+   <a class="btn ghost" href="#page-transcription">Read the selectable page-by-page text ↓</a>
+   <a href={source} target="_blank" rel="noopener noreferrer">Compare exact GitHub source ↗</a>
+  </div>
+  <p class="pdf-source-stats"><strong>{entry.data.pageCount}</strong> original pages · <strong>{entry.data.originalImageBlocks}</strong> PDF image blocks · <strong>{entry.data.nativeTextCharacters.toLocaleString("en-US")}</strong> source-native text characters</p>
+</div></section>
+<section class="section compact"><div class="container pdf-journal-layout">
+  <div class="pdf-original-document">
+   <div class="pdf-original-top"><span class="eyebrow">Exact original document · 100% original layout and images</span><p>Use the PDF viewer to inspect every diagram, table, screenshot and the page layout as published. If your browser does not display embedded PDFs, open the PDF above.</p></div>
+   <object data={pdf+"#toolbar=1"} type="application/pdf" class="pdf-document-viewer" aria-label={"Complete original PDF engineering journal: "+entry.data.title}>
+      <p>Embedded PDF viewing is unsupported in this browser. <a href={pdf} target="_blank" rel="noopener noreferrer">Open the exact original PDF ↗</a></p>
+   </object>
+   <div id="page-transcription" class="pdf-transcription-header">
+    <span class="eyebrow">Selectable original text / no rewritten results</span>
+    <h2>Read every original page</h2>
+    <p>This text is extracted directly from the PDF's native text layer. Each page links back to the original visual page to check command output, tables and images. Text-only conversion may flatten columns; this is not presented as an edited or independently revalidated engineering journal.</p>
+    <div class="pdf-transcription-actions">
+      <button type="button" data-pdf-expand aria-controls="pdf-native-pages">Expand all page transcripts</button>
+      <button type="button" data-pdf-collapse aria-controls="pdf-native-pages">Collapse page transcripts</button>
+    </div>
+   </div>
+   <article class="reference-content original-pdf-text" id="pdf-native-pages"><Content /></article>
+  </div>
+  <aside class="ref-sidebar pdf-journal-side">
+   <div class="sidebox"><h2>Jump through this journal</h2><p>All {entry.data.pageCount} pages are present. Choose a group, then expand an individual page.</p>
+    <nav aria-label="Original PDF page navigation" class="pdf-page-jumps">
+     {jumps.map(num=><a href={"#page-"+num}>Page {num}</a>)}
+     <a href={"#page-"+entry.data.pageCount}>Last page</a>
+    </nav>
+   </div>
+   <div class="sidebox"><h2>Source integrity</h2><p>Published historical source. The PDF is copied byte-for-byte from the already-public repository at build time.</p>
+    <p>Original SHA-256:</p><code class="source-sha">{entry.data.originalSha256}</code>
+    <p><a href={source} target="_blank" rel="noopener noreferrer">Verify original on GitHub ↗</a></p>
+    <p><a href={base+"journals/"}>← All original PDF journals</a></p>
+   </div>
+  </aside>
+</div></section>
+<script is:inline>
+(function(){
+ const parent=document.querySelector("#pdf-native-pages");
+ if(!parent)return;
+ const entries=[...parent.querySelectorAll("details.native-pdf-page")];
+ document.querySelector("[data-pdf-expand]")?.addEventListener("click",()=>entries.forEach(x=>x.open=true));
+ document.querySelector("[data-pdf-collapse]")?.addEventListener("click",()=>entries.forEach(x=>x.open=false));
+})();
+</script>
+</BaseLayout>

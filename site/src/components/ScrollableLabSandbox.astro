@@ -1,0 +1,260 @@
+---
+/**
+ * Scrollable homelab sandbox — 2026-11-23.
+ * Conceptual vertical walkthrough, NOT a literal dependency tree:
+ * all five pictured guests are hosted directly on nested Proxmox,
+ * while pfSense routes only relevant inter-zone traffic.
+ */
+import { systems } from "../data/model";
+const base=import.meta.env.BASE_URL;
+const ids=["nova-prox01","nova-fw01","nova-dc01","nova-dc02","nova-client","nova-files01"];
+const display:Record<string,{name:string;role:string;service:string;icon:string;zone:string;incident:string;incidentPath:string;address:string}> = {
+  "nova-prox01":{name:"NOVA-PROX01",role:"Virtualization",service:"Proxmox VE 9.2.2",icon:"proxmox",zone:"NESTED HYPERVISOR",incident:"Investigate storage pressure",incidentPath:"incidents/proxmox-storage-pressure/",address:"192.168.178.26 / Management"},
+  "nova-fw01":{name:"NOVA-FW01",role:"Routing & security",service:"pfSense CE 2.8.1",icon:"pfsense",zone:"NETWORK / VLAN BOUNDARY",incident:"Review the firewall hardening test",incidentPath:"incidents/firewall-management-exposure/",address:"192.168.178.71 / WAN · 10.10.10.1 / MGMT"},
+  "nova-dc01":{name:"NOVA-DC01",role:"Identity & DNS",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Investigate a controlled DC outage",incidentPath:"incidents/dc01-outage/",address:"10.10.20.10"},
+  "nova-dc02":{name:"NOVA-DC02",role:"Resilient identity",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Review DC02's failover evidence",incidentPath:"incidents/dc01-outage/",address:"10.10.20.11"},
+  "nova-client":{name:"NOVA-CLIENT",role:"Employee workstation",service:"Windows client",icon:"windows",zone:"CLIENT · VLAN 40",incident:"Diagnose the DNS share failure",incidentPath:"incidents/dns-client-outage/",address:"10.10.40.100"},
+  "nova-files01":{name:"NOVA-FILES01",role:"File services",service:"Windows Server 2025",icon:"windows",zone:"INFRA · VLAN 20",incident:"Inspect the tested file recovery",incidentPath:"incidents/backup-target-unavailable/",address:"10.10.20.20"}
+};
+const info:Record<string,any>={};
+for(const id of ids){
+ const s=systems.find(s=>s.id===id);
+ if(!s)throw Error("Unrecognized lab component "+id);
+ info[id]={
+  name:display[id].name,
+  role:display[id].role,
+  summary:s.summary,
+  asOf:s.asOf,
+  facts:s.details.slice(0,5),
+  limitations:s.limitations.slice(0,2),
+  related:s.related.filter(other=>ids.includes(other)).map(other=>({id:other,name:display[other].name,role:display[other].role})),
+  record:base+"systems/"+s.slug+"/",
+  incident:display[id].incident,
+  incidentUrl:base+display[id].incidentPath,
+  sourceUrl:s.sourceUrl
+ };
+}
+const nodes=ids.map(id=>({id,...display[id]}));
+const iconURL=(slug:string)=>base+"brands/"+slug+"-color.svg";
+---
+<section class="sb" id="hx-explorer" data-base={base} aria-label="Scrollable Nova Corp infrastructure sandbox">
+  <header class="sb-head">
+    <div class="sb-heading">
+      <span class="sb-kicker"><span aria-hidden="true" class="sb-kicker-pip"></span> INTERACTIVE LAB / BUILD MAP</span>
+      <h2>Explore the homelab, layer by layer.</h2>
+      <p>Scroll through the virtual infrastructure. Open any server to see its profile, configuration and original engineering records.</p>
+    </div>
+    <div class="sb-facts sb-facts-refined"><img src={base+"brands/server-corner.svg"} width="47" height="47" alt="Server rack symbol" loading="eager"/><span>THE NOVA LAB</span><small>Recorded topology · no live telemetry</small></div>
+  </header>
+  <div class="sb-nav" role="group" aria-label="Jump to a layer in the scrollable lab">
+    <button type="button" data-jump="hypervisor" aria-pressed="true"><span>01</span> Proxmox</button>
+    <button type="button" data-jump="network" aria-pressed="false"><span>02</span> pfSense</button>
+    <button type="button" data-jump="guests" aria-pressed="false"><span>03</span> Servers &amp; client</button>
+    <span class="sb-nav-hint">↕ SCROLL INSIDE THE DIAGRAM</span>
+  </div>
+  <div class="sb-layout">
+    <div class="sb-map-panel">
+      <div class="sb-progress" role="progressbar" aria-label="Diagram scrolling progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="sb-progress-fill"></span></div>
+      <div class="sb-scrollport" id="lab-scrollport" tabindex="0" role="region" aria-label="Scrollable homelab architecture: Proxmox, pfSense, Domain Controllers, Windows client and file server">
+        <div class="sb-canvas">
+          <div class="sb-boundary"><span>PHYSICAL WINDOWS HOST</span><span class="sb-boundary-sep">/</span><img src={iconURL("vmware")} alt="VMware product mark" width="20" height="20" loading="eager"/><span>VMware Workstation</span><small>Outer host · one failure domain</small></div>
+          <div class="sb-section sb-hypervisor" id="sb-layer-hypervisor" data-layer="hypervisor">
+            <div class="sb-layer-tag">LAYER 01 <span>Virtualization platform</span></div>
+            <a href={info["nova-prox01"].record} class="sb-node sb-node-main hx-node atlas-prox" data-id="nova-prox01" aria-label="Inspect NOVA-PROX01 Proxmox virtualization server">
+              <span class="sb-logo sb-logo-main"><img src={iconURL("proxmox")} alt="Proxmox product logo" width="54" height="54" loading="eager"/></span>
+              <span class="sb-node-copy"><span class="sb-mini">HYPERVISOR / NESTED IN VMWARE</span><strong>NOVA-PROX01</strong><span>Proxmox Virtual Environment</span><span class="sb-micro">192.168.178.26 · Management IP</span><span class="sb-micro">Hosts the five illustrated virtual machines</span></span>
+              <span class="sb-node-arrow" aria-hidden="true">↗</span>
+            </a>
+            <div class="sb-spine sb-spine-first" aria-hidden="true"><span><i class="sb-flow-dot"></i></span></div>
+            <p class="sb-relationship sb-rel-host">ALL GUEST VMS RUN ON PROXMOX</p>
+          </div>
+          <div class="sb-section sb-network" id="sb-layer-network" data-layer="network">
+            <div class="sb-layer-tag">LAYER 02 <span>Routing &amp; security</span></div>
+            <a href={info["nova-fw01"].record} class="sb-node sb-node-main hx-node" data-id="nova-fw01" aria-label="Inspect NOVA-FW01 pfSense firewall">
+              <span class="sb-logo sb-logo-main"><img src={iconURL("pfsense")} alt="pfSense product logo" width="54" height="54" loading="eager"/></span>
+              <span class="sb-node-copy"><span class="sb-mini">PFSENSE / NETWORK BOUNDARY</span><strong>NOVA-FW01</strong><span>pfSense CE 2.8.1</span><span class="sb-micro">WAN 192.168.178.71 · MGMT 10.10.10.1</span><span class="sb-micro">Routes approved traffic between network zones</span></span>
+              <span class="sb-node-arrow" aria-hidden="true">↗</span>
+            </a>
+            <div class="sb-spine sb-spine-second" aria-hidden="true"><span><i class="sb-flow-dot"></i></span></div>
+            <p class="sb-relationship sb-rel-service">NETWORK PATHS ARE CONCEPTUAL · pfSense DOES NOT HOST THESE VMS</p>
+          </div>
+          <div class="sb-section sb-guests" id="sb-layer-guests" data-layer="guests">
+            <div class="sb-layer-tag">LAYER 03 <span>Virtual machines / services</span></div>
+            <div class="sb-guest-frame">
+              <div class="sb-branch" aria-hidden="true"><span></span><i></i><i></i><i></i><i></i></div>
+              <div class="sb-guest-grid atlas-service-grid">
+                {nodes.slice(2).map((n,i)=><a href={info[n.id].record} class="sb-node sb-guest hx-node" data-id={n.id} aria-label={"Inspect "+n.name+", "+n.role}>
+                  <span class="sb-guest-top"><span class="sb-system-number">0{i+1}</span><span class="sb-zone">{n.zone}</span></span>
+                  <span class="sb-guest-content">
+                    <span class="sb-logo sb-logo-windows"><img src={iconURL("windows-server")} alt="Windows Server product-family mark" width="90" height="34" loading="lazy"/></span>
+                    <span><strong class="sb-system-name">{n.name}</strong><span class="sb-system-purpose">{n.role}</span><span class="sb-system-os">{n.service}</span><span class="sb-system-ip">{n.address}</span></span>
+                  </span>
+                  <span class="sb-node-arrow" aria-hidden="true">↗</span>
+                </a>)}
+              </div>
+              <div class="sb-bottom-tokens"><span>ACTIVE DIRECTORY / DNS</span><span>SMB FILE SERVICES</span><span>EMPLOYEE ENDPOINT</span></div>
+            </div>
+          </div>
+          <div class="sb-end">
+            <p><strong>Explore the relationship, not just the boxes.</strong> These components are virtual guests on the same nested Proxmox host. A workstation's DNS, AD and file access involve distinct services; the pfSense hop depends on the actual routed path.</p>
+            <a href={base+"map/#workflow-lab"}>Follow a recorded request end to end ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="sb-scroll-foot"><span>SCROLL THE BOX TO EXPLORE ↓</span><span id="sb-scroll-status" aria-live="polite">01 / 03 · HYPERVISOR</span></div>
+    </div>
+    <aside class="sb-inspector" id="sb-inspector" aria-label="Selected server information">
+      <div class="sb-inspector-top"><span>COMPONENT INSPECTOR</span><button type="button" class="sb-back-to-map" id="sb-back-to-map">↑ Back to diagram</button><span class="sb-inspector-led" aria-hidden="true"></span></div>
+      <div class="sb-inspector-content" aria-live="polite" aria-atomic="false">
+        <span class="sb-inspector-label hx-readout-label" id="hx-label">SELECT A SERVER</span>
+        <h3 id="hx-title">Start with Proxmox.</h3>
+        <p id="hx-description">This is the nested virtualization foundation. Scroll the map, or select any server to see its purpose, documented facts and original evidence.</p>
+        <div class="sb-selected-evidence" id="sb-selected-evidence" hidden>
+          <span class="sb-inspector-section">RECORDED FACTS <small id="sb-asof"></small></span>
+          <dl id="sb-facts"></dl>
+          <span class="sb-inspector-section">KNOWN LIMITS</span>
+          <ul id="sb-limits"></ul>
+          <div class="sb-neighbors">
+            <span class="sb-inspector-section">EXPLORE CONNECTED SYSTEMS</span>
+            <div id="sb-related-buttons" class="sb-related-buttons" role="group" aria-label="Inspect a connected lab system"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sb-inspector-links hx-readout-actions">
+        <a href={base+"systems/nova-prox01/"} id="hx-record">Open full system record ↗</a>
+        <a href={base+"map/"} id="hx-case">Explore architecture relationships ↗</a>
+        <a href={base+"sources/"} id="sb-source">Original source document ↗</a>
+      </div>
+      <p class="sb-inspector-note">Hover or focus to preview a system; click its card for the complete profile. The content is documented, not live telemetry.</p>
+    </aside>
+  </div>
+  <footer class="sb-footer">
+    <div class="sb-modes" role="group" aria-label="Highlight a documented service path">
+      <span>TRACE RELATIONSHIPS</span>
+      <button type="button" class="hx-mode" data-mode="all" aria-pressed="true">Overview</button>
+      <button type="button" class="hx-mode" data-mode="identity" aria-pressed="false">Identity / DNS</button>
+      <button type="button" class="hx-mode" data-mode="files" aria-pressed="false">File access</button>
+    </div>
+    <p>Nova Corp is a fictional company; the configurations and tests are real. Line animations are illustrative, not live traffic. IP addresses are recorded snapshots, not current reachability. All depicted VMs run in nested Proxmox; pfSense routes applicable traffic but does not host the other VMs. <a href={base+"map/"}>Open the full interactive company explorer ↗</a></p>
+  </footer>
+  <noscript><p class="sb-noscript">The lab diagram is scrollable using a keyboard, trackpad or touch, and each server links to its documentation. Interactive in-place inspection requires JavaScript.</p></noscript>
+  <script id="sb-data" type="application/json" set:html={JSON.stringify(info).replace(/</g,"\\u003c")}></script>
+</section>
+
+<script is:inline>
+(function(){
+ var root=document.getElementById("hx-explorer");if(!root)return;
+ var data=JSON.parse(document.getElementById("sb-data").textContent);
+ var scrollport=document.getElementById("lab-scrollport");
+ var nodes=[].slice.call(root.querySelectorAll(".hx-node[data-id]"));
+ var jumps=[].slice.call(root.querySelectorAll("[data-jump]"));
+ var layers=[].slice.call(root.querySelectorAll("[data-layer]"));
+ var modes=[].slice.call(root.querySelectorAll("[data-mode]"));
+ var title=document.getElementById("hx-title"),description=document.getElementById("hx-description"),label=document.getElementById("hx-label");
+ var record=document.getElementById("hx-record"),caseLink=document.getElementById("hx-case"),source=document.getElementById("sb-source");
+ var facts=document.getElementById("sb-facts"),limits=document.getElementById("sb-limits"),details=document.getElementById("sb-selected-evidence"),asOf=document.getElementById("sb-asof");
+ var relatedButtons=document.getElementById("sb-related-buttons");
+ var progress=document.querySelector(".sb-progress"),fill=document.getElementById("sb-progress-fill"),status=document.getElementById("sb-scroll-status");
+ var selected="",mode="all";
+ var groups={
+  all:[],
+  identity:["nova-fw01","nova-client","nova-dc01","nova-dc02"],
+  files:["nova-fw01","nova-client","nova-dc01","nova-files01"]
+ };
+ function select(id,updateURL){
+   var d=data[id];if(!d)return;
+   selected=id;
+   if(mode!=="all"&&groups[mode].indexOf(id)<0){mode="all";renderMode();}
+   nodes.forEach(function(node){
+     var current=node.dataset.id===id;
+     node.classList.toggle("is-selected",current);
+     if(current)node.setAttribute("aria-current","true");else node.removeAttribute("aria-current");
+   });
+   label.textContent="SELECTED / "+id.toUpperCase();
+   title.textContent=d.name+" · "+d.role;
+   description.textContent=d.summary;
+   asOf.textContent="DOCUMENTED RECORD";
+   facts.replaceChildren();
+   d.facts.forEach(function(item){var dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=item.label;dd.textContent=item.value;facts.append(dt,dd);});
+   limits.replaceChildren();
+   d.limitations.forEach(function(item){var li=document.createElement("li");li.textContent=item;limits.append(li);});
+   details.hidden=false;
+   relatedButtons.replaceChildren();
+   d.related.forEach(function(item){
+     var b=document.createElement("button");b.type="button";b.className="sb-related";
+     b.dataset.relTo=item.id;
+     b.textContent=item.name+" · "+item.role+" →";
+     b.addEventListener("click",function(){
+       select(item.id,true);
+       var target=root.querySelector('.sb-node[data-id="'+item.id+'"]');
+       if(target){
+         var top=target.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-155;
+         scrollport.scrollTo({top:Math.max(0,top),behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+       }
+     });
+     relatedButtons.appendChild(b);
+   });
+   record.href=d.record;caseLink.href=d.incidentUrl;source.href=d.sourceUrl;
+   record.textContent="Open "+d.name+" profile ↗";
+   document.dispatchEvent(new CustomEvent("novacorp:content-updated",{detail:{root:document.getElementById("sb-inspector")}}));
+   caseLink.textContent=d.incident+" ↗";
+   if(updateURL&&window.history){
+     var u=new URL(location.href);u.searchParams.set("system",id);
+     history.replaceState(null,"",u.pathname+u.search+u.hash);
+   }
+ }
+ function renderMode(){
+   modes.forEach(function(button){button.setAttribute("aria-pressed",String(button.dataset.mode===mode));});
+   nodes.forEach(function(node){node.classList.toggle("is-muted",groups[mode].length>0&&groups[mode].indexOf(node.dataset.id)<0);});
+   root.dataset.mode=mode;
+ }
+ modes.forEach(function(button){button.addEventListener("click",function(){mode=button.dataset.mode;renderMode();if(mode!=="all"){var node=root.querySelector('.sb-node[data-id="'+(mode==="identity"?"nova-dc01":"nova-files01")+'"]');if(node){var top=node.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-165;scrollport.scrollTo({top:Math.max(0,top),behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}}});});
+ nodes.forEach(function(node){
+   // A server card is a genuine link; click/Enter goes to its profile.
+   // Preview on hover/focus remains available without hijacking navigation.
+   node.addEventListener("mouseenter",function(){select(node.dataset.id,false);});
+   node.addEventListener("focus",function(){select(node.dataset.id,false);});
+ });
+ function jump(target){
+   var el=root.querySelector('[data-layer="'+target+'"]');if(!el)return;
+   var top=el.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-18;
+   scrollport.scrollTo({top:top,behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+ }
+ jumps.forEach(function(b){b.addEventListener("click",function(){jump(b.dataset.jump);scrollport.focus({preventScroll:true});});});
+ document.getElementById("sb-back-to-map").addEventListener("click",function(){document.getElementById("hx-explorer").scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});scrollport.focus({preventScroll:true});});
+ function onScroll(){
+   var max=Math.max(0,scrollport.scrollHeight-scrollport.clientHeight);
+   var p=max?Math.round(scrollport.scrollTop/max*100):100;
+   progress.setAttribute("aria-valuenow",String(p));fill.style.height=p+"%";
+   var current="hypervisor",labels={hypervisor:"01 / 03 · PROXMOX",network:"02 / 03 · PFSENSE",guests:"03 / 03 · SERVER VMS"};
+   layers.forEach(function(el){if(el.getBoundingClientRect().top-scrollport.getBoundingClientRect().top<scrollport.clientHeight*.49)current=el.dataset.layer;});
+   status.textContent=labels[current];
+   jumps.forEach(function(b){b.setAttribute("aria-pressed",String(b.dataset.jump===current));});
+ }
+
+ // Animate only when layers enter the bounded map viewport — visual affordance,
+ // never a claim that these lines depict actual live network traffic.
+ var motion=window.matchMedia("(prefers-reduced-motion: reduce)");
+ if("IntersectionObserver" in window && !motion.matches){
+   var io=new IntersectionObserver(function(entries){
+     entries.forEach(function(entry){
+       if(entry.isIntersecting){entry.target.classList.add("is-entered");}
+       else{entry.target.classList.remove("is-entered");}
+     });
+   },{root:scrollport,threshold:.14});
+   layers.forEach(function(layer){io.observe(layer);});
+   scrollport.classList.add("motion-ready");
+ }else{
+   layers.forEach(function(layer){layer.classList.add("is-entered");});
+ }
+ scrollport.addEventListener("scroll",onScroll,{passive:true});
+ window.addEventListener("resize",onScroll,{passive:true});
+ var url=new URL(location.href),start=url.searchParams.get("system");
+ if(start&&data[start]){
+   select(start,false);
+   var target=root.querySelector('.sb-node[data-id="'+start+'"]');
+   if(target&&target.dataset.id!=="nova-prox01")requestAnimationFrame(function(){var top=target.getBoundingClientRect().top-scrollport.getBoundingClientRect().top+scrollport.scrollTop-170;scrollport.scrollTop=Math.max(0,top);onScroll();});
+ }else{select("nova-prox01",false);}
+ renderMode();onScroll();
+})();
+</script>

@@ -1,0 +1,25 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { origin, path, destination, zone } = Astro.props;
+const scenarios: any[] = [{ id: "path", label: "The path a request takes", steps: [
+  { say: "A request starts at: " + origin + ".", do: [{t:"show",ids:["a","l-a","fw","l-fw","b","l-b"]}] },
+  { say: "It reaches the firewall on the " + zone + " interface.", do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true},{t:"state",id:"fw",value:"pulse"}] },
+  { say: "The firewall checks its rules in order, top to bottom.", why: "An earlier block overrides a later allow. The first matching rule decides.", do: [{t:"show",ids:["rules"]}] },
+  { say: "If a rule allows it, the request continues: " + path + ".", do: [{t:"glide",path:"p2",dot:"d1",ms:1000,keep:true},{t:"state",id:"b",value:"good"}] },
+  { say: "It arrives at: " + destination + ".", do: [{t:"show",ids:["ok"]}] },
+]}];
+---
+<Explainer id="xf-zone" title={"A request on the " + zone + " network"} intro="Rules are checked in order before anything crosses."
+  scenarios={scenarios} alt={"Animated diagram: a request from " + origin + " reaches the firewall, is checked against ordered rules, and continues to " + destination + "."}
+  note="Illustrates the recorded design, not live traffic.">
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="a" data-hide><use href="#ic-laptop" x="50" y="170" width="100" height="72"/></g><text data-id="l-a" data-hide class="small" x="100" y="266">{origin}</text>
+  <g data-id="fw" data-hide><use href="#ic-shield" x="350" y="160" width="60" height="72"/><circle class="halo" cx="380" cy="196" r="52"/></g><text data-id="l-fw" data-hide class="small" x="380" y="256">NOVA-FW01</text>
+  <g data-id="b" data-hide><use href="#ic-server" x="640" y="150" width="70" height="86"/></g><text data-id="l-b" data-hide class="small" x="675" y="258">{destination}</text>
+  <path class="guide" data-id="p1" d="M155 206 L350 196"/><path class="guide" data-id="p2" d="M415 196 L640 196"/>
+  <g data-id="rules" data-hide><rect class="pill" x="320" y="300" width="120" height="22" rx="6"/><rect class="pill" x="320" y="328" width="120" height="22" rx="6"/><rect class="pill" x="320" y="356" width="120" height="22" rx="6"/><text class="sub" x="380" y="292">rules, in order</text></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="655" y="100" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-network)"/>
+</Explainer>

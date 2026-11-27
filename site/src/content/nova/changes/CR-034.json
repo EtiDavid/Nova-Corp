@@ -1,0 +1,7 @@
+{
+  "id": "CR-034",
+  "title": "Branch office and site-to-site VPN",
+  "goal": "A second site connects to headquarters over a site-to-site VPN and reaches only the services it needs; three branch employees (E014 to E016) are onboarded after the network is validated.",
+  "status": "planned",
+  "time": "2–3 weeks"
+}

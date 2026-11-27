@@ -1,0 +1,23 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [{ id: "gpo", label: "How a policy reaches a workstation", steps: [
+  { say: "IT writes a rule once, for example a Windows Firewall setting.", do: [{t:"show",ids:["dc","l-dc","doc","l-doc"]}] },
+  { say: "The domain controller stores it in a shared folder called SYSVOL.", term:["SYSVOL","a folder on every domain controller that holds policies, so every computer can fetch them."], do: [{t:"show",ids:["sys"]},{t:"state",id:"dc",value:"good"}] },
+  { say: "A workstation signs in and fetches the policies that apply to it.", do: [{t:"show",ids:["pc","l-pc"]},{t:"glide",path:"p1",dot:"d1",ms:1100,keep:false},{t:"glide",path:"p1",dot:"d1",ms:1100,rev:true,keep:true}] },
+  { say: "It applies the computer and user settings.", why: "IT defines the rules centrally. Whether every client processed them is verified separately.", do: [{t:"show",ids:["ok"]},{t:"state",id:"pc",value:"good"}] },
+]}];
+---
+<Explainer id="xf-policy" title="How a rule set once reaches every computer" intro="Group Policy, from the domain controller to a workstation."
+  scenarios={scenarios} alt="Animated diagram: a policy stored in SYSVOL on the domain controller is fetched and applied by a workstation at sign-in."
+  note="The recorded configuration shows what was set, not proof that every client applied it." evidence={[{label:"Group Policy", href:"/services/group-policy/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="dc" data-hide><use href="#ic-server" x="90" y="140" width="80" height="98"/></g><text data-id="l-dc" data-hide class="small" x="130" y="262">Domain controller</text>
+  <g data-id="doc" data-hide><use href="#ic-doc" x="200" y="100" width="44" height="54"/></g><text data-id="l-doc" data-hide class="sub" x="222" y="176">firewall policy</text>
+  <g data-id="sys" data-hide><rect class="pill" x="80" y="290" width="100" height="28" rx="6"/><text class="sub" x="130" y="309" style="fill:var(--ink)">SYSVOL</text></g>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="590" y="150" width="110" height="80"/></g><text data-id="l-pc" data-hide class="small" x="645" y="254">Workstation</text>
+  <path class="guide" data-id="p1" d="M175 190 L590 190"/>
+  <g data-id="ok" data-hide><use href="#ic-check" x="620" y="100" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/>
+</Explainer>

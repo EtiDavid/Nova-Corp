@@ -1,0 +1,26 @@
+---
+import NovaLayout from "../../layouts/NovaLayout.astro";
+import { loadNova } from "../../lib/nova";
+const base = import.meta.env.BASE_URL;
+const nova = await loadNova();
+// Only the next three items are shown. Planned work never appears anywhere else.
+const upcoming = nova.upcoming.slice(0, 3);
+---
+<NovaLayout title="Roadmap" description="What is done, and the next three planned changes in the Nova Corp lab." current="">
+  <section class="hero2" style="padding-bottom:16px"><div class="wrap prose-narrow">
+    <div class="eyebrow">Roadmap</div>
+    <h1>The foundation is done. Next is security.</h1>
+    <p class="lead">{nova.counts.changesDone} change requests are done and signed off ({nova.facts.signOff.result}). <a href={base + "changes/"}>See what each one built →</a></p>
+  </div></section>
+  <section class="wrap prose-narrow" style="padding-bottom:48px">
+    <h2>Next three</h2>
+    <ul class="plainlist">
+      {upcoming.map((c: any) => (
+        <li class="boxnote"><span class={"chip " + (c.status === "next" ? "" : "")}>{c.status === "next" ? "Next" : "Planned"}</span> <b class="mono" style="margin-left:6px">{c.id}</b> <b>{c.title}</b>
+          <p style="margin-top:6px">{c.goal}</p>
+          {c.status === "next" && <p class="tiny" style="margin-top:4px">{nova.facts.nextChangeStatus === "not started" ? "Not started." : ""}</p>}</li>))}
+    </ul>
+    <h2 style="margin-top:32px">The conditions on the sign-off</h2>
+    <ul>{nova.facts.signOff.conditions.map((x: string) => <li>{x}.</li>)}</ul>
+  </section>
+</NovaLayout>

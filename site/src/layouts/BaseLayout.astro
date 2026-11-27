@@ -1,0 +1,67 @@
+---
+import "../styles/global.css";
+import "../styles/learning.css";
+import "../styles/reference-library.css";
+import "../styles/incident-records.css";
+import f400 from "@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-400-normal.woff2?url";
+import f600 from "@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-600-normal.woff2?url";
+import f700 from "@fontsource/ibm-plex-sans/files/ibm-plex-sans-latin-700-normal.woff2?url";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-sans/700.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "../styles/nova2.css";
+import "../styles/bridge.css";
+import NovaHeader from "../components/nova/NovaHeader.astro";
+import NovaFooter from "../components/nova/NovaFooter.astro";
+import A11yFixes from "../components/nova/A11yFixes.astro";
+import TechnicalTermAutolinks from "../components/TechnicalTermAutolinks.astro";
+import ContextualDocsEmbed from "../components/ContextualDocsEmbed.astro";
+type Crumb = { label: string; href?: string };
+interface Props { title: string; description: string; breadcrumbs?: Crumb[]; }
+const { title, description, breadcrumbs = [] } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const fullTitle = title + " · Nova Corp";
+---
+<!doctype html>
+<html lang="en">
+  <head>
+  <link rel="preload" as="font" type="font/woff2" href={f400} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={f600} crossorigin />
+  <link rel="preload" as="font" type="font/woff2" href={f700} crossorigin />
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#FAF8F3" />
+    <meta name="description" content={description} />
+    <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://novacorp.davideti.dev/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="A line map of the Nova Corp lab: workstation, firewall, domain controllers, file server and Proxmox." />
+  <meta name="twitter:card" content="summary_large_image" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <title>{fullTitle}</title>
+    <script is:inline>document.documentElement.classList.add("js"); try { var t = localStorage.getItem("nova-theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t; } catch (e) {}</script>
+    <slot name="head" />
+    <link rel="icon" type="image/svg+xml" href={base + "favicon.svg"} />
+  </head>
+  <body class="legacy">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="nv"><NovaHeader /></div>
+    <main id="main">
+      {breadcrumbs.length > 0 && <div class="container" style="padding-top:25px">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <a href={base}>Home</a>
+          {breadcrumbs.map((item) => <><span aria-hidden="true">/</span>{item.href ? <a href={base+item.href}>{item.label}</a> : <span aria-current="page">{item.label}</span>}</>)}
+        </nav>
+      </div>}
+      <slot />
+      <ContextualDocsEmbed />
+    </main>
+    <div class="nv"><NovaFooter /></div>
+    <A11yFixes />
+    <TechnicalTermAutolinks />
+  </body>
+</html>

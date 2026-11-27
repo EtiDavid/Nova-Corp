@@ -1,0 +1,15 @@
+{
+  "id": "replication",
+  "term": "Active Directory replication",
+  "aliases": [
+    "replication",
+    "AD replication"
+  ],
+  "short": "The synchronization of directory changes between Domain Controllers.",
+  "inNova": "A controlled experiment blocked DC02 inbound replication. A new group remained absent until the connection recovered and GUID/SID matched.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "copyStatus": "migrated"
+}

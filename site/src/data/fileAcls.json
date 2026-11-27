@@ -1,0 +1,928 @@
+{
+  "snapshotDate": "2026-11-22",
+  "scope": "11 SMB shares and 14 root or first-level NTFS folder scopes; not recursive",
+  "source": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/files/TECHNICAL_ACL_DETAILS.md",
+  "smb": [
+    {
+      "id": "smb-001",
+      "share": "ADMIN$",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-002",
+      "share": "ADMIN$",
+      "principal": "BUILTIN\\Backup Operators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-003",
+      "share": "ADMIN$",
+      "principal": "NT AUTHORITY\\INTERACTIVE",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-004",
+      "share": "B$",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-005",
+      "share": "B$",
+      "principal": "BUILTIN\\Backup Operators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-006",
+      "share": "B$",
+      "principal": "NT AUTHORITY\\INTERACTIVE",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-007",
+      "share": "C$",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-008",
+      "share": "C$",
+      "principal": "BUILTIN\\Backup Operators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-009",
+      "share": "C$",
+      "principal": "NT AUTHORITY\\INTERACTIVE",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-010",
+      "share": "D$",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-011",
+      "share": "D$",
+      "principal": "BUILTIN\\Backup Operators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-012",
+      "share": "D$",
+      "principal": "NT AUTHORITY\\INTERACTIVE",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-013",
+      "share": "Finance",
+      "principal": "NOVA\\DL_FS_Finance_FullControl",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-014",
+      "share": "Finance",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-015",
+      "share": "Finance",
+      "principal": "NOVA\\DL_FS_Finance_Modify",
+      "action": "Allow",
+      "access": "Change"
+    },
+    {
+      "id": "smb-016",
+      "share": "HR",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-017",
+      "share": "HR",
+      "principal": "NOVA\\DL_FS_HR_Modify",
+      "action": "Allow",
+      "access": "Change"
+    },
+    {
+      "id": "smb-018",
+      "share": "IPC$",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-019",
+      "share": "IPC$",
+      "principal": "BUILTIN\\Backup Operators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-020",
+      "share": "IPC$",
+      "principal": "NT AUTHORITY\\INTERACTIVE",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-021",
+      "share": "IT",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-022",
+      "share": "IT",
+      "principal": "NOVA\\DL_FS_IT_Modify",
+      "action": "Allow",
+      "access": "Change"
+    },
+    {
+      "id": "smb-023",
+      "share": "Management",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-024",
+      "share": "Management",
+      "principal": "NOVA\\DL_FS_Management_Modify",
+      "action": "Allow",
+      "access": "Change"
+    },
+    {
+      "id": "smb-025",
+      "share": "Sales",
+      "principal": "BUILTIN\\Administrators",
+      "action": "Allow",
+      "access": "Full"
+    },
+    {
+      "id": "smb-026",
+      "share": "Sales",
+      "principal": "NOVA\\DL_FS_Sales_Modify",
+      "action": "Allow",
+      "access": "Change"
+    },
+    {
+      "id": "smb-027",
+      "share": "shares",
+      "principal": "Everyone",
+      "action": "Allow",
+      "access": "Read"
+    }
+  ],
+  "ntfs": [
+    {
+      "id": "ntfs-001",
+      "folder": "D:\\NovaData\\Finance",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-002",
+      "folder": "D:\\NovaData\\Finance",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-003",
+      "folder": "D:\\NovaData\\Finance",
+      "principal": "NOVA\\DL_FS_Finance_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-004",
+      "folder": "D:\\NovaData\\Finance",
+      "principal": "NOVA\\DL_FS_Finance_FullControl",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-005",
+      "folder": "D:\\NovaData\\HR",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-006",
+      "folder": "D:\\NovaData\\HR",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-007",
+      "folder": "D:\\NovaData\\HR",
+      "principal": "NOVA\\DL_FS_HR_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-008",
+      "folder": "D:\\NovaData\\IT",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-009",
+      "folder": "D:\\NovaData\\IT",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-010",
+      "folder": "D:\\NovaData\\IT",
+      "principal": "NOVA\\DL_FS_IT_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-011",
+      "folder": "D:\\NovaData\\IT\\CR014-BackupRestoreTest",
+      "principal": "NOVA\\DL_FS_IT_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-012",
+      "folder": "D:\\NovaData\\IT\\CR014-BackupRestoreTest",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-013",
+      "folder": "D:\\NovaData\\IT\\CR014-BackupRestoreTest",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-014",
+      "folder": "D:\\NovaData\\IT\\CR014-IncidentLab",
+      "principal": "NOVA\\DL_FS_IT_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-015",
+      "folder": "D:\\NovaData\\IT\\CR014-IncidentLab",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-016",
+      "folder": "D:\\NovaData\\IT\\CR014-IncidentLab",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-017",
+      "folder": "D:\\NovaData\\IT\\CR014-RestoreRecovered",
+      "principal": "NOVA\\DL_FS_IT_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-018",
+      "folder": "D:\\NovaData\\IT\\CR014-RestoreRecovered",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-019",
+      "folder": "D:\\NovaData\\IT\\CR014-RestoreRecovered",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-020",
+      "folder": "D:\\NovaData\\Management",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-021",
+      "folder": "D:\\NovaData\\Management",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-022",
+      "folder": "D:\\NovaData\\Management",
+      "principal": "NOVA\\DL_FS_Management_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-023",
+      "folder": "D:\\NovaData\\Sales",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-024",
+      "folder": "D:\\NovaData\\Sales",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-025",
+      "folder": "D:\\NovaData\\Sales",
+      "principal": "NOVA\\DL_FS_Sales_Modify",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": false,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-026",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-027",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-028",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-029",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-030",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-031",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "-536805376",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-032",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "BUILTIN\\Users",
+      "rights": "ReadAndExecute, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-033",
+      "folder": "C:\\DFSRoots\\shares",
+      "principal": "BUILTIN\\Users",
+      "rights": "-1610612736",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-034",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-035",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-036",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-037",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-038",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-039",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "-536805376",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-040",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "BUILTIN\\Users",
+      "rights": "ReadAndExecute, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-041",
+      "folder": "C:\\DFSRoots\\shares\\Finance",
+      "principal": "BUILTIN\\Users",
+      "rights": "-1610612736",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-042",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-043",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-044",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-045",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-046",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-047",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "-536805376",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-048",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "BUILTIN\\Users",
+      "rights": "ReadAndExecute, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-049",
+      "folder": "C:\\DFSRoots\\shares\\HR",
+      "principal": "BUILTIN\\Users",
+      "rights": "-1610612736",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-050",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-051",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-052",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-053",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-054",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-055",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "-536805376",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-056",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "BUILTIN\\Users",
+      "rights": "ReadAndExecute, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-057",
+      "folder": "C:\\DFSRoots\\shares\\IT",
+      "principal": "BUILTIN\\Users",
+      "rights": "-1610612736",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-058",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-059",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-060",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-061",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-062",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-063",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "-536805376",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-064",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "BUILTIN\\Users",
+      "rights": "ReadAndExecute, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-065",
+      "folder": "C:\\DFSRoots\\shares\\Management",
+      "principal": "BUILTIN\\Users",
+      "rights": "-1610612736",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-066",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-067",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "BUILTIN\\Administrators",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-068",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "FullControl",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-069",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "NT AUTHORITY\\SYSTEM",
+      "rights": "268435456",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-070",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "Modify, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-071",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "NT AUTHORITY\\Authenticated Users",
+      "rights": "-536805376",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    },
+    {
+      "id": "ntfs-072",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "BUILTIN\\Users",
+      "rights": "ReadAndExecute, Synchronize",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "None",
+      "propagation": "None"
+    },
+    {
+      "id": "ntfs-073",
+      "folder": "C:\\DFSRoots\\shares\\Sales",
+      "principal": "BUILTIN\\Users",
+      "rights": "-1610612736",
+      "action": "Allow",
+      "inherited": true,
+      "inheritance": "ContainerInherit, ObjectInherit",
+      "propagation": "InheritOnly"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "id": "shadow-copy",
+  "term": "Shadow Copy",
+  "aliases": [
+    "Shadow Copy",
+    "Shadow Copies"
+  ],
+  "short": "A point-in-time previous version of selected files or volumes.",
+  "inNova": "The Nova Corp file server documents Shadow Copy configuration and a tested earlier-version recovery workflow.",
+  "seeAlso": [
+    "nova-files01"
+  ],
+  "copyStatus": "migrated"
+}

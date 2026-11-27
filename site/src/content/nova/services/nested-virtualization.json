@@ -1,0 +1,15 @@
+{
+  "id": "nested-virtualization",
+  "name": "Nested virtualization",
+  "line": "platform",
+  "runsOn": [
+    "nova-prox01"
+  ],
+  "dependsOn": [],
+  "summary": "Proxmox runs inside VMware Workstation on one Windows 11 host.",
+  "inNova": "All five virtual machines run on this one host, so the lab shares one failure domain. Getting Proxmox to start nested was the first incident (CR-001).",
+  "builtBy": [
+    "CR-001"
+  ],
+  "copyStatus": "migrated"
+}

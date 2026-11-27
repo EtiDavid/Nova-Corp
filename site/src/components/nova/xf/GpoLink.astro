@@ -1,0 +1,32 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "bug", label: "Wallpaper vanished", steps: [
+    { say: "The company wallpaper policy is linked to the Nova Users OU.", term:["GPO link","a Group Policy only applies where it is linked. The link is a switch, separate from the policy itself."], do: [{t:"show",ids:["gpo","l-gpo","ou","l-ou","pc","l-pc","oth","l-oth"]},{t:"show",ids:["lnk"]}] },
+    { say: "Someone disables the link.", why: "The policy and SYSVOL are untouched.", do: [{t:"show",ids:["lnk"]},{t:"state",id:"lnk",value:"bad"},{t:"show",ids:["no"]}] },
+    { say: "The wallpaper no longer reaches the user.", why: "Other policies still apply. It is one broken link, not the whole domain.", do: [{t:"glide",path:"po",dot:"d2",ms:900,keep:true},{t:"state",id:"pc",value:"bad"}] },
+  ]},
+  { id: "fix", label: "After the fix", steps: [
+    { say: "The existing link is turned back on. The policy is not rebuilt.", do: [{t:"show",ids:["gpo","l-gpo","ou","l-ou","pc","l-pc","oth","l-oth","lnk"]},{t:"state",id:"lnk",value:"good"}] },
+    { say: "The user's policy is refreshed.", do: [{t:"glide",path:"pg",dot:"d1",ms:1100,keep:false},{t:"glide",path:"pu",dot:"d1",ms:1100,keep:false}] },
+    { say: "The wallpaper applies again.", do: [{t:"show",ids:["ok"]},{t:"state",id:"pc",value:"good"}] },
+  ]},
+];
+---
+<Explainer id="xf-gpo" start={start} title="One switched-off link, one missing wallpaper" intro="How a Group Policy reaches a user."
+  scenarios={scenarios} alt="Animated diagram: a wallpaper policy reaches users through its link to an OU; when the link is disabled the wallpaper stops applying, and re-enabling it fixes the problem."
+  note="From the recorded CR-014 exercise. Other policies kept applying throughout." evidence={[{label:"Change CR-014", href:"/changes/CR-014/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="gpo" data-hide><use href="#ic-doc" x="60" y="150" width="56" height="70"/></g><text data-id="l-gpo" data-hide class="small" x="88" y="244">Wallpaper policy</text>
+  <g data-id="ou" data-hide><rect class="bubble" x="300" y="140" width="170" height="90" rx="14"/><text class="bubble-t" x="385" y="190">Nova Users OU</text></g><text data-id="l-ou" data-hide class="sub" x="385" y="256">(a folder of user accounts)</text>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="620" y="150" width="110" height="80"/></g><text data-id="l-pc" data-hide class="small" x="675" y="254">User's desktop</text>
+  <path class="guide" data-id="pg" d="M120 185 L300 185"/><path class="guide" data-id="pu" d="M470 185 L620 185"/><path class="guide" data-id="po" d="M120 185 L300 185"/>
+  <g data-id="lnk" data-hide><use href="#ic-lock" x="196" y="150" width="30" height="36"/><text class="sub" x="211" y="140">link</text></g>
+  <g data-id="no" data-hide><use href="#ic-x" x="192" y="196" width="38" height="38"/><text class="sub" x="211" y="254">disabled</text></g>
+  <g data-id="oth" data-hide><rect class="pill" x="300" y="310" width="170" height="30" rx="8"/><text class="sub" x="385" y="331" style="fill:var(--ink)">other policies still apply</text></g><text data-id="l-oth" data-hide class="sub" x="385" y="362">they use their own links</text>
+  <g data-id="ok" data-hide><use href="#ic-check" x="640" y="100" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--broken)"/>
+</Explainer>

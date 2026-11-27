@@ -1,0 +1,32 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [
+  { id: "bug", label: "DC01 loses its route", steps: [
+    { say: "DC01 moves onto the new infrastructure network, VLAN 20.", do: [{t:"show",ids:["dc","l-dc","fw","l-fw","net","l-net"]}] },
+    { say: "It tries to reach its gateway, the firewall.", do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true}] },
+    { say: "The firewall's new INFRA interface has no allow rules yet.", term:["Default block","a firewall blocks anything that no rule allows."], why: "pfSense could reach DC01, but DC01's own traffic was dropped.", do: [{t:"state",id:"fw",value:"bad"},{t:"show",ids:["x","empty"]}] },
+  ]},
+  { id: "fix", label: "First pass rule added", steps: [
+    { say: "A first INFRA pass rule is added and applied.", why: "It was broad on purpose to finish the build, and INFRA still has broad pass rules.", do: [{t:"show",ids:["dc","l-dc","fw","l-fw","net","l-net","rule"]},{t:"state",id:"fw",value:"good"}] },
+    { say: "DC01's traffic now passes.", do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:false},{t:"glide",path:"p2",dot:"d1",ms:1000,keep:false},{t:"show",ids:["ok"]}] },
+    { say: "Gateway, web interface, internet, Active Directory and DNS all work again.", do: [{t:"show",ids:["ok","list"]}] },
+  ]},
+];
+---
+<Explainer id="xf-iface" title="A new network with no rules blocks everything" intro="DC01 after moving to VLAN 20."
+  scenarios={scenarios} alt="Animated diagram: DC01's traffic is blocked by the firewall's new interface until a first pass rule is added."
+  note="Recorded when DC01 moved to VLAN 20 (CR-003)." evidence={[{label:"Change CR-003", href:"/changes/CR-003/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="dc" data-hide><use href="#ic-server" x="80" y="160" width="74" height="90"/></g><text data-id="l-dc" data-hide class="small" x="117" y="272">NOVA-DC01</text>
+  <g data-id="net" data-hide><rect class="pill" x="200" y="196" width="100" height="22" rx="6"/></g><text data-id="l-net" data-hide class="sub" x="250" y="236">VLAN 20 (INFRA)</text>
+  <g data-id="fw" data-hide><use href="#ic-shield" x="440" y="160" width="60" height="72"/><circle class="halo" cx="470" cy="196" r="52"/></g><text data-id="l-fw" data-hide class="small" x="470" y="256">pfSense · INFRA interface</text>
+  <path class="guide" data-id="p1" d="M160 206 L440 196"/><path class="guide" data-id="p2" d="M505 196 L680 196"/>
+  <g data-id="x" data-hide><use href="#ic-x" x="380" y="120" width="40" height="40"/></g>
+  <g data-id="empty" data-hide><rect class="bubble" x="400" y="300" width="140" height="36" rx="10"/><text class="bubble-t" x="470" y="323">no allow rules</text></g>
+  <g data-id="rule" data-hide><rect class="bubble" x="400" y="300" width="140" height="36" rx="10"/><text class="bubble-t" x="470" y="323">pass rule added</text></g>
+  <g data-id="ok" data-hide><use href="#ic-globe" x="640" y="160" width="60" height="60"/><use href="#ic-check" x="690" y="140" width="32" height="32"/></g>
+  <text data-id="list" data-hide class="sub" x="400" y="380">gateway · pfSense web UI · internet · AD · DNS</text>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-network)"/>
+</Explainer>

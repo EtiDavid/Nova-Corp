@@ -1,0 +1,12 @@
+{
+  "id": "CR-003",
+  "title": "Deploy Active Directory and enterprise DNS",
+  "goal": "One company login and company DNS (nova.corp).",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/Journal-CR-003.md",
+  "built": [
+    "Active Directory and DNS for nova.corp on DC01",
+    "One company sign-in for users and computers"
+  ],
+  "validated": "DC01 lost its route after moving to the infrastructure VLAN until I added the first INFRA firewall rule."
+}

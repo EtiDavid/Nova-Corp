@@ -1,0 +1,203 @@
+---
+/**
+ * Guided technical pathways from the documented Nova Corp Phase 2 lab.
+ * Visitors explore historical test findings; no live traffic is generated.
+ */
+const base = import.meta.env.BASE_URL;
+const flows = [
+  {
+    id:"files", number:"01", label:"Open a shared folder", family:"NAME RESOLUTION → SMB → ACCESS",
+    question:"What must work before an employee opens the IT share?",
+    lead:"Follow the dependencies behind the documented \\nova-files01\\IT test. The access-control step explains configured authorization, not universal user access.",
+    link:"incidents/dns-client-outage/", linkLabel:"Read the actual DNS incident",
+    steps:[
+      {title:"Start with the workstation", system:"nova-client", view:"files", level:"Architecture relationship", route:"NOVA-CLIENT → NOVA-FW01", body:"An employee tries to access a share using the server name. The documented client is on the CLIENT network (VLAN 40). A failed name-based path alone cannot identify which component failed.", check:"Test-Path \"\\\\nova-files01\\IT\"", finding:"During the controlled fault, the name-based path returned False.", evidence:"incidents/dns-client-outage/"},
+      {title:"Resolve the server name", system:"nova-dc01", view:"identity", level:"Recorded DNS check", route:"NOVA-CLIENT → NOVA-DC01", body:"Internal DNS should resolve nova-files01.nova.corp to 10.10.20.20. The incident explicitly checked DC01 directly to distinguish working authoritative DNS from a wrong client resolver.", check:"Resolve-DnsName nova-files01.nova.corp -Server 10.10.20.10", finding:"DC01 returned 10.10.20.20. The workstation's usual resolver was deliberately wrong.", evidence:"incidents/dns-client-outage/"},
+      {title:"Reach SMB across the routed networks", system:"nova-fw01", view:"network", level:"Recorded port reachability", route:"NOVA-CLIENT → NOVA-FW01 → NOVA-FILES01", body:"The firewall is the network boundary between client and infrastructure segments. Testing the file server directly by address separates TCP reachability from DNS resolution.", check:"Test-NetConnection 10.10.20.20 -Port 445", finding:"TcpTestSucceeded was True, even while name-based access failed.", evidence:"incidents/dns-client-outage/"},
+      {title:"Apply file permissions", system:"nova-files01", view:"files", level:"Saved ACL entries", route:"NOVA-FILES01 → SHARE RIGHTS + NTFS RIGHTS", body:"An authorized shared-folder operation also depends on SMB permissions, NTFS rights and a user's security token. The recorded public catalog contains 27 SMB and 73 NTFS entries; it does not claim effective access for every user.", check:"Review the IT share and the D:\\NovaData\\IT permission entries", finding:"Configured group-based rights are recorded; per-user effective access requires a separate exercised test.", evidence:"files/permissions/technical/"},
+      {title:"Verify the original request again", system:"nova-client", view:"files", level:"Recorded recovery check", route:"NOVA-CLIENT → NOVA-FILES01", body:"After restoring the client's correct DNS server pair and clearing cache, retest the exact failure condition. This establishes the scope of the repair without claiming every share was tested.", check:"Test-Path \"\\\\nova-files01\\IT\"", finding:"Test-Path returned True after the DNS correction.", evidence:"incidents/dns-client-outage/"}
+    ]
+  },
+  {
+    id:"identity", number:"02", label:"Survive a DC outage", family:"ACTIVE DIRECTORY → RESILIENCE",
+    question:"What happens when the first Domain Controller goes offline?",
+    lead:"This is a replay of controlled resilience evidence, not a claim that all directory failure modes have been tested.",
+    link:"incidents/dc01-outage/",linkLabel:"Read the DC01 outage investigation",
+    steps:[
+      {title:"Two directory servers exist",system:"nova-dc01",view:"identity",level:"Validated configuration",route:"NOVA-DC01 ↔ NOVA-DC02",body:"Two writable Domain Controllers provide directory and DNS services. Having two configured servers alone is not proof of resilience.",check:"Review the two documented Domain Controller roles",finding:"Both DC01 and DC02 are present in the saved lab inventory.",evidence:"systems/nova-dc02/"},
+      {title:"Introduce the controlled failure",system:"nova-dc01",view:"identity",level:"Controlled test",route:"NOVA-DC01 / OFFLINE DURING TEST",body:"DC01 was deliberately made unavailable for the recorded exercise. This was a test under documented conditions, not an unplanned production outage.",check:"Review the controlled DC01-outage sequence",finding:"Client directory checks were repeated with DC01 unavailable.",evidence:"incidents/dc01-outage/"},
+      {title:"Observe the alternate directory path",system:"nova-dc02",view:"identity",level:"Recorded client test",route:"NOVA-CLIENT → NOVA-DC02",body:"The client was tested for directory service continuity via the second Domain Controller, rather than inferring availability from the presence of a second server.",check:"Inspect the client DC-selection evidence",finding:"The documented client selected DC02 during the DC01 outage.",evidence:"incidents/dc01-outage/"},
+      {title:"Verify return to service",system:"nova-dc01",view:"identity",level:"Recorded recovery check",route:"NOVA-DC01 ↔ NOVA-DC02",body:"After DC01 returned, replication health was checked. This is continuity evidence, not proof of a complete Domain Controller restoration from backup.",check:"Review the post-outage replication checks",finding:"Replication was checked after DC01 returned; no full server restore is claimed.",evidence:"incidents/dc01-outage/"}
+    ]
+  },
+  {
+    id:"security", number:"03", label:"Restrict firewall administration", family:"POLICY ORDER → MANAGEMENT BOUNDARY",
+    question:"Why could an employee PC reach a firewall management page?",
+    lead:"Explore a recorded rules-and-retest sequence. The separate privileged-administration VPN and management-plane isolation are still planned (CR-016).",
+    link:"incidents/firewall-management-exposure/",linkLabel:"Read the firewall security investigation",
+    steps:[
+      {title:"Observe the unexpected path",system:"nova-client",view:"network",level:"Recorded security finding",route:"EMPLOYEE NETWORK → FIREWALL MANAGEMENT",body:"An employee-side workstation could reach the management service. The issue was a rule-ordering gap, not evidence that all segmentation failed.",check:"Inspect the original management-reachability test",finding:"The specific administrative path was reachable before correction.",evidence:"incidents/firewall-management-exposure/"},
+      {title:"Review rule order",system:"nova-fw01",view:"network",level:"Configuration investigation",route:"PFSENSE / FIRST MATCHING RULE",body:"Specific block rules need to precede broader pass conditions for the relevant traffic. The incident traced this rule-ordering problem.",check:"Review the source-backed pfSense ordered rules",finding:"Specific restrictions were moved ahead of the broad allow for this path.",evidence:"network/rules/"},
+      {title:"Retest blocked management",system:"nova-fw01",view:"network",level:"Recorded behavior test",route:"EMPLOYEE NETWORK ↛ FIREWALL MANAGEMENT",body:"The same employee-side access was checked after the rule correction. This is proof of a particular blocked path, not a complete penetration test.",check:"Repeat the original reachability condition",finding:"The administrative path was blocked; required business access remained working in the tested scope.",evidence:"incidents/firewall-management-exposure/"},
+      {title:"Understand the remaining boundary",system:"nova-prox01",view:"network",level:"Planned / not deployed",route:"CR-016 / PRIVILEGED VPN + ISOLATION",body:"Privileged-admin VPN access and comprehensive management-plane firewall isolation remain a separate, planned engineering gate.",check:"Review the approved roadmap",finding:"No claim is made that CR-016 has been implemented.",evidence:"roadmap/"}
+    ]
+  },
+  {
+    id:"recovery", number:"04", label:"Recover a deleted file", family:"BACKUP FAILURE → FILE-LEVEL PROOF",
+    question:"What does a verified backup recovery actually prove?",
+    lead:"A recorded file restore was checked by SHA-256. The result does not demonstrate a whole virtual-machine or complete Domain Controller recovery.",
+    link:"incidents/backup-target-unavailable/",linkLabel:"Review the tested file restore",
+    steps:[
+      {title:"Detect a backup target problem",system:"nova-files01",view:"recovery",level:"Controlled failure",route:"WINDOWS BACKUP → UNAVAILABLE DESTINATION",body:"The test deliberately made the backup target unavailable, exposing a failure condition before the backup path was corrected.",check:"Inspect the documented backup-target failure",finding:"The job did not meet its intended destination condition.",evidence:"incidents/backup-target-unavailable/"},
+      {title:"Repair and verify the backup path",system:"nova-files01",view:"recovery",level:"Recorded repair",route:"NOVA-FILES01 → BACKUP TARGET",body:"The destination problem was repaired, and backup state was checked before using a saved recovery point.",check:"Review the repair and backup validation",finding:"The documented workflow proceeded to a controlled restore after repair.",evidence:"incidents/backup-target-unavailable/"},
+      {title:"Restore a disposable file",system:"nova-files01",view:"recovery",level:"File-level recovery test",route:"BACKUP → RESTORED TEST FILE",body:"A deleted test file was recovered. Compare the original and restored file contents using their cryptographic SHA-256 digests.",check:"Compare the recorded before/after SHA-256 hashes",finding:"The source and restored file digests matched.",evidence:"incidents/backup-target-unavailable/"},
+      {title:"Respect the limits",system:"nova-prox01",view:"recovery",level:"Not proven",route:"NO WHOLE-VM OR FULL-DC RESTORE CLAIM",body:"The recorded recovery test restored individual files. Neither a whole-VM restoration nor a complete System State/DC restoration is established by this test.",check:"Review backup scope and stated limitations",finding:"Validated scope: one controlled file-level restore with matching SHA-256.",evidence:"systems/nova-files01/"}
+    ]
+  }
+];
+---
+<section class="wl" id="workflow-lab" aria-labelledby="wl-heading">
+  <div class="wl-heading">
+    <div>
+      <div class="exp-eyebrow">Guided sandbox / recorded engineering paths</div>
+      <h2 id="wl-heading">Follow a request through the company.</h2>
+      <p>Choose a workflow, move between the documented steps, and highlight the related component in the architecture above.</p>
+    </div>
+    <div class="wl-disclosure"><span class="wl-mini-dot" aria-hidden="true"></span> MODEL + RECORDED TESTS<br/><small>Not live traffic or a remote shell</small></div>
+  </div>
+  <div class="wl-switches" role="group" aria-label="Choose an engineering workflow">
+    {flows.map(f=><button class="wl-switch" type="button" data-flow-tab={f.id} aria-pressed={f.id==="files"?"true":"false"}><span>{f.number}</span>{f.label}</button>)}
+  </div>
+  {flows.map(f=><article class={"wl-case"+(f.id==="files"?" is-active":"")} data-flow={f.id} aria-label={f.label}>
+    <div class="wl-case-intro">
+      <span>{f.family}</span>
+      <h3>{f.question}</h3>
+      <p>{f.lead}</p>
+    </div>
+    <div class="wl-case-main">
+      <ol class="wl-timeline" aria-label={"Steps for "+f.label}>
+        {f.steps.map((s,i)=><li class={"wl-step"+(i===0?" is-active":"")} data-step={i} data-view={s.view} data-system={s.system}>
+          <button class="wl-step-button" type="button" aria-current={i===0?"step":undefined}><span class="wl-index">{String(i+1).padStart(2,"0")}</span><span>{s.title}</span><span class="wl-step-arrow" aria-hidden="true">↗</span></button>
+          <div class="wl-step-body">
+            <div class="wl-toprow"><span class="wl-evidence">{s.level}</span><span class="wl-route">{s.route}</span></div>
+            <p>{s.body}</p>
+            <div class="wl-test"><span>WHAT WAS CHECKED</span><p>{s.check}</p></div>
+            <div class="wl-observed"><span>DOCUMENTED FINDING</span><p>{s.finding}</p></div>
+            <div class="wl-step-footer">
+              <a href={base+s.evidence}>Open this step's evidence ↗</a>
+              <button type="button" class="wl-show" data-show-map>Show this component on the map ↑</button>
+            </div>
+          </div>
+        </li>)}
+      </ol>
+      <div class="wl-footer">
+        <div class="wl-progress" aria-live="polite">Step 1 of {f.steps.length}</div>
+        <div class="wl-buttons"><button type="button" data-prev disabled>← Previous</button><button type="button" data-next>Next step →</button></div>
+      </div>
+    </div>
+    <div class="wl-source"><a href={base+f.link}>{f.linkLabel} ↗</a><span>All steps are historical interpretations or recorded checks, not a live simulation.</span></div>
+  </article>)}
+  <noscript><p class="wl-noscript">All workflows and their source references are listed below. JavaScript enables step navigation and diagram focusing.</p></noscript>
+</section>
+
+<script is:inline>
+(function(){
+  var root=document.getElementById("workflow-lab");
+  if(!root)return;
+  var tabs=[].slice.call(root.querySelectorAll("[data-flow-tab]"));
+  var cases=[].slice.call(root.querySelectorAll("[data-flow]"));
+  var chosen=0, stages={};
+  cases.forEach(function(c,i){stages[i]=0;});
+  function render(){
+    tabs.forEach(function(tab,i){tab.setAttribute("aria-pressed",String(chosen===i));});
+    cases.forEach(function(c,i){
+      c.classList.toggle("is-active",chosen===i);
+      var steps=[].slice.call(c.querySelectorAll(".wl-step"));
+      var n=stages[i];
+      steps.forEach(function(step,j){
+        step.classList.toggle("is-active",n===j);
+        if(n===j)step.querySelector(".wl-step-button").setAttribute("aria-current","step");
+        else step.querySelector(".wl-step-button").removeAttribute("aria-current");
+      });
+      c.querySelector(".wl-progress").textContent="Step "+(n+1)+" of "+steps.length;
+      c.querySelector("[data-prev]").disabled=n===0;
+      c.querySelector("[data-next]").disabled=n===steps.length-1;
+    });
+  }
+  tabs.forEach(function(tab,i){tab.addEventListener("click",function(){chosen=i;render();});});
+  cases.forEach(function(c,i){
+    var steps=[].slice.call(c.querySelectorAll(".wl-step"));
+    steps.forEach(function(step,j){
+      step.querySelector(".wl-step-button").addEventListener("click",function(){chosen=i;stages[i]=j;render();});
+      step.querySelector("[data-show-map]").addEventListener("click",function(){
+        chosen=i;stages[i]=j;render();
+        window.dispatchEvent(new CustomEvent("novacorp:trace",{detail:{view:step.dataset.view,focus:step.dataset.system}}));
+        var target=document.getElementById("company-map");
+        if(target)target.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+      });
+    });
+    c.querySelector("[data-prev]").addEventListener("click",function(){stages[i]=Math.max(0,stages[i]-1);render();});
+    c.querySelector("[data-next]").addEventListener("click",function(){stages[i]=Math.min(steps.length-1,stages[i]+1);render();});
+  });
+  var q=new URLSearchParams(location.search),initial=q.get("workflow");
+  var index=cases.findIndex(function(c){return c.dataset.flow===initial;});
+  if(index>=0)chosen=index;
+  render();
+})();
+</script>
+<style>
+.wl { margin-top:72px; border:1px solid var(--rule); border-radius:23px; overflow:hidden; background:linear-gradient(145deg,var(--tint-blue),var(--tint-blue)); scroll-margin-top:90px; }
+.wl-heading { padding:30px; display:flex; justify-content:space-between; align-items:flex-start; gap:24px; border-bottom:1px solid var(--rule); }
+.wl-heading h2 { margin:12px 0; font-size:clamp(1.7rem,3vw,2.5rem);line-height:1.15; letter-spacing:-.035em; }
+.wl-heading p { max-width:62ch; color:var(--ink); }
+.wl-disclosure { flex:0 0 auto; font:750 .7rem/1.7 var(--font-mono); color:var(--c-teal); text-align:right; white-space:nowrap; margin-top:6px; }
+.wl-disclosure small { color:var(--c-blue); font-size:.65rem; }
+.wl-mini-dot { display:inline-block; width:8px; height:8px; border:2px solid var(--rule); border-radius:50%; margin-right:6px; }
+.wl-switches { padding:12px 16px; display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border-bottom:1px solid var(--rule); }
+.wl-switch { display:flex;flex-direction:column;align-items:flex-start;gap:9px;text-align:left;min-height:84px;padding:12px 14px;border:1px solid var(--rule);border-radius:11px;background:var(--tint-blue);color:var(--ink);font-weight:750;font-size:.82rem;cursor:pointer; }
+.wl-switch span { font:700 .67rem var(--font-mono);color:var(--c-teal); }
+.wl-switch[aria-pressed="true"] {background:var(--tint-teal);border-color:var(--rule);color:var(--ink);box-shadow:inset 0 2px #79DCD2;}
+.wl-switch:hover {border-color:var(--rule);}
+.wl-case { padding:0; }
+html.js .wl-case:not(.is-active) { display:none; }
+.wl-case-intro { padding:23px 30px 22px; border-bottom:1px solid var(--rule); background:var(--tint-blue); }
+.wl-case-intro > span { color:var(--c-teal);font:750 .7rem var(--font-mono);letter-spacing:.07em; }
+.wl-case-intro h3 { font-size:1.4rem; margin:8px 0; }
+.wl-case-intro p { color:var(--ink);font-size:.88rem;max-width:74ch; }
+.wl-case-main { padding:16px 20px 24px; }
+.wl-timeline { padding:0;margin:0;list-style:none;display:grid; gap:8px; }
+.wl-step { background:var(--tint-blue);border:1px solid var(--rule);border-radius:11px; overflow:hidden; }
+.wl-step.is-active { border-color:#6BB7B2;background:var(--tint-blue); }
+.wl-step-button { width:100%;display:grid;grid-template-columns:34px 1fr 18px;align-items:center;gap:13px;min-height:58px;padding:12px 16px;border:0;background:transparent;color:var(--ink);font:750 .93rem var(--font-ui);text-align:left;cursor:pointer; }
+.wl-index { color:var(--c-teal);font:700 .73rem var(--font-mono); }
+.wl-step-arrow { color:var(--c-teal); }
+.wl-step-button:hover { background:var(--tint-blue); }
+.wl-step-button:focus-visible { outline:2px solid var(--rule); outline-offset:-3px; }
+html.js .wl-step:not(.is-active) .wl-step-body { display:none; }
+.wl-step-body { padding:0 19px 22px 63px; color:var(--ink); font-size:.89rem; }
+.wl-step-body > p { margin:14px 0; line-height:1.65; }
+.wl-toprow { display:flex;align-items:center;gap:9px;flex-wrap:wrap; }
+.wl-evidence { color:var(--c-teal);font:750 .69rem var(--font-mono);padding:4px 8px;background:var(--tint-teal);border-radius:5px; }
+.wl-route { color:var(--c-blue);font:650 .7rem var(--font-mono); }
+.wl-test,.wl-observed { margin-top:10px; padding:13px 15px;border-radius:8px;background:var(--tint-blue);border:1px solid var(--rule); }
+.wl-test span,.wl-observed span { font:750 .67rem var(--font-mono);letter-spacing:.08em;color:var(--c-blue); }
+.wl-test p,.wl-observed p { margin:6px 0 0;overflow-wrap:anywhere; }
+.wl-observed { background:var(--tint-teal);border-color:var(--rule); }
+.wl-observed span { color:var(--c-green); }
+.wl-step-footer { display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:16px; }
+.wl-step-footer a { color:var(--c-teal);font-size:.8rem;font-weight:750; }
+.wl-show {border:1px solid var(--rule);border-radius:8px;background:var(--tint-teal);color:var(--c-teal);min-height:42px;padding:8px 12px;font:750 .8rem var(--font-ui);cursor:pointer; }
+.wl-show:hover {background:var(--tint-teal);}
+.wl-footer {display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin:16px 8px 0;}
+.wl-progress { color:var(--c-blue);font:700 .77rem var(--font-mono); }
+.wl-buttons { display:flex;gap:9px;flex-wrap:wrap; }
+.wl-buttons button { background:var(--tint-blue);color:var(--ink);border:1px solid var(--rule);padding:9px 15px;min-height:43px;border-radius:9px;font:750 .82rem var(--font-ui);cursor:pointer; }
+.wl-buttons button:not(:disabled):hover {border-color:var(--rule);background:var(--tint-teal);}
+.wl-buttons button:disabled {opacity:.38;cursor:not-allowed;}
+.wl-source {padding:15px 28px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;border-top:1px solid var(--rule);color:var(--c-blue);font-size:.78rem;}
+.wl-source a {font-weight:750;color:var(--c-teal);}
+.wl-noscript { padding:18px;color:var(--ink); }
+@media(max-width:900px){.wl-heading{flex-direction:column;} .wl-disclosure{text-align:left;} .wl-switches{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:560px){.wl{margin-top:42px;} .wl-heading,.wl-case-intro{padding:20px;} .wl-switches{padding:10px;gap:7px;} .wl-switch{padding:9px;min-height:78px;font-size:.75rem;} .wl-case-main{padding:12px;} .wl-step-button{gap:7px;padding:10px;grid-template-columns:29px 1fr 16px;} .wl-step-body{padding:0 12px 18px 12px;} .wl-source{padding:15px 18px;} .wl-route{overflow-wrap:anywhere;}}
+@media(prefers-reduced-motion:reduce){ .wl-step,.wl-show{transition:none;} }
+</style>

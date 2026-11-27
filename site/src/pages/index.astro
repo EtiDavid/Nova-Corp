@@ -1,0 +1,128 @@
+---
+import NovaLayout from "../layouts/NovaLayout.astro";
+import MapSvg from "../components/nova/MapSvg.astro";
+import MobileLines from "../components/nova/MobileLines.astro";
+import { loadNova, typeLabel } from "../lib/nova";
+import EvidenceStrip from "../components/nova/EvidenceStrip.astro";
+import HomeLab from "../components/nova/xf/HomeLab.astro";
+const base = import.meta.env.BASE_URL;
+const nova = await loadNova();
+const { counts: c, journey, markers, lines, featured } = nova;
+const cases = featured;
+const homeMarkers = markers.filter((m: any) => m.home);
+const counts = [
+  { n: c.systems, t: "systems on the map" }, { n: c.vlans, t: "VLANs, from 10 to 50" },
+  { n: c.changesDone, t: "change requests completed" }, { n: c.incidents, t: "incidents documented" }
+];
+const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
+---
+<NovaLayout title="Home" description="David Eti built a small company's IT infrastructure and then tested what happens when it fails. Windows Server, Active Directory, pfSense and Proxmox, with the incidents and proof." current="">
+  <section class="hero2"><div class="wrap">
+    <div class="eyebrow">Nova Corp · built and tested by David Eti</div>
+    <h1>I built the infrastructure. Then I tested what happens when it fails.</h1>
+    <p class="lead">I'm David Eti. Nova Corp is a small fictional company whose IT runs on a real lab I built: Windows Server, Active Directory, pfSense and Proxmox.</p>
+    <p class="availability">Looking for sysadmin / infrastructure / DevOps roles in Belgium &amp; the Netherlands. Available now.</p>
+    <div class="actions">
+      <a class="nv-btn primary" href={cv}>Download CV</a>
+      <a class="nv-btn secondary" href="#broke">See what broke</a>
+      <a class="nv-link" href="mailto:etidavid26@gmail.com">Contact</a>
+    </div>
+  </div></section>
+
+  <section class="sec" aria-labelledby="h-glance"><div class="wrap">
+    <h2 id="h-glance" class="sr-only">The lab at a glance</h2>
+    <HomeLab />
+  </div></section>
+
+  <section class="sec" id="broke" aria-labelledby="h-broke"><div class="wrap">
+    <h2 id="h-broke">What broke, and how I fixed it</h2>
+    <p class="sub">Three of the strongest cases. Each one has the commands and results behind it.</p>
+    <div class="cards3">
+      {cases.map((c: any) => (
+        <article class="icard">
+          <span class={"type " + c.type}>{typeLabel[c.type]}</span>
+          <h3>{c.shortTitle}</h3>
+          <dl>
+            <dt>What I saw</dt><dd>{c.saw}</dd>
+            <dt>What was wrong</dt><dd>{c.cause}</dd>
+            <dt>How I fixed it</dt><dd>{c.fix}</dd>
+            <dt>How I proved it</dt><dd>{c.proof}</dd>
+          </dl>
+          <a class="more" href={base + "incidents/" + c.slug + "/"}>Read the case <span aria-hidden="true">→</span></a>
+        </article>
+      ))}
+    </div>
+    <p style="margin-top:20px"><a class="nv-link" href={base + "incidents/"}>All {counts[3].n} incidents <span aria-hidden="true">→</span></a></p>
+  </div></section>
+
+  <section class="sec" aria-labelledby="h-map"><div class="wrap nl-wrap">
+    <h2 id="h-map">How the lab fits together</h2>
+    <p class="sub">Each colored line is one thing the lab does. Numbered pins mark where something broke.</p>
+    <div class="map-card">
+      <MapSvg id="nl-home" showMarkers="home" journey label="Line map of the Nova Corp lab: a workstation, a firewall, two domain controllers, a file server and the Proxmox host that runs them, with three incident pins." />
+      <div class="legend2" aria-label="Lines">
+        {lines.map((l: any) => <span><i class={l.id === "recovery" ? "dotted" : ""} style={`border-color:var(${l.token})`}></i>{l.name}</span>)}
+        <span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="var(--broken)"/></svg>Incident pin</span>
+      </div>
+      <p class="journey-text" id="journey-text" aria-live="polite"></p>
+      <div class="journey-controls"><button class="nv-btn secondary small" id="replay" type="button">Replay: {journey.title}</button></div>
+      <ol class="journey-ol tiny">{journey.steps.map((s: any) => <li>{s.text}</li>)}</ol>
+    </div>
+    <MobileLines />
+    <ol class="tiny" style="margin:14px 0 0;padding-left:18px">{homeMarkers.map((m: any) => <li><a href={base + "incidents/" + m.slug + "/"}>{m.title}</a></li>)}</ol>
+    <p class="caption">Diagram of how services depend on each other, not physical cabling.</p>
+    <p style="margin-top:16px"><a class="nv-link" href={base + "map/"}>Open the full map <span aria-hidden="true">→</span></a></p>
+  </div></section>
+
+  <section class="sec" aria-labelledby="h-proof"><div class="wrap">
+    <h2 id="h-proof">Proof you can open</h2>
+    <p class="sub">Original screenshots from the journals, each linked to the case it belongs to.</p>
+    <EvidenceStrip items={[
+      { id: "dns-timeout", href: "/incidents/dns-client-outage/" },
+      { id: "backup-sha256-match", href: "/incidents/backup-target-unavailable/" },
+      { id: "replication-rejected-8457", href: "/incidents/replication-divergence/" },
+      { id: "permission-denial-observed", href: "/incidents/file-permission-denial/" },
+      { id: "gpo-disabled-link", href: "/incidents/gpo-link-disabled/" },
+      { id: "two-faults-share-opens", href: "/incidents/two-faults-one-symptom/" }
+    ]} />
+  </div></section>
+
+  <section class="sec" aria-labelledby="h-lab"><div class="wrap">
+    <h2 id="h-lab">What's in the lab</h2>
+    <div class="counts" style="margin-top:16px">{counts.map(c => <div><b>{c.n}</b><span>{c.t}</span></div>)}</div>
+  </div></section>
+
+  <script is:inline define:vars={{ steps: journey.steps }}>
+  (function () {
+    var svg = document.getElementById("nl-home"), dot = document.getElementById("dot"), tick = document.getElementById("tick");
+    var text = document.getElementById("journey-text"), replay = document.getElementById("replay");
+    var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches, running = false;
+    document.querySelector(".journey-ol").style.display = "";
+    function seg(id) { return svg.querySelector('[data-seg="' + id + '"]'); }
+    function setDot(p, pt) { p.setAttribute("cx", pt.x); p.setAttribute("cy", pt.y); }
+    function endState() { var f = seg("files:client-files01"); setDot(dot, f.getPointAtLength(f.getTotalLength())); tick.setAttribute("opacity", "1"); text.textContent = steps[2].text; }
+    function glide(path, forward, ms) {
+      return new Promise(function (res) {
+        var L = path.getTotalLength(), t0 = performance.now();
+        (function frame(now) {
+          var k = Math.min(1, (now - t0) / ms); var d = forward ? k * L : (1 - k) * L;
+          setDot(dot, path.getPointAtLength(d)); if (k < 1) requestAnimationFrame(frame); else res();
+        })(t0);
+      });
+    }
+    var wait = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
+    async function play() {
+      if (running) return; running = true; tick.setAttribute("opacity", "0");
+      var a = seg("identity:client-dc01"), f = seg("files:client-files01");
+      text.textContent = steps[0].text; setDot(dot, a.getPointAtLength(0)); await wait(500);
+      text.textContent = steps[1].text; await glide(a, true, 1100); await wait(700); await glide(a, false, 700);
+      text.textContent = steps[2].text; await glide(f, true, 1300); tick.setAttribute("opacity", "1"); running = false;
+    }
+    if (reduce) { endState(); } else {
+      var seen = false; var io = new IntersectionObserver(function (e) { if (e[0].isIntersecting && !seen) { seen = true; play(); } }, { threshold: .5 });
+      io.observe(svg); setDot(dot, seg("identity:client-dc01").getPointAtLength(0)); text.textContent = steps[0].text;
+    }
+    replay.addEventListener("click", function () { if (reduce) { endState(); } else { play(); } });
+  })();
+  </script>
+</NovaLayout>

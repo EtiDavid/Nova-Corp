@@ -1,0 +1,23 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+<div class="hero-visual">
+  <div class="diagram-surface">
+    <div class="diagram-top"><strong>Inside the company</strong><span class="badge-mini">Documented architecture</span></div>
+    <div class="diagram-body">
+      <div class="diagram-row">
+        <a class="diagram-node" href={base+"systems/nova-client/"}><b>Employee PC</b><small>CLIENT network</small></a>
+        <span class="diagram-arrow" aria-hidden="true">→</span>
+        <a class="diagram-node emphasis" href={base+"systems/nova-fw01/"}><b>Firewall</b><small>pfSense gateway</small></a>
+        <span class="diagram-arrow" aria-hidden="true">→</span>
+        <a class="diagram-node" href={base+"areas/identity-office/"}><b>Company services</b><small>INFRA network</small></a>
+      </div>
+      <div class="diagram-split" style="margin-left:40%">
+        <a class="diagram-node" href={base+"systems/nova-dc01/"}><b>DC01 / DC02</b><small>Sign-in + DNS</small></a>
+        <a class="diagram-node" href={base+"systems/nova-files01/"}><b>FILES01</b><small>Shared documents</small></a>
+      </div>
+      <div class="diagram-note">The diagram shows documented logical relationships, not live network traffic.</div>
+    </div>
+    <div class="diagram-foot"><span>Platform: <a href={base+"systems/nova-prox01/"}>Proxmox virtual data center</a></span><span>Last documented: Nov 2026</span></div>
+  </div>
+</div>

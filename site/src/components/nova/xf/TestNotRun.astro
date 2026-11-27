@@ -1,0 +1,20 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [{ id: "pending", label: "What was and was not proven", steps: [
+  { say: "The VPN was configured and tested from inside the lab.", why: "Those tests passed.", do: [{t:"show",ids:["in","l-in"]},{t:"state",id:"in",value:"good"}] },
+  { say: "The plan also called for a test from a laptop on an outside network.", do: [{t:"show",ids:["out","l-out"]}] },
+  { say: "That laptop was not available during CR-014, so the test did not run.", why: "Nothing was changed and no fault was injected.", do: [{t:"state",id:"out",value:"off"},{t:"show",ids:["q"]}] },
+  { say: "So there is no result, and the test is not claimed as passed.", why: "It will run under CR-016, which has not started.", do: [{t:"show",ids:["todo"]}] },
+]}];
+---
+<Explainer id="xf-notrun" title="A test that was planned but not run" intro="What this site does and does not claim about the VPN."
+  scenarios={scenarios} alt="Animated diagram: the VPN passed tests from inside the lab, but the planned outside-network test did not run, so it is not claimed."
+  note="Stating what was not proven is part of the record." evidence={[{label:"Change CR-014", href:"/changes/CR-014/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="in" data-hide><use href="#ic-laptop" x="90" y="150" width="110" height="80"/></g><text data-id="l-in" data-hide class="small" x="145" y="256">Test from inside the lab</text>
+  <g data-id="out" data-hide><use href="#ic-laptop" x="520" y="150" width="110" height="80"/></g><text data-id="l-out" data-hide class="small" x="575" y="256">Test from outside (planned)</text>
+  <g data-id="q" data-hide><text class="lbl" x="575" y="130" style="font-size:40px">?</text></g>
+  <g data-id="todo" data-hide><rect class="bubble" x="400" y="300" width="340" height="44" rx="12"/><text class="bubble-t" x="570" y="328">Planned for CR-016 (not started)</text></g>
+</Explainer>

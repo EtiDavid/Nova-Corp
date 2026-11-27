@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { zones, rulesForZone, rules, networkEvidence } from "../../../data/network";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Firewall rule order" description="Explore 17 exact saved pfSense firewall rules grouped by incoming interface and their actual configured order." breadcrumbs={[{label:"Network",href:"network/"},{label:"Firewall rules"}]}>
+<section class="page-head"><div class="container"><div class="eyebrow">Network policy / Saved configuration</div><h1>Rules work in order.</h1>
+<p class="lead" style="margin-top:17px">pfSense checks the rules on an incoming interface in order, and the first match wins. Open any rule to see what it permits or blocks, what it matches, and what I tested.</p></div></section>
+<section class="section compact"><div class="container grid-main"><div>
+ {zones.map(zone=>{const zoneRules=rulesForZone(zone.slug);return <section class="content-section">
+   <div class="section-heading"><div><h2>{zone.name}</h2><p class="muted" style="margin-top:8px">{zone.purpose}</p></div><a class="text-link" href={base+"network/zones/"+zone.slug+"/"}>Open network →</a></div>
+   <ol class="rule-stack">{zoneRules.map(rule=><li class="rule-step"><a href={base+"network/rules/"+rule.id+"/"} class="rule-entry"><span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span><span><strong>{rule.description}</strong><small>{rule.protocol} · {rule.destination}</small></span><span aria-hidden="true">→</span></a></li>)}</ol>
+ </section>})}
+ </div><aside>
+  <div class="sidebox"><h3>What was recorded?</h3><dl class="fact-list"><div><dt>Explicit filter rules</dt><dd>{rules.length}</dd></div><div><dt>Allow entries</dt><dd>{rules.filter(r=>r.action==="PASS").length}</dd></div><div><dt>Block entries</dt><dd>{rules.filter(r=>r.action==="BLOCK").length}</dd></div></dl></div>
+  <div class="sidebox"><h3>Reusable rule objects</h3><p class="muted">Aliases group destination hosts, network addresses or service ports. They do not permit traffic on their own.</p><a class="evidence-link" href={base+"network/aliases/"}>Explore all five aliases →</a></div>
+  <div class="sidebox"><h3>Read the source</h3><a href={networkEvidence.rules}>Full technical rule list ↗</a><p class="muted" style="margin-top:11px">Some broad permit rules remain in the lab; VLAN creation alone does not prove least privilege.</p></div>
+ </aside></div></section>
+</BaseLayout>

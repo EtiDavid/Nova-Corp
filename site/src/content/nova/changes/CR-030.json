@@ -1,0 +1,7 @@
+{
+  "id": "CR-030",
+  "title": "Enterprise backup and disaster recovery",
+  "goal": "Company data has a copy off the physical host, a copy that cannot be changed, and measured restore times, and a simulated ransomware event on a test share is fully recovered.",
+  "status": "planned",
+  "time": "2–3 weeks"
+}

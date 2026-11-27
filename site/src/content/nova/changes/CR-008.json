@@ -1,0 +1,12 @@
+{
+  "id": "CR-008",
+  "title": "File server deployment",
+  "goal": "Central file storage on NOVA-FILES01.",
+  "status": "done",
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/NovaCorp_CR-008_File_Server_Deployment_Journal.pdf",
+  "built": [
+    "NOVA-FILES01, a Windows Server file server on VLAN 20, joined to nova.corp",
+    "A separate data disk for the shares"
+  ],
+  "validated": "SMB reachability and sign-in were proven from several places, after I found the subnet mismatch on the domain controllers."
+}

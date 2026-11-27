@@ -1,0 +1,44 @@
+---
+import DfsReferral from "../../components/nova/xf/DfsReferral.astro";
+import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { shares, fileEvidence } from "../../data/fileCentre";
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Company file addresses" description="Explore how one DFS namespace directs people to five departmental SMB shares while preserving folder permissions." breadcrumbs={[{label:"Map",href:"map/"},{label:"Files",href:"files/"},{label:"File addresses"}]}>
+<section class="page-head"><div class="container">
+  <div class="eyebrow">Files / Network paths</div>
+  <h1>Company file addresses (DFS)</h1>
+  <p class="lead" style="margin-top:18px">One path, \\nova.corp\shares, leads to all five department folders, so nobody has to remember a server name. DFS only points to the folder; it does not give anyone access to it.</p>
+</div></section>
+<section class="section compact"><div class="container grid-main">
+<div>
+  <section class="content-section">
+    <h2>Why use a company file address?</h2><h3 class="file-problem">Problem</h3><p>Imagine <a href={base+"people/moyo/"}>Moyo</a> has saved a shortcut to a folder on a particular server. If IT moves the folder to another server, the shortcut could stop working.</p><h3 class="file-solution">Solution</h3><p>IT creates a stable company address instead. The employee can use the same shortcut while IT updates the destination behind it. DFS finds the folder; permissions remain on the destination.</p><div class="paper panel">
+      <p class="kicker">The company entry point</p>
+      <h2 style="margin:12px 0 15px"><code class="technical">\\nova.corp\shares</code></h2>
+      <p class="muted">The namespace root is stored on NOVA-FILES01 at <code class="technical">C:\DFSRoots\shares</code>. Its SMB share called <code>shares</code> has a recorded <strong>Everyone: Read</strong> entry for the namespace, which must not be confused with unrestricted access to Finance or HR data on D:.</p>
+    </div>
+  </section>
+  <section class="content-section">
+    <h2>Where does each department address lead?</h2>
+    <div class="card-list">{shares.map(share=><a class="system-card" href={base+"files/shares/"+share.id+"/"}><small>Observed DFS referral: online</small><h3>{share.name}</h3><p><code class="technical">{share.dfs}</code><br/><span class="muted">→</span> <code class="technical">{share.smb}</code></p><span class="readmore">Inspect the destination →</span></a>)}</div>
+  </section>
+  <section class="content-section">
+    <h2>How does Windows find the shared folder?</h2>
+    <DfsReferral dfs={shares[0].dfs} smb={shares[0].smb} /><ol class="walkthrough">
+      <li class="walk-step"><h3>The employee opens the friendly path</h3><p>The workstation asks the DFS namespace where the requested department folder lives.</p></li>
+      <li class="walk-step"><h3>DFS returns the configured target</h3><p>Each of the five DFS links has one target, on NOVA-FILES01. There is no second file server.</p></li>
+      <li class="walk-step"><h3>The target checks SMB and NTFS rights</h3><p>The employee's domain group and current security token are evaluated against the real share and folder permissions. Namespace Read is not a bypass.</p></li>
+    </ol>
+  </section>
+  <Files01DocumentImages ids={["dfs-namespace-gui","dfs-client-mapped-drive","dfs-targets-online-audit"]}/><details><summary>Show more images · Drive mapping and unavailable target</summary><Files01DocumentImages ids={["dfs-netlogon-mapping-hash","dfs-target-offline-probe"]}/></details><section class="content-section"><details><summary>Technical checks · read-only verification</summary><p>Run these read-only checks to see the same facts yourself.</p><h3>Inspect the IT referral</h3><p><strong>Run on:</strong> NOVA-FILES01 (DFS management tools)</p><pre><code>Get-DfsnFolderTarget -Path '\\nova.corp\shares\IT'</code></pre><p><strong>Expected:</strong> One configured target on NOVA-FILES01, recorded Online.</p><h3>Verify the mapped IT drive</h3><p><strong>Run on:</strong> NOVA-CLIENT in Moyo’s authorized session</p><pre><code>Test-Path Z:\</code></pre><p><strong>Expected:</strong> True when the IT drive is mapped and its target is available.</p></details><h2>Related tests and incidents</h2><div class="card-list"><a class="system-card" href={base+"incidents/dns-client-outage/"}><h3>Controlled · DNS failure</h3><p>The workstation could reach the server by IP, but could not find its name.</p><span class="readmore">Read investigation →</span></a><a class="system-card" href={base+"journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED/"}><h3>Controlled test · DFS target unavailable</h3><p>The IT target was deliberately made unavailable; the recorded test and restoration are in the DFS journal.</p><span class="readmore">Read original test →</span></a></div><h2>Engineering journals</h2><p><a href={base+"pdf-journals/NovaCorp_CR-010_DFS_and_Shadow_Copies_CORRECTED.pdf"}>CR-010 original PDF, including the offline-target exercise →</a></p></section>
+</div>
+<aside>
+  <div class="sidebox"><h3>Inspect the real file server</h3><a href={base+"systems/nova-files01/"}>NOVA-FILES01 →</a><p class="muted" style="margin-top:12px">With one target per department this is not high availability. In CR-010 I took targets offline to show it: the mapped drive stayed, but the folder could not be opened.</p></div>
+  <div class="sidebox"><h3>Go deeper</h3><a href={base+"files/permissions/"}>SMB and NTFS permission checks →</a><p style="margin-top:14px"><a href={fileEvidence.dfs}>Original DFS configuration ↗</a></p></div>
+</aside>
+</div></section>
+</BaseLayout>
+
+<style>.dfs-story{margin:24px 0 32px;padding:18px;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}.dfs-flow{display:flex;gap:8px;align-items:center}.dfs-flow>a{flex:1;min-width:0;display:grid;gap:6px;text-align:center;padding:12px 8px;background:var(--surface);border:1px solid var(--rule);border-radius:8px;text-decoration:none;color:var(--ink)}.dfs-flow>a span{font-size:2rem}.dfs-flow small,.dfs-flow code,.dfs-story figcaption{font-size:.75rem;overflow-wrap:anywhere;color:var(--ink)}.dfs-flow code{white-space:normal}.dfs-arrow{text-align:center;flex:0 1 72px;color:var(--c-amber)}.dfs-arrow small{display:block}.dfs-story figcaption{text-align:center;margin-top:16px}@media(max-width:650px){.dfs-flow{flex-direction:column}.dfs-flow>a{width:100%;box-sizing:border-box}.dfs-arrow{flex:auto}}.content-section h2,.prose h2{font-size:clamp(1.65rem,2.6vw,2.35rem);line-height:1.2;margin:40px 0 16px}.content-section p,.prose p{line-height:1.7;margin:0 0 15px}.content-section{margin-bottom:44px}.walkthrough{list-style:none;padding-left:0}.walkthrough>li::marker{content:""}.prose h3{margin:25px 0 10px}.grid-main>*{min-width:0}.prose code{overflow-wrap:anywhere}.prose pre code{overflow-wrap:normal}.file-problem{color:var(--c-red);margin:24px 0 8px;font-size:1.05rem}.file-solution{color:var(--c-green);margin:24px 0 8px;font-size:1.05rem}.prose,.content-section{min-width:0}.prose pre{max-width:100%;overflow-x:auto;box-sizing:border-box}.content-section details{margin:16px 0}.content-section summary{cursor:pointer;font-weight:650}</style>

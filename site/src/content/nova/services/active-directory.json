@@ -1,0 +1,20 @@
+{
+  "id": "active-directory",
+  "name": "Active Directory",
+  "line": "identity",
+  "runsOn": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "dependsOn": [
+    "dns"
+  ],
+  "summary": "The directory of users, computers and groups for the nova.corp domain.",
+  "inNova": "Two writable domain controllers, DC01 and DC02, hold the directory. Departments are organizational units, and access follows AGDLP groups such as IT_Users, which is nested into DL_FS_IT_Modify.",
+  "builtBy": [
+    "CR-003",
+    "CR-004",
+    "CR-005"
+  ],
+  "copyStatus": "migrated"
+}

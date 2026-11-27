@@ -1,0 +1,15 @@
+{
+  "id": "netlogon",
+  "term": "NETLOGON",
+  "aliases": [
+    "NETLOGON"
+  ],
+  "short": "A shared folder published by Domain Controllers for domain sign-in scripts and related files.",
+  "inNova": "Nova Corp configures a department drive-mapping script in the domain NETLOGON share.",
+  "seeAlso": [
+    "nova-dc01",
+    "nova-dc02",
+    "nova-client"
+  ],
+  "copyStatus": "migrated"
+}

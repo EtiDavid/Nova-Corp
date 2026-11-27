@@ -1,0 +1,31 @@
+---
+const base = import.meta.env.BASE_URL;
+const path = Astro.url.pathname.replace(base, "/");
+const nav = [
+  { label: "Explore", href: "map/" },
+  { label: "Investigations", href: "incidents/" },
+  { label: "Guided tour", href: "tour/" },
+  { label: "Roadmap", href: "roadmap/" },
+  { label: "About David", href: "about/" }
+];
+const current = (href: string) => path.startsWith("/" + href) ? "page" : undefined;
+---
+<header class="v4-header">
+  <div class="container inner">
+    <a class="brand" href={base} aria-label="Nova Corp home">
+      <span class="brand-mark" aria-hidden="true">N/</span>
+      <span>Nova Corp<small>An enterprise infrastructure lab you can explore</small></span>
+    </a>
+    <nav class="v4-nav" aria-label="Primary">
+      {nav.map(i => <a href={base + i.href} aria-current={current(i.href)}>{i.label}</a>)}
+    </nav>
+    <a class="v4-search" href={base + "search/"} aria-label="Search Nova Corp"><span aria-hidden="true">⌕</span></a>
+    <details class="v4-menu">
+      <summary><span aria-hidden="true">☰</span> Menu</summary>
+      <nav aria-label="Mobile">
+        {nav.map(i => <a href={base + i.href} aria-current={current(i.href)}>{i.label}</a>)}
+        <a href={base + "search/"}>Search</a>
+      </nav>
+    </details>
+  </div>
+</header>

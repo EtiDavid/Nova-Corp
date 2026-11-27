@@ -1,0 +1,7 @@
+{
+  "id": "CR-024",
+  "title": "Microsoft 365 and Entra ID hybrid identity",
+  "goal": "Staff sign in to Microsoft 365 with their existing AD account and MFA, admin accounts are not synced, and Mike’s promotion is processed in AD and in the cloud with only the approved new access.",
+  "status": "planned",
+  "time": "3 weeks"
+}

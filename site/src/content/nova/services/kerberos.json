@@ -1,0 +1,18 @@
+{
+  "id": "kerberos",
+  "name": "Kerberos",
+  "line": "identity",
+  "runsOn": [
+    "nova-dc01",
+    "nova-dc02"
+  ],
+  "dependsOn": [
+    "dns"
+  ],
+  "summary": "Issues the tickets that prove who is signing in.",
+  "inNova": "When Moyo signs in, DC01 or DC02 issues the Kerberos ticket. In the DC01 outage test the workstation found DC02 and kept working.",
+  "builtBy": [
+    "CR-003"
+  ],
+  "copyStatus": "migrated"
+}

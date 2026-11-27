@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {getCollection,type CollectionEntry} from "astro:content";
+const originals:CollectionEntry<"pdfJournals">[]=await getCollection("pdfJournals");
+const journals=originals.sort((a,b)=>a.data.title.localeCompare(b.data.title));
+const totalPages=journals.reduce((n,j)=>n+j.data.pageCount,0);
+const figures=journals.reduce((n,j)=>n+j.data.originalImageBlocks,0);
+const base=import.meta.env.BASE_URL;
+---
+<BaseLayout title="Complete original PDF engineering journals" description={"All "+journals.length+" public Nova Corp original PDF journals, "+totalPages+" source pages and "+figures+" embedded screenshot/figure blocks, readable onsite with source-native text."} breadcrumbs={[{label:"Engineering library",href:"reference/"},{label:"Original PDF journals"}]}>
+<section class="page-head ref-hero"><div class="container">
+ <div class="eyebrow">Original execution evidence · complete documents</div>
+ <h1>The complete published PDF journal library.</h1>
+ <p class="lead">No condensed summaries passed off as engineering reports. These {journals.length} source PDF documents contain {totalPages} original pages and {figures} embedded image blocks. Read the actual PDFs here, including every diagram and screenshot, or expand their complete native-text transcriptions. Original files and their SHA-256 fingerprints remain available for comparison.</p>
+ <div class="ref-intro-tag"><strong>{journals.length} original PDFs</strong> · <strong>{totalPages} complete pages</strong> · <strong>{figures} original image blocks</strong></div>
+</div></section>
+<section class="section compact"><div class="container"><label for="journal-search"><strong>Find an original journal</strong></label><div class="searchbox"><input id="journal-search" type="search" placeholder="Search CR-013, Active Directory, backup…" /></div><p data-journal-count role="status" aria-live="polite">{journals.length} journals</p><div class="pdf-journal-cards">
+{journals.map(j=><article class="pdf-journal-card" data-journal-text={(j.data.title+" "+j.data.originalName).toLowerCase()}>
+  <span class="eyebrow">Original public engineering PDF</span><h2>{j.data.title}</h2>
+  <p><strong>{j.data.pageCount} pages</strong> · {j.data.originalImageBlocks} embedded image blocks · {j.data.nativeTextCharacters.toLocaleString("en-US")} selectable source characters</p>
+  <div class="pdf-journal-card-actions"><a href={base+"journals/"+j.id+"/"}>Read complete document on this website ↗</a>
+  <a href={j.data.sourceUrl} target="_blank" rel="noopener noreferrer">Original GitHub PDF ↗</a></div>
+</article>)}</div>
+<div class="note" style="margin-top:30px"><strong>Source limitations:</strong> All images, screenshots and tables remain visually preserved in the original PDF viewer. Native text transcription may flatten complex layouts. Separately extracted screenshot evidence is displayed on specific incident/system pages only after source/picture review and provenance checks.</div>
+</div></section>
+<script>
+const field=document.querySelector<HTMLInputElement>("#journal-search");
+const cards=Array.from(document.querySelectorAll<HTMLElement>("[data-journal-text]"));
+const count=document.querySelector<HTMLElement>("[data-journal-count]");
+field?.addEventListener("input",()=>{const q=field.value.trim().toLowerCase();let shown=0;for(const card of cards){card.hidden=!(card.dataset.journalText||"").includes(q);if(!card.hidden)shown++;}if(count)count.textContent=shown+" journals";});
+</script>
+</BaseLayout>

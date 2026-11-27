@@ -1,0 +1,7 @@
+{
+  "id": "CR-023",
+  "title": "Ansible configuration as code and AD logins on Linux",
+  "goal": "Linux servers are built and configured from Ansible playbooks, engineers sign in with their AD accounts, one Windows role is managed by Ansible too, and a server can be rebuilt from code.",
+  "status": "planned",
+  "time": "3 weeks"
+}

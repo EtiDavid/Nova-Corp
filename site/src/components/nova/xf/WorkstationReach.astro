@@ -1,0 +1,30 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const go = (n: string, id: string, ok: boolean): any[] => [{t:"glide",path:"p"+n,dot:"d1",ms:900,keep:false},{t:"show",ids:[ok?"ok"+n:"x"+n,"t"+n,"l"+n]}];
+const scenarios: any[] = [{ id: "reach", label: "What a workstation can reach", steps: [
+  { say: "A normal workstation sits on the CLIENT network.", why: "Let's see where it is allowed to go.", do: [{t:"show",ids:["pc","l-pc"]}] },
+  { say: "It can ask DNS and sign in to the domain.", why: "Without this, nobody could log in.", do: go("1","dc",true) },
+  { say: "It can open file shares.", why: "Only the folders its user is permitted to see (see the FILES01 page).", do: go("2","fs",true) },
+  { say: "It can use the internet.", do: go("3","net",true) },
+  { say: "It cannot open the firewall's admin page.", why: "Blocked by the CLIENT rules from CR-015.", do: go("4","fw",false) },
+  { say: "It cannot reach the management network either.", do: go("5","mg",false) },
+]}];
+const rows = [["1","Sign-in and DNS","#ic-server",true],["2","File shares","#ic-folder",true],["3","Internet","#ic-globe",true],["4","Firewall admin","#ic-shield",false],["5","Management network","#ic-lock",false]];
+---
+<Explainer id="xf-pc" title="What a workstation can and cannot reach"
+  intro="Green is allowed, red is blocked by design."
+  scenarios={scenarios} alt="Animated diagram: a workstation reaches domain sign-in, file shares and the internet, but is blocked from the firewall admin page and the management network."
+  note="Based on the CLIENT firewall rules and the sign-in and file-share checks recorded in the lab."
+  evidence={[{label:"Change CR-015", href:"/changes/CR-015/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="50" y="180" width="110" height="80"/></g><text data-id="l-pc" data-hide class="small" x="105" y="284">Workstation (CLIENT)</text>
+  {rows.map((r, i) => { const y = 60 + i * 70; return <g>
+    <path class="guide" data-id={"p" + r[0]} d={`M165 220 C300 220 380 ${y + 25} 520 ${y + 25}`}/>
+    <g data-id={"t" + r[0]} data-hide><use href={r[2] as string} x="540" y={y} width="44" height="50"/></g>
+    <text data-id={"l" + r[0]} data-hide class="small" x="600" y={y + 30} style="text-anchor:start">{r[1]}</text>
+    <g data-id={(r[3] ? "ok" : "x") + r[0]} data-hide><use href={r[3] ? "#ic-check" : "#ic-x"} x="480" y={y + 5} width="36" height="36"/></g>
+  </g>; })}
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/>
+</Explainer>
