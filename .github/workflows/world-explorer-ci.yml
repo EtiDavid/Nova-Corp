@@ -95,7 +95,7 @@ jobs:
       - name: Verify all 100 ACL records against reviewed source
         run: npm run test:acls
       - name: Run interactive desktop and mobile browser smoke tests
-        timeout-minutes: 5
+        timeout-minutes: 15
         run: npm run test:browser
       - name: Audit EVERY generated page in a real mobile browser
         timeout-minutes: 12

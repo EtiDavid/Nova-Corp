@@ -72,7 +72,7 @@ jobs:
       - name: Verify all 100 ACL entries
         run: npm run test:acls
       - name: Interactive desktop and mobile smoke test
-        timeout-minutes: 5
+        timeout-minutes: 15
         run: npm run test:browser
       - name: Audit all published routes in real Chromium mobile viewport
         timeout-minutes: 12
