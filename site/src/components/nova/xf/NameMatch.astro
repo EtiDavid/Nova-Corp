@@ -1,0 +1,29 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [
+  { id: "bug", label: "The checker was wrong", steps: [
+    { say: "A script predicts whether Moyo can open the IT share.", do: [{t:"show",ids:["a","b","chk"]}] },
+    { say: "The share lists the group as DL_FS_IT_Modify. Moyo's token says NOVA\\DL_FS_IT_Modify.", why: "Same group, written two ways: with and without the domain name.", do: [{t:"show",ids:["a","b"]}] },
+    { say: "The script treats them as different groups.", do: [{t:"show",ids:["ne"]}] },
+    { say: "It wrongly predicts: denied.", why: "In reality she had access. The prediction was the bug.", do: [{t:"show",ids:["no"]},{t:"state",id:"chk",value:"bad"}] },
+  ]},
+  { id: "fix", label: "After the fix", steps: [
+    { say: "The script now treats qualified and plain names as the same group.", do: [{t:"show",ids:["a","b","eq","chk"]}] },
+    { say: "It matches a real session: IT allowed, Finance denied.", why: "It only predicts. Only a real sign-in proves it, so both were run.", do: [{t:"show",ids:["ok"]},{t:"state",id:"chk",value:"good"}] },
+  ]},
+];
+---
+<Explainer id="xf-namematch" title="Why my access checker denied someone who had access" intro="One group, two spellings."
+  scenarios={scenarios} alt="Animated diagram: a script compares DL_FS_IT_Modify with NOVA\DL_FS_IT_Modify, treats them as different, and wrongly predicts access denied; after the fix they match."
+  note="From the recorded CR-011 toolkit testing." evidence={[{label:"Change CR-011", href:"/changes/CR-011/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="a" data-hide><rect class="bubble" x="60" y="130" width="250" height="50" rx="12"/><text class="bubble-t" x="185" y="161">DL_FS_IT_Modify</text><text class="sub" x="185" y="200">on the share</text></g>
+  <g data-id="b" data-hide><rect class="bubble" x="490" y="130" width="250" height="50" rx="12"/><text class="bubble-t" x="615" y="161">NOVA\DL_FS_IT_Modify</text><text class="sub" x="615" y="200">in Moyo's session</text></g>
+  <g data-id="ne" data-hide><text class="lbl" x="400" y="162" style="font-size:30px">≠</text><text class="sub" x="400" y="190">script says: different</text></g>
+  <g data-id="eq" data-hide><text class="lbl" x="400" y="162" style="font-size:30px">=</text><text class="sub" x="400" y="190">same group</text></g>
+  <g data-id="chk" data-hide><rect class="bubble" x="270" y="260" width="260" height="60" rx="12"/><text class="bubble-t" x="400" y="296">Access checker script</text></g>
+  <g data-id="no" data-hide><use href="#ic-x" x="380" y="340" width="36" height="36"/><text class="sub" x="426" y="364" style="text-anchor:start">predicts: denied (wrong)</text></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="380" y="340" width="36" height="36"/><text class="sub" x="426" y="364" style="text-anchor:start">IT allowed · Finance denied</text></g>
+</Explainer>

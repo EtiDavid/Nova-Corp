@@ -1,4 +1,5 @@
 ---
+import AccountGroups from "../../../components/nova/xf/AccountGroups.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { organizationalUnits, identities, type Ou, directorySource } from "../../../data/directory";
 import { companyPolicies } from "../../../data/policies";
@@ -23,6 +24,7 @@ const computerEntries=computersForOu(ou.slug);
 <div class="eyebrow">Active Directory / Organizational Unit</div>
 <h1>{ou.name}</h1><p class="lead" style="margin-top:17px">{ou.meaning}</p>
 </div></section>
+<section class="section compact"><div class="container"><AccountGroups /></div></section>
 <section class="section compact"><div class="container grid-main"><div>
   {parent && <div class="note" style="margin-bottom:24px">This OU is inside <a href={base+"directory/ous/"+parent.slug+"/"}>{parent.name}</a>. Parent location is part of the directory hierarchy, not automatic membership in a resource group.</div>}
   <section class="content-section"><h2>Why does Nova Corp use this OU?</h2><p>{ou.meaning} Organizational Units keep the directory organized and can be used as policy targets. They do not grant departmental file permissions by themselves.</p><p><a href={base+"directory/"}>nova.corp</a> → {parent&&<><a href={base+"directory/ous/"+parent.slug+"/"}>{parent.name}</a> → </>}<strong>{ou.name}</strong></p></section>

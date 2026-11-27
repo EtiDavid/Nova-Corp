@@ -1,10 +1,12 @@
 ---
+import FileRecovery from "../../components/nova/xf/FileRecovery.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
 const base=import.meta.env.BASE_URL;
 ---
 <BaseLayout title="Shadow Copy inventory" description="How Nova Corp retains earlier versions, tests recovery and records 30 shadow-copy objects." breadcrumbs={[{label:"NOVA-FILES01",href:"systems/nova-files01/"},{label:"Shadow Copies"}]}>
 <section class="page-head"><div class="container"><div class="eyebrow">File server / Previous Versions</div><h1>Shadow Copies</h1><p class="lead">An earlier saved version of a file can help an employee recover from a mistaken edit or deletion without restoring the whole server.</p></div></section>
+<section class="section compact"><div class="container"><FileRecovery start="prev" /></div></section>
 <section class="section compact"><div class="container grid-main"><article class="prose">
 <h2>What are Shadow Copies?</h2><p>Windows Volume Shadow Copy Service records point-in-time versions. The public inventory contains 30 VSS objects across two volume identifiers. Nine records are marked client-accessible; not all recorded objects are available to employees. Not every VSS object is an employee-accessible Previous Version.</p>
 <h2>Why keep earlier versions?</h2><h3 class="file-problem">Problem</h3><p><a href={base+"people/moyo/"}>Moyo</a> accidentally changes or deletes a file on the IT drive. Recreating the file wastes time and a full-server restore is unnecessary.</p><h3 class="file-solution">Solution</h3><p>I configured Shadow Copies so an employee can open Previous Versions, choose a recovery point from before the mistake, inspect the document and copy back only the version needed. Nova Corp's D: Shadow Copies are scheduled at 07:00 and 12:00.</p>

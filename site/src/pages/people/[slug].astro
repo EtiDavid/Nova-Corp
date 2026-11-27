@@ -1,4 +1,5 @@
 ---
+import AccountGroups from "../../components/nova/xf/AccountGroups.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { identities, organizationalUnits, type DirectoryIdentity } from "../../data/directory";
 import { findGroupByName, groupResources } from "../../data/groups";
@@ -27,6 +28,7 @@ const label=person.category==="service"?"Service identity":person.category==="bu
 <h1>{person.name}</h1><p class="lead" style="margin-top:17px">{descriptions[person.slug]}</p>
 
 </div></section>
+<section class="section compact"><div class="container">{person.slug==="moyo"&&<AccountGroups />}</div></section>
 <section class="section compact"><div class="container grid-main account-page"><div>
   <section class="content-section">
    <h2>Active Directory profile</h2>

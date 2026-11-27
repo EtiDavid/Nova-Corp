@@ -1,0 +1,22 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [{ id: "acct", label: "One account, managed centrally", steps: [
+  { say: "Moyo has one company account.", why: "Not a separate account on every computer.", do: [{t:"show",ids:["moyo","l-moyo"]}] },
+  { say: "Her account sits in the IT organizational unit.", term:["OU","an organizational unit: a folder in Active Directory that groups accounts so rules can be applied to them together."], do: [{t:"show",ids:["ou","l-ou"]},{t:"glide",path:"p1",dot:"d1",ms:900,keep:true}] },
+  { say: "She is a member of the IT_Users group.", term:["Group","a list of accounts that share the same permissions."], why: "Permissions are given to the group, so adding or removing a person changes their access in one place.", do: [{t:"show",ids:["grp","l-grp"]},{t:"glide",path:"p2",dot:"d1",ms:900,keep:true}] },
+  { say: "Everything is held in Active Directory, on the domain controllers.", why: "One account, centrally managed, instead of unrelated local accounts.", do: [{t:"show",ids:["ad","l-ad"]},{t:"glide",path:"p3",dot:"d1",ms:900,keep:true}] },
+]}];
+---
+<Explainer id="xf-account" title="Where Moyo's account lives" intro="From a person to a central directory."
+  scenarios={scenarios} alt="Animated diagram: Moyo's account belongs to the IT organizational unit and the IT_Users group, all stored in Active Directory."
+  note="Based on the recorded directory snapshot." evidence={[{label:"Active Directory", href:"/services/active-directory/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="moyo" data-hide><use href="#ic-person" x="50" y="170" width="56" height="62"/></g><text data-id="l-moyo" data-hide class="small" x="78" y="256">Moyo</text>
+  <g data-id="ou" data-hide><rect class="bubble" x="190" y="160" width="130" height="80" rx="12"/><text class="bubble-t" x="255" y="206">IT OU</text></g><text data-id="l-ou" data-hide class="sub" x="255" y="262">organizational unit</text>
+  <g data-id="grp" data-hide><rect class="bubble" x="380" y="160" width="130" height="80" rx="12"/><text class="bubble-t" x="445" y="206">IT_Users</text></g><text data-id="l-grp" data-hide class="sub" x="445" y="262">group</text>
+  <g data-id="ad" data-hide><use href="#ic-server" x="610" y="150" width="70" height="86"/></g><text data-id="l-ad" data-hide class="small" x="645" y="258">Active Directory · nova.corp</text>
+  <path class="guide" data-id="p1" d="M110 200 L190 200"/><path class="guide" data-id="p2" d="M320 200 L380 200"/><path class="guide" data-id="p3" d="M510 200 L610 195"/>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-identity)"/>
+</Explainer>

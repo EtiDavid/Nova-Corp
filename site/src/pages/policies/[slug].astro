@@ -1,4 +1,5 @@
 ---
+import PolicyDelivery from "../../components/nova/xf/PolicyDelivery.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
 import {
@@ -27,6 +28,7 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
  <span class="muted" style="font-size:.85rem">Saved configuration</span>
 </div>
 </div></section>
+<section class="section compact"><div class="container"><PolicyDelivery /></div></section>
 <section class="section compact"><div class="container grid-main">
 <div>
 <section class="content-section">

@@ -1,0 +1,38 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "tags", label: "Tagging", steps: [
+    { say: "Five separate networks (VLANs) share one virtual switch: MGMT 10, INFRA 20, APP 30, CLIENT 40 and DMZ 50.", term:["VLAN","a way to split one network into separate private ones, each with a number."], do: [{t:"show",ids:["dc1","dc2","fs","pc","l-dc1","l-dc2","l-fs","l-pc","br","l-br"]}] },
+    { say: "Proxmox tags each machine's traffic: the domain controllers and the file server get 20.", why: "Each machine is simply plugged into its own network. Tagging is automatic.", do: [{t:"show",ids:["t20"]},{t:"glide",path:"pa",dot:"d1",ms:900,keep:false},{t:"glide",path:"pb",dot:"d1",ms:900,keep:false},{t:"glide",path:"pc2",dot:"d1",ms:900,keep:false}] },
+    { say: "The client's traffic gets tag 40.", do: [{t:"show",ids:["t40"]},{t:"glide",path:"pd",dot:"d2",ms:900,keep:false}] },
+    { say: "One trunk link carries all the tagged traffic to the firewall.", term:["Trunk","one cable or link that carries several VLANs at once, each marked with its tag."], do: [{t:"show",ids:["fw","l-fw"]},{t:"glide",path:"pt",dot:"d1",ms:1100,keep:false},{t:"glide",path:"pt",dot:"d2",ms:1100,keep:false}] },
+  ]},
+  { id: "cross", label: "Crossing networks", steps: [
+    { say: "The client (VLAN 40) wants a file on the file server (VLAN 20).", do: [{t:"show",ids:["dc1","dc2","fs","pc","l-dc1","l-dc2","l-fs","l-pc","br","l-br","t20","t40","fw","l-fw"]}] },
+    { say: "Different VLANs cannot talk directly.", why: "That separation is the point of a VLAN.", do: [{t:"glide",path:"pd",dot:"d2",ms:900,keep:true},{t:"show",ids:["x"]}] },
+    { say: "So the traffic goes up the trunk to the firewall.", do: [{t:"hide",ids:["x"]},{t:"glide",path:"pt",dot:"d2",ms:1100,keep:true},{t:"state",id:"fw",value:"pulse"}] },
+    { say: "The firewall checks its rules and routes it back down to VLAN 20.", why: "The records show client traffic routed through pfSense in both directions.", do: [{t:"glide",path:"pt",dot:"d2",ms:1100,rev:true,keep:false},{t:"glide",path:"pa",dot:"d2",ms:900,keep:true},{t:"state",id:"fs",value:"good"}] },
+  ]},
+];
+---
+<Explainer id="xf-vlan" start={start} title="How VLANs separate Nova Corp's networks" intro="One switch, several private networks, one firewall in between."
+  scenarios={scenarios} alt="Animated diagram: machines on VLAN 20 and VLAN 40 are tagged by Proxmox, travel over one trunk to the firewall, and the firewall routes traffic between the VLANs."
+  note="VLAN 60 for the WireGuard VPN exists but is not used yet, so it is left out here." evidence={[{label:"The network map", href:"/network/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="dc1" data-hide><use href="#ic-server" x="60" y="60" width="50" height="62"/></g><text data-id="l-dc1" data-hide class="sub" x="85" y="140">DC01</text>
+  <g data-id="dc2" data-hide><use href="#ic-server" x="130" y="60" width="50" height="62"/></g><text data-id="l-dc2" data-hide class="sub" x="155" y="140">DC02</text>
+  <g data-id="fs" data-hide><use href="#ic-server" x="200" y="60" width="50" height="62"/></g><text data-id="l-fs" data-hide class="sub" x="225" y="140">FILES01</text>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="320" y="70" width="80" height="58"/></g><text data-id="l-pc" data-hide class="sub" x="360" y="148">Client</text>
+  <path class="guide" data-id="pa" d="M225 125 L225 230"/><path class="guide" data-id="pb" d="M155 125 L155 215 L225 230"/><path class="guide" data-id="pc2" d="M85 125 L85 215 L225 230"/><path class="guide" data-id="pd" d="M360 130 L360 230"/>
+  <g data-id="br" data-hide><rect class="bubble" x="40" y="230" width="400" height="52" rx="10"/><text class="bubble-t" x="240" y="262">Proxmox virtual switch (vmbr1)</text></g><text data-id="l-br" data-hide class="sub" x="240" y="302">tags each machine's traffic</text>
+  <g data-id="t20" data-hide><rect class="pill" x="195" y="190" width="60" height="22" rx="6"/><text class="sub" x="225" y="206" style="fill:var(--ink)">VLAN 20</text></g>
+  <g data-id="t40" data-hide><rect class="pill" x="330" y="190" width="60" height="22" rx="6"/><text class="sub" x="360" y="206" style="fill:var(--ink)">VLAN 40</text></g>
+  <path class="guide" data-id="pt" d="M440 256 L580 256"/>
+  <g data-id="fw" data-hide><use href="#ic-shield" x="580" y="220" width="60" height="72"/><circle class="halo" cx="610" cy="256" r="52"/></g><text data-id="l-fw" data-hide class="small" x="610" y="316">NOVA-FW01 (pfSense)</text>
+  <text class="sub" x="510" y="246">trunk</text>
+  <g data-id="x" data-hide><use href="#ic-x" x="372" y="170" width="30" height="30"/><text class="sub" x="410" y="190" style="text-anchor:start">no direct route</text></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-files)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--line-network)"/>
+</Explainer>

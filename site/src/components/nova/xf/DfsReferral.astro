@@ -1,0 +1,24 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { dfs = "\\\\nova.corp\\Company\\IT", smb = "\\\\NOVA-FILES01\\IT" } = Astro.props;
+const scenarios: any[] = [{ id: "dfs", label: "How DFS finds the folder", steps: [
+  { say: "Moyo opens the company's IT address.", why: "It is a friendly name that never changes, even if the folder moves.", do: [{t:"show",ids:["pc","l-pc","a1"]}] },
+  { say: "Her workstation asks the DFS namespace where that really is.", term:["DFS namespace","a directory of friendly folder names. It answers with the real location, called a referral."], do: [{t:"show",ids:["dfs","l-dfs"]},{t:"glide",path:"p1",dot:"d1",ms:1000,keep:false},{t:"glide",path:"p1",dot:"d1",ms:1000,rev:true,keep:true}] },
+  { say: "DFS returns the real location.", do: [{t:"show",ids:["a2"]}] },
+  { say: "The workstation now connects straight to the file server.", why: "Direct SMB over TCP 445. The file server checks the share and folder permissions.", do: [{t:"show",ids:["fs","l-fs"]},{t:"glide",path:"p2",dot:"d2",ms:1200,keep:true},{t:"state",id:"fs",value:"good"}] },
+]}];
+---
+<Explainer id="xf-dfs" title="A friendly address that finds the real folder" intro="DFS referral, then a direct connection."
+  scenarios={scenarios} alt="Animated diagram: a workstation asks the DFS namespace for the real location of a folder, then connects directly to the file server."
+  note="Addresses shown are the recorded ones for the IT folder." evidence={[{label:"DFS", href:"/services/dfs/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="40" y="190" width="100" height="72"/></g><text data-id="l-pc" data-hide class="small" x="90" y="286">Moyo's workstation</text>
+  <g data-id="a1" data-hide><rect class="bubble" x="20" y="110" width="240" height="40" rx="12"/><text class="bubble-t" x="140" y="136">{dfs}</text></g>
+  <g data-id="dfs" data-hide><use href="#ic-folder" x="340" y="60" width="76" height="60"/></g><text data-id="l-dfs" data-hide class="small" x="378" y="144">DFS namespace</text>
+  <g data-id="a2" data-hide><rect class="bubble" x="300" y="170" width="170" height="40" rx="12"/><text class="bubble-t" x="385" y="196">{smb}</text></g>
+  <g data-id="fs" data-hide><use href="#ic-server" x="650" y="180" width="74" height="90"/></g><text data-id="l-fs" data-hide class="small" x="687" y="292">NOVA-FILES01</text>
+  <path class="guide" data-id="p1" d="M140 205 C230 130 290 90 340 90"/><path class="guide" data-id="p2" d="M145 236 L650 228"/>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--line-files)"/>
+</Explainer>

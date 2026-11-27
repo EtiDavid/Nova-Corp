@@ -1,4 +1,17 @@
 ---
+import ProxmoxLayers from "../../../components/nova/xf/ProxmoxLayers.astro";
+import VlanTags from "../../../components/nova/xf/VlanTags.astro";
+import NameLookup from "../../../components/nova/xf/NameLookup.astro";
+import DcSignIn from "../../../components/nova/xf/DcSignIn.astro";
+import AccountGroups from "../../../components/nova/xf/AccountGroups.astro";
+import PolicyDelivery from "../../../components/nova/xf/PolicyDelivery.astro";
+import TwoStageFirewall from "../../../components/nova/xf/TwoStageFirewall.astro";
+import FileService from "../../../components/nova/xf/FileService.astro";
+import FolderAccess from "../../../components/nova/xf/FolderAccess.astro";
+import DfsReferral from "../../../components/nova/xf/DfsReferral.astro";
+import FileRecovery from "../../../components/nova/xf/FileRecovery.astro";
+import FirewallRules from "../../../components/nova/xf/FirewallRules.astro";
+import FilesDoors from "../../../components/nova/xf/FilesDoors.astro";
 import NovaLayout from "../../../layouts/NovaLayout.astro";
 import { loadNova, typeLabel, journalHref } from "../../../lib/nova";
 export async function getStaticPaths() {
@@ -20,6 +33,22 @@ const prev = nova.done[i - 1], nextC = nova.done[i + 1];
     <h1 style="margin-top:10px">{c.title}</h1>
     <p class="lead" style="margin-top:12px"><span class="mono">{c.id}</span> · {c.goal}</p>
   </div></section>
+  <div class="wrap prose-narrow">
+    {id === "CR-001" && <ProxmoxLayers start="stack" />}
+    {id === "CR-002" && <VlanTags />}
+    {id === "CR-003" && <NameLookup />}
+    {id === "CR-004" && <DcSignIn />}
+    {id === "CR-005" && <AccountGroups />}
+    {id === "CR-006" && <PolicyDelivery />}
+    {id === "CR-007" && <TwoStageFirewall />}
+    {id === "CR-008" && <FileService />}
+    {id === "CR-009" && <FolderAccess />}
+    {id === "CR-010" && <DfsReferral />}
+    {id === "CR-012" && <FileRecovery start="backup" />}
+    {id === "CR-013" && <DcSignIn start="outage" />}
+    {id === "CR-014" && <FilesDoors />}
+    {id === "CR-015" && <FirewallRules />}
+  </div>
   <div class="wrap prose-narrow" style="padding-bottom:40px">
     <h2 style="margin-top:20px">What I built</h2>
     <ul>{(c.built ?? []).map((x: string) => <li>{x}</li>)}</ul>

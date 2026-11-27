@@ -7,6 +7,7 @@ import ReplicationGap from "../../components/nova/xf/ReplicationGap.astro";
 import FilesDoors from "../../components/nova/xf/FilesDoors.astro";
 import FileRecovery from "../../components/nova/xf/FileRecovery.astro";
 import GpoLink from "../../components/nova/xf/GpoLink.astro";
+import VlanTags from "../../components/nova/xf/VlanTags.astro";
 import FirewallRules from "../../components/nova/xf/FirewallRules.astro";
 import ProxmoxLayers from "../../components/nova/xf/ProxmoxLayers.astro";
 import { loadNova, typeLabel } from "../../lib/nova";
@@ -39,6 +40,7 @@ const needs = v.dependsOn.map((d: string) => nova.services.find((x: any) => x.id
     {id === "shadow-copies" && <FileRecovery start="prev" />}
     {id === "windows-server-backup" && <FileRecovery start="backup" />}
     {id === "group-policy" && <GpoLink />}
+    {id === "vlan-segmentation" && <VlanTags />}
     {id === "pfsense-firewall" && <FirewallRules />}
     {id === "nested-virtualization" && <ProxmoxLayers start="stack" />}
     {id === "proxmox-backups" && <ProxmoxLayers start="space" />}

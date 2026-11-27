@@ -1,4 +1,5 @@
 ---
+import ZonePath from "../../../components/nova/xf/ZonePath.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 
 import { zones, rulesForZone, networkEvidence, type Zone } from "../../../data/network";
@@ -18,7 +19,7 @@ const [iface,device,ip,dhcp,purpose,behavior,origin,path,destination,incident]=z
  <div class="eyebrow">{zone.kind} / Network area</div><h1>{zone.name}</h1><p class="lead" style="margin-top:17px">{zone.purpose}</p>
 </div></section>
 <section class="section compact"><div class="container grid-main"><div>
-  <section class="content-section"><h2>What is the {zone.name} network?</h2><p>{purpose}</p><h2 style="margin-top:24px">Why does Nova Corp use it?</h2><p>{behavior}</p><figure class="zone-flow"><div class="zone-flow-track"><div><strong>{origin}</strong></div><span aria-hidden="true">→</span><a href={base+"systems/nova-fw01/"}>{path}</a><span aria-hidden="true">→</span><div>{destination}</div></div><figcaption>The path a request takes. The rule order below decides what happens to it.</figcaption></figure>{isClient&&<p><a href={base+"network/rules/1795199640/"}>Blocked management web ports</a> · <a href={base+"network/rules/1795195682/"}>Blocked MGMT network</a></p>}{incident&&<p><a href={base+"incidents/"+incident+"/"}>Read the related investigation →</a></p>}</section>
+  <section class="content-section"><h2>What is the {zone.name} network?</h2><p>{purpose}</p><h2 style="margin-top:24px">Why does Nova Corp use it?</h2><p>{behavior}</p><ZonePath origin={origin} path={path} destination={destination} zone={zone.name} />{isClient&&<p><a href={base+"network/rules/1795199640/"}>Blocked management web ports</a> · <a href={base+"network/rules/1795195682/"}>Blocked MGMT network</a></p>}{incident&&<p><a href={base+"incidents/"+incident+"/"}>Read the related investigation →</a></p>}</section>
   <section class="content-section">
     <h2>Firewall rules on this interface</h2>
     <p class="muted" style="margin:13px 0 18px">Rules are listed in the order pfSense checks them. An earlier block overrides a later allow.</p>

@@ -1,4 +1,5 @@
 ---
+import FirewallRules from "../../../components/nova/xf/FirewallRules.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 
 import { rules, findZone, aliases, networkEvidence, type Rule } from "../../../data/network";
@@ -16,6 +17,7 @@ const hasManagementEvidence=rule.zone==="client"&&(rule.order===1||rule.order===
 <h1>{rule.description}</h1><p class="lead" style="margin-top:17px">The recorded action is <strong>{rule.action}</strong>, at position <strong>{rule.order}</strong> on the incoming {zone?.name} interface.</p>
 <div style="margin-top:19px"><span class={"rule-action "+(rule.action==="BLOCK"?"block":"pass")}>{rule.action}</span><span class="muted" style="margin-left:12px;font-size:.83rem">Saved and enabled in the documented configuration</span></div>
 </div></section>
+<section class="section compact"><div class="container"><FirewallRules /></div></section>
 <section class="section compact"><div class="container grid-main"><div>
 <section class="content-section"><h2>What does this rule do?</h2><p>{rule.description} It matches traffic entering the {zone?.name} interface from {rule.source} towards {rule.destination}. If it is the applicable matching rule, it {rule.action==="BLOCK"?"blocks":"permits"} that traffic.</p><div class="paper panel" style="margin:18px 0"><p><strong>From:</strong> {rule.source}</p><p><strong>Via:</strong> <a href={base+"systems/nova-fw01/"}>NOVA-FW01</a> · {zone?.name} rule {rule.order}</p><p><strong>To:</strong> {rule.destination}</p><p><strong>Decision:</strong> {rule.action} · {rule.protocol} · {rule.ports}</p></div><p>Rule order, connection state and actual matching fields matter. A single saved rule does not prove a successful end-to-end connection.</p></section>
 <section class="content-section">

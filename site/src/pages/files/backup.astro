@@ -1,10 +1,12 @@
 ---
+import FileRecovery from "../../components/nova/xf/FileRecovery.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
 const base=import.meta.env.BASE_URL;
 ---
 <BaseLayout title="File server backup and recovery" description="How Nova Corp protects departmental data with Windows Server Backup and proves restoration." breadcrumbs={[{label:"NOVA-FILES01",href:"systems/nova-files01/"},{label:"Backup and recovery"}]}>
 <section class="page-head"><div class="container"><div class="eyebrow">File server / Windows Server Backup</div><h1>Backup and recovery</h1><p class="lead">The company can recover documents from a separate Windows backup target when a suitable recovery point exists.</p></div></section>
+<section class="section compact"><div class="container"><FileRecovery start="backup" /></div></section>
 <section class="section compact"><div class="container grid-main"><article class="prose">
 <h2>What does the backup protect?</h2><p>The documented Windows Server Backup policy protects the NovaData volume (D:) to NovaBackup (B:) using a daily 22:00 VSS Copy Backup schedule. It does not include bare-metal or System State recovery for this file server.</p>
 <Files01DocumentImages ids={["fileserver-backup-gui","fileserver-backup-schedule"]}/>

@@ -1,4 +1,5 @@
 ---
+import AccountGroups from "../../components/nova/xf/AccountGroups.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { accessGroups, accessSources } from "../../data/groups";
 const base=import.meta.env.BASE_URL;
@@ -11,6 +12,7 @@ const local=accessGroups.filter(x=>x.scope==="Domain Local");
 <h1>People join groups. Groups receive permissions.</h1>
 <p class="lead" style="margin-top:17px">Department membership and folder permissions are kept apart. Follow a department group into a resource group and then into the folder's SMB and NTFS rules.</p>
 </div></section>
+<section class="section compact"><div class="container"><AccountGroups /></div></section>
 <section class="section compact"><div class="container">
   <div class="paper panel" style="margin-bottom:32px"><p class="kicker">Why two group layers?</p><h2 style="margin:12px 0 15px">Accounts → Global → Domain Local → Permissions</h2><p class="muted">This is the AGDLP pattern: I change one group instead of editing every folder. Only a real sign-in test proves the access, and I ran one for Moyo (IT allowed, Finance denied).</p><a class="evidence-link" href={base+"people/moyo/"}>Follow Moyo's verified IT path →</a></div>
   <div class="section-heading"><h2>Department membership groups</h2><span class="muted">Five Global groups</span></div>

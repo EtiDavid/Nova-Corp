@@ -1,4 +1,5 @@
 ---
+import AccountGroups from "../../components/nova/xf/AccountGroups.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { accessGroups, groupPeople, groupResources, findGroupByName, accessSources, type AccessGroup } from "../../data/groups";
 import { shares } from "../../data/fileCentre";
@@ -15,6 +16,7 @@ const directShare=shares.find(share=>share.id===group.folder);
   <div class="eyebrow">{group.scope} security group / {group.kind}</div>
   <h1>{group.name}</h1><p class="lead" style="margin-top:17px">{group.description}</p>
 </div></section>
+<section class="section compact"><div class="container"><AccountGroups /></div></section>
 <section class="section compact"><div class="container grid-main"><div>
   <section class="content-section">
   <h2>What does this security group do?</h2><p>{group.description}</p><div class="paper panel" style="margin:18px 0"><h3>How Nova Corp assigns permissions</h3><p>AGDLP means Accounts → Global department groups → Domain Local resource groups → Permissions. Administrators change the membership of a user’s department group instead of editing every folder ACL individually.</p>{group.scope==="Global"?<p><strong>{group.name}</strong> → {nested.map((g,i)=><Fragment>{i>0&&" · "}<a href={base+"groups/"+g.slug+"/"}>{g.name}</a></Fragment>)} → resource ACL</p>:<p>{group.directMemberGroups.map((g,i)=><Fragment>{i>0&&" · "}<a href={base+"groups/"+findGroupByName(g)?.slug+"/"}>{g}</a></Fragment>)} → <strong>{group.name}</strong>{directShare&&<> → <a href={base+"files/shares/"+directShare.id+"/"}>{directShare.name}</a></>}</p>}</div><h2>Who belongs to this group and what can they access?</h2>

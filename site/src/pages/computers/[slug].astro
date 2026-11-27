@@ -1,4 +1,7 @@
 ---
+import WorkstationReach from "../../components/nova/xf/WorkstationReach.astro";
+import DcSignIn from "../../components/nova/xf/DcSignIn.astro";
+import FileService from "../../components/nova/xf/FileService.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { computerObjects, type ComputerObject, computerSource } from "../../data/computers";
 import { findOu } from "../../data/directory";
@@ -15,6 +18,7 @@ const policy=computer.linkedPolicySlug?getPolicy(computer.linkedPolicySlug):unde
 <div class="eyebrow">Active Directory / Computer object</div>
 <h1>{computer.name}</h1><p class="lead" style="margin-top:17px">{computer.purpose}</p>
 </div></section>
+<section class="section compact"><div class="container">{computer.slug==="nova-client"&&<WorkstationReach />}{(computer.slug==="nova-dc01"||computer.slug==="nova-dc02")&&<DcSignIn />}{computer.slug==="nova-files01"&&<FileService />}</div></section>
 <section class="section compact"><div class="container grid-main"><div>
  <section class="content-section">
   <h2>A computer identity is different from a virtual machine.</h2>

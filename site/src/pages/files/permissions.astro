@@ -1,4 +1,5 @@
 ---
+import FolderAccess from "../../components/nova/xf/FolderAccess.astro";
 import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { shares, fileEvidence } from "../../data/fileCentre";
@@ -11,6 +12,7 @@ const base=import.meta.env.BASE_URL;
 <h1>Who can open each folder?</h1>
 <p class="lead" style="margin-top:17px">I do not give folder permissions to individual people. Each person is in a department group, the department group sits inside a resource group, and the resource group holds the permission. Windows checks the share permission and the NTFS permission separately.</p>
 </div></section>
+<section class="section compact"><div class="container"><FolderAccess /></div></section>
 <section class="section compact"><div class="container">
   <section class="content-section"><h2>Why does the company need folder permissions?</h2><h3 class="file-problem">Problem</h3><p><a href={base+"people/moyo/"}>Moyo</a> needs to modify IT documents, while Finance must keep sensitive records private.</p><h3 class="file-solution">Solution</h3><p>IT uses AGDLP (Accounts → Global groups → Domain Local groups → Permissions) to assign rights to resource groups instead of individual accounts. Windows checks both share and folder permissions. The IT group grants the required access, but it does not grant Finance access. The following matrix describes recorded root configuration rather than a live authorization simulator.</p></section><div class="paper" style="overflow-x:auto">
   <table class="data-table" style="min-width:690px">

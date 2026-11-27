@@ -1,4 +1,5 @@
 ---
+import DfsReferral from "../../components/nova/xf/DfsReferral.astro";
 import Files01DocumentImages from "../../components/Files01DocumentImages.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { shares, fileEvidence } from "../../data/fileCentre";
@@ -25,7 +26,7 @@ const base=import.meta.env.BASE_URL;
   </section>
   <section class="content-section">
     <h2>How does Windows find the shared folder?</h2>
-    <figure class="dfs-story"><div class="dfs-flow"><a href={base+"people/moyo/"}><span>👩🏽‍💻</span><strong>Moyo’s workstation</strong><small>Opens the IT company address</small><code>{shares[0].dfs}</code></a><div class="dfs-arrow">↔<small>Referral request and response</small></div><a href={base+"learn/dfs/"}><span>📂</span><strong>DFS namespace</strong><small>Returns the configured target</small><code>{shares[0].smb}</code></a></div><div class="dfs-flow" style="margin-top:12px"><a href={base+"systems/nova-client/"}><strong>Same workstation</strong><small>Uses the returned target</small></a><div class="dfs-arrow">↔<small>Direct SMB · TCP 445</small></div><a href={base+"files/shares/it/"}><span>🗄️</span><strong>NOVA-FILES01</strong><small>Checks SMB and NTFS permissions</small><code>{shares[0].ntfs}</code></a></div><figcaption>The workstation asks DFS for the folder location, then connects to the returned SMB share. DFS does not grant access.</figcaption></figure><ol class="walkthrough">
+    <DfsReferral dfs={shares[0].dfs} smb={shares[0].smb} /><ol class="walkthrough">
       <li class="walk-step"><h3>The employee opens the friendly path</h3><p>The workstation asks the DFS namespace where the requested department folder lives.</p></li>
       <li class="walk-step"><h3>DFS returns the configured target</h3><p>Each of the five DFS links has one target, on NOVA-FILES01. There is no second file server.</p></li>
       <li class="walk-step"><h3>The target checks SMB and NTFS rights</h3><p>The employee's domain group and current security token are evaluated against the real share and folder permissions. Namespace Read is not a bypass.</p></li>

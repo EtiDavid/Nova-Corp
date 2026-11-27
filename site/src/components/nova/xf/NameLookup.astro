@@ -1,0 +1,22 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const scenarios: any[] = [{ id: "dns", label: "Finding a server by name", steps: [
+  { say: "A workstation wants NOVA-FILES01 but only knows its name.", do: [{t:"show",ids:["pc","l-pc","fs","l-fs"]}] },
+  { say: "It asks a domain controller's DNS: where is NOVA-FILES01?", term:["DNS · port 53","the lab's phone book, listening on port 53."], do: [{t:"show",ids:["dc","l-dc"]},{t:"glide",path:"p1",dot:"d1",ms:1000,keep:false}] },
+  { say: "DNS answers: 10.10.20.20.", do: [{t:"glide",path:"p1",dot:"d1",ms:1000,rev:true,keep:false},{t:"show",ids:["ans"]},{t:"state",id:"dc",value:"good"}] },
+  { say: "Now the workstation connects straight to the file server.", term:["SMB · port 445","the protocol Windows uses to open shared folders."], do: [{t:"show",ids:["ans"]},{t:"glide",path:"p2",dot:"d2",ms:1100,keep:true},{t:"state",id:"fs",value:"good"}] },
+]}];
+---
+<Explainer id="xf-lookup" title="From a name to a connection" intro="DNS first, then the file connection."
+  scenarios={scenarios} alt="Animated diagram: a workstation asks the domain controller's DNS for the address of the file server, receives it, and connects directly over SMB."
+  note="The recorded address of NOVA-FILES01 is 10.10.20.20." evidence={[{label:"DNS", href:"/services/dns/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="50" y="190" width="110" height="80"/></g><text data-id="l-pc" data-hide class="small" x="105" y="294">Workstation</text>
+  <g data-id="dc" data-hide><use href="#ic-server" x="360" y="50" width="64" height="78"/></g><text data-id="l-dc" data-hide class="small" x="392" y="150">Domain controller (DNS)</text>
+  <g data-id="fs" data-hide><use href="#ic-server" x="650" y="180" width="74" height="90"/></g><text data-id="l-fs" data-hide class="small" x="687" y="292">NOVA-FILES01</text>
+  <path class="guide" data-id="p1" d="M160 210 C240 130 300 90 360 90"/><path class="guide" data-id="p2" d="M165 235 L650 228"/>
+  <g data-id="ans" data-hide><rect class="bubble" x="240" y="300" width="250" height="40" rx="12"/><text class="bubble-t" x="365" y="326">NOVA-FILES01 is at 10.10.20.20</text></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--line-files)"/>
+</Explainer>

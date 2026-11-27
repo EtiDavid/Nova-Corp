@@ -1,4 +1,5 @@
 ---
+import FolderAccess from "../../../components/nova/xf/FolderAccess.astro";
 import Files01DocumentImages from "../../../components/Files01DocumentImages.astro";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import EvidencePanel from "../../../components/EvidencePanel.astro";
@@ -33,6 +34,7 @@ const encode=(slug:string)=>base+"groups/"+slug+"/";
 <p class="lead" style="margin-top:17px">The shared folder for documents belonging to the {share.name} department.</p>
 
 </div></section>
+<section class="section compact"><div class="container"><FolderAccess /></div></section>
 <section class="section compact"><div class="container grid-main share-page">
 <div>
   <section class="content-section">
