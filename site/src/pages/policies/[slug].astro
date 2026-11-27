@@ -32,19 +32,19 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
 <section class="section compact"><div class="container grid-main">
 <div>
 <section class="content-section">
- <h2>What does this policy do?</h2><p>{policy.summary}</p><h2 style="margin-top:24px">Why does Nova Corp have this policy?</h2><p class="muted" style="margin:12px 0 18px">{policy.why}</p>
+ <h2>What it does</h2><p>{policy.summary}</p><h2 style="margin-top:24px">Why Nova Corp has it</h2><p class="muted" style="margin:12px 0 18px">{policy.why}</p>
  <div class="paper panel">
-  <p class="kicker">1 / The configured scope</p>
-  <h3 style="margin:11px 0">{isUnlinked?"This policy was not linked to anything.":policy.link?.label}</h3>
-  {targetOu?<p class="muted">The saved enabled link points to <a href={base+"directory/ous/"+targetOu.slug+"/"}>{policy.link?.path}</a>. The link is <strong>not enforced</strong>.</p>
-  :isUnlinked?<p class="muted">Both user and computer sections are enabled, but the reviewed report contains no settings and no domain or OU links. No client application is inferred.</p>
-  :<p class="muted">The saved enabled, non-enforced link points to the entire <strong>nova.corp</strong> domain rather than a single OU.</p>}
-  {!isUnlinked&&<p class="muted" style="margin-top:12px">Reported security filter: <strong>Authenticated Users</strong> with Apply Group Policy. No WMI filter reference was reported. This does not make every account a verified recipient.</p>}
+  <p class="kicker">Where it is linked</p>
+  <h3 style="margin:11px 0">{isUnlinked?"It is not linked to anything.":policy.link?.label}</h3>
+  {targetOu?<p class="muted">The link is enabled and points to <a href={base+"directory/ous/"+targetOu.slug+"/"}>{policy.link?.path}</a>. It is <strong>not enforced</strong>.</p>
+  :isUnlinked?<p class="muted">Its user and computer sections are on, but the saved report lists no settings and no links, so it changes nothing.</p>
+  :<p class="muted">The link is enabled, not enforced, and covers the whole <strong>nova.corp</strong> domain, not one OU.</p>}
+  {!isUnlinked&&<p class="muted" style="margin-top:12px">Security filter: <strong>Authenticated Users</strong> can apply it. No WMI filter. That does not mean every account was checked.</p>}
  </div>
 </section>
 <section class="content-section">
- <div class="section-heading"><h2>What settings are actually saved?</h2><span class="muted">{settingsCount} featured settings</span></div>
- <p class="muted" style="margin:12px 0 16px">The most important recorded values are shown here. The original policy profile contains additional detail where relevant, including the 24 Domain Controller rights assignments.</p>
+ <div class="section-heading"><h2>What it sets</h2><span class="muted">{settingsCount} featured settings</span></div>
+ <p class="muted" style="margin:12px 0 16px">These are the main saved values. The full policy profile has more, including the 24 rights assignments on the Domain Controller policy.</p>
  <label class="search-label" for="policy-setting-filter">Find a setting in this policy</label>
  <div class="searchbox" style="margin:10px 0 15px"><span aria-hidden="true">⌕</span><input id="policy-setting-filter" type="search" data-policy-filter placeholder="Search firewall, lockout, AutoPlay..." autocomplete="off" /></div>
  <p class="muted" style="font-size:.85rem;margin-bottom:14px" role="status" aria-live="polite" data-filter-count>{settingsCount} settings</p>
@@ -60,12 +60,12 @@ const settingsCount=policy.sections.reduce((count,section)=>count+section.settin
 </section>
 
 <section class="content-section">
- <h2>Was this policy actually applied?</h2>
- <p class="muted" style="margin:12px 0 20px">A saved policy, a matching OU, <code>gpresult</code>, and an actual Windows behavior test answer different questions. The following statements describe only what was observed or configured in the original work.</p>
+ <h2>Did it reach anyone?</h2>
+ <p class="muted" style="margin:12px 0 20px">A saved setting, a link, a <code>gpresult</code> entry and a real behavior test each prove something different. This is what I recorded.</p>
  <div class="proof-grid vertical">
-  <div class="proof-item"><strong>Configuration</strong><p>{isUnlinked?"No configured settings or links found.":"Settings, enabled link and security descriptor verified in the saved GPO report."}</p></div>
-  <div class="proof-item"><strong>Link/scope</strong><p>{isUnlinked?"No link; no user/computer target established.":policy.link?.path+" (enabled; not enforced). This is potential scope, not effective output."}</p></div>
-  <div class="proof-item"><strong>Client evidence</strong><p>{hasTest?"Some relevant historical processing or behavior evidence exists below; see exact limits.":"No claim of fresh effective user/computer policy processing is supported here."}</p></div>
+  <div class="proof-item"><strong>Configuration</strong><p>{isUnlinked?"No settings and no links.":"Settings, link and security filter are in the saved policy report."}</p></div>
+  <div class="proof-item"><strong>Link/scope</strong><p>{isUnlinked?"No link, so no user or computer receives it.":policy.link?.path+" (enabled, not enforced). That is who could get it, not who did."}</p></div>
+  <div class="proof-item"><strong>Client evidence</strong><p>{hasTest?"I have a recorded gpresult or behavior test. The limits are below.":"I have no recorded test that this policy reached a user or computer."}</p></div>
  </div>
  <div class="card-list" style="margin-top:20px">
   {policy.observations.map(o=><div class="paper panel">

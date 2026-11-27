@@ -53,8 +53,8 @@ export const companyPolicies:CompanyPolicy[]=[
  {
   slug:"domain-password",name:"Passwords and sign-in protection",technicalName:"Default Domain Policy",
   guid:"31b2f340-016d-11d2-945f-00c04fb984f9",
-  summary:"The domain-wide password, account-lockout and Kerberos ticket rules.",
-  why:"Make sign-in requirements consistent and help the company respond to repeated failed passwords.",
+  summary:"The password, lockout and Kerberos ticket rules for everyone in nova.corp.",
+  why:"Every account follows the same password rules, and repeated wrong passwords lock the account.",
   side:"Computer",link:link("Entire nova.corp domain","nova.corp"),status:"Linked: configured",
   sections:[
    {heading:"Password policy",settings:[
@@ -77,16 +77,16 @@ export const companyPolicies:CompanyPolicy[]=[
    ]}
   ],
   observations:[
-   paragraph("Historical behavior test","Earlier account administration exercises investigated lockout and password resets. That proves the tested administration flow, not an independent current effective policy check for all accounts.",journal+"CR-011_PowerShell_Administration_Toolkit.md")
+   paragraph("Historical behavior test","I tested lockout and password resets in earlier account administration work. That shows the flow I tested, not the effective policy for every account.",journal+"CR-011_PowerShell_Administration_Toolkit.md")
   ],
-  limitations:["A domain-root link and security filter do not prove each individual user's effective result.","Other user-specific password policy mechanisms could affect a specific account; none is inferred here."],
+  limitations:["The link covers the whole domain, but I did not check the effective result for each user.","A policy aimed at one account could override these rules. I did not look for one."],
   sourceUrl:doc("DOMAIN_PASSWORD"),relatedSystemSlugs:["nova-dc01","nova-dc02"]
  },
  {
   slug:"domain-controllers",name:"Domain Controller protections",technicalName:"Default Domain Controllers Policy",
   guid:"6ac1786c-016f-11d2-945f-00c04fb984f9",
-  summary:"Security rights and signing settings for the two identity servers; also contains unexpectedly placed keyboard preferences.",
-  why:"Domain Controllers process company authentication and require specialized safeguards.",
+  summary:"Security rights and signing settings for DC01 and DC02. It also holds keyboard preferences that do not belong there.",
+  why:"The domain controllers handle every sign-in, so they get stricter settings than other servers.",
   side:"Both (separate settings)",link:link("Built-in Domain Controllers OU","nova.corp/Domain Controllers","domain-controllers"),
   status:"Linked: configured",
   sections:[
@@ -104,18 +104,18 @@ export const companyPolicies:CompanyPolicy[]=[
    ]}
   ],
   observations:[
-   paragraph("Configuration only","The November A02 report confirms this GPO's settings and enabled OU link. A fresh effective LDAP signing check on both DCs is not part of this report.",doc("DEFAULT_DC"))
+   paragraph("Configuration only","The saved report lists this policy's settings and its enabled OU link. I did not run a fresh LDAP signing check on both controllers.",doc("DEFAULT_DC"))
   ],
-  limitations:["This saved LDAP signing option is a security finding, not an approved change or verified runtime state.",
-   "User-side keyboard preferences under a GPO linked to DC computer objects are not proof the wallpaper/keyboard changed on employee workstations.",
-   "24 assignment entries are documented in the source. Assigned principals differ; this summary does not invent the rights matrix."],
+  limitations:["The saved LDAP signing option is a finding I noted. It is not an approved change, and I did not verify it is in effect.",
+   "The keyboard preferences sit in a policy linked to the controllers, so they do not change employee workstations.",
+   "The source lists 24 rights assignments to different accounts. I did not reproduce the full rights matrix here."],
   sourceUrl:doc("DEFAULT_DC"),relatedSystemSlugs:["nova-dc01","nova-dc02"]
  },
  {
   slug:"corporate-wallpaper",name:"Company desktop wallpaper",technicalName:"Nova Corp - Coperate wallpaper",
   guid:"cdfb1fe4-ecbb-4076-a754-62b9e1b4412b",
-  summary:"Gives company user accounts a common Windows desktop appearance.",
-  why:"Deliver one user setting centrally, rather than manually changing each workstation.",
+  summary:"Gives company user accounts the same desktop wallpaper.",
+  why:"I set the wallpaper once instead of changing every workstation by hand.",
   side:"User",link:link("Nova Users OU (parent of departments)","nova.corp/Nova Users","nova-users"),status:"Linked: configured",
   sections:[
    {heading:"User configuration",settings:[
@@ -125,50 +125,50 @@ export const companyPolicies:CompanyPolicy[]=[
    ]}
   ],
   observations:[
-   paragraph("Observed policy processing","John Shaw's historical user gpresult showed this wallpaper GPO in the applied policy list.",doc("WALLPAPER")),
-   paragraph("Configuration only","The XML records a wallpaper file path; this is not a fresh test of file availability or appearance on every desktop.",doc("WALLPAPER"))
+   paragraph("Observed policy processing","John Shaw's recorded gpresult lists this wallpaper policy as applied.",doc("WALLPAPER")),
+   paragraph("Configuration only","The saved settings name a wallpaper file. I did not re-test that the file loads on every desktop.",doc("WALLPAPER"))
   ],
-  limitations:["The actual GPO name contains the original source spelling 'Coperate'; this is not corrected in technical detail.","Observed gpresult processing does not establish that the image was loaded for every employee."],
+  limitations:["The policy is really named \"Coperate\" (sic). I kept the original spelling in the technical detail.","gpresult shows the policy was processed. It does not show the image loaded for every employee."],
   evidenceImages:[png("03-contractor-user-gpresult.png")],sourceUrl:doc("WALLPAPER"),relatedSystemSlugs:["nova-client"]
  },
  {
   slug:"keyboard",name:"Keyboard layout (unused policy)",technicalName:"Nova Corp - Keyboard",
   guid:"ce22e625-e62c-4a7a-b65d-0c0d25f4dc37",
-  summary:"An existing GPO object with no configured settings and no OU link.",
-  why:"Shows why an object existing in Group Policy Management is not proof that any change reached company devices.",
+  summary:"A policy that exists but has no settings and no link.",
+  why:"A policy in Group Policy Management is not proof that anything reached a device. This one reached nothing.",
   side:"Both (separate settings)",status:"Empty: no link or settings",
   sections:[{heading:"Actual current contents",settings:[
    set("User-side settings","None reported"),set("Computer-side settings","None reported"),
    set("OU/domain links","None"),
    set("Where keyboard preferences actually appear","Default Domain Controllers Policy")
   ]}],
-  observations:[paragraph("No observed application","The GPO has no links and no configured settings, so the source establishes no deployment or effect.",doc("KEYBOARD"))],
-  limitations:["Do not infer effective keyboard-language settings from the existence of this unused GPO.","The keyboard preferences inside the DC policy are a separate, unexpected placement."],
+  observations:[paragraph("No observed application","It has no links and no settings, so it never changed any device.",doc("KEYBOARD"))],
+  limitations:["Do not read keyboard-language settings from this unused policy.","The keyboard preferences inside the domain controller policy are a separate case."],
   sourceUrl:doc("KEYBOARD")
  },
  {
   slug:"contractor-usb",name:"Contractor removable-storage restrictions",technicalName:"NOVA-sec-deny-usb-contractors",
   guid:"359aeed7-40b1-432b-aae8-983c980f93d6",
-  summary:"An assigned restriction intended to prevent contractor accounts from using removable storage.",
-  why:"Reduce the ability of a contractor to copy company information onto removable drives.",
+  summary:"A rule meant to stop contractor accounts from using USB and other removable storage.",
+  why:"A contractor should not be able to copy company files onto a removable drive.",
   side:"User",link:link("Contractors OU","nova.corp/Nova Users/Contractors","contractors"),status:"Linked: configured",
   sections:[{heading:"User restrictions",settings:[
    set("All Removable Storage classes: Deny all access","Enabled"),
    set("Removable Disks: Deny write access","Enabled")
   ]}],
   observations:[
-   paragraph("Observed policy processing","John Shaw's historical user gpresult lists this contractor restriction as applied.",doc("CONTRACTOR_USB")),
-   paragraph("Configuration only","Physical-device denial was not independently proven: nested virtualization prevented reliable USB device passthrough.",doc("CONTRACTOR_USB"))
+   paragraph("Observed policy processing","John Shaw's recorded gpresult lists this contractor restriction as applied.",doc("CONTRACTOR_USB")),
+   paragraph("Configuration only","I could not test a real USB drive: nested virtualization does not pass USB devices through reliably.",doc("CONTRACTOR_USB"))
   ],
   evidenceImages:[png("01-contractor-usb-gpo-link.png"),png("02-usb-deny-all-removable-storage-enabled.png"),png("03-contractor-user-gpresult.png")],
-  limitations:["A gpresult entry demonstrates processing but not a successful physical USB deny test.","Only contractor OU targeting is documented here; it is not a blanket policy on every company user."],
+  limitations:["gpresult shows the policy was processed. It does not show a USB drive was actually refused.","It targets only the Contractors OU, not every user."],
   sourceUrl:doc("CONTRACTOR_USB"),relatedSystemSlugs:["nova-client"]
  },
  {
   slug:"workstation-baseline",name:"Workstation security baseline",technicalName:"NOVA-SEC-Workstation-Baseline",
   guid:"3b481639-a09c-413c-8dc5-3501cd977a51",
-  summary:"Central security settings for the Windows employee workstation.",
-  why:"Keep Windows Firewall on, restrict AutoPlay and disable legacy SMBv1 across targeted workstations.",
+  summary:"The security settings every employee workstation gets.",
+  why:"Windows Firewall stays on, AutoPlay is turned off and the old SMBv1 protocol is disabled.",
   side:"Computer",link:link("Workstations OU","nova.corp/Nova-Computers/Workstations","workstations"),status:"Linked: configured",
   sections:[
    {heading:"Windows Firewall",settings:[
@@ -182,17 +182,17 @@ export const companyPolicies:CompanyPolicy[]=[
    ]}
   ],
   observations:[
-   paragraph("Historical behavior test","Earlier workstation checks recorded SMBv1 disabled, SMBv2 enabled and Windows Firewall behavior. This is a historical target test, separate from the current A02 XML link snapshot.",journal+"Journal-CR-006.md")
+   paragraph("Historical behavior test","I checked a workstation earlier and recorded SMBv1 disabled, SMBv2 enabled and the Windows Firewall behaving as set. That check is separate from the saved link report.",journal+"Journal-CR-006.md")
   ],
   evidenceImages:[png("04-workstation-baseline-gpo-link.png"),png("05-firewall-gpo-configuration.png")],
-  limitations:["The current GPO report shows Turn off AutoPlay; it does not show a separate Turn off AutoRun policy.","The earlier enforced-link correction is historical; all current link records report 'not enforced'."],
+  limitations:["The saved report shows Turn off AutoPlay. It does not show a separate AutoRun setting.","I once corrected an enforced link. Every current link is recorded as not enforced."],
   sourceUrl:doc("WORKSTATION_BASELINE"),relatedSystemSlugs:["nova-client"]
  },
  {
   slug:"drive-mapping",name:"Department drive mapping",technicalName:"NOVA-USER-Department-Drive-Mapping",
   guid:"90940df5-26d3-42b1-83e8-d73134e8eada",
-  summary:"Configured logon script to connect company users to departmental files.",
-  why:"Employees should be able to use a familiar mapped drive instead of memorizing server paths.",
+  summary:"A logon script that connects each employee to their department's drive.",
+  why:"Employees open a drive letter instead of typing a server path.",
   side:"User",link:link("Nova Users OU (parent of departments)","nova.corp/Nova Users","nova-users"),status:"Linked: configured",
   sections:[{heading:"User logon script",settings:[
    set("Program","powershell.exe"),
@@ -200,10 +200,10 @@ export const companyPolicies:CompanyPolicy[]=[
    set("Script type and order","Logon, order 0")
   ]}],
   observations:[
-   paragraph("Configuration only","The November GPO report confirms the logon-script command. It does not prove that the script exists, is digitally signed or ran at the last sign-in.",doc("DRIVE_MAPPING")),
-   paragraph("Historical behavior test","The file-sharing journal documents mapped-drive work, but those earlier results are distinct from a new verification of this GPO's current logon execution.",journal+"NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf")
+   paragraph("Configuration only","The saved report lists the logon-script command. It does not show that the script exists, is signed, or ran at the last sign-in.",doc("DRIVE_MAPPING")),
+   paragraph("Historical behavior test","The file-sharing journal records my mapped-drive work. That is separate from re-checking this policy at a new sign-in.",journal+"NovaCorp_CR-009_Departmental_Shares_and_Drive_Mapping.pdf")
   ],
-  limitations:["-ExecutionPolicy Bypass is a configured invocation flag; it does not establish that the script was signed.","A mapped drive never bypasses target SMB or NTFS permissions."],
+  limitations:["The command uses -ExecutionPolicy Bypass. That flag says nothing about whether the script is signed.","A mapped drive never skips the share and folder permissions."],
   sourceUrl:doc("DRIVE_MAPPING"),relatedSystemSlugs:["nova-files01","nova-client"]
  }
 ];
