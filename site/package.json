@@ -8,7 +8,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate": "node scripts/validate-graph.mjs && node scripts/validate-nova.mjs",
-    "build": "npm run validate && npm run stage:evidence && astro build",
+    "build": "npm run validate && npm run stage:evidence && astro build && node scripts/make-sitemap.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "test:links": "node scripts/check-built-links.mjs",
@@ -27,10 +27,11 @@
     "test:site-parity": "node scripts/audit-site-source-coverage.mjs",
     "test:pdf-evidence": "node scripts/check-approved-pdf-evidence.mjs",
     "test:complete-pdfs": "node scripts/check-complete-pdf-journals.mjs",
-    "test:browser": "node scripts/smoke-v2.mjs && node scripts/smoke-archive.mjs && node scripts/smoke-explainer.mjs",
+    "test:browser": "node scripts/smoke-v2.mjs && node scripts/smoke-archive.mjs && node scripts/smoke-explainer.mjs && node scripts/smoke-a11y.mjs",
     "test:all-pages": "node scripts/audit-every-page-browser.mjs",
     "test:legacy": "node scripts/audit-legacy-routes.mjs",
-    "test:secrets": "node scripts/scan-secrets.mjs"
+    "test:secrets": "node scripts/scan-secrets.mjs",
+    "test:facts": "node scripts/fact-check.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.0",

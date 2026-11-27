@@ -45,7 +45,7 @@ index.sort((a,b)=>priority[category(a.url)]-priority[category(b.url)]);
   <div style="margin:14px 0"><label for="search-category">Show: </label><select id="search-category" data-search-kind><option value="all">Everything</option><option value="incident">Investigations</option><option value="guide">Technical explanations</option><option value="company">Company systems and objects</option><option value="reference">Original Markdown records</option><option value="pdf">Original PDF journals</option></select></div>
   <p class="search-count" role="status" aria-live="polite" data-count>{index.length} entries</p>
   <div class="card-list" data-results>
-  {index.map(item=><a class="system-card" data-search-item data-category={category(item.url)} data-search-text={(item.name+" "+item.kind+" "+item.description).toLowerCase()} href={item.url}><small>{item.kind}</small><h3>{item.name}</h3><p>{item.description}</p><span class="readmore">Open →</span></a>)}
+  {index.map(item=><a class="system-card" data-search-item data-category={category(item.url)} data-search-text={(item.name+" "+item.kind+" "+item.description).toLowerCase()} href={item.url}><small>{item.kind}</small><h2>{item.name}</h2><p>{item.description}</p><span class="readmore">Open →</span></a>)}
   </div>
   <p data-empty class="empty" hidden>No matches. Try a broader term or open the <a href={base+"map/"}>company map</a>.</p>
 </div></section>

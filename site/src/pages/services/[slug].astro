@@ -23,7 +23,7 @@ const line = nova.lineMap[v.line];
 const broke = nova.incidents.filter((i: any) => (i.services ?? []).includes(id));
 const needs = v.dependsOn.map((d: string) => nova.services.find((x: any) => x.id === d));
 ---
-<NovaLayout title={v.name} description={v.summary} current="map">
+<NovaLayout title={v.name} description={v.summary.length < 70 ? `${v.summary} How it works in the Nova Corp lab, and where it broke.` : v.summary} current="map">
   <section class="incident-head"><div class="wrap prose-narrow">
     <p class="tiny"><a href={base + "map/?line=" + v.line}>← {line.name} line on the map</a></p>
     <h1 style="margin-top:10px">{v.name}</h1>

@@ -28,7 +28,7 @@ const shotsFor = (s: any) => {
           <MapSvg id="nl-full" interactive showMarkers="all" label="Interactive line map of the Nova Corp lab. Select a system to see its details." />
           <p class="caption">Diagram of how services depend on each other, not physical cabling. Numbered pins mark incidents.</p>
         </div>
-        <MobileLines />
+        <MobileLines level={2} />
       </div>
       <aside class="panel" id="panel" aria-live="polite" aria-label="Selected system">
         <p id="panel-empty" class="tiny">Select a system on the map, or from the list below, to see what it does and what broke there.</p>

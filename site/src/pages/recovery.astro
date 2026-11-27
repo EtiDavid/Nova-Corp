@@ -15,7 +15,7 @@ const options=[
  <section class="page-head"><div class="container"><div class="eyebrow">Recovering company services</div><h1>What do you need to recover?</h1><p class="lead" style="margin-top:17px">Not every backup is a proven restoration. Choose a situation below to see the exact level of evidence.</p></div></section>
 <section class="section compact"><div class="container"><FileRecovery /></div></section>
  <section class="section compact"><div class="container">
-   <div class="area-grid">{options.map(o=><a class="area-card" style="--accent:#0F766E" href={o.href}><div class="number"><span>{o.kind}</span><span aria-hidden="true">{o.href.startsWith("http") ? "↗" : "→"}</span></div><h3>{o.title}</h3><p>{o.copy}</p><span class="arrow-label">{o.label} →</span></a>)}</div>
+   <div class="area-grid">{options.map(o=><a class="area-card" style="--accent:#0F766E" href={o.href}><div class="number"><span>{o.kind}</span><span aria-hidden="true">{o.href.startsWith("http") ? "↗" : "→"}</span></div><h2>{o.title}</h2><p>{o.copy}</p><span class="arrow-label">{o.label} →</span></a>)}</div>
    <div class="note warning" style="margin-top:25px"><strong>Not yet proven:</strong> Backups go to a separate hard drive outside the lab. The site does not claim a fully restored Domain Controller, a restored complete VM, or more than the recorded recovery tests show.</div>
  </div></section>
 </BaseLayout>

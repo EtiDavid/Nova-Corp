@@ -11,7 +11,7 @@ const base=import.meta.env.BASE_URL;
 <section class="section compact"><div class="container">
   <div class="card-list">{computerObjects.map(c=><a class="system-card" href={base+"computers/"+c.slug+"/"}>
     <small>Computer object · {c.ouSlug==="domain-controllers"?"Domain Controllers OU":c.ouSlug==="servers"?"Servers OU":"Workstations OU"}</small>
-    <h3>{c.name}</h3><p>{c.purpose}</p><span class="readmore">Open domain computer profile →</span>
+    <h2>{c.name}</h2><p>{c.purpose}</p><span class="readmore">Open domain computer profile →</span>
   </a>)}</div>
   <div class="note" style="margin-top:22px">The directory snapshot records <strong>four computer objects</strong>. Their VM hosts, nested virtualization and related services are explained separately in the linked system profiles. A policy link does not establish effective processing.</div>
 </div></section>

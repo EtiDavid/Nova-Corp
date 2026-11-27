@@ -27,7 +27,7 @@ const i = nova.done.findIndex((x: any) => x.id === id);
 const journal = await journalHref(c.journal, base);
 const prev = nova.done[i - 1], nextC = nova.done[i + 1];
 ---
-<NovaLayout title={`${c.id}: ${c.title}`} description={c.goal} current="changes">
+<NovaLayout title={`${c.id}: ${c.title}`} description={`${c.title}. ${c.goal} Part of the Nova Corp lab by David Eti.`} current="changes">
   <section class="incident-head"><div class="wrap prose-narrow">
     <p class="tiny"><a href={base + "changes/"}>← All changes</a></p>
     <h1 style="margin-top:10px">{c.title}</h1>
