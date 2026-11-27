@@ -294,3 +294,15 @@ html:not(.js) .xf-controls, html:not(.js) .xf-tabs { display:none; } html:not(.j
 
 .xf-checks { margin-top:10px; } .xf-checks summary { cursor:pointer; font-weight:600; min-height:32px; } .xf-checks p { color:var(--muted); font-size:.9rem; margin:4px 0 8px; max-width:none; }
 .xf-checks table { width:100%; border-collapse:collapse; font-size:.85rem; display:block; overflow-x:auto; } .xf-checks th, .xf-checks td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--rule); vertical-align:top; } .xf-checks code { white-space:pre-wrap; word-break:break-all; }
+
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.xf-svg a { cursor:pointer; text-decoration:none; } .xf-svg a:hover, .xf-svg a:focus-visible { --st:var(--accent); outline:none; } .xf-svg a:focus-visible use { filter:drop-shadow(0 0 3px var(--accent)); }
+.xf-svg a:hover text { text-decoration:underline; }
+
+/* keep the explainer's own text styling when it sits inside legacy prose pages */
+.xf .xf-caption p.xf-say { color:var(--ink); font-size:1rem; font-weight:600; margin:4px 0 2px; line-height:1.4; }
+.xf .xf-caption p.xf-why { color:var(--muted); font-size:.95rem; margin:0; line-height:1.5; }
+.xf .xf-caption p.xf-count { color:var(--muted); font-size:.8rem; }
+.xf p.xf-note, .xf p.xf-evidence { color:var(--muted); font-size:.9rem; margin:10px 0 0; line-height:1.5; }
+.xf p.xf-term { color:var(--ink); }
+.xf figcaption.xf-head, .xf .xf-head b, .xf .xf-head span { font-family:var(--font-sans); }

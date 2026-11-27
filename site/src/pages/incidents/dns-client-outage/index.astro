@@ -1,4 +1,5 @@
 ---
+import DnsClient from "../../../components/nova/xf/DnsClient.astro";
 import NovaLayout from "../../../layouts/NovaLayout.astro";
 import "../../../styles/incident-records.css";
 import "../../../styles/reference-library.css";
@@ -48,6 +49,7 @@ const proof = [
   </div></section>
 
   <div class="wrap">
+    <DnsClient />
     <section class="v20" aria-labelledby="h-20">
       <h2 id="h-20" style="grid-column:1/-1;font-size:1.05rem">The 20-second version</h2>
       <div><h3>What users saw</h3><p>{me.saw}</p></div>

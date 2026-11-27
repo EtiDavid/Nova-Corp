@@ -1,0 +1,30 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "bug", label: "What went wrong", steps: [
+    { say: "Three servers sit on the same network: the file server and both domain controllers.", do: [{t:"show",ids:["fs","l-fs","dc","l-dc","rt","l-rt","m1","m2"]}] },
+    { say: "The file server sends a request straight to the domain controller.", why: "It is set to /24, so it knows the controllers are its neighbors.", do: [{t:"glide",path:"pq",dot:"d1",ms:1200,keep:false},{t:"state",id:"dc",value:"pulse"}] },
+    { say: "The controller answers, but sends the reply to the router instead.", term:["Subnet mask","tells a computer which addresses are neighbors. /32 means 'only me', so everything else looks far away."], why: "The controllers were set to /32, so they thought the file server was outside their network.", do: [{t:"glide",path:"pr",dot:"d2",ms:1200,keep:true},{t:"show",ids:["x"]}] },
+    { say: "The return path is wrong, so some tests worked and others failed.", why: "Ping and name checks could pass while TCP/53 failed. That is why it was confusing.", do: [{t:"state",id:"dc",value:"bad"}] },
+  ]},
+  { id: "fix", label: "After the fix", steps: [
+    { say: "All three servers are set back to the intended /24.", do: [{t:"show",ids:["fs","l-fs","dc","l-dc","rt","l-rt"]},{t:"text",id:"m1",value:"/24"},{t:"text",id:"m2",value:"/24"},{t:"show",ids:["m1","m2"]}] },
+    { say: "Requests and replies now go directly between neighbors.", do: [{t:"show",ids:["m1","m2"]},{t:"glide",path:"pq",dot:"d1",ms:1100,keep:false},{t:"glide",path:"pq",dot:"d2",ms:1100,rev:true,keep:false},{t:"state",id:"dc",value:"good"},{t:"show",ids:["ok"]}] },
+  ]},
+];
+---
+<Explainer id="xf-subnet" start={start} title="Same network, two different subnet masks" intro="Why replies took the wrong road (CR-008)."
+  scenarios={scenarios} alt="Animated diagram: a file server with /24 and a domain controller with /32 on the same network; the controller sends its reply toward the router instead of straight back."
+  note="From the recorded CR-008 investigation. The exact corrective command is not in the journal text, so none is shown." evidence={[{label:"Change CR-008", href:"/changes/CR-008/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="fs" data-hide><use href="#ic-server" x="70" y="130" width="80" height="98"/></g><text data-id="l-fs" data-hide class="small" x="110" y="252">NOVA-FILES01</text><text data-id="m1" data-hide class="lbl" x="110" y="276" style="fill:var(--ok)">/24</text>
+  <g data-id="dc" data-hide><use href="#ic-server" x="610" y="130" width="80" height="98"/><circle class="halo" cx="650" cy="179" r="62"/></g><text data-id="l-dc" data-hide class="small" x="650" y="252">NOVA-DC02</text><text data-id="m2" data-hide class="lbl" x="650" y="276" style="fill:var(--broken-text)">/32</text>
+  <g data-id="rt" data-hide><use href="#ic-shield" x="370" y="310" width="56" height="66"/></g><text data-id="l-rt" data-hide class="small" x="398" y="398">pfSense router</text>
+  <path class="guide" data-id="pq" d="M160 170 L610 170"/><path class="guide" data-id="pr" d="M650 235 C600 330 500 345 430 345"/>
+  <g data-id="x" data-hide><use href="#ic-x" x="520" y="318" width="34" height="34"/><text class="sub" x="570" y="340" style="text-anchor:start">wrong return path</text></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="370" y="120" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--broken)"/>
+</Explainer>

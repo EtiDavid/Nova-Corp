@@ -1,0 +1,38 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "prev", label: "Previous Versions", steps: [
+    { say: "David works on a document in the IT folder, on the data disk D:.", do: [{t:"show",ids:["d","l-d","doc","l-doc"]}] },
+    { say: "Windows quietly keeps earlier versions of the folder.", term:["Shadow Copy","a saved point-in-time view of a disk. It lets you see a file as it was earlier."], do: [{t:"show",ids:["sc1","sc2","sc3","l-sc"]}] },
+    { say: "The file is deleted or overwritten by mistake.", do: [{t:"hide",ids:["doc","l-doc"]},{t:"show",ids:["oops"]}] },
+    { say: "David opens Previous Versions and picks an earlier copy.", do: [{t:"glide",path:"pr",dot:"d1",ms:1000,keep:false},{t:"show",ids:["doc","l-doc","ok"]},{t:"hide",ids:["oops"]}] },
+    { say: "The file is back.", why: "These versions sit on the same disk as the data, so they are a convenience, not a real backup.", do: [] },
+  ]},
+  { id: "backup", label: "Backup restore", steps: [
+    { say: "Every day at 22:00 Windows Server Backup copies the data disk D:.", do: [{t:"show",ids:["d","l-d","doc","l-doc","b","l-b"]}] },
+    { say: "The copy goes to the backup disk, B:, kept on a separate hard drive.", term:["Backup","a full second copy kept apart from the original, so losing the original does not lose the data."], do: [{t:"glide",path:"pb",dot:"d1",ms:1200,keep:false},{t:"show",ids:["bdoc"]}] },
+    { say: "A file is deleted from D:.", do: [{t:"hide",ids:["doc","l-doc"]},{t:"show",ids:["oops"]}] },
+    { say: "The file is restored from the backup.", do: [{t:"glide",path:"pb",dot:"d1",ms:1200,rev:true,keep:false},{t:"hide",ids:["oops"]},{t:"show",ids:["doc","l-doc"]}] },
+    { say: "The restored file matches the original.", why: "The test compared the two files' hashes (fingerprints). Restoring a whole server was not tested.", do: [{t:"show",ids:["ok"]}] },
+  ]},
+];
+---
+<Explainer id="xf-recovery" start={start} title="Getting a deleted file back" intro="Two safety nets, and what each one can and cannot do."
+  scenarios={scenarios} alt="Animated diagram: a deleted document is recovered either from Previous Versions on the same disk, or from a daily backup on a separate backup disk."
+  note="Based on the recorded restore tests in CR-010 and CR-012." evidence={[{label:"Change CR-010", href:"/changes/CR-010/"},{label:"Change CR-012", href:"/changes/CR-012/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="d" data-hide><use href="#ic-disk" x="110" y="150" width="130" height="130"/></g><text data-id="l-d" data-hide class="lbl" x="175" y="310">D: data disk</text>
+  <g data-id="doc" data-hide><use href="#ic-doc" x="153" y="190" width="44" height="54"/></g><text data-id="l-doc" data-hide class="sub" x="175" y="338">IT document</text>
+  <g data-id="oops" data-hide><use href="#ic-x" x="200" y="136" width="40" height="40"/><text class="small" x="262" y="162" style="text-anchor:start">Deleted by mistake</text></g>
+  <g data-id="sc1" data-hide><rect class="pill" x="330" y="150" width="140" height="28" rx="6"/></g><g data-id="sc2" data-hide><rect class="pill" x="330" y="188" width="140" height="28" rx="6"/></g><g data-id="sc3" data-hide><rect class="pill" x="330" y="226" width="140" height="28" rx="6"/></g>
+  <text data-id="l-sc" data-hide class="sub" x="400" y="278">earlier versions (same disk)</text>
+  <path class="guide" data-id="pr" d="M330 210 L250 215"/>
+  <g data-id="b" data-hide><use href="#ic-disk" x="520" y="150" width="130" height="130" style="--st:var(--line-recovery)"/></g><text data-id="l-b" data-hide class="lbl" x="585" y="310">B: backup disk</text>
+  <g data-id="bdoc" data-hide><use href="#ic-doc" x="563" y="190" width="44" height="54"/></g>
+  <path class="guide" data-id="pb" d="M240 215 L520 215"/>
+  <g data-id="ok" data-hide><use href="#ic-check" x="120" y="104" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-recovery)"/>
+</Explainer>

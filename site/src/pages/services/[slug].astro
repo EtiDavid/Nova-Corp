@@ -1,5 +1,14 @@
 ---
 import NovaLayout from "../../layouts/NovaLayout.astro";
+import DnsClient from "../../components/nova/xf/DnsClient.astro";
+import FileShare from "../../components/nova/xf/FileShare.astro";
+import DcSignIn from "../../components/nova/xf/DcSignIn.astro";
+import ReplicationGap from "../../components/nova/xf/ReplicationGap.astro";
+import FilesDoors from "../../components/nova/xf/FilesDoors.astro";
+import FileRecovery from "../../components/nova/xf/FileRecovery.astro";
+import GpoLink from "../../components/nova/xf/GpoLink.astro";
+import FirewallRules from "../../components/nova/xf/FirewallRules.astro";
+import ProxmoxLayers from "../../components/nova/xf/ProxmoxLayers.astro";
 import { loadNova, typeLabel } from "../../lib/nova";
 export async function getStaticPaths() {
   const nova = await loadNova();
@@ -22,6 +31,17 @@ const needs = v.dependsOn.map((d: string) => nova.services.find((x: any) => x.id
   <div class="wrap prose-narrow" style="padding-bottom:40px">
     <h2 style="margin-top:24px">In Nova Corp</h2>
     <p style="margin-top:8px">{v.inNova}</p>
+    {id === "dns" && <DnsClient />}
+    {id === "dfs" && <FileShare start="with" />}
+    {(id === "kerberos" || id === "active-directory") && <DcSignIn />}
+    {id === "replication" && <ReplicationGap />}
+    {id === "smb-ntfs" && <FilesDoors />}
+    {id === "shadow-copies" && <FileRecovery start="prev" />}
+    {id === "windows-server-backup" && <FileRecovery start="backup" />}
+    {id === "group-policy" && <GpoLink />}
+    {id === "pfsense-firewall" && <FirewallRules />}
+    {id === "nested-virtualization" && <ProxmoxLayers start="stack" />}
+    {id === "proxmox-backups" && <ProxmoxLayers start="space" />}
     <p style="margin-top:12px"><b>Runs on:</b> {v.runsOn.map((s: string, n: number) => <>{n ? ", " : ""}<a href={base + "systems/" + s + "/"}>{nova.stationById(s)?.name ?? s}</a></>)}
       {needs.length > 0 && <> · <b>Depends on:</b> {needs.map((d: any, n: number) => <>{n ? ", " : ""}<a href={base + "services/" + d.id + "/"}>{d.name}</a></>)}</>}</p>
     {broke.length > 0 && <>

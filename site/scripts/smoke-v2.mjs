@@ -27,7 +27,7 @@ try {
     assert.equal(await d.locator(".icard").count(), 3);
     const nums = await d.locator(".counts b").allInnerTexts();
     assert.deepEqual(nums, ["6", "5", "15", "17"]);
-    assert.equal(await d.locator("main > section").count(), 5); // hero, cases, map, proof, counts
+    assert.equal(await d.locator("main > section").count(), 6); // hero, lab at a glance, cases, map, proof, counts
   });
   await step("Home: the journey ends on FILES01 and Replay works", async () => {
     await d.locator("#nl-home").scrollIntoViewIfNeeded();

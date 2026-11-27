@@ -1,6 +1,7 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
+const { start } = Astro.props;
 const scenarios: any[] = [
   { id: "now", label: "Today (after CR-015)", steps: [
     { say: "A workstation on the CLIENT network sends three kinds of traffic at the firewall.", why: "The firewall reads its rules from the top and stops at the first one that matches.", do: [{t:"show",ids:["pc","l-pc","r1","r2","r3","l-r1","l-r2","l-r3"]}] },
@@ -14,7 +15,7 @@ const scenarios: any[] = [
   ]},
 ];
 ---
-<Explainer id="xf-fw" title="How the firewall decides, one rule at a time"
+<Explainer id="xf-fw" start={start} title="How the firewall decides, one rule at a time"
   intro="Rules are checked from the top. The first match wins."
   scenarios={scenarios} alt="Animated diagram: traffic from the CLIENT network meets three firewall rules in order; two block admin and management access, the third allows normal traffic."
   note="Rule order as recorded for the CLIENT network in CR-015."

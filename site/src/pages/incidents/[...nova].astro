@@ -9,6 +9,14 @@ import "../../styles/reference-library.css";
 import IncidentOriginalRecord from "../../components/IncidentOriginalRecord.astro";
 import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
 import { incidentDocuments, originalSourceURL, siteArticle } from "../../data/incidentDocuments";
+import DcSignIn from "../../components/nova/xf/DcSignIn.astro";
+import FirewallRules from "../../components/nova/xf/FirewallRules.astro";
+import ProxmoxLayers from "../../components/nova/xf/ProxmoxLayers.astro";
+import FileRecovery from "../../components/nova/xf/FileRecovery.astro";
+import WireguardKeys from "../../components/nova/xf/WireguardKeys.astro";
+import GpoLink from "../../components/nova/xf/GpoLink.astro";
+import ReplicationGap from "../../components/nova/xf/ReplicationGap.astro";
+import TwoFaults from "../../components/nova/xf/TwoFaults.astro";
 import { loadNova, typeLabel, segmentId, journalHref } from "../../lib/nova";
 export async function getStaticPaths() {
   const entries = await getCollection("incidents");
@@ -50,6 +58,14 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
           label={`Line map showing the ${d.segment.line} line between ${d.segment.from} and ${d.segment.to} drawn broken in red.`} />
         <p class="caption"><b style="color:var(--broken-text)">Red dashed:</b> the segment that failed.</p></div></aside>}
       <div class="inc-main md" style={d.segment ? "" : "grid-column:1/-1"}>
+        {entry.id === "dc01-outage" && <DcSignIn start="outage" />}
+        {entry.id === "firewall-management-exposure" && <FirewallRules start="before" />}
+        {entry.id === "proxmox-storage-pressure" && <ProxmoxLayers start="space" />}
+        {entry.id === "backup-target-unavailable" && <FileRecovery start="backup" />}
+        {entry.id === "wireguard-handshake" && <WireguardKeys />}
+        {entry.id === "gpo-link-disabled" && <GpoLink />}
+        {entry.id === "replication-divergence" && <ReplicationGap />}
+        {entry.id === "two-faults-one-symptom" && <TwoFaults />}
         {!legacy && <Content />}
         {d.limits && <><h2 style="margin-top:32px">What this doesn't prove</h2><p class="boxnote" style="margin-top:10px">{d.limits}</p></>}
         {legacy && <>

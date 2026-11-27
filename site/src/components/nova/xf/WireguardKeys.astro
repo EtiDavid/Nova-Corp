@@ -1,0 +1,36 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "bug", label: "Keys do not match", steps: [
+    { say: "The laptop shows the VPN as active.", why: "But no data comes back through it.", do: [{t:"show",ids:["pc","l-pc","fw","l-fw","k1","k2"]}] },
+    { say: "The laptop's packets do arrive at the firewall.", why: "So the network path is fine. The problem is further in.", do: [{t:"glide",path:"p1",dot:"d1",ms:1100,keep:true}] },
+    { say: "The firewall checks the laptop's public key against the one it has on file.", term:["Public key","the half of a key pair that is shared. The firewall must hold the exact public key of each laptop it trusts."], why: "They do not match, so the firewall does not trust the sender.", do: [{t:"state",id:"fw",value:"bad"},{t:"show",ids:["x"]}] },
+    { say: "No handshake completes, so no data flows back.", why: "The exact wrong character was not recorded.", do: [{t:"show",ids:["q"]}] },
+  ]},
+  { id: "fix", label: "After the fix", steps: [
+    { say: "A new key pair is made for the laptop.", do: [{t:"show",ids:["pc","l-pc","fw","l-fw","k1","k3"]}] },
+    { say: "The laptop's new public key is entered into the firewall.", do: [{t:"glide",path:"p1",dot:"d1",ms:1100,keep:false},{t:"state",id:"fw",value:"good"}] },
+    { say: "The handshake completes and traffic flows both ways.", why: "The approved domain controller tests passed through the tunnel.", do: [{t:"glide",path:"p1",dot:"d1",ms:900,keep:false},{t:"glide",path:"p1",dot:"d2",ms:900,rev:true,keep:false},{t:"show",ids:["ok"]}] },
+    { say: "Not yet proven: a test from an outside network.", why: "That independent test is deferred to CR-016.", do: [{t:"show",ids:["pend"]}] },
+  ]},
+];
+---
+<Explainer id="xf-wg" start={start} title="Why the VPN looked connected but carried nothing" intro="A key mismatch, step by step."
+  scenarios={scenarios} alt="Animated diagram: a laptop's VPN packets reach the firewall but its public key does not match, so no handshake completes; after a new key pair is installed the tunnel works."
+  note="From the recorded WireGuard investigation." evidence={[{label:"Change CR-007", href:"/changes/CR-007/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="60" y="170" width="110" height="80"/></g><text data-id="l-pc" data-hide class="small" x="115" y="274">Laptop (VPN client)</text>
+  <g data-id="fw" data-hide><use href="#ic-shield" x="600" y="160" width="70" height="84"/></g><text data-id="l-fw" data-hide class="small" x="635" y="268">pfSense firewall</text>
+  <g data-id="k1" data-hide><rect class="bubble" x="60" y="300" width="110" height="34" rx="10"/><text class="bubble-t" x="115" y="322">key pair A</text></g>
+  <g data-id="k2" data-hide><rect class="bubble" x="580" y="300" width="110" height="34" rx="10"/><text class="bubble-t" x="635" y="322">expects B</text></g>
+  <g data-id="k3" data-hide><rect class="bubble" x="580" y="300" width="110" height="34" rx="10"/><text class="bubble-t" x="635" y="322">has the new key</text></g>
+  <path class="guide" data-id="p1" d="M175 210 L600 205"/>
+  <g data-id="x" data-hide><use href="#ic-x" x="400" y="120" width="40" height="40"/><text class="small" x="420" y="184">keys do not match</text></g>
+  <g data-id="q" data-hide><rect class="bubble" x="300" y="350" width="200" height="40" rx="12"/><text class="bubble-t" x="400" y="376">No reply comes back</text></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="400" y="120" width="40" height="40"/></g>
+  <g data-id="pend" data-hide><rect class="bubble" x="250" y="350" width="300" height="40" rx="12"/><text class="bubble-t" x="400" y="376">Outside-network test: still to do</text></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--line-identity)"/>
+</Explainer>

@@ -4,6 +4,7 @@ import MapSvg from "../components/nova/MapSvg.astro";
 import MobileLines from "../components/nova/MobileLines.astro";
 import { loadNova, typeLabel } from "../lib/nova";
 import EvidenceStrip from "../components/nova/EvidenceStrip.astro";
+import HomeLab from "../components/nova/xf/HomeLab.astro";
 const base = import.meta.env.BASE_URL;
 const nova = await loadNova();
 const { counts: c, journey, markers, lines, featured } = nova;
@@ -26,6 +27,11 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
       <a class="nv-btn secondary" href="#broke">See what broke</a>
       <a class="nv-link" href="mailto:etidavid26@gmail.com">Contact</a>
     </div>
+  </div></section>
+
+  <section class="sec" aria-labelledby="h-glance"><div class="wrap">
+    <h2 id="h-glance" class="sr-only">The lab at a glance</h2>
+    <HomeLab />
   </div></section>
 
   <section class="sec" id="broke" aria-labelledby="h-broke"><div class="wrap">

@@ -1,0 +1,34 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "gap", label: "DC02 falls behind", steps: [
+    { say: "Both domain controllers are online and normally copy changes to each other.", term:["Replication","two servers copying changes to each other so both hold the same directory."], do: [{t:"show",ids:["dc1","l-dc1","dc2","l-dc2","rep"]}] },
+    { say: "Inbound replication on DC02 is switched off on purpose.", do: [{t:"show",ids:["blk"]},{t:"state",id:"dc2",value:"off"}] },
+    { say: "A new group is created on DC01.", do: [{t:"state",id:"dc2",value:""},{t:"show",ids:["grp"]}] },
+    { say: "The change tries to reach DC02, but DC02 refuses it.", why: "A server that answers can still hold stale data.", do: [{t:"glide",path:"pr",dot:"d1",ms:1100,keep:true},{t:"show",ids:["x"]},{t:"state",id:"dc2",value:"bad"}] },
+  ]},
+  { id: "fix", label: "Replication restored", steps: [
+    { say: "Inbound replication on DC02 is switched back on.", do: [{t:"show",ids:["dc1","l-dc1","dc2","l-dc2","rep","grp"]}] },
+    { say: "Active Directory catches up. The group arrives on DC02.", do: [{t:"glide",path:"pr",dot:"d1",ms:1100,keep:false},{t:"show",ids:["grp2"]},{t:"state",id:"dc2",value:"good"}] },
+    { say: "It has the same GUID and SID, and replication shows 0 of 5 failures.", term:["GUID and SID","the two unique ids of an object. Matching ids prove it is the same group, not a copy."], do: [{t:"show",ids:["ok","ids"]}] },
+  ]},
+];
+---
+<Explainer id="xf-repl" start={start} title="Two online controllers that disagreed" intro="A deliberate replication fault from the lab."
+  scenarios={scenarios} alt="Animated diagram: a group created on DC01 does not appear on DC02 while inbound replication is off, and arrives with matching identifiers once replication is restored."
+  note="A deliberate lab fault, not an unplanned outage." evidence={[{label:"Change CR-013", href:"/changes/CR-013/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="dc1" data-hide><use href="#ic-server" x="110" y="130" width="90" height="110"/></g><text data-id="l-dc1" data-hide class="lbl" x="155" y="262">DC01</text>
+  <g data-id="dc2" data-hide><use href="#ic-server" x="600" y="130" width="90" height="110"/><circle class="halo" cx="645" cy="185" r="70"/></g><text data-id="l-dc2" data-hide class="lbl" x="645" y="262">DC02</text>
+  <path class="guide" data-hide data-id="rep" d="M210 185 L590 185"/><path class="guide" data-id="pr" d="M210 185 L590 185"/>
+  <g data-id="blk" data-hide><rect class="bubble" x="470" y="300" width="230" height="40" rx="12"/><text class="bubble-t" x="585" y="326">Inbound replication: off</text></g>
+  <g data-id="grp" data-hide><use href="#ic-folder" x="120" y="300" width="60" height="48"/><text class="sub" x="150" y="370">new group</text></g>
+  <g data-id="grp2" data-hide><use href="#ic-folder" x="615" y="300" width="60" height="48"/><text class="sub" x="645" y="370">new group</text></g>
+  <g data-id="x" data-hide><use href="#ic-x" x="500" y="140" width="40" height="40"/><text class="small" x="520" y="206">refused</text></g>
+  <g data-id="ok" data-hide><use href="#ic-check" x="380" y="120" width="40" height="40"/></g>
+  <text data-id="ids" data-hide class="small" x="400" y="360">same GUID · same SID · 0 of 5 failures</text>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-identity)"/>
+</Explainer>

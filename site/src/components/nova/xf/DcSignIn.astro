@@ -1,6 +1,7 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
+const { start } = Astro.props;
 const scenarios: any[] = [
   { id: "signin", label: "Moyo signs in", steps: [
     { say: "Moyo opens her laptop on the CLIENT network and types her password.", why: "Nothing has left the laptop yet.", do: [{t:"show",ids:["moyo","laptop","l-laptop"]},{t:"show",ids:["b1"]}] },
@@ -18,7 +19,7 @@ const scenarios: any[] = [
   ]},
 ];
 ---
-<Explainer id="xf-dc" title="How a sign-in works, and what happens when DC01 disappears"
+<Explainer id="xf-dc" start={start} title="How a sign-in works, and what happens when DC01 disappears"
   intro="Plays on its own. Pick a story, or click a dot to stop on a step. Based on recorded checks."
   scenarios={scenarios} alt="Animated diagram: a laptop signs in through the firewall to domain controller DC01, gets a Kerberos ticket, and switches to DC02 when DC01 is offline."
   note="This replays what the change records show. The lab has two controllers on a single physical host, so a host failure would take both."

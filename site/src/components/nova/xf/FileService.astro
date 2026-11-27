@@ -1,0 +1,27 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [{ id: "path", label: "How a request is served", steps: [
+  { say: "An employee's workstation asks for a shared file.", do: [{t:"show",ids:["pc","l-pc","fw","l-fw","fs","l-fs","host"]}] },
+  { say: "The request travels through the firewall, NOVA-FW01.", do: [{t:"glide",path:"p1",dot:"d1",ms:1000,keep:true},{t:"state",id:"fw",value:"pulse"}] },
+  { say: "The domain controllers identify the user and find the server's address.", term:["Identity and DNS","who you are, and where NOVA-FILES01 is. Both come from the domain controllers."], do: [{t:"show",ids:["dc","l-dc"]},{t:"glide",path:"p2",dot:"d2",ms:1000,keep:false},{t:"glide",path:"p2",dot:"d2",ms:1000,rev:true,keep:false}] },
+  { say: "The file server receives the request and checks access.", do: [{t:"glide",path:"p3",dot:"d1",ms:1100,keep:true},{t:"state",id:"fs",value:"good"}] },
+  { say: "It serves only the department folders this person may open.", why: "The files themselves are stored on NOVA-FILES01, not on the domain controllers.", do: [{t:"show",ids:["d-it","d-fin","d-hr","d-mg","d-sa"]}] },
+]}];
+const depts = [["it","IT"],["fin","Finance"],["hr","HR"],["mg","Management"],["sa","Sales"]];
+---
+<Explainer id="xf-service" start={start} title="How the file service fits into the company network" intro="Domain controllers handle identity and DNS. The file contents live on NOVA-FILES01."
+  scenarios={scenarios} alt="Animated diagram: a workstation request passes through the firewall, the domain controllers identify the user, and the file server serves the five department folders."
+  note="Architecture as built and tested in CR-008 to CR-010." evidence={[{label:"Change CR-008", href:"/changes/CR-008/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="300" rx="12"/>
+  <path class="guide" data-id="p1" d="M130 150 L230 150"/><path class="guide" data-id="p3" d="M290 150 L520 150"/><path class="guide" data-id="p2" d="M265 120 C300 70 360 60 400 60"/>
+  <g data-id="pc" data-hide><use href="#ic-laptop" x="30" y="114" width="100" height="72"/></g><text data-id="l-pc" data-hide class="small" x="80" y="208">Workstation</text>
+  <g data-id="fw" data-hide><use href="#ic-shield" x="230" y="120" width="52" height="62"/><circle class="halo" cx="256" cy="151" r="42"/></g><text data-id="l-fw" data-hide class="small" x="256" y="204">NOVA-FW01</text>
+  <g data-id="dc" data-hide><use href="#ic-server" x="400" y="30" width="48" height="60"/><use href="#ic-server" x="456" y="30" width="48" height="60"/></g><text data-id="l-dc" data-hide class="small" x="452" y="112">DC01 · DC02</text>
+  <g data-id="fs" data-hide><use href="#ic-server" x="520" y="110" width="70" height="86"/></g><text data-id="l-fs" data-hide class="small" x="555" y="216">NOVA-FILES01</text>
+  {depts.map(([id, name], i) => <g data-id={"d-" + id} data-hide><use href="#ic-folder" x={620 + (i % 2) * 80} y={60 + Math.floor(i / 2) * 70} width="56" height="44"/><text class="sub" x={648 + (i % 2) * 80} y={118 + Math.floor(i / 2) * 70}>{name}</text></g>)}
+  <g data-id="host" data-hide><rect class="bubble" x="40" y="340" width="720" height="60" rx="12"/><text class="bubble-t" x="400" y="376">All of these machines are virtual and run on Proxmox (NOVA-PROX01).</text></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--accent)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--line-identity)"/>
+</Explainer>

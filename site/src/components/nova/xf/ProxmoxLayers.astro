@@ -1,6 +1,7 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
+const { start } = Astro.props;
 const scenarios: any[] = [
   { id: "stack", label: "What runs on what", steps: [
     { say: "The whole lab runs on one ordinary Windows 11 computer.", why: "This is the single physical host. If it fails, everything in the lab stops.", do: [{t:"show",ids:["host"]}] },
@@ -16,7 +17,7 @@ const scenarios: any[] = [
   ]},
 ];
 ---
-<Explainer id="xf-prox" title="What the lab runs on, and how space was freed"
+<Explainer id="xf-prox" start={start} title="What the lab runs on, and how space was freed"
   intro="Two short stories about PROX01 and the host underneath it."
   scenarios={scenarios} alt="Animated diagram: a Windows 11 host runs VMware, which runs Proxmox, which runs five lab machines; a second story shows the thin pool dropping from 86.73 to 52.88 percent after old snapshots were removed."
   note="Figures are the values recorded before and after the cleanup."

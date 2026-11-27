@@ -1,0 +1,39 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "moyo", label: "Moyo opens three folders", steps: [
+    { say: "Moyo works in IT. She tries the IT, Finance and Management folders.", why: "Her account is in IT_Users, which carries the IT folder permission.", do: [{t:"show",ids:["moyo","l-moyo","chk","l-chk","f1","f2","f3","lf1","lf2","lf3"]}] },
+    { say: "Windows checks her identity against each folder's permissions.", term:["Share + folder permissions","two lists, one on the network share and one on the folder itself. Both must say yes."], do: [{t:"glide",path:"pc",dot:"d1",ms:900,keep:false},{t:"state",id:"chk",value:"pulse"}] },
+    { say: "IT folder: access granted.", do: [{t:"glide",path:"p1",dot:"d1",ms:900,keep:true},{t:"state",id:"f1",value:"good"},{t:"show",ids:["ok1"]}] },
+    { say: "Finance folder: access denied.", why: "Being in IT does not grant Finance access.", do: [{t:"glide",path:"p2",dot:"d1",ms:900,keep:true},{t:"state",id:"f2",value:"bad"},{t:"show",ids:["no2"]}] },
+    { say: "Management folder: access denied.", do: [{t:"glide",path:"p3",dot:"d1",ms:900,keep:true},{t:"state",id:"f3",value:"bad"},{t:"show",ids:["no3"]}] },
+  ]},
+  { id: "why", label: "Why it matters", steps: [
+    { say: "Finance keeps payslips and financial records.", why: "These must stay private from other departments.", do: [{t:"show",ids:["f2","lf2","lock2"]}] },
+    { say: "Access is given through groups, not to individual people.", term:["Resource group","a group such as DL_FS_Finance_Modify that holds the permission on one folder. People get access by joining the right department group."], do: [{t:"show",ids:["grp"]}] },
+    { say: "Other departments are not on the list, so they cannot open it.", do: [{t:"show",ids:["moyo","l-moyo","no2"]},{t:"glide",path:"pm2",dot:"d1",ms:1000,keep:true}] },
+  ]},
+];
+---
+<Explainer id="xf-access" start={start} title="Who can open which folder" intro="Windows checks every request against the folder's permissions."
+  scenarios={scenarios} alt="Animated diagram: Moyo from IT opens the IT folder but is denied the Finance and Management folders."
+  note="Based on the recorded access tests in the directory snapshot and CR-014." evidence={[{label:"Change CR-014", href:"/changes/CR-014/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="moyo" data-hide><use href="#ic-person" x="50" y="180" width="56" height="62"/></g><text data-id="l-moyo" data-hide class="small" x="78" y="266">Moyo · IT</text>
+  <path class="guide" data-id="pc" d="M110 212 L290 212"/>
+  <g data-id="chk" data-hide><use href="#ic-shield" x="290" y="170" width="64" height="76"/><circle class="halo" cx="322" cy="208" r="52"/></g><text data-id="l-chk" data-hide class="small" x="322" y="270">Windows checks</text>
+  <path class="guide" data-id="p1" d="M360 200 C430 200 470 90 560 90"/><path class="guide" data-id="p2" d="M360 212 L560 212"/><path class="guide" data-id="p3" d="M360 224 C430 224 470 330 560 330"/>
+  <path class="guide" data-id="pm2" d="M110 200 C250 150 400 170 560 205"/>
+  <g data-id="f1" data-hide><use href="#ic-folder" x="560" y="62" width="76" height="60"/></g><text data-id="lf1" data-hide class="small" x="598" y="146">IT</text>
+  <g data-id="f2" data-hide><use href="#ic-folder" x="560" y="182" width="76" height="60"/></g><text data-id="lf2" data-hide class="small" x="598" y="266">Finance</text>
+  <g data-id="f3" data-hide><use href="#ic-folder" x="560" y="302" width="76" height="60"/></g><text data-id="lf3" data-hide class="small" x="598" y="386">Management</text>
+  <g data-id="ok1" data-hide><use href="#ic-check" x="660" y="72" width="36" height="36"/><text class="sub" x="708" y="96" style="text-anchor:start">Granted</text></g>
+  <g data-id="no2" data-hide><use href="#ic-x" x="660" y="192" width="36" height="36"/><text class="sub" x="708" y="216" style="text-anchor:start">Denied</text></g>
+  <g data-id="no3" data-hide><use href="#ic-x" x="660" y="312" width="36" height="36"/><text class="sub" x="708" y="336" style="text-anchor:start">Denied</text></g>
+  <g data-id="lock2" data-hide><use href="#ic-lock" x="650" y="180" width="30" height="36"/></g>
+  <g data-id="grp" data-hide><rect class="bubble" x="300" y="60" width="200" height="40" rx="12"/><text class="bubble-t" x="400" y="86">DL_FS_Finance_Modify</text></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-files)"/>
+</Explainer>

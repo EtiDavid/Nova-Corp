@@ -1,6 +1,7 @@
 ---
 import Explainer from "./Explainer.astro";
 import Icons from "./Icons.astro";
+const { start } = Astro.props;
 // Everything named here is recorded: Moyo is in IT_Users, which carries DL_FS_IT_Modify (directory snapshot, PEOPLE_AND_DEPARTMENTS);
 // NOVA-FILES01 is 10.10.20.20; CR-014 found an explicit NTFS Deny for NOVA\moyo on IT\CR014-IncidentLab.
 const who = (v: string) => ({t:"text",id:"who",value:v});
@@ -46,7 +47,7 @@ const checks = [
 ];
 const doors = [{n:1,x:190,t:"Locate the server",s:"DNS",ic:"#ic-globe"},{n:2,x:360,t:"Share permissions",s:"SMB",ic:"#ic-lock"},{n:3,x:530,t:"Folder permissions",s:"NTFS",ic:"#ic-lock"}];
 ---
-<Explainer id="xf-files" title="Three doors between a person and a folder"
+<Explainer id="xf-files" start={start} title="Three doors between a person and a folder"
   intro="To open a folder on the file server, three checks must all say yes."
   scenarios={scenarios} alt="Animated diagram: Moyo passes three checks, finding the file server, share permissions and folder permissions, to reach a folder on NOVA-FILES01. Three stories: allowed, wrong department, restricted subfolder."
   note="Based on the CR-014 permission tests and the directory snapshot. The recorded Finance test shows IT access did not grant Finance access; both permission lists must agree, so either can refuse."

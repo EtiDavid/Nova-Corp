@@ -1,0 +1,39 @@
+---
+import Explainer from "./Explainer.astro";
+import Icons from "./Icons.astro";
+const { start } = Astro.props;
+const scenarios: any[] = [
+  { id: "without", label: "Without a file server", steps: [
+    { say: "Moyo needs the support guide. She asks an IT colleague to send it.", do: [{t:"show",ids:["moyo","l-moyo","col","l-col","docC"]}] },
+    { say: "The colleague emails it or copies it to a USB drive.", do: [{t:"show",ids:["mailp"]},{t:"glide",path:"pm",dot:"d1",ms:1200,keep:false}] },
+    { say: "Now there are two copies: Moyo's and her colleague's.", do: [{t:"hide",ids:["mailp"]},{t:"show",ids:["docM","v1","v2"]}] },
+    { say: "Each person edits their own copy. Which one is up to date?", why: "Nobody can tell, and mistakes follow.", do: [{t:"show",ids:["q"]}] },
+  ]},
+  { id: "with", label: "With the file server", steps: [
+    { say: "The support guide lives on the file server, in the IT folder.", term:["File server","one computer that stores the company's shared documents."], do: [{t:"show",ids:["moyo","l-moyo","col","l-col","fs","l-fs","docF"]}] },
+    { say: "Moyo opens the IT folder.", do: [{t:"glide",path:"pa",dot:"d1",ms:1100,keep:true}] },
+    { say: "Her colleague opens the same file.", do: [{t:"glide",path:"pb",dot:"d2",ms:1100,keep:true}] },
+    { say: "One central document, open only to authorized IT staff.", why: "Changes are saved in one place, so everyone sees the latest version.", do: [{t:"show",ids:["ok"]}] },
+  ]},
+];
+---
+<Explainer id="xf-share" start={start} title="Why a shared folder beats passing copies around" intro="The same task, with and without a file server."
+  scenarios={scenarios} alt="Animated diagram: without a file server two people end up with two different copies of a document; with the file server both open the same single document."
+  note="Illustrates the problem the file server was built to solve (CR-008 to CR-010)." evidence={[{label:"Change CR-008", href:"/changes/CR-008/"}]}>
+  <Icons />
+  <rect class="band" x="10" y="20" width="780" height="400" rx="12"/>
+  <g data-id="moyo" data-hide><use href="#ic-person" x="60" y="150" width="56" height="62"/></g><text data-id="l-moyo" data-hide class="small" x="88" y="236">Moyo (IT)</text>
+  <g data-id="col" data-hide><use href="#ic-person" x="684" y="150" width="56" height="62"/></g><text data-id="l-col" data-hide class="small" x="712" y="236">IT colleague</text>
+  <path class="guide" data-id="pm" d="M684 190 L120 190"/>
+  <g data-id="docC" data-hide><use href="#ic-doc" x="600" y="260" width="44" height="54"/></g>
+  <g data-id="docM" data-hide><use href="#ic-doc" x="150" y="260" width="44" height="54"/></g>
+  <text data-id="v1" data-hide class="sub" x="172" y="334">Moyo's copy · version 1</text>
+  <text data-id="v2" data-hide class="sub" x="622" y="334">Colleague's copy · version 2</text>
+  <g data-id="mailp" data-hide><use href="#ic-mail" x="370" y="100" width="60" height="44"/><text class="sub" x="400" y="166">email or USB</text></g>
+  <g data-id="q" data-hide><rect class="bubble" x="250" y="360" width="300" height="40" rx="12"/><text class="bubble-t" x="400" y="386">Two copies. Which one is current?</text></g>
+  <g data-id="fs" data-hide><use href="#ic-server" x="355" y="130" width="90" height="110"/></g><text data-id="l-fs" data-hide class="lbl" x="400" y="262">NOVA-FILES01</text>
+  <g data-id="docF" data-hide><use href="#ic-doc" x="378" y="290" width="44" height="54"/><text class="sub" x="400" y="364">Support guide (IT folder)</text></g>
+  <path class="guide" data-id="pa" d="M120 190 L355 190"/><path class="guide" data-id="pb" d="M684 190 L445 190"/>
+  <g data-id="ok" data-hide><use href="#ic-check" x="540" y="140" width="40" height="40"/></g>
+  <circle data-id="d1" data-dot class="dot" r="10" fill="var(--line-files)"/><circle data-id="d2" data-dot class="dot" r="10" fill="var(--accent)"/>
+</Explainer>
