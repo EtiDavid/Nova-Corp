@@ -1,5 +1,5 @@
 ---
-import { loadNova, type LineId } from "../../lib/nova";
+import { loadNova, typeLabel, type LineId } from "../../lib/nova";
 const { stations, segments, zones, markers, lineMap: lines } = await loadNova();
 interface Props {
   interactive?: boolean; id?: string; showMarkers?: "home" | "all" | "none"; broken?: string; emphasise?: string[];
@@ -37,8 +37,8 @@ const dim = (st: string) => emphasise && !emphasise.includes(st);
   })}
   {journey && <><circle class="dot" id="dot" r="9" cx="-40" cy="-40" /><text class="tick" id="tick" x="758" y="428" opacity="0">✔ IT</text></>}
   {shownMarkers.map((m: any) => (
-    <a href={base + "incidents/" + m.slug + "/"} class="marker" aria-label={`Incident ${m.n}: ${m.title} (${m.type})`}>
-      <circle cx={m.x} cy={m.y} r="14" /><text x={m.x} y={m.y}>{m.n}</text><title>{m.n}. {m.title} ({m.type})</title>
+    <a href={base + "incidents/" + m.slug + "/"} class="marker" aria-label={`Incident ${m.n}: ${m.title} (${typeLabel[m.type]})`}>
+      <circle cx={m.x} cy={m.y} r="14" /><text x={m.x} y={m.y}>{m.n}</text><title>{m.n}. {m.title} ({typeLabel[m.type]})</title>
     </a>
   ))}
 </svg>

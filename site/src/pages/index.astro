@@ -59,7 +59,7 @@ const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
     <div class="map-card">
       <MapSvg id="nl-home" showMarkers="home" journey label="Line map of the Nova Corp lab: a workstation, a firewall, two domain controllers and a file server inside a frame for the Proxmox host that runs them, a physical laptop outside it, and incident pins." />
       <div class="legend2" aria-label="Lines">
-        {lines.map((l: any) => <span><i class={l.id === "recovery" ? "dotted" : ""} style={`border-color:var(${l.token})`}></i>{l.name}</span>)}
+        {lines.filter((l: any) => l.id !== "platform").map((l: any) => <span><i class={l.id === "recovery" ? "dotted" : ""} style={`border-color:var(${l.token})`}></i>{l.name}</span>)}
         <span><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="var(--broken)"/></svg>Incident pin</span>
       </div>
       <p class="journey-text" id="journey-text" aria-live="polite"></p>
