@@ -5,7 +5,7 @@ name: Publish Nova Corp website preview to GitHub Pages
 # incomplete long-term specification to main. No live lab access is exposed.
 on:
   push:
-    branches: [feature/world-explorer-site]
+    branches: [main, feature/world-explorer-site]
     paths:
       - "site/**"
       - "docs/**"
@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
   preview:
-    if: github.ref == 'refs/heads/feature/world-explorer-site' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/world-explorer-site'
     runs-on: ubuntu-latest
     environment:
       name: world-explorer-preview
