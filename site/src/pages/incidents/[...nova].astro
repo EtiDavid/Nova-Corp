@@ -1,6 +1,7 @@
 ---
 // The generic, data-driven incident page. Any incident that has no hand-mapped legacy record renders here,
 // so adding an incident is: add one Markdown file with front matter. See HOW-TO/add-an-incident.md.
+import IncidentNarrative from "../../components/IncidentNarrative.astro";
 import NovaLayout from "../../layouts/NovaLayout.astro";
 import MapSvg from "../../components/nova/MapSvg.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
@@ -78,18 +79,10 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
         {entry.id === "proxmox-webgui-outage" && <ServiceStopped />}
         {entry.id === "bulk-users-partial-rollback" && <Rollback />}
         {entry.id === "dc02-cannot-reach-dc01" && <Cr004Rollback />}
-        {!legacy && <Content />}
+        {legacy ? <IncidentNarrative slug={entry.id} /> : <Content />}
         {d.limits && <><h2 style="margin-top:32px">What this doesn't prove</h2><p class="boxnote" style="margin-top:10px">{d.limits}</p></>}
-        {legacy && <>
-          <h2 style="margin-top:32px">Evidence</h2>
-          <div class="incident-sidebar-journal" style="margin-top:8px">
-            {journalOnSite && <p><a class="nv-link" href={journalOnSite}>Read the complete original {legacy.journalFormat === "pdf" ? "PDF, all pages and images," : "Markdown journal"} on this site →</a></p>}
-            <p class="tiny"><a href="#full-investigation">↓ Every recorded step</a> · <a class="incident-master-link" href={originalSourceURL(legacy.journal)} target="_blank" rel="noopener noreferrer">Open {legacy.journalFormat === "pdf" ? "original PDF" : "full Markdown"} journal on GitHub ↗</a> · <a href={originalSourceURL(legacy.source)} target="_blank" rel="noopener noreferrer">Original incident record ↗</a></p>
-          </div>
-          <OriginalPdfEvidenceGallery subject={"incidents/" + entry.id} heading="Original recorded results from the journal" />
-          <details class="orig-record" open style="margin-top:16px"><summary><b>The complete original investigation</b> (every recorded step)</summary><IncidentOriginalRecord slug={entry.id} /></details>
-        </>}
-        {!legacy && journal && <><h2 style="margin-top:32px">Evidence</h2><p style="margin-top:8px"><a class="nv-link" href={journal.href}>Full journal ({change.id}){journal.external ? " ↗" : " →"}</a></p></>}
+        {(legacy ? journalOnSite : journal?.href) && <><h2 style="margin-top:32px">The full record</h2>
+          <p style="margin-top:8px"><a class="nv-link incident-master-journal" href={legacy ? journalOnSite : journal.href}>{legacy ? legacy.journalLabel : "Full journal (" + change.id + ")"}{!legacy && journal.external ? " ↗" : " →"}</a></p></>}
         {related.length > 0 && <><h2 style="margin-top:32px">Related</h2><div class="related">{related.map((r: any) => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div></>}
       </div>
     </div>

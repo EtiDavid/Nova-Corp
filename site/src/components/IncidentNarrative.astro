@@ -1,0 +1,51 @@
+---
+// The one narrative of an older incident: the public investigation source, trimmed to the investigation itself, with the
+// screenshots placed right after the step they prove. No second copy, no gallery at the end, no extra journal links.
+import { getEntry } from "astro:content";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import remarkNovaTerms from "../lib/remarkNovaTerms.mjs";
+import remarkNovaEvidence from "../lib/remarkNovaEvidence.mjs";
+import { incidentDocuments } from "../data/incidentDocuments";
+import { evidenceAfterStep } from "../data/incidentEvidencePlacement";
+interface Props { slug: string }
+const { slug } = Astro.props;
+const record = incidentDocuments[slug];
+if (!record) throw Error("No full-source mapping for incident " + slug);
+const source: any = await getEntry("reference", record.source.replace(/\.md$/i, ""));
+if (!source) throw Error("Missing original public incident markdown: " + record.source);
+const placement = evidenceAfterStep[slug] ?? {};
+const DROP = /^(Original tests and evidence|See the original test results|Explore connected services|Explore the real implementation)/i;
+const RENAME = /^(Investigation — commands, expected results and actual findings|Step-by-step investigation)$/i;
+let body: string = String(source.body).replace(/^# .*\n/, "").replace(/^\*\*(Closed|Open)[^\n]*\n/m, "");
+const sections = body.split(/^## /m);
+const out: string[] = [sections[0]];
+for (const sec of sections.slice(1)) {
+  const title = sec.split("\n", 1)[0].trim();
+  if (DROP.test(title)) continue;
+  if (!RENAME.test(title)) { out.push("## " + sec); continue; }
+  // The investigation: place each screenshot after its numbered step.
+  const parts = sec.split(/^### /m);
+  const steps = parts.slice(1).map((p) => {
+    const n = (p.match(/^(?:Step )?(\d+)\./) || [])[1];
+    const ids = (n && placement[n]) || [];
+    return "### " + p.trimEnd() + ids.map((i) => `\n\n{{evidence:${i}}}`).join("") + "\n\n";
+  });
+  out.push("## How I worked it out\n\n" + steps.join(""));
+}
+for (const ids of Object.values(placement)) for (const id of ids.flat()) if (!out.join("").includes(id)) throw Error(`evidence ${id} was not placed in ${slug}`);
+const proc = await createMarkdownProcessor({ remarkPlugins: [remarkNovaTerms, remarkNovaEvidence] });
+const { code } = await proc.render(out.join("\n").replace(/\n{3,}/g, "\n\n").replace(/\n+---\s*$/, ""));
+const base = import.meta.env.BASE_URL;
+const figuresBase = base + "journal-figures/cr007/";
+const journalImages = slug === "wireguard-handshake" ? [
+  { file: "02_packet_journey.png", title: "Tracing the encrypted VPN packet", alt: "Original CR-007 illustration of how remote WireGuard packets traverse the router, pfSense, and VPN tunnel" },
+  { file: "05_troubleshooting_funnel.png", title: "Where the handshake failed", alt: "Original CR-007 diagnostic decision diagram isolating incoming UDP, firewall state, and peer authentication" },
+  { file: "04_rule_order.png", title: "Rule evaluation and VPN scope", alt: "Original CR-007 rule-order illustration differentiating allowed remote access and blocked destinations" }
+] : [];
+---
+<div class="incident-source-document reference-content" id="full-investigation"><Fragment set:html={code} /></div>
+{journalImages.length > 0 && <section class="incident-journal-figures" aria-label="Figures from the original change-request journal">
+  <h2>How the packet travels</h2>
+  <p class="tiny">These drawings were published in CR-007. They explain packet flow and troubleshooting. They are <strong>not</strong> screenshots of recorded handshakes or packet captures.</p>
+  <div class="incident-journal-grid">{journalImages.map((fig) => <figure><a href={figuresBase + fig.file} target="_blank" rel="noopener noreferrer"><img src={figuresBase + fig.file} alt={fig.alt} loading="lazy" decoding="async" /></a><figcaption>{fig.title}</figcaption></figure>)}</div>
+</section>}
