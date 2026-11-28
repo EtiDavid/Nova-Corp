@@ -82,7 +82,7 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
         {legacy ? <IncidentNarrative slug={entry.id} /> : <Content />}
         {d.limits && <><h2 style="margin-top:32px">What this doesn't prove</h2><p class="boxnote" style="margin-top:10px">{d.limits}</p></>}
         {(legacy ? journalOnSite : journal?.href) && <><h2 style="margin-top:32px">The full record</h2>
-          <p style="margin-top:8px"><a class="nv-link incident-master-journal" href={legacy ? journalOnSite : journal.href}>{legacy ? legacy.journalLabel : "Full journal (" + change.id + ")"}{!legacy && journal.external ? " ↗" : " →"}</a></p></>}
+          <p style="margin-top:8px"><a class="nv-link incident-master-journal" href={legacy ? journalOnSite : journal?.href}>{legacy ? legacy.journalLabel : "Full journal (" + change?.id + ")"}{!legacy && journal?.external ? " ↗" : " →"}</a></p></>}
         {related.length > 0 && <><h2 style="margin-top:32px">Related</h2><div class="related">{related.map((r: any) => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div></>}
       </div>
     </div>
