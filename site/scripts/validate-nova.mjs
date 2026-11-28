@@ -88,5 +88,13 @@ readdirSync(incDir).filter(f => f.endsWith(".md")).forEach(f => {
 const featuredNs = readdirSync(incDir).filter(f => f.endsWith(".md")).map(f => (readFileSync(join(incDir, f), "utf8").match(/^featured: (\d+)/m) || [])[1]).filter(Boolean).sort();
 if (new Set(featuredNs).size !== featuredNs.length) fail("featured numbers must be unique");
 
+// Sanitized CR-A figures: each needs a file, alt text, a caption naming what it proves, and a source.
+import { existsSync } from "node:fs";
+const cra = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "src/data/craEvidence.json"), "utf8")).entries;
+const craIds = new Set();
+cra.forEach(e => { if (craIds.has(e.id)) fail(`craEvidence: duplicate id ${e.id}`); craIds.add(e.id);
+  if (!existsSync(join(dirname(fileURLToPath(import.meta.url)), "..", "public", e.file))) fail(`craEvidence ${e.id}: missing file ${e.file}`);
+  for (const k of ["title", "caption", "alt", "source", "redaction"]) if (!e[k] || e[k].length < 10) fail(`craEvidence ${e.id}: needs ${k}`); });
+
 if (errors.length) { console.error("Nova content validation FAILED:\n - " + errors.join("\n - ")); process.exit(1); }
 console.log(`Nova content OK: ${systems.length} systems, ${services.length} services, ${changes.length} changes (${changes.filter(c => c.status === "done").length} done), ${glossary.length} glossary terms, ${journeys.length} journey, ${readdirSync(incDir).filter(f => f.endsWith(".md")).length} incidents.`);

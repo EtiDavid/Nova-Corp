@@ -310,3 +310,9 @@ html:not(.js) .xf-controls, html:not(.js) .xf-tabs { display:none; } html:not(.j
 /* long paths and file names inside cards must wrap instead of widening the page */
 .card-list a, .card-list p, .card-list small, .card-list code, .card-list span, .card-list h3 { overflow-wrap:anywhere; min-width:0; }
 .nl .k-host .zone { fill:none; stroke:var(--line-platform); stroke-dasharray:none; stroke-width:2; opacity:.8; } .nl .k-host .zone-label { fill:var(--line-platform); }
+/* inline evidence: the screenshot sits right after the result it proves */
+.evfig { margin:18px 0 22px; max-width:100%; }
+.evfig img { display:block; width:100%; height:auto; max-width:100%; border:1px solid var(--rule); border-radius:6px; background:#0c0c0c; }
+.evfig figcaption { margin-top:8px; font-size:.92rem; color:var(--muted); }
+.evfig figcaption strong { color:var(--ink); display:block; margin-bottom:2px; }
+.evfig .evsrc { display:block; margin-top:4px; font-size:.85rem; }

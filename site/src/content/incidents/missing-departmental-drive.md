@@ -28,22 +28,51 @@ copyStatus: "rewritten"
 
 With the original VPN rules, direct SMB to FILES01 was denied. The firewall counter showed blocked traffic, and the INFRA rule was blocking TCP 445. Access to the domain controllers still passed. That was the design: the staff VPN did not allow file servers.
 
+{{evidence:smb-before-445-fails}}
+
+{{evidence:smb-block-logs}}
+
+
 ### 2. A narrow rule
 
 I added one rule, above the INFRA block: pass TCP 445 from 10.10.60.11 to 10.10.20.20, logged. After it, FILES01 on TCP 445 was True, while 3389 and 5985 were False, and domain controller ports 53 and 88 and the locator still worked, 6 of 6.
+
+{{evidence:smb-rule-position-5}}
+
+{{evidence:smb-rdp-winrm-matrix}}
+
 
 ### 3. Stage two: the drive
 
 After a user policy refresh the user policy completed, but the laptop still had only C: and no connections listed. The name resolved and TCP worked. Browsing the DFS namespace directly showed the same five folders, so DFS itself worked. The drive was still missing.
 
+{{evidence:drive-gpupdate-no-mapping}}
+
+
 ### 4. Restart
 
 I did not map the drive by hand or change any policy. After a restart, Z: appeared automatically, pointing to the IT share.
+
+{{evidence:drive-z-after-restart}}
+
 
 ### 5. What Moyo and John could do
 
 Moyo created, wrote, read, appended to and deleted a synthetic test file on Z: (8 of 8 steps), and the file was gone after cleanup. Finance, HR, Management and Sales were each denied. John, in the Contractors OU, had no mapped drive and was denied all five department folders, 7 of 7 checks including his identity.
 
+{{evidence:moyo-it-file-operations}}
+
+{{evidence:moyo-four-denied}}
+
+{{evidence:john-five-denied}}
+
+
 ### 6. Check the firewall again
 
-New logs showed RDP and WinRM attempts blocked and SMB allowed. The staff VPN is not a privileged administrator VPN.
+New logs showed RDP and WinRM attempts blocked and SMB allowed.
+
+{{evidence:rdp-winrm-blocked-logs}}
+
+{{evidence:smb-before-after-logs}}
+
+ The staff VPN is not a privileged administrator VPN.

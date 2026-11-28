@@ -45,3 +45,10 @@ The router already forwarded UDP 51820 to the firewall, with no exposed host. It
 ### 4. Test again on the hotspot
 
 TCP 53 was True through the staff VPN from 10.10.60.11. Four explicit SRV queries (LDAP and Kerberos, against both domain controllers) returned DC01 and DC02, and the locator found DC01. Both domain controllers also passed the seven-port TCP matrix, 14 of 14. That tests the transport, not sign-in.
+
+{{evidence:hotspot-tcp53-via-tunnel}}
+
+{{evidence:hotspot-dc-locator}}
+
+{{evidence:hotspot-14-of-14-tcp}}
+

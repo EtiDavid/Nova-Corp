@@ -29,6 +29,9 @@ DC01 had just come back after the outage test, and the replication summary was n
 
 **Observed:** 2 of 5 failing, with errors 1722 and 1908. **But:** three of the five were already succeeding. A total routing, DNS or RPC failure would not look like that.
 
+{{evidence:repl-summary-1722-1908}}
+
+
 ### 2. Test what the errors point at
 
 Error 1908 means the domain controller could not be found, so I tested discovery, the DNS records, the KDC, Netlogon and time services, the time source, Kerberos on TCP 88, the RPC endpoint mapper on TCP 135 and LDAP on TCP 389, and watched showrepl repeatedly.
@@ -38,3 +41,6 @@ Error 1908 means the domain controller could not be found, so I tested discovery
 ### 3. Read the timestamps
 
 On DC02, an older consecutive-failure line for 1722 stayed visible even though the current attempts were successful. A fresh summary settled it. An old error line is not a current failure.
+
+{{evidence:repl-stale-1722-line}}
+

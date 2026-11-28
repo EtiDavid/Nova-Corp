@@ -49,3 +49,6 @@ Get-NetFirewallRule -PolicyStore ActiveStore -Enabled True -Direction Inbound -A
 **Actual:** the effective rule was File Server Remote Management (SMB-In), profile Any, inbound allow, source Local, for TCP local port 445 with any remote port and any address.
 
 **What it means:** one display group is not the whole firewall. The effective merged policy is the one that counts.
+
+{{evidence:smb-activestore-rule}}
+

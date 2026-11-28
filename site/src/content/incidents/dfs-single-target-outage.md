@@ -44,6 +44,9 @@ I did the same for IT so I could see the impact from Moyo's workstation. **Actua
 
 **What it proves:** the drive mapping exists, the namespace exists and the share on the server exists, but the DFS target is offline, so file access fails.
 
+{{evidence:dfs-single-target-error}}
+
+
 ### 3. Bring it back
 
 I set both targets back to Online with the same command. **Actual:** `Test-Path "Z:\"` returned True.

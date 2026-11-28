@@ -12,6 +12,7 @@ import DfsReferral from "../../../components/nova/xf/DfsReferral.astro";
 import FileRecovery from "../../../components/nova/xf/FileRecovery.astro";
 import FirewallRules from "../../../components/nova/xf/FirewallRules.astro";
 import FilesDoors from "../../../components/nova/xf/FilesDoors.astro";
+import EvidenceFigure from "../../../components/nova/EvidenceFigure.astro";
 import NovaLayout from "../../../layouts/NovaLayout.astro";
 import { loadNova, typeLabel, journalHref } from "../../../lib/nova";
 export async function getStaticPaths() {
@@ -60,6 +61,11 @@ const prev = sup ? undefined : nova.done[i - 1], nextC = sup ? undefined : nova.
       <h2 style="margin-top:28px">What broke</h2>
       <ul class="plainlist">{b.incidents.map((n: any) => <li><span class={"type " + n.type} style="margin-right:8px">{typeLabel[n.type]}</span><a href={base + "incidents/" + n.slug + "/"}>{n.shortTitle ?? n.title}</a></li>)}</ul></>}
     {c.validated && <><h2 style="margin-top:28px">How it was validated</h2><p style="margin-top:6px">{c.validated}</p></>}
+    {id === "CR-A" && <>
+      <h2 style="margin-top:28px">Evidence</h2>
+      <p class="tiny" style="margin-top:6px">Sanitized figures from the private CR-A journal. The two investigations carry their own screenshots: <a href={base + "incidents/vpn-hotspot-endpoint/"}>the hotspot VPN</a> and <a href={base + "incidents/missing-departmental-drive/"}>the missing drive</a>. A hotspot name, link-local addresses and a domain ID were covered with solid boxes. The original screenshots stay private.</p>
+      {["laptop-domain-joined", "laptop-kerberos-tickets", "usb-moyo-allowed", "usb-john-denied", "rdp-winrm-blocked-logs"].map((f) => <EvidenceFigure id={f} />)}
+    </>}
     {c.limits && c.limits.length > 0 && <><h2 style="margin-top:28px">What this does not prove</h2><ul>{c.limits.map((x: string) => <li>{x}</li>)}</ul></>}
     <h2 style="margin-top:28px">{sup ? "Sanitized public summary" : "Original journal"}</h2>
     <p style="margin-top:6px"><a class="nv-link" href={journal.href}>{sup ? "Read the sanitized summary" : "Full journal (" + c.id + ")"}{journal.external ? " ↗" : " →"}</a></p>

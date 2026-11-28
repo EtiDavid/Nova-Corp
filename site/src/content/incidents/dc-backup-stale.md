@@ -27,6 +27,9 @@ The backup job was scheduled, so I expected a recent backup. The monitor said ot
 
 **Observed:** the latest successful domain controller backup was 48.82 hours old.
 
+{{evidence:dc-backup-health-failed}}
+
+
 **Cause:** the domain controller had been powered off. The scheduled job runs inside the machine, so a machine that is off cannot run it.
 
 **Fix:** a fresh System State backup, then a check of the writers and recovery versions.
