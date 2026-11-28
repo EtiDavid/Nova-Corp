@@ -31,7 +31,7 @@ ping 10.10.20.10
 ping 10.10.20.11
 ```
 
-**Expected:** both directions succeed. **Actual:** both did, in under 1 ms. That ruled out routing, addressing and the gateway.
+**Expected:** both directions succeed. **Actual:** both did, in under 1 ms. ICMP worked, so basic reachability was fine. That did not rule out a TCP-level problem or asymmetric routing.
 
 ### 2. Does SMB connect?
 
