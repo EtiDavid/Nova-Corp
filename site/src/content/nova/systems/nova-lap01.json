@@ -2,7 +2,7 @@
   "id": "nova-lap01",
   "name": "NOVA-LAP01",
   "role": "Physical employee laptop",
-  "sub": "Physical laptop · staff VPN",
+  "sub": "Physical laptop",
   "kind": "workstation",
   "zone": "Outside the lab, on the staff VPN (VPN_REMOTE)",
   "ip": "10.10.60.11 inside the tunnel",
