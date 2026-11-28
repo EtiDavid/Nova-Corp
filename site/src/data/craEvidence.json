@@ -3,7 +3,7 @@
   "entries": [
     {
       "id": "hotspot-tcp53-via-tunnel",
-      "file": "evidence/cra/hotspot-tcp53-via-tunnel.png",
+      "file": "cra-evidence/hotspot-tcp53-via-tunnel.png",
       "title": "TCP 53 to DC01 succeeds through the staff VPN from the hotspot",
       "caption": "On the hotspot, TCP 53 to DC01 succeeds from 10.10.60.11 through NOVA-STAFF, while the physical Wi-Fi sits on the hotspot (172.20.10.2). The hotspot name and link-local addresses are covered.",
       "source": "CR-A, CP-A04, figure 5",
@@ -14,7 +14,7 @@
     },
     {
       "id": "hotspot-dc-locator",
-      "file": "evidence/cra/hotspot-dc-locator.png",
+      "file": "cra-evidence/hotspot-dc-locator.png",
       "title": "The domain controller locator finds DC01 from the hotspot",
       "caption": "nltest /dsgetdc finds NOVA-DC01 at 10.10.20.10 and completes successfully. The domain GUID is covered.",
       "source": "CR-A, CP-A04, figure 6",
@@ -25,7 +25,7 @@
     },
     {
       "id": "hotspot-14-of-14-tcp",
-      "file": "evidence/cra/hotspot-14-of-14-tcp.png",
+      "file": "cra-evidence/hotspot-14-of-14-tcp.png",
       "title": "Seven ports on each domain controller are reachable",
       "caption": "Ports 53, 88, 135, 389, 445, 464 and 3268 are True on both domain controllers, 14 of 14. This tests transport, not authentication.",
       "source": "CR-A, CP-A04, figure 7",
@@ -36,7 +36,7 @@
     },
     {
       "id": "laptop-domain-joined",
-      "file": "evidence/cra/laptop-domain-joined.png",
+      "file": "cra-evidence/laptop-domain-joined.png",
       "title": "NOVA-LAP01 is a member of nova.corp",
       "caption": "The laptop reports nova.corp membership True, signed in as moyo, on the hotspot, with the WireGuard tunnel service Running and Automatic. The network name and link-local addresses are covered.",
       "source": "CR-A, CP-A05, figure 26",
@@ -47,7 +47,7 @@
     },
     {
       "id": "laptop-kerberos-tickets",
-      "file": "evidence/cra/laptop-kerberos-tickets.png",
+      "file": "cra-evidence/laptop-kerberos-tickets.png",
       "title": "Moyo gets Kerberos tickets from outside the lab",
       "caption": "Moyo signed in through DC02 and has nine cached tickets; the primary ticket-granting ticket uses AES-256. Getting tickets is not folder authorization.",
       "source": "CR-A, CP-A05, figure 29",
@@ -58,7 +58,7 @@
     },
     {
       "id": "usb-moyo-allowed",
-      "file": "evidence/cra/usb-moyo-allowed.png",
+      "file": "cra-evidence/usb-moyo-allowed.png",
       "title": "Moyo can use the removable drive",
       "caption": "Moyo creates, writes and reads a test file on the removable drive D:. The other removable device, E:, is not touched.",
       "source": "CR-A, CP-A08, figure 36",
@@ -69,7 +69,7 @@
     },
     {
       "id": "usb-john-denied",
-      "file": "evidence/cra/usb-john-denied.png",
+      "file": "cra-evidence/usb-john-denied.png",
       "title": "John is denied the same removable drive",
       "caption": "John, a contractor, is denied reading Moyo's test file on the USB drive. A \"path not found\" error follows the access failure.",
       "source": "CR-A, CP-A08, figure 38",
@@ -80,7 +80,7 @@
     },
     {
       "id": "smb-before-445-fails",
-      "file": "evidence/cra/smb-before-445-fails.png",
+      "file": "cra-evidence/smb-before-445-fails.png",
       "title": "Before the rule: no drives, and TCP 445 to FILES01 fails",
       "caption": "Before the change the laptop has no network drives, and TCP 445 to FILES01 (10.10.20.20) fails through NOVA-STAFF. Ping times out too.",
       "source": "CR-A, CP-A07, figure 42",
@@ -91,7 +91,7 @@
     },
     {
       "id": "smb-block-logs",
-      "file": "evidence/cra/smb-block-logs.png",
+      "file": "cra-evidence/smb-block-logs.png",
       "title": "pfSense blocked SMB to FILES01 by design",
       "caption": "TCP 445 from 10.10.60.11 to FILES01 is blocked by the rule \"Block VPN access to all unapproved INFRA host\", while TCP 445 to DC02 passes under the AD rule.",
       "source": "CR-A, CP-A07, figure 46",
@@ -102,7 +102,7 @@
     },
     {
       "id": "smb-rule-position-5",
-      "file": "evidence/cra/smb-rule-position-5.png",
+      "file": "cra-evidence/smb-rule-position-5.png",
       "title": "The one new rule sits above the block rules",
       "caption": "The VPN_REMOTE rules after the change: \"CR-A allow Nova-Lap01 to Files01\" (TCP 445, 10.10.60.11 to 10.10.20.20) is fifth, above the two block rules. The earlier rules are unchanged.",
       "source": "CR-A, CP-A07, figure 48",
@@ -113,7 +113,7 @@
     },
     {
       "id": "smb-rdp-winrm-matrix",
-      "file": "evidence/cra/smb-rdp-winrm-matrix.png",
+      "file": "cra-evidence/smb-rdp-winrm-matrix.png",
       "title": "After the rule: SMB works, RDP and WinRM do not",
       "caption": "From the laptop, FILES01 port 445 is True while 3389 (RDP) and 5985 (WinRM) are False. DNS and Kerberos to the domain controllers are still True.",
       "source": "CR-A, CP-A07, figure 49",
@@ -124,7 +124,7 @@
     },
     {
       "id": "drive-gpupdate-no-mapping",
-      "file": "evidence/cra/drive-gpupdate-no-mapping.png",
+      "file": "cra-evidence/drive-gpupdate-no-mapping.png",
       "title": "The policy refresh worked, but there was still no drive",
       "caption": "A user policy update completes, but the laptop still has only C: and no net use entries. Get-SmbConnection fails with access denied (system error 5), a separate diagnostic issue.",
       "source": "CR-A, CP-A07, figure 51",
@@ -135,7 +135,7 @@
     },
     {
       "id": "drive-z-after-restart",
-      "file": "evidence/cra/drive-z-after-restart.png",
+      "file": "cra-evidence/drive-z-after-restart.png",
       "title": "After a restart, Z: appeared by itself",
       "caption": "After the restart, Explorer lists the IT drive on \\\\nova.corp\\shares as Z: with 59.4 GB free of 59.9 GB.",
       "source": "CR-A, CP-A07, figure 56",
@@ -146,7 +146,7 @@
     },
     {
       "id": "moyo-it-file-operations",
-      "file": "evidence/cra/moyo-it-file-operations.png",
+      "file": "cra-evidence/moyo-it-file-operations.png",
       "title": "Moyo can create, change and delete a file on the IT drive",
       "caption": "Z: maps to \\\\nova.corp\\shares\\IT. Moyo creates, writes, reads, appends to and deletes a test file, and Test-Path ends False.",
       "source": "CR-A, CP-A07, figure 57",
@@ -157,7 +157,7 @@
     },
     {
       "id": "moyo-four-denied",
-      "file": "evidence/cra/moyo-four-denied.png",
+      "file": "cra-evidence/moyo-four-denied.png",
       "title": "Moyo is denied the four other departments",
       "caption": "Moyo is denied access to Finance, HR, Management and Sales.",
       "source": "CR-A, CP-A07, figure 59",
@@ -168,7 +168,7 @@
     },
     {
       "id": "john-five-denied",
-      "file": "evidence/cra/john-five-denied.png",
+      "file": "cra-evidence/john-five-denied.png",
       "title": "John is denied all five departments",
       "caption": "John is denied access to IT, Finance, HR, Management and Sales.",
       "source": "CR-A, CP-A07, figure 61",
@@ -179,7 +179,7 @@
     },
     {
       "id": "rdp-winrm-blocked-logs",
-      "file": "evidence/cra/rdp-winrm-blocked-logs.png",
+      "file": "cra-evidence/rdp-winrm-blocked-logs.png",
       "title": "RDP and WinRM attempts are blocked in the logs",
       "caption": "pfSense logs show the laptop's attempts on port 3389 (RDP) and 5985 (WinRM), plus ICMP and UDP 137, blocked by the INFRA rule.",
       "source": "CR-A, CP-A09, figure 70",
@@ -190,7 +190,7 @@
     },
     {
       "id": "smb-before-after-logs",
-      "file": "evidence/cra/smb-before-after-logs.png",
+      "file": "cra-evidence/smb-before-after-logs.png",
       "title": "SMB went from blocked to allowed",
       "caption": "TCP 445 to FILES01 is blocked by the old INFRA rule, then allowed by the CR-A rule from its first appearance on.",
       "source": "CR-A, CP-A09, figure 71",
