@@ -1,0 +1,30 @@
+{
+  "id": "nova-lap01",
+  "name": "NOVA-LAP01",
+  "role": "Physical employee laptop",
+  "sub": "Physical laptop",
+  "kind": "workstation",
+  "zone": "Outside the lab, on the staff VPN (VPN_REMOTE)",
+  "ip": "10.10.60.11 inside the tunnel",
+  "os": "Windows 11 Pro",
+  "status": "live",
+  "services": [
+    "group-policy",
+    "kerberos",
+    "dfs"
+  ],
+  "builtBy": [
+    "CR-A"
+  ],
+  "physical": true,
+  "map": {
+    "col": 20,
+    "row": 64,
+    "w": 13,
+    "h": 4.4
+  },
+  "links": [],
+  "limit": "The staff VPN starts after sign-in. Whether it connects before a user signs in was not tested, and the USB test used one flash drive, which does not cover every kind of external disk.",
+  "story": "NOVA-LAP01 is a real Windows 11 Pro laptop that lives outside the lab. It joins the company network over a staff VPN, even from a phone hotspot. It is joined to the domain, and what a person can open depends on who signs in: Moyo gets the IT drive, and the contractor John gets no drive at all.",
+  "copyStatus": "rewritten"
+}

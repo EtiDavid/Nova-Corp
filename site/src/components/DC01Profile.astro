@@ -21,10 +21,10 @@ const inside=[
 ["Replication","Keep directory changes in sync with "+partner,"learn/replication/"],
 ["System State backup","Protect critical directory configuration","learn/system-state/"],["FSMO roles and Windows Time","Special responsibilities held by DC02","systems/nova-dc02/#fsmo-roles"]];
 const incidents=[
-["Controlled · Primary domain controller unavailable","DC01 went offline. Sign-ins and the file share kept working through DC02.","dc01-outage"],
-["Controlled · Directory replication interrupted","I blocked replication on purpose. A new group stayed missing on DC02 until I restored it.","replication-divergence"],
+["Controlled test · Primary domain controller unavailable","DC01 went offline. Sign-ins and the file share kept working through DC02.","dc01-outage"],
+["Controlled test · Directory replication interrupted","I blocked replication on purpose. A new group stayed missing on DC02 until I restored it.","replication-divergence"],
 ["Unexpected · Incorrect subnet prefix","DC01 and DC02 were set to /32 and the new file server to /24, so replies took the wrong road.","fileserver-subnet"],
-["Controlled · DNS client outage","A wrong DNS setting on the workstation stopped it opening the share by name.","dns-client-outage"]];
+["Blind test · DNS client outage","A wrong DNS setting on the workstation stopped it opening the share by name.","dns-client-outage"]];
 const specs=[["Hostname",name+".nova.corp"],["VM ID",vm],["Hypervisor","NOVA-PROX01"],["CPU","2 vCPU"],["RAM","4 GiB"],["Operating system","Windows Server 2025 Standard"],["IP address",secondary?"10.10.20.11/24":"10.10.20.10/24"],["Network","INFRA / VLAN 20"],["Gateway","10.10.20.1"],["DNS order","10.10.20.11, 10.10.20.10"],["Domain","nova.corp"],["Virtual disks",secondary?"60G OS":"80G OS · 60G attached data disk"],["Firmware / machine","OVMF / q35"],["NIC / bridge","net0 / vmbr1"],["Roles","AD DS, DNS"],["Services","NTDS, DNS, Netlogon"],["Replication partner",partner],["FSMO roles",secondary?"All five roles":"Held by NOVA-DC02"],["Directory","Writable DC"]];
 ---
 <section class="section compact"><div class="container grid-main deep-system-profile dc-profile"><article>

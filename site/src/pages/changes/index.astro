@@ -7,7 +7,6 @@ const next = nova.upcoming.find((c: any) => c.status === "next");
 ---
 <NovaLayout title="Changes" description="The change requests that built the Nova Corp lab, in order, with what each one added and what broke." current="changes">
   <section class="hero2" style="padding-bottom:16px"><div class="wrap">
-    <div class="eyebrow">Changes</div>
     <h1>What I built, in order.</h1>
     <p class="lead">Each change request added something to the map. The Windows foundation (CR-001 to CR-{nova.done.at(-1).id.slice(3)}) was signed off as a {nova.facts.signOff.result}.</p>
   </div></section>
@@ -20,12 +19,22 @@ const next = nova.upcoming.find((c: any) => c.status === "next");
             <h2 class="tl-title"><a href={base + "changes/" + c.id + "/"}>{c.title}</a></h2>
             <p>{c.goal}</p>
             <p class="tiny">
-              {b.systems.length > 0 && <>Added to the map: {b.systems.map((s: any) => s.name).join(", ")}. </>}
+              {b.adds.length > 0 && <>Added to the map: {b.adds.map((s: any) => s.name).join(", ")}. </>}
+              {b.changes.length > 0 && <>Changed: {b.changes.map((s: any) => s.name).join(", ")}. </>}
               {b.incidents.length > 0 && <>{b.incidents.length} incident{b.incidents.length > 1 ? "s" : ""}.</>}
             </p>
           </div>
         </li>); })}
     </ol>
+    {nova.supplemental.length > 0 && <>
+      <h2 style="margin-top:36px">Supplemental change</h2>
+      <p class="muted" style="margin-top:6px">Outside the locked list of 37 numbered changes. It does not add to that count.</p>
+      <ol class="timeline" style="margin-top:14px">{nova.supplemental.map((c: any) => { const b = nova.builtIn(c.id); return (
+        <li><div class="tl-id mono">{c.id}</div><div>
+          <h3 class="tl-title" style="font-size:1.2rem"><a href={base + "changes/" + c.id + "/"}>{c.title}</a></h3>
+          <p>{c.goal}</p>
+          <p class="tiny">{b.adds.length > 0 && <>Added to the map: {b.adds.map((s: any) => s.name).join(", ")}. </>}{b.changes.length > 0 && <>Changed: {b.changes.map((s: any) => s.name).join(", ")}. </>}{b.incidents.length > 0 && <>{b.incidents.length} incident{b.incidents.length > 1 ? "s" : ""}.</>}</p>
+        </div></li>); })}</ol></>}
     {next && <div class="boxnote" style="margin-top:28px"><b>Next:</b> {next.id}, {next.title}. {nova.facts.nextChangeStatus === "not started" ? "Planned; not started." : ""} <a href={base + "roadmap/"}>See the roadmap →</a></div>}
   </section>
 </NovaLayout>

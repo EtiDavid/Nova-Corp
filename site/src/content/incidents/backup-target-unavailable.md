@@ -6,13 +6,12 @@ outcome: "File restored, fingerprint matched"
 status: "tested"
 systems: ["nova-files01", "nova-prox01"]
 sourceUrl: "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/incidents/backup-target-disappears.md"
-type: "blind"
+type: "controlled"
 cr: "CR-014"
 services: ["windows-server-backup"]
 lines: ["recovery"]
 segment: { from: "nova-files01", to: "nova-prox01", line: "recovery" }
 pin: { col: 60, row: 48.8 }
-featured: 3
 shortTitle: "The backup disk disappeared. The file came back."
 saw: "The backup target was gone and the backup failed."
 cause: "The backup destination was unavailable, so no new backup could be written."

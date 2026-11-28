@@ -13,7 +13,6 @@ const shotsFor = (s: any) => {
 ---
 <NovaLayout title="Map" description="The Nova Corp lab drawn as a line map: select a system to see what it does, what it connects to and what broke there." current="map">
   <section class="hero2" style="padding-bottom:16px"><div class="wrap">
-    <div class="eyebrow">Map</div>
     <h1>How does everything connect?</h1>
     <p class="lead">Pick a line to follow one thing the lab does, or select a system.</p>
   </div></section>
@@ -22,7 +21,7 @@ const shotsFor = (s: any) => {
       <div class="nl-wrap">
         <div class="map-card">
           <div class="legend2" id="line-filter" role="group" aria-label="Show one line">
-            {lines.map((l: any) => <button type="button" data-line={l.id} aria-pressed="false"><i class={l.id === "recovery" ? "dotted" : ""} style={`border-color:var(${l.token})`}></i>{l.name}</button>)}
+            {lines.filter((l: any) => l.id !== "platform").map((l: any) => <button type="button" data-line={l.id} aria-pressed="false"><i class={l.id === "recovery" ? "dotted" : ""} style={`border-color:var(${l.token})`}></i>{l.name}</button>)}
           </div>
           <p class="tiny" id="line-note" aria-live="polite" style="padding:0 6px">All lines shown.</p>
           <MapSvg id="nl-full" interactive showMarkers="all" label="Interactive line map of the Nova Corp lab. Select a system to see its details." />
@@ -31,7 +30,7 @@ const shotsFor = (s: any) => {
         <MobileLines level={2} />
       </div>
       <aside class="panel" id="panel" aria-live="polite" aria-label="Selected system">
-        <p id="panel-empty" class="tiny">Select a system on the map, or from the list below, to see what it does and what broke there.</p>
+        <div id="panel-empty"><h2>The lab in one paragraph</h2><p style="margin-top:8px">Nova Corp is a fictional company on a real home lab: {stations.length} mapped assets. One Proxmox hypervisor runs five virtual machines (a firewall, two domain controllers, a file server and a workstation). A physical laptop sits outside it and connects over a staff VPN. Each colored line is one thing the lab does, and the numbered pins mark where something broke.</p><p class="tiny" style="margin-top:8px">Select a system on the map, or from the list below, to see what it does and what broke there.</p></div>
         {stations.map((s: any) => (
           <div class="sysdata" id={"sys-" + s.id} data-id={s.id} tabindex="-1">
             <h2>{s.name}</h2>

@@ -1,6 +1,7 @@
 ---
 // The generic, data-driven incident page. Any incident that has no hand-mapped legacy record renders here,
 // so adding an incident is: add one Markdown file with front matter. See HOW-TO/add-an-incident.md.
+import IncidentNarrative from "../../components/IncidentNarrative.astro";
 import NovaLayout from "../../layouts/NovaLayout.astro";
 import MapSvg from "../../components/nova/MapSvg.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
@@ -22,9 +23,8 @@ import NameMatch from "../../components/nova/xf/NameMatch.astro";
 import GatewayFix from "../../components/nova/xf/GatewayFix.astro";
 import ServiceStopped from "../../components/nova/xf/ServiceStopped.astro";
 import Rollback from "../../components/nova/xf/Rollback.astro";
-import TestNotRun from "../../components/nova/xf/TestNotRun.astro";
 import Cr004Rollback from "../../components/nova/xf/Cr004Rollback.astro";
-import { loadNova, typeLabel, segmentId, journalHref } from "../../lib/nova";
+import { loadNova, typeLabel, fieldLabels, segmentId, journalHref } from "../../lib/nova";
 export async function getStaticPaths() {
   const entries = await getCollection("incidents");
   // dns-client-outage, fileserver-subnet and file-permission-denial have a hand-built page of their own.
@@ -56,12 +56,12 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
   <div class="wrap">
     {hasTwenty ? (
       <section class="v20" aria-labelledby="h-20"><h2 id="h-20" style="grid-column:1/-1;font-size:1.05rem">The 20-second version</h2>
-        <div><h3>What users saw</h3><p>{d.saw}</p></div><div><h3>What was actually wrong</h3><p>{d.cause}</p></div>
-        <div><h3>What fixed it</h3><p>{d.fix}</p></div><div><h3>How I proved it</h3><p>{d.proof}</p></div>
+        <div><h3>{fieldLabels[d.type][0]}</h3><p>{d.saw}</p></div><div><h3>{fieldLabels[d.type][1]}</h3><p>{d.cause}</p></div>
+        <div><h3>{fieldLabels[d.type][2]}</h3><p>{d.fix}</p></div><div><h3>{fieldLabels[d.type][3]}</h3><p>{d.proof}</p></div>
       </section>) : <p class="lead">{d.summary}</p>}
     <div class="inc-grid">
       {d.segment && <aside class="inc-map" aria-label="Where it broke"><div class="map-card">
-        <MapSvg id="nl-inc" broken={segmentId(d.segment.line, d.segment.from, d.segment.to)} emphasise={[d.segment.from, d.segment.to]} linesOn={[d.segment.line]} viewBox="0 20 920 560" mini
+        <MapSvg id="nl-inc" broken={segmentId(d.segment.line, d.segment.from, d.segment.to)} emphasise={[d.segment.from, d.segment.to]} linesOn={[d.segment.line]} viewBox={d.systems.includes("nova-lap01") ? "0 20 920 690" : "0 20 920 560"} mini
           label={`Line map showing the ${d.segment.line} line between ${d.segment.from} and ${d.segment.to} drawn broken in red.`} />
         <p class="caption"><b style="color:var(--broken-text)">Red dashed:</b> the segment that failed.</p></div></aside>}
       <div class="inc-main md" style={d.segment ? "" : "grid-column:1/-1"}>
@@ -78,20 +78,11 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
         {entry.id === "proxmox-default-gateway" && <GatewayFix />}
         {entry.id === "proxmox-webgui-outage" && <ServiceStopped />}
         {entry.id === "bulk-users-partial-rollback" && <Rollback />}
-        {entry.id === "vpn-validation-deferred" && <TestNotRun />}
         {entry.id === "dc02-cannot-reach-dc01" && <Cr004Rollback />}
-        {!legacy && <Content />}
+        {legacy ? <IncidentNarrative slug={entry.id} /> : <Content />}
         {d.limits && <><h2 style="margin-top:32px">What this doesn't prove</h2><p class="boxnote" style="margin-top:10px">{d.limits}</p></>}
-        {legacy && <>
-          <h2 style="margin-top:32px">Evidence</h2>
-          <div class="incident-sidebar-journal" style="margin-top:8px">
-            {journalOnSite && <p><a class="nv-link" href={journalOnSite}>Read the complete original {legacy.journalFormat === "pdf" ? "PDF, all pages and images," : "Markdown journal"} on this site →</a></p>}
-            <p class="tiny"><a href="#full-investigation">↓ Every recorded step</a> · <a class="incident-master-link" href={originalSourceURL(legacy.journal)} target="_blank" rel="noopener noreferrer">Open {legacy.journalFormat === "pdf" ? "original PDF" : "full Markdown"} journal on GitHub ↗</a> · <a href={originalSourceURL(legacy.source)} target="_blank" rel="noopener noreferrer">Original incident record ↗</a></p>
-          </div>
-          <OriginalPdfEvidenceGallery subject={"incidents/" + entry.id} heading="Original recorded results from the journal" />
-          <details class="orig-record" open style="margin-top:16px"><summary><b>The complete original investigation</b> (every recorded step)</summary><IncidentOriginalRecord slug={entry.id} /></details>
-        </>}
-        {!legacy && journal && <><h2 style="margin-top:32px">Evidence</h2><p style="margin-top:8px"><a class="nv-link" href={journal.href}>Full journal ({change.id}){journal.external ? " ↗" : " →"}</a></p></>}
+        {(legacy ? journalOnSite : journal?.href) && <><h2 style="margin-top:32px">The full record</h2>
+          <p style="margin-top:8px"><a class="nv-link incident-master-journal" href={legacy ? journalOnSite : journal?.href}>{legacy ? legacy.journalLabel : "Full journal (" + change?.id + ")"}{!legacy && journal?.external ? " ↗" : " →"}</a></p></>}
         {related.length > 0 && <><h2 style="margin-top:32px">Related</h2><div class="related">{related.map((r: any) => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div></>}
       </div>
     </div>

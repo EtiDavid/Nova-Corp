@@ -7,6 +7,7 @@ import IncidentOriginalRecord from "../../components/IncidentOriginalRecord.astr
 import OriginalPdfEvidenceGallery from "../../components/OriginalPdfEvidenceGallery.astro";
 import approvedEvidence from "../../data/approvedPdfEvidence.json";
 import { incidentDocuments, originalSourceURL, siteArticle } from "../../data/incidentDocuments";
+import { typeLabel } from "../../lib/nova";
 import { labStories } from "../../data/labStories";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 interface Props { entry: CollectionEntry<"incidents">; }
@@ -27,12 +28,12 @@ const className=labStories.find(s=>s.slug===entry.id)?.kind||"controlled";
 const originalImagesAvailable=approvedEvidence.entries.some(image=>image.subject==="incidents/"+entry.id);
 const evidenceRequested=new Set(["dc01-outage","dns-client-outage","backup-target-unavailable","replication-divergence","firewall-management-exposure","file-permission-denial","proxmox-storage-pressure","gpo-link-disabled"]);
 ---
-<BaseLayout title={entry.data.title} description={entry.data.summary} breadcrumbs={[{label:"Investigations",href:"incidents/"},{label:entry.data.title}]}>
+<BaseLayout title={entry.data.title} description={entry.data.summary} breadcrumbs={[{label:"Incidents",href:"incidents/"},{label:entry.data.title}]}>
 <section class="page-head incident-head"><div class="container">
  <div class="eyebrow">Investigation</div>
  <h1>{entry.data.title}</h1>
  <p class="lead" style="margin-top:16px">{entry.data.summary}</p>
- <div class="incident-meta" style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{className==="deferred"?"Not performed":className==="controlled"?"Controlled test":"Issue investigated"}</span><span class="muted" style="font-size:.82rem">{entry.data.outcome}</span></div>
+ <div class="incident-meta" style="display:flex;align-items:center;gap:12px;margin-top:19px"><span class={"status "+(entry.data.status==="deferred"?"deferred":"")}>{typeLabel[(entry.data as any).type]}</span><span class="muted" style="font-size:.82rem">{entry.data.outcome}</span></div>
 </div></section>
 <section class="section compact"><div class="container"><FilesDoors start="deny" /></div></section>
 <section class="section compact"><div class="container"><div class="paper panel"><p class="kicker">What this investigation establishes</p><p>{className==="deferred"?"This was planned, but the external validation was not performed. The record distinguishes configuration from proof.":className==="controlled"?"A deliberately introduced lab condition, followed by diagnosis and documented verification.":"An unexpected issue investigated during lab work, with the recorded findings and outcome below."}</p><p><strong>Recorded outcome:</strong> {entry.data.outcome}</p><p><a href={journalOnSite}>Read the complete execution record →</a></p></div></div></section>

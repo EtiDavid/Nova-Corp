@@ -23,11 +23,11 @@ const inside=[
  ["Backup and recovery","Scheduled backup and tested restoration","files/backup/"]];
 const incidents=[
  ["Unexpected · Same-VLAN subnet mismatch","Both domain controllers were set to /32 and the file server to /24, so replies took the wrong road.","fileserver-subnet"],
- ["Controlled · A folder denies Moyo access","One explicit Deny rule blocked a user who otherwise had access.","file-permission-denial"],
- ["Controlled · Backup target unavailable","A backup disk went missing. Backup stopped, and I still restored the file.","backup-target-unavailable"],
- ["Controlled · DNS client outage","The share would not open by name, though the server answered on port 445.","dns-client-outage"],
- ["Controlled · Domain controller outage","DC01 went offline. File access kept working through DC02.","dc01-outage"],
- ["Controlled · Two independent faults","A wrong DNS record hid a second, separate fault.","two-faults-one-symptom"]];
+ ["Blind test · A folder denies Moyo access","One explicit Deny rule blocked a user who otherwise had access.","file-permission-denial"],
+ ["Controlled test · Backup target unavailable","A backup disk went missing. Backup stopped, and I still restored the file.","backup-target-unavailable"],
+ ["Blind test · DNS client outage","The share would not open by name, though the server answered on port 445.","dns-client-outage"],
+ ["Controlled test · Domain controller outage","DC01 went offline. File access kept working through DC02.","dc01-outage"],
+ ["Blind test · Two independent faults","A wrong DNS record hid a second, separate fault.","two-faults-one-symptom"]];
 const specs=[
  ["Hostname","NOVA-FILES01.nova.corp"],["VM ID","104"],["Hypervisor","NOVA-PROX01"],["CPU","2 vCPU"],["RAM","4 GiB (4096 MiB)"],
  ["Operating system","Windows Server 2025 Standard"],["IP address","10.10.20.20/24"],["Network","INFRA / VLAN 20"],["Gateway","10.10.20.1"],["DNS","10.10.20.10, 10.10.20.11"],

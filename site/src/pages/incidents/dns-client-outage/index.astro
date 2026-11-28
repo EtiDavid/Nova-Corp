@@ -3,8 +3,7 @@ import DnsClient from "../../../components/nova/xf/DnsClient.astro";
 import NovaLayout from "../../../layouts/NovaLayout.astro";
 import "../../../styles/incident-records.css";
 import "../../../styles/reference-library.css";
-import IncidentOriginalRecord from "../../../components/IncidentOriginalRecord.astro";
-import OriginalPdfEvidenceGallery from "../../../components/OriginalPdfEvidenceGallery.astro";
+import Files01DocumentImages from "../../../components/Files01DocumentImages.astro";
 import { incidentDocuments, originalSourceURL, siteArticle } from "../../../data/incidentDocuments";
 import Term from "../../../components/nova/Term.astro";
 import MapSvg from "../../../components/nova/MapSvg.astro";
@@ -16,8 +15,6 @@ const me = nova.incidents.find((i: any) => i.slug === slug);
 const involved = me.systems.map(nova.stationById).filter(Boolean).filter((s: any) => s.id !== "nova-dc02");
 const src = incidentDocuments[slug];
 const journal = base + "journals/" + src.journal.split("/").at(-1)?.replace(/\.pdf$/i, "") + "/";
-const journalGitHub = originalSourceURL(src.journal);
-const recordGitHub = originalSourceURL(src.source);
 const related = nova.relatedIncidents(slug);
 // Commands, expectations and recorded results are copied from the public incident record INC-CR014-02.
 const worked = [
@@ -68,11 +65,12 @@ const proof = [
       </aside>
       <div class="inc-main">
         <h2 style="margin-top:28px">How I worked it out</h2>
+        <div class="incident-source-document" id="full-investigation">
         <ol class="steps">
-          {worked.map(st => (
-            <li class="step"><h3>{st.q}</h3><pre>{st.cmd}</pre><p class="exp">Expected: {st.exp}</p><p class={"act" + (st.bad ? " bad" : "")}>Actual: {st.act}</p></li>
+          {worked.map((st, n) => (
+            <li class="step"><h3>{st.q}</h3><pre>{st.cmd}</pre><p class="exp">Expected: {st.exp}</p><p class={"act" + (st.bad ? " bad" : "")}>Actual: {st.act}</p>{n === 0 && <Files01DocumentImages ids={["dns-timeout"]} />}</li>
           ))}
-        </ol>
+        </ol></div>
 
         <h2 id="fix" style="margin-top:36px">The fix, and how I proved it</h2>
         <p style="margin-top:8px"><b>What I changed:</b> I restored the client's <Term id="dns">DNS</Term> servers to <code>10.10.20.10</code> and <code>10.10.20.11</code> and cleared the resolver cache.</p>
@@ -85,13 +83,8 @@ const proof = [
         <h2 style="margin-top:36px">What this doesn't prove</h2>
         <p class="boxnote" style="margin-top:10px">The wrong <Term id="dns">DNS</Term> server was set on purpose for this exercise, and the cause was hidden from me while I diagnosed it, so this shows my method rather than a production outage. The results above are the journal's recorded summaries, not raw terminal output, and the exact test date is not yet reconciled.</p>
 
-        <h2 style="margin-top:36px">Evidence</h2>
-        <div class="incident-sidebar-journal" style="margin-top:8px">
-          <p><a class="nv-link" href={journal}>Full journal (CR-014), all pages on this site →</a></p>
-          <p class="tiny"><a href="#full-investigation">↓ Every recorded step</a> · <a class="incident-master-link" href={journalGitHub} target="_blank" rel="noopener noreferrer">Original PDF on GitHub ↗</a> · <a href={recordGitHub} target="_blank" rel="noopener noreferrer">Original incident record ↗</a></p>
-        </div>
-        <OriginalPdfEvidenceGallery subject={"incidents/" + slug} heading="Original recorded results from the journal" />
-        <details class="orig-record" open style="margin-top:16px"><summary><b>The complete original investigation</b> (every recorded step)</summary><IncidentOriginalRecord slug={slug} /></details>
+        <h2 style="margin-top:36px">The full record</h2>
+        <p style="margin-top:8px"><a class="nv-link incident-master-journal" href={journal}>CR-014 — full incident engineering journal and evidence (PDF) →</a></p>
 
         <h2 style="margin-top:36px">Related</h2>
         <div class="related">{related.map((r: any) => <a class="chip" href={base + "incidents/" + r.slug + "/"}>{r.title}</a>)}</div>

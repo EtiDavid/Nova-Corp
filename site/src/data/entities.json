@@ -234,5 +234,40 @@
     "limitations": [
       "Its Proxmox VM is named nova-client01; it is the same machine as NOVA-CLIENT."
     ]
+  },
+  {
+    "id": "nova-lap01",
+    "slug": "nova-lap01",
+    "name": "NOVA-LAP01",
+    "category": "Physical employee laptop",
+    "summary": "A real Windows 11 laptop that joins the company network from outside the lab over a staff VPN.",
+    "area": "control-room",
+    "status": "observed-running",
+    "asOf": "2026-11-27",
+    "details": [
+      {
+        "label": "Platform",
+        "value": "Physical Windows 11 Pro laptop; not a virtual machine and not hosted on Proxmox"
+      },
+      {
+        "label": "Network",
+        "value": "Home Wi-Fi or phone hotspot; staff VPN tunnel address 10.10.60.11/32 (VPN_REMOTE)"
+      },
+      {
+        "label": "Tests",
+        "value": "External VPN, domain join, Kerberos, Group Policy, departmental drives, USB control, scoped SMB"
+      }
+    ],
+    "related": [
+      "nova-fw01",
+      "nova-dc01",
+      "nova-dc02",
+      "nova-files01"
+    ],
+    "sourceUrl": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/explore/systems/NOVA-LAP01.md",
+    "limitations": [
+      "Management-plane isolation is not done and belongs to CR-016.",
+      "The staff VPN is not a privileged administrator VPN."
+    ]
   }
 ]

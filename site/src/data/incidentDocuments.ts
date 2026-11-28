@@ -35,7 +35,6 @@ const original:IncidentDocument[]=[
  {slug:"proxmox-webgui-outage",source:incident+"proxmox-webgui-outage.md",journal:"Documentation/failure-testing-report.md",journalFormat:"markdown",journalLabel:"FT-003 / FT-005 — original Proxmox failure-testing report"},
  {slug:"replication-divergence",source:incident+"replication-divergence.md",journal:change+"CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md",journalFormat:"markdown",journalLabel:"CR-013 — full AD resilience and replication journal"},
  {slug:"two-faults-one-symptom",source:incident+"two-faults-one-symptom.md",journal:f14,journalFormat:"pdf",journalLabel:"CR-014 — full incident engineering journal and evidence (PDF)"},
- {slug:"vpn-validation-deferred",source:incident+"vpn-external-validation-deferred.md",journal:f14,journalFormat:"pdf",journalLabel:"CR-014 — full incident engineering journal and evidence (PDF)"},
  {slug:"wireguard-handshake",source:incident+"wireguard-handshake.md",journal:change+"Journal-CR-007.md",journalFormat:"markdown",journalLabel:"CR-007 — full WireGuard implementation, validation and handshake post-mortem"}
 ];
 export const incidentDocuments:Record<string,IncidentDocument>=Object.fromEntries(original.map(d=>[d.slug,d]));

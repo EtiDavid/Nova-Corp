@@ -13,7 +13,8 @@
   ],
   "builtBy": [
     "CR-002",
-    "CR-015"
+    "CR-015",
+    "CR-A"
   ],
   "map": {
     "col": 33,
@@ -83,8 +84,24 @@
           42.8
         ]
       ]
+    },
+    {
+      "line": "network",
+      "to": "nova-lap01",
+      "meaning": "Staff VPN: an encrypted tunnel from the laptop into the firewall, over the Internet. It is not a cable.",
+      "path": [
+        [
+          27.5,
+          30.2
+        ],
+        [
+          27.5,
+          61.8
+        ]
+      ]
     }
   ],
   "story": "The firewall is the only door between Nova Corp's networks. pfSense routes between five VLANs (MGMT 10, INFRA 20, APP 30, CLIENT 40 and DMZ 50) and decides which connections cross. On the CLIENT network, two block rules sit ahead of a broad allow, so an employee PC cannot open the firewall's admin pages while DNS, sign-in, file shares and internet still work (CR-015). The rules for the other networks are still broad, and tightening them is the next planned change, CR-016.",
-  "copyStatus": "rewritten"
+  "copyStatus": "rewritten",
+  "hostedOn": "nova-prox01"
 }

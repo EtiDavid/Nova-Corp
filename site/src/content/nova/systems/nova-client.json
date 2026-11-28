@@ -78,5 +78,6 @@
     }
   ],
   "story": "NOVA-CLIENT is the Windows 11 employee workstation, on 10.10.40.100 in the CLIENT network. It is my test machine: Moyo signs in on it, group policies apply to it, and it is where I check what an employee can and cannot reach. Its Proxmox VM is named nova-client01, but Windows and Active Directory know it as NOVA-CLIENT.",
-  "copyStatus": "rewritten"
+  "copyStatus": "rewritten",
+  "hostedOn": "nova-prox01"
 }

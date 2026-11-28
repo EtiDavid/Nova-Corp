@@ -1,5 +1,17 @@
 [
   {
+    "id": "host",
+    "name": "Runs on NOVA-PROX01 · five virtual machines",
+    "kind": "host",
+    "box": {
+      "col": 1,
+      "row": 3.4,
+      "w": 88.4,
+      "h": 56
+    },
+    "labelEnd": false
+  },
+  {
     "id": "client",
     "name": "VLAN 40",
     "vlan": 40,

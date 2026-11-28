@@ -17,7 +17,6 @@ const expected={
  "proxmox-webgui-outage":["proxmox-webgui-outage.md","failure-testing-report.md"],
  "replication-divergence":["replication-divergence.md","CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md"],
  "two-faults-one-symptom":["two-faults-one-symptom.md","Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"],
- "vpn-validation-deferred":["vpn-external-validation-deferred.md","Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"],
  "wireguard-handshake":["wireguard-handshake.md","Journal-CR-007.md"]
 };
 const failures=[];
@@ -37,11 +36,12 @@ for(const [slug,[sourceName,journalName]]of out){
  const page=resolve(dist,"incidents",slug,"index.html");
  if(!existsSync(page)){failures.push("Missing rendered incident page "+slug);continue;}
  const html=readFileSync(page,"utf8");
- for(const part of ["The complete public investigation","incident-source-document","incident-master-journal","#full-investigation"]){
+ for(const part of ["incident-source-document","incident-master-journal","How I worked it out"]){
   if(!html.includes(part))failures.push("No "+part+" on "+slug);
  }
- if(!html.includes(journalName))failures.push("Full journal URL not pointed to actual original journal: "+slug);
- if(!html.includes(sourceName))failures.push("Original Markdown source URL not present: "+slug);
+ if((html.match(/incident-master-journal/g)||[]).length!==1)failures.push("An incident page must have exactly one journal link: "+slug);
+ if(/class="[^"]*(orig-record|incident-full-source|pdf-evidence-gallery)/.test(html))failures.push("Old duplicated investigation block or end-of-page screenshot gallery still on "+slug);
+ if(!html.includes(journalName)&&!html.includes(journalName.replace(/\.(md|pdf)$/,"")))failures.push("Full journal URL not pointed to actual original journal: "+slug);
  if(journalName.endsWith(".md")){
   const id=masterPaths[0].replace(/^docs\//,"").replace(/\.md$/,"");
   if(!html.includes("/reference/"+id+"/"))failures.push("Missing full on-site journal link "+slug);
@@ -54,7 +54,7 @@ for(const figure of figures.figures){
  if(!existsSync(src)||!existsSync(served)||createHash("sha256").update(readFileSync(served)).digest("hex")!==figure.sha256||createHash("sha256").update(readFileSync(src)).digest("hex")!==figure.sha256)failures.push("Original journal image SHA mismatch "+figure.file);
 }
 const wire=readFileSync(resolve(dist,"incidents/wireguard-handshake/index.html"),"utf8");
-for(const value of ["Capture WAN UDP 51820","pfctl -vvsr","sockstat -4 -l","wg show","02_packet_journey.png","05_troubleshooting_funnel.png","Journal-CR-007.md"]){
+for(const value of ["Capture WAN UDP 51820","pfctl -vvsr","sockstat -4 -l","wg show","02_packet_journey.png","05_troubleshooting_funnel.png"]){
  if(!wire.includes(value))failures.push("WireGuard source content / original figure missing: "+value);
 }
 const backup=readFileSync(resolve(dist,"incidents/backup-target-unavailable/index.html"),"utf8");

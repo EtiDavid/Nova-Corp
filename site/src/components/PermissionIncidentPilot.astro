@@ -1,17 +1,18 @@
 ---
 import Files01DocumentImages from "./Files01DocumentImages.astro";
-import IncidentOriginalRecord from "./IncidentOriginalRecord.astro";
 const base=import.meta.env.BASE_URL;
 const pdf=base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf";
 ---
 <section class="incident-case-intro">
 <h2>What did I plan to test?</h2><p>Could I diagnose a file-access problem affecting a legitimate employee without changing unrelated permissions or mistaking the problem for a network outage?</p>
 <h2>Why does this matter?</h2><p>Imagine <a href={base+"people/moyo/"}>Moyo</a> has a deadline but a team document suddenly will not open. The helpdesk must identify the failed access layer rather than give everyone more permissions.</p>
-<h2>1. Establish the known-good baseline</h2><p>On NOVA-FILES01 I used a disposable folder, D:\NovaData\IT\CR014-IncidentLab, with inherited IT Modify, SYSTEM and administrator rights. On NOVA-CLIENT, Moyo first proved traversal, read and write access.</p>
+<h2>How I worked it out</h2>
+<div class="incident-source-document" id="full-investigation">
+<h3>1. Establish the known-good baseline</h3><p>On NOVA-FILES01 I used a disposable folder, D:\NovaData\IT\CR014-IncidentLab, with inherited IT Modify, SYSTEM and administrator rights. On NOVA-CLIENT, Moyo first proved traversal, read and write access.</p>
 <pre><code>{'Test-Path "\\\\nova-files01\\IT\\CR014-IncidentLab"\nGet-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Incident-Test.txt"'}</code></pre>
 <p><strong>Expected:</strong> The authorized employee can traverse, read and create files in the test folder. <strong>Actual:</strong> True, successful read, and creation and readback of Moyo-Baseline.txt.</p>
 <Files01DocumentImages ids={["permission-positive-baseline"]}/>
-<h2>2. How I deliberately introduced the failure</h2>
+<h3>2. How I deliberately introduced the failure</h3>
 <p>The scope was only the disposable incident folder. The retained v2 injector saves the previous security descriptor before changing access and verifies the new deny entry. The first attempt to launch the injector failed:</p>
 <pre><code>{'& "C:\\NovaAdmin\\CR014\\Incidents\\Start-INC-CR014-01.ps1"'}</code></pre>
 <p><strong>Expected:</strong> The trusted lab script starts. <strong>Actual:</strong> PSSecurityException / UnauthorizedAccess; PowerShell blocked the unsigned remote-marked script. No infrastructure fault was injected.</p>
@@ -23,29 +24,29 @@ const pdf=base+"pdf-journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence.p
 <p>The corrected v2 injector then created a user-specific NTFS deny. This is the relevant excerpt of the retained historical lab script (not a command newly run for the website):</p>
 <pre><code>{'$IncidentRoot = "D:\\NovaData\\IT\\CR014-IncidentLab"\n$acl = Get-Acl $IncidentRoot\n$denyRule = New-Object System.Security.AccessControl.FileSystemAccessRule(\n    "NOVA\\moyo",\n    "Modify",\n    "ContainerInherit,ObjectInherit",\n    "None",\n    "Deny"\n)\n$acl.AddAccessRule($denyRule)\nSet-Acl -Path $IncidentRoot -AclObject $acl'}</code></pre>
 <p>The script captured the original SDDL for rollback and checked that the intended deny existed. The user-visible failure was independently confirmed afterward. These historical lab changes are not instructions to deny access on production folders.</p>
-<h2>3. What happened to the employee?</h2>
+<h3>3. What happened to the employee?</h3>
 <p>Moyo could browse the IT share and see CR014-IncidentLab, but Windows File Explorer denied access to the child folder. Test-Path still returned True while attempts to read and write files failed with UnauthorizedAccessException.</p>
 <Files01DocumentImages ids={["permission-denial-observed"]}/>
-<h2>4. Investigate the symptom layer by layer</h2>
-<h3>Is the folder visible and readable?</h3><pre><code>{'Test-Path "\\\\nova-files01\\IT\\CR014-IncidentLab"\nGet-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Incident-Test.txt"'}</code></pre>
+<h3>4. Investigate the symptom layer by layer</h3>
+<h4>Is the folder visible and readable?</h4><pre><code>{'Test-Path "\\\\nova-files01\\IT\\CR014-IncidentLab"\nGet-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Incident-Test.txt"'}</code></pre>
 <p><strong>Expected:</strong> Path may resolve even if access is blocked; read should fail under the injected denial. <strong>Actual:</strong> True followed by Access denied. A visible folder is not proof of readable content.</p>
-<h3>Is DNS, SMB or the entire share broken?</h3>
+<h4>Is DNS, SMB or the entire share broken?</h4>
 <pre><code>{'whoami\nResolve-DnsName nova-files01.nova.corp\nTest-NetConnection nova-files01.nova.corp -Port 445\nTest-Path "\\\\nova-files01\\IT"\nGet-ChildItem "\\\\nova-files01\\IT"'}</code></pre>
 <p><strong>Expected:</strong> Correct identity, server resolution, TCP/445 reachability and parent share access. <strong>Actual:</strong> NOVA\moyo, 10.10.20.20, TcpTestSucceeded True and successful IT share listing. Only the child folder was failing.</p>
 <Files01DocumentImages ids={["file-permission-isolation"]}/>
-<h3>Does the employee still have the right group?</h3><pre><code>{'whoami /groups | findstr /i "DL_FS_IT_Modify"'}</code></pre>
+<h4>Does the employee still have the right group?</h4><pre><code>{'whoami /groups | findstr /i "DL_FS_IT_Modify"'}</code></pre>
 <p><strong>Expected:</strong> The resource authorization group is present and enabled. <strong>Actual:</strong> NOVA\DL_FS_IT_Modify was present and enabled; the current token still carried the intended group.</p>
-<h3>Compare share-level and folder-level permissions</h3><pre><code>{'Get-SmbShareAccess -Name IT\nicacls "D:\\NovaData\\IT\\CR014-IncidentLab"'}</code></pre>
+<h4>Compare share-level and folder-level permissions</h4><pre><code>{'Get-SmbShareAccess -Name IT\nicacls "D:\\NovaData\\IT\\CR014-IncidentLab"'}</code></pre>
 <p><strong>Expected:</strong> The IT share has Allow/Change for the resource group. A folder-specific restriction may explain the failure. <strong>Actual:</strong> The share ACL was correct. The child folder contained an explicit deny for NOVA\moyo alongside inherited IT Modify.</p>
 <Files01DocumentImages ids={["permission-explicit-deny"]}/>
-<h2>5. Root cause and minimum repair</h2><p>The explicit child-folder deny overrode the inherited Modify access for Moyo in this test. I removed only the offending deny ACE, preserving the group-based authorization, SYSTEM and administrator entries. The journal also records the same deny/removal behavior verified through Properties → Security → Advanced. The prepared rollback script could restore the exact saved ACL; the recorded repair was removal of the scoped deny, not a broad access grant.</p>
-<h2>6. Verify service restoration</h2><pre><code>{'Test-Path "\\\\nova-files01\\IT\\CR014-IncidentLab"\nGet-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Incident-Test.txt"\n"Moyo post-repair write test $(Get-Date)" |\n    Set-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Moyo-PostRepair.txt"\nGet-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Moyo-PostRepair.txt"'}</code></pre>
+<h3>5. Root cause and minimum repair</h3><p>The explicit child-folder deny overrode the inherited Modify access for Moyo in this test. I removed only the offending deny ACE, preserving the group-based authorization, SYSTEM and administrator entries. The journal also records the same deny/removal behavior verified through Properties → Security → Advanced. The prepared rollback script could restore the exact saved ACL; the recorded repair was removal of the scoped deny, not a broad access grant.</p>
+<h3>6. Verify service restoration</h3><pre><code>{'Test-Path "\\\\nova-files01\\IT\\CR014-IncidentLab"\nGet-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Incident-Test.txt"\n"Moyo post-repair write test $(Get-Date)" |\n    Set-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Moyo-PostRepair.txt"\nGet-Content "\\\\nova-files01\\IT\\CR014-IncidentLab\\Moyo-PostRepair.txt"'}</code></pre>
 <p><strong>Expected:</strong> Traverse, read and write succeed while the intended inherited ACL remains. <strong>Actual:</strong> True, original test content read, new file created and read back, and the temporary deny no longer present. The screenshot records the actual test. Finance denial was confirmed in the wider pre-incident baseline; a separate post-repair Finance retest is not claimed here.</p>
 <Files01DocumentImages ids={["permission-repair-pass"]}/>
+</div>
 <h2>What I learned</h2><p>Verify the fault state, then isolate the failed layer with targeted tests. A successful TCP test or Test-Path does not establish file authorization. The minimum repair preserved the company's existing access model.</p>
 <h2>Related services</h2><p><a href={base+"people/moyo/"}>Moyo</a> · <a href={base+"files/shares/it/"}>IT department folder</a> · <a href={base+"learn/smb/"}>SMB</a> · <a href={base+"learn/ntfs/"}>NTFS</a> · <a href={base+"files/permissions/"}>Access matrix</a></p>
-<details><summary>Full original public investigation and test record</summary><p><a href="#full-investigation">Jump to the complete public investigation →</a></p><IncidentOriginalRecord slug="file-permission-denial"/></details>
-<h2>Engineering journal</h2><p><a href={pdf+"#page=8"}>Original CR-014, pages 8–12: baseline, injection, diagnosis, repair →</a></p><p><a href={base+"journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/"}>Complete original illustrated journal and native text →</a></p>
+<h2>The full record</h2><p><a class="nv-link incident-master-journal" href={base+"journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/"}>CR-014 — full incident engineering journal and evidence (PDF) →</a></p>
 </section>
 <style>
 .incident-case-intro pre{max-width:100%;overflow:auto}.incident-case-intro details{min-width:0}.incident-case-intro summary{cursor:pointer;font-weight:600}

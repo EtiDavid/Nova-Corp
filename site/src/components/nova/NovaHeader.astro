@@ -7,9 +7,10 @@ const nav = [
   { label: "Incidents", href: "incidents/", key: "incidents" },
   { label: "Map", href: "map/", key: "map" },
   { label: "Changes", href: "changes/", key: "changes" },
+  { label: "Skills", href: "skills/", key: "skills" },
   { label: "About", href: "about/", key: "about" }
 ];
-const guess = path.startsWith("/incidents") ? "incidents" : path.startsWith("/changes") || path.startsWith("/journals") ? "changes" : path.startsWith("/about") ? "about" : path === "/" ? "" : "map";
+const guess = path.startsWith("/incidents") ? "incidents" : path.startsWith("/changes") || path.startsWith("/journals") ? "changes" : path.startsWith("/skills") ? "skills" : path.startsWith("/about") ? "about" : path === "/" ? "" : "map";
 const current = Astro.props.current ?? guess;
 const themeToggle = Astro.props.themeToggle ?? true;
 const cv = base + "David_Eti_Systems_Infrastructure_CV.pdf";
