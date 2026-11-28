@@ -1,0 +1,36 @@
+---
+import NovaLayout from "../../layouts/NovaLayout.astro";
+import { loadNova, typeLabel } from "../../lib/nova";
+import { skills } from "../../data/skills";
+const base = import.meta.env.BASE_URL;
+const nova = await loadNova();
+// Fail the build rather than link to something that does not exist.
+const crIds = new Set(nova.changes.map((c: any) => c.id));
+for (const s of skills) {
+  for (const c of s.changes) if (!crIds.has(c)) throw new Error(`skills: ${s.id} links to unknown change ${c}`);
+  for (const i of s.cases) if (!nova.incidents.find((x: any) => x.slug === i)) throw new Error(`skills: ${s.id} links to unknown incident ${i}`);
+}
+---
+<NovaLayout title="Skills and evidence" description="What I built and tested in the Nova Corp lab, with the changes and incidents that show it. Lab work, not employer experience." current="skills">
+  <section class="hero2" style="padding-bottom:16px"><div class="wrap prose-narrow">
+    <h1>Skills, and the evidence for each.</h1>
+    <p class="lead">Each card says what I built, what I tested and what I did not prove, with links to the changes and incidents behind it. This is lab work in Nova Corp, not employer experience.</p>
+  </div></section>
+  <section class="wrap" style="padding-bottom:48px">
+    <div class="cards3">
+      {skills.map((s) => (
+        <article class="icard" id={s.id}>
+          <h2 style="font-size:1.15rem">{s.name}</h2>
+          <dl>
+            <dt>What I built</dt><dd>{s.built}</dd>
+            <dt>What I tested</dt><dd>{s.tested}</dd>
+            <dt>What this does not prove</dt><dd>{s.notProven}</dd>
+          </dl>
+          <p class="tiny">Changes: {s.changes.map((c, n) => <>{n ? ", " : ""}<a href={base + "changes/" + c + "/"}>{c}</a></>)}</p>
+          <ul class="plainlist">{s.cases.map((i) => { const x: any = nova.incidents.find((n: any) => n.slug === i); return <li><span class={"type " + x.type} style="margin-right:8px">{typeLabel[x.type]}</span><a href={base + "incidents/" + i + "/"}>{x.shortTitle ?? x.title}</a></li>; })}</ul>
+        </article>
+      ))}
+    </div>
+    <p class="caption" style="margin-top:20px">My Azure, Terraform and CI work is separate from Nova Corp and is not claimed here.</p>
+  </section>
+</NovaLayout>

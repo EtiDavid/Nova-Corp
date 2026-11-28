@@ -22,12 +22,12 @@ try {
     assert.match(await d.locator("h1").innerText(), /I built the infrastructure\. Then I tested what happens when it fails\./);
     const body = await d.locator("body").innerText();
     assert(body.includes("Available now")); assert(body.includes("Belgium & the Netherlands")); assert(!/on hold/i.test(body));
-    assert.deepEqual(await d.locator(".nv-nav a:not(.nv-btn)").allInnerTexts(), ["Incidents", "Map", "Changes", "About"]);
+    assert.deepEqual(await d.locator(".nv-nav a:not(.nv-btn)").allInnerTexts(), ["Incidents", "Map", "Changes", "Skills", "About"]);
     assert.equal(await d.getByRole("link", { name: "Download CV" }).first().getAttribute("href"), "/David_Eti_Systems_Infrastructure_CV.pdf");
     assert.equal(await d.locator(".icard").count(), 3);
     const nums = await d.locator(".counts b").allInnerTexts();
-    assert.deepEqual(nums, ["7", "5", "15", "17"]);
-    assert.equal(await d.locator("main > section").count(), 6); // hero, lab at a glance, cases, map, proof, counts
+    assert.deepEqual(nums, ["7", "5", "15", "26"]);
+    assert.equal(await d.locator("main > section").count(), 5); // hero, lab at a glance, cases, map, proof, counts
   });
   await step("Home: the journey ends on FILES01 and Replay works", async () => {
     await d.locator("#nl-home").scrollIntoViewIfNeeded();
@@ -37,7 +37,7 @@ try {
     await d.waitForFunction(() => document.getElementById("tick")?.getAttribute("opacity") === "0", null, { timeout: 3000 });
     await d.waitForFunction(() => document.getElementById("tick")?.getAttribute("opacity") === "1", null, { timeout: 9000 });
   });
-  await step("Home: every illustration is clickable, and the screenshots load", async () => {
+  await step("Home: every illustration is clickable, and there is no screenshot gallery", async () => {
     await d.goto(host + "/", { waitUntil: "networkidle" });
     await d.locator('#nl-home a.stn[data-id="nova-dc01"]').click();
     await d.waitForURL(/\/systems\/nova-dc01\/$/);
@@ -45,8 +45,7 @@ try {
     await d.locator('#nl-home a.seg-link path[data-seg="network:client-fw01"]').click({ force: true }); // a horizontal stroke has a zero-height box
     await d.waitForURL(/\/map\/\?line=/);
     await d.goto(host + "/", { waitUntil: "networkidle" });
-    const imgs = d.locator(".evstrip img"); assert.equal(await imgs.count(), 6);
-    for (const img of await imgs.all()) { await img.scrollIntoViewIfNeeded(); await img.evaluate(async el => { if (!el.complete) await el.decode(); }); assert(await img.evaluate(el => el.naturalWidth > 0), "screenshot must load"); }
+    assert.equal(await d.locator(".evstrip").count(), 0); // the screenshot gallery is gone from the home page (H3)
   });
   await step("Dark theme works on new and archive pages (text stays visible)", async () => {
     for (const path of ["/incidents/dns-client-outage/", "/systems/nova-fw01/", "/people/moyo/", "/files/"]) {

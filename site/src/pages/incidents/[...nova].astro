@@ -60,7 +60,7 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
       </section>) : <p class="lead">{d.summary}</p>}
     <div class="inc-grid">
       {d.segment && <aside class="inc-map" aria-label="Where it broke"><div class="map-card">
-        <MapSvg id="nl-inc" broken={segmentId(d.segment.line, d.segment.from, d.segment.to)} emphasise={[d.segment.from, d.segment.to]} linesOn={[d.segment.line]} viewBox="0 20 920 560" mini
+        <MapSvg id="nl-inc" broken={segmentId(d.segment.line, d.segment.from, d.segment.to)} emphasise={[d.segment.from, d.segment.to]} linesOn={[d.segment.line]} viewBox={d.systems.includes("nova-lap01") ? "0 20 920 690" : "0 20 920 560"} mini
           label={`Line map showing the ${d.segment.line} line between ${d.segment.from} and ${d.segment.to} drawn broken in red.`} />
         <p class="caption"><b style="color:var(--broken-text)">Red dashed:</b> the segment that failed.</p></div></aside>}
       <div class="inc-main md" style={d.segment ? "" : "grid-column:1/-1"}>

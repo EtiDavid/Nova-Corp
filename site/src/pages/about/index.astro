@@ -16,6 +16,7 @@ const base = import.meta.env.BASE_URL;
   <section class="sec"><div class="wrap prose-narrow">
     <h2>What I built</h2>
     <p style="margin-top:8px">Nova Corp is a small fictional company with a real lab behind it, and I built all of it: Proxmox running inside VMware Workstation, a pfSense firewall with five VLANs, Windows Server 2025 with two domain controllers, Group Policy, file services with DFS, and PowerShell scripts for account work. <a href={base + "map/"}>The map</a> shows how the pieces connect.</p>
+    <p style="margin-top:10px"><a class="nv-link" href={base + "skills/"}>Skills, and the evidence for each <span aria-hidden="true">→</span></a></p>
     <h2 style="margin-top:32px">How I work</h2>
     <p style="margin-top:8px">I write down what I expect before I test. I change one thing at a time. When something breaks, I separate the possible causes with a test before I touch anything: <a href={base + "incidents/dns-client-outage/"}>the DNS case</a> shows that best. When I can't prove a cause, I say so, as in <a href={base + "incidents/dc02-cannot-reach-dc01/"}>the CR-004 case</a>.</p>
     <h2 style="margin-top:32px">What Nova Corp doesn't cover</h2>
