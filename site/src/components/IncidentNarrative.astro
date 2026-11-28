@@ -47,5 +47,5 @@ const journalImages = slug === "wireguard-handshake" ? [
 {journalImages.length > 0 && <section class="incident-journal-figures" aria-label="Figures from the original change-request journal">
   <h2>How the packet travels</h2>
   <p class="tiny">These drawings were published in CR-007. They explain packet flow and troubleshooting. They are <strong>not</strong> screenshots of recorded handshakes or packet captures.</p>
-  <div class="incident-journal-grid">{journalImages.map((fig) => <figure><a href={figuresBase + fig.file} target="_blank" rel="noopener noreferrer"><img src={figuresBase + fig.file} alt={fig.alt} loading="lazy" decoding="async" /></a><figcaption>{fig.title}</figcaption></figure>)}</div>
+  <div class="incident-journal-grid">{journalImages.map((fig) => <figure><a href={figuresBase + fig.file} target="_blank" rel="noopener noreferrer"><img src={figuresBase + fig.file} alt={fig.alt} loading="eager" decoding="async" /></a><figcaption>{fig.title}</figcaption></figure>)}</div>
 </section>}

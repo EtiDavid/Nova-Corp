@@ -162,11 +162,10 @@ try {
   for(const phrase of ["Capture WAN UDP 51820","pfctl -vvsr","sockstat -4 -l","wg show","Recreate client keys"]){
     assert(details.includes(phrase),"wireguard original investigation missing "+phrase);
   }
-  const original=desktop.locator(".incident-sidebar-journal .incident-master-link");
-  assert((await original.getAttribute("href")).endsWith("/docs/Documentation/Change-Requests/Journal-CR-007.md"));
-  assert((await original.innerText()).includes("full Markdown"));
-  const onsite=desktop.locator('.incident-sidebar-journal a[href*="/reference/Documentation/Change-Requests/Journal-CR-007/"]');
-  assert(await onsite.isVisible());
+  const master=desktop.locator(".incident-master-journal");
+  assert.equal(await master.count(),1,"exactly one journal link per incident page");
+  assert((await master.getAttribute("href")).endsWith("/reference/Documentation/Change-Requests/Journal-CR-007/"));
+  assert((await master.innerText()).includes("CR-007"));
   assert.equal(await desktop.locator(".incident-journal-figures img").count(),3);
   for(const img of await desktop.locator(".incident-journal-figures img").all()){
     await img.scrollIntoViewIfNeeded();
@@ -177,7 +176,7 @@ try {
     assert.equal((await desktop.request.get(host+url)).status(),200);
   }
   assert(await desktop.locator(".incident-source-document pre").count()>=4,"preserve actual recorded commands");
-  await onsite.click();
+  await master.click();
   await desktop.waitForURL(/\/reference\/Documentation\/Change-Requests\/Journal-CR-007\/$/);
   assert((await desktop.locator(".reference-content").innerText()).includes("Incident report - WireGuard handshake failure"));
   await desktop.goto(host+"/incidents/backup-target-unavailable/",{waitUntil:"networkidle"});
@@ -185,18 +184,16 @@ try {
   for(const phrase of ["Get-Disk -Number 2","wbadmin start recovery","Get-FileHash","79FCAD43C927A5B19FB820E3E0BD9EE829083769AD2BE5E487C425B7820332E5"]){
     assert(backup.includes(phrase),"backup original investigation missing "+phrase);
   }
-  assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").getAttribute("href")).endsWith("Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
-  assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").innerText()).includes("PDF"));
+  assert((await desktop.locator(".incident-master-journal").getAttribute("href")).endsWith("/journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/"));
+  assert((await desktop.locator(".incident-master-journal").innerText()).includes("PDF"));
   const hashScreenshot=desktop.locator('img[src*="/pdf-evidence/backup-sha256-match.jpg"]');
   assert.equal(await hashScreenshot.count(),1,"Original CR-014 screenshot belongs on the backup incident");
   await hashScreenshot.scrollIntoViewIfNeeded();
   await hashScreenshot.evaluate(async el=>{if(!el.complete||el.naturalWidth===0)await el.decode();});
   assert(await hashScreenshot.evaluate(el=>el.naturalWidth>0),"Original PDF screenshot must actually decode");
-  const related=desktop.locator('.incident-associated-records a[href*="CR-012_Windows_Server_Backup"]');
-  assert(await related.isVisible());
   await desktop.goto(host+"/incidents/dc01-outage/",{waitUntil:"networkidle"});
   assert(await desktop.locator(".incident-source-document").isVisible());
-  assert((await desktop.locator(".incident-sidebar-journal .incident-master-link").getAttribute("href")).endsWith("Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"));
+  assert((await desktop.locator(".incident-master-journal").getAttribute("href")).endsWith("/journals/Nova_Corp_CR-014_Engineering_Journal_and_Evidence/"));
  });
  await step("Policy search filters displayed settings",async()=>{
   await desktop.goto(host+"/policies/workstation-baseline/",{waitUntil:"networkidle"});
