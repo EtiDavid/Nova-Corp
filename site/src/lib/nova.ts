@@ -13,6 +13,15 @@ const px = (n: number) => Math.round(n * GRID * 100) / 100;
 
 export const typeLabel: Record<string, string> = { real: "Unexpected", controlled: "Controlled test", blind: "Blind test", tabletop: "Tabletop" };
 
+// The four short fields of an incident are read differently by type. Unexpected and blind: what users saw, what was wrong, what fixed it, how I proved it.
+// Controlled tests are not repairs. Tabletop exercises were never executed. Defined once here and used on the home cards and the incident pages.
+export const fieldLabels: Record<string, [string, string, string, string]> = {
+  real: ["What users saw", "What was actually wrong", "What fixed it", "How I proved it"],
+  blind: ["What users saw", "What was actually wrong", "What fixed it", "How I proved it"],
+  controlled: ["What I tested", "What I expected", "What happened", "How I verified it"],
+  tabletop: ["Scenario", "Not executed", "Proposed response", "Expected outcome"]
+};
+
 // Where a change's full journal can be read on this site: the PDF viewer, or the rendered Markdown. Falls back to GitHub.
 export async function journalHref(journalUrl: string, base: string) {
   const file = decodeURIComponent(journalUrl.split("/").pop() ?? "");

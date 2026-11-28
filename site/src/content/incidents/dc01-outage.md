@@ -12,7 +12,7 @@ services: ["active-directory", "dns", "kerberos"]
 lines: ["identity"]
 segment: null
 pin: { col: 70.8, row: 10.8 }
-featured: 2
+featured: 3
 shortTitle: "DC01 went offline. Sign-ins kept working through DC02."
 saw: "I took the main domain controller offline on purpose."
 cause: "A controlled outage: the question was whether sign-ins depend on DC01."

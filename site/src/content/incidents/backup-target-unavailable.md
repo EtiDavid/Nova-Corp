@@ -12,7 +12,6 @@ services: ["windows-server-backup"]
 lines: ["recovery"]
 segment: { from: "nova-files01", to: "nova-prox01", line: "recovery" }
 pin: { col: 60, row: 48.8 }
-featured: 3
 shortTitle: "The backup disk disappeared. The file came back."
 saw: "The backup target was gone and the backup failed."
 cause: "The backup destination was unavailable, so no new backup could be written."
