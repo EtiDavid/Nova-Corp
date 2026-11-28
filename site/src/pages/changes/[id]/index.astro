@@ -62,7 +62,7 @@ const prev = sup ? undefined : nova.done[i - 1], nextC = sup ? undefined : nova.
     {c.validated && <><h2 style="margin-top:28px">How it was validated</h2><p style="margin-top:6px">{c.validated}</p></>}
     {c.limits && c.limits.length > 0 && <><h2 style="margin-top:28px">What this does not prove</h2><ul>{c.limits.map((x: string) => <li>{x}</li>)}</ul></>}
     <h2 style="margin-top:28px">{sup ? "Sanitized public summary" : "Original journal"}</h2>
-    <p style="margin-top:6px"><a class="nv-link" href={journal.href}>Full journal ({c.id}){journal.external ? " ↗" : " →"}</a></p>
+    <p style="margin-top:6px"><a class="nv-link" href={journal.href}>{sup ? "Read the sanitized summary" : "Full journal (" + c.id + ")"}{journal.external ? " ↗" : " →"}</a></p>
     <p class="tiny" style="margin-top:28px">{prev && <a href={base + "changes/" + prev.id + "/"}>← {prev.id}</a>}{prev && nextC && "  ·  "}{nextC && <a href={base + "changes/" + nextC.id + "/"}>{nextC.id} →</a>}</p>
   </div>
 </NovaLayout>

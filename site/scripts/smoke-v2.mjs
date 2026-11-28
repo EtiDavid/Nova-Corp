@@ -26,7 +26,7 @@ try {
     assert.equal(await d.getByRole("link", { name: "Download CV" }).first().getAttribute("href"), "/David_Eti_Systems_Infrastructure_CV.pdf");
     assert.equal(await d.locator(".icard").count(), 3);
     const nums = await d.locator(".counts b").allInnerTexts();
-    assert.deepEqual(nums, ["6", "5", "15", "17"]);
+    assert.deepEqual(nums, ["7", "5", "15", "17"]);
     assert.equal(await d.locator("main > section").count(), 6); // hero, lab at a glance, cases, map, proof, counts
   });
   await step("Home: the journey ends on FILES01 and Replay works", async () => {
@@ -73,7 +73,7 @@ try {
   });
   await step("Map: keyboard select, URL state, Escape returns focus, line filter", async () => {
     await d.goto(host + "/map/", { waitUntil: "networkidle" });
-    assert.equal(await d.locator("#nl-full .stn").count(), 6);
+    assert.equal(await d.locator("#nl-full .stn").count(), 7);
     const node = d.locator('#nl-full .stn[data-id="nova-dc01"]'); await node.focus(); await d.keyboard.press("Enter");
     await d.waitForURL(/focus=nova-dc01/); assert(await d.locator("#sys-nova-dc01").isVisible());
     assert(/what broke here/i.test(await d.locator("#sys-nova-dc01").innerText()));
@@ -100,7 +100,7 @@ try {
   });
   await step("Changes, change page, service page, roadmap (next three only), glossary", async () => {
     await d.goto(host + "/changes/", { waitUntil: "networkidle" });
-    assert.equal(await d.locator(".timeline li").count(), 15);
+    assert.equal(await d.locator(".timeline li").count(), 16);
     await d.goto(host + "/changes/CR-004/", { waitUntil: "networkidle" });
     assert((await d.locator("body").innerText()).includes("NOVA-DC02"));
     assert.equal(await d.getByRole("link", { name: /Full journal/ }).count(), 1);
