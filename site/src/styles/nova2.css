@@ -318,3 +318,4 @@ html:not(.js) .xf-controls, html:not(.js) .xf-tabs { display:none; } html:not(.j
 .evfig .evsrc { display:block; margin-top:4px; font-size:.85rem; }
 /* the journal link at the end of an incident is a plain link, not the old boxed panel */
 a.incident-master-journal { display:inline; padding:0; background:none; border:0; border-radius:0; margin:0; font-weight:700; }
+.evfig figcaption, .evfig .evsrc { overflow-wrap:anywhere; }
