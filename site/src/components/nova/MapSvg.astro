@@ -5,7 +5,7 @@ interface Props {
   interactive?: boolean; id?: string; showMarkers?: "home" | "all" | "none"; broken?: string; emphasise?: string[];
   linesOn?: LineId[]; viewBox?: string; journey?: boolean; label: string; mini?: boolean;
 }
-const { interactive = false, id = "nl", showMarkers = "none", broken, emphasise, linesOn, viewBox = "0 0 920 610", journey = false, label, mini = false } = Astro.props;
+const { interactive = false, id = "nl", showMarkers = "none", broken, emphasise, linesOn, viewBox = "0 0 920 700", journey = false, label, mini = false } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const shownMarkers = showMarkers === "none" ? [] : markers.filter((m: any) => showMarkers === "all" || m.home);
 const dim = (st: string) => emphasise && !emphasise.includes(st);

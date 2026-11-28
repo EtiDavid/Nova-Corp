@@ -11,7 +11,7 @@ const strip = (id: string) => id.replace(/^nova-/, "");
 export const segmentId = (line: string, from: string, to: string) => `${line}:${strip(from)}-${strip(to)}`;
 const px = (n: number) => Math.round(n * GRID * 100) / 100;
 
-export const typeLabel: Record<string, string> = { real: "Unexpected", controlled: "Controlled test", blind: "Blind test", tabletop: "Tabletop", deferred: "Deferred" }; // deferred is removed in F1 once the VPN card is retired
+export const typeLabel: Record<string, string> = { real: "Unexpected", controlled: "Controlled test", blind: "Blind test", tabletop: "Tabletop" };
 
 // Where a change's full journal can be read on this site: the PDF viewer, or the rendered Markdown. Falls back to GitHub.
 export async function journalHref(journalUrl: string, base: string) {
@@ -49,16 +49,18 @@ export async function loadNova() {
   const zones = zonesAll.filter((z: any) => z.box).map((z: any) => ({ ...z, x: px(z.box.col), y: px(z.box.row), w: px(z.box.w), h: px(z.box.h), end: z.labelEnd }));
 
   const incidents = incidentEntries.map((e: any) => ({ slug: e.id, ...e.data }));
-  const counted = incidents.filter((i: any) => i.status !== "deferred");
+  const counted = incidents;
   const titleOf = (slug: string) => { const i = incidents.find((x: any) => x.slug === slug); return i ? (i.shortTitle ?? i.title) : slug.replace(/-/g, " "); };
   // Pins: featured incidents first (by order), then the rest by slug. Numbers are computed, never typed.
   const pinned = incidents.filter((i: any) => i.pin).sort((a: any, b: any) => (a.featured ?? 99) - (b.featured ?? 99) || a.slug.localeCompare(b.slug));
   const markers = pinned.map((i: any, n: number) => ({ slug: i.slug, n: String(n + 1), x: px(i.pin.col), y: px(i.pin.row), title: titleOf(i.slug), type: i.type, home: !!i.featured }));
   const featured = incidents.filter((i: any) => i.featured).sort((a: any, b: any) => a.featured - b.featured);
 
-  const done = changes.filter((c: any) => c.status === "done");
+  const supplemental = changes.filter((c: any) => c.supplemental && c.status === "done");
+  const done = changes.filter((c: any) => c.status === "done" && !c.supplemental);
   const upcoming = changes.filter((c: any) => c.status !== "done");
   const builtIn = (crId: string) => ({
+    adds: systems.filter((s: any) => s.builtBy[0] === crId), changes: systems.filter((s: any) => s.builtBy.includes(crId) && s.builtBy[0] !== crId),
     systems: systems.filter((s: any) => s.builtBy.includes(crId)), services: services.filter((v: any) => v.builtBy.includes(crId)),
     incidents: incidents.filter((i: any) => i.cr === crId)
   });
@@ -73,7 +75,8 @@ export async function loadNova() {
       score: 2 * (i.services ?? []).filter((x: string) => (me.services ?? []).includes(x)).length + i.systems.filter((x: string) => me.systems.includes(x)).length + (i.cr && i.cr === me.cr ? 1 : 0)
     })).filter((x: any) => x.score > 0).sort((a: any, b: any) => b.score - a.score || a.slug.localeCompare(b.slug)).slice(0, n);
   };
-  const counts = { systems: systems.length, vlans: (facts as any).vlans.length, changesDone: done.length, incidents: counted.length };
-  return { facts: facts as any, lines, lineMap, zones, stations, segments, systems, services, changes, done, upcoming, glossary, journeys, journey: journeys.find((j: any) => j.featured) ?? journeys[0],
+  const vms = systems.filter((s: any) => s.hostedOn);
+  const counts = { systems: systems.length, vms: vms.length, physical: systems.filter((s: any) => s.physical).length, supplemental: supplemental.length, vlans: (facts as any).vlans.length, changesDone: done.length, incidents: counted.length };
+  return { facts: facts as any, lines, lineMap, zones, stations, segments, systems, services, changes, done, supplemental, upcoming, glossary, journeys, journey: journeys.find((j: any) => j.featured) ?? journeys[0],
     incidents, featured, markers, titleOf, builtIn, counts, lineStops, relatedIncidents, stationById: (id: string) => stations.find((s: any) => s.id === id) };
 }

@@ -9,7 +9,7 @@ export function getStaticPaths() {
     "network-gatehouse": ["map/?line=network", "Explore: network"],
     "file-records": ["map/?line=files", "Explore: files"],
     "recovery-centre": ["map/?line=recovery", "Explore: recovery"],
-    "incident-lab": ["incidents/", "Investigations"],
+    "incident-lab": ["incidents/", "Incidents"],
     "roadmap-wing": ["roadmap/", "Roadmap"]
   };
   return areas.map(a => ({ params: { slug: a.id }, props: { to: (dest[a.id] ?? ["map/", "Explore"])[0], label: (dest[a.id] ?? ["map/", "Explore"])[1] } }));

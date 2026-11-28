@@ -1,0 +1,23 @@
+{
+  "id": "CR-A",
+  "title": "Remote enterprise workstation onboarding",
+  "goal": "A real laptop joins the company network from outside the lab, with the right access for each person.",
+  "status": "done",
+  "supplemental": true,
+  "journal": "https://github.com/EtiDavid/Nova-Corp/blob/main/docs/Documentation/Change-Requests/CR-A_Remote_Workstation_Onboarding.md",
+  "built": [
+    "A physical Windows 11 Pro laptop, NOVA-LAP01, with its own WireGuard staff VPN peer that reconnects after a reboot",
+    "The laptop joined to nova.corp, placed in the Workstations OU, with a healthy machine secure channel",
+    "Kerberos sign-in and time sync checked from outside the lab",
+    "One narrow, logged firewall rule: TCP 445 from the laptop to FILES01 only. RDP and WinRM stay blocked",
+    "A final encrypted pfSense backup, copied off the host with a matching SHA-256 hash"
+  ],
+  "validated": "Moyo gets the IT drive automatically and can create, read, change and delete a test file there. Four other departments' folders are denied to her. The contractor John gets no drive and is denied all five. A real USB flash drive worked for Moyo and was denied to John. Firewall logs show SMB allowed and RDP and WinRM blocked.",
+  "limits": [
+    "Full management-plane isolation was not done. Proxmox sits on the home network, and a laptop on that network can reach it. That is CR-016.",
+    "A restore was not performed. The matching hash shows the copy is intact, not that it restores.",
+    "Whether the VPN connects before sign-in was not tested.",
+    "How the drive mapping was applied after the restart was not inspected, so no policy root cause is claimed.",
+    "The USB test used one flash drive. It does not cover every kind of external disk."
+  ]
+}

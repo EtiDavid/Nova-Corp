@@ -17,7 +17,6 @@ const expected={
  "proxmox-webgui-outage":["proxmox-webgui-outage.md","failure-testing-report.md"],
  "replication-divergence":["replication-divergence.md","CR-013_Secondary_Domain_Controller_and_AD_Resilience_Journal.md"],
  "two-faults-one-symptom":["two-faults-one-symptom.md","Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"],
- "vpn-validation-deferred":["vpn-external-validation-deferred.md","Nova_Corp_CR-014_Engineering_Journal_and_Evidence.pdf"],
  "wireguard-handshake":["wireguard-handshake.md","Journal-CR-007.md"]
 };
 const failures=[];

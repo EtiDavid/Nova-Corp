@@ -61,7 +61,7 @@ export const areas: Area[] = [
     sourceUrl: docs + "services/BACKUPS.md"
   },
   {
-    id: "incident-lab", number: "07", name: "Investigations", shortName: "Incidents",
+    id: "incident-lab", number: "07", name: "Incidents", shortName: "Incidents",
     question: "How did we diagnose real failures?",
     description: "Start with the symptom. Follow the tests, repair and evidence.",
     accent: "amber", systemIds: ["nova-dc01", "nova-dc02", "nova-files01", "nova-fw01"],

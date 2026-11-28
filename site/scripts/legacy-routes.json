@@ -76,7 +76,6 @@
   "/incidents/proxmox-webgui-outage/",
   "/incidents/replication-divergence/",
   "/incidents/two-faults-one-symptom/",
-  "/incidents/vpn-validation-deferred/",
   "/incidents/wireguard-handshake/",
   "/journals/",
   "/journals/CR-006_Group_Policy_Management_Beautified/",

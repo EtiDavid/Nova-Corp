@@ -10,7 +10,7 @@ export default defineConfig({
   integrations: [react()],
   markdown: { remarkPlugins: [remarkNovaTerms] },
   // Old URLs that moved. GitHub Pages cannot send HTTP 301, so Astro writes a static page with a meta refresh and a visible link.
-  redirects: { "/company": "/map/", "/tour": "/" },
+  redirects: { "/company": "/map/", "/tour": "/", "/incidents/vpn-validation-deferred": "/changes/CR-A/" },
   build: { format: "directory" },
   vite: { server: { fs: { strict: true } } }
 });

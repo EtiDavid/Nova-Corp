@@ -27,6 +27,16 @@ const unique = (list, name) => { const seen = new Set(); list.forEach(x => { if 
 const sysIds = unique(systems, "system"), svcIds = unique(services, "service"), crById = new Map(changes.map(c => [c.id, c]));
 unique(changes, "change"); const glossIds = unique(glossary, "glossary");
 const lineSet = new Set(lines.map(l => l.id));
+// The numbered roadmap is locked at 37. Supplemental changes (CR-A) sit outside it and never count toward it.
+const numbered = changes.filter(c => /^CR-\d{3}$/.test(c.id));
+if (numbered.length !== 37) fail(`the numbered roadmap must have exactly 37 changes, found ${numbered.length}`);
+changes.forEach(c => { if (!/^CR-\d{3}$/.test(c.id) && !c.supplemental) fail(`${c.id}: a non-numbered change must be marked supplemental`); if (c.supplemental && /^CR-\d{3}$/.test(c.id)) fail(`${c.id}: a numbered change cannot be supplemental`); });
+// Hosting: a virtual machine names a hypervisor; a physical device names none; the hypervisor is not a VM.
+systems.forEach(s => { const h = s.hostedOn && systems.find(x => x.id === s.hostedOn);
+  if (s.physical && s.hostedOn) fail(`system ${s.id}: a physical device cannot be hosted on ${s.hostedOn}`);
+  if (s.hostedOn && !h) fail(`system ${s.id}: hostedOn ${s.hostedOn} is not a system`);
+  if (h && h.kind !== "hypervisor") fail(`system ${s.id}: hostedOn ${s.hostedOn}, which is not a hypervisor`);
+  if (!s.physical && s.kind !== "hypervisor" && !s.hostedOn) fail(`system ${s.id}: a virtual machine needs hostedOn`); });
 lineIds.forEach(l => { if (!lineSet.has(l)) fail(`lines.json is missing line "${l}"`); });
 
 // Planned work must never be referenced as built.
@@ -61,14 +71,13 @@ else if (crById.get(facts.nextChange).status !== "next") fail(`facts.nextChange 
 if (changes.filter(c => c.status === "next").length !== 1) fail(`exactly one change must have status "next"`);
 
 // Incidents (front matter of src/content/incidents/*.md)
-const incSchema = z.object({ title: z.string(), summary: z.string(), date: z.string(), outcome: z.string(), status: z.enum(["tested", "deferred"]), systems: z.array(z.string()), sourceUrl: z.string().url(), ...incidentExtra }).strict();
+const incSchema = z.object({ title: z.string(), summary: z.string(), date: z.string(), outcome: z.string(), status: z.enum(["tested"]), systems: z.array(z.string()), sourceUrl: z.string().url(), ...incidentExtra }).strict();
 const incDir = join(root, "incidents"); const pins = new Map();
 readdirSync(incDir).filter(f => f.endsWith(".md")).forEach(f => {
   const m = readFileSync(join(incDir, f), "utf8").match(/^---\n([\s\S]*?)\n---/); if (!m) { fail(`${f}: no front matter`); return; }
   const r = incSchema.safeParse(yaml(m[1])); if (!r.success) { r.error.issues.forEach(i => fail(`incidents/${f}: ${i.path.join(".")} ${i.message}`)); return; }
   const d = r.data, slug = f.replace(/\.md$/, "");
-  if (!d.type) fail(`incidents/${f}: every incident needs a type (real, controlled, blind, tabletop or deferred)`);
-  if (d.status === "deferred" && d.type !== "deferred") fail(`incidents/${f}: a deferred test must have type "deferred"`);
+  if (!d.type) fail(`incidents/${f}: every incident needs a type (real, controlled, blind or tabletop)`);
   if (d.cr) builtRef([d.cr], `incident ${slug}`); else if (!d.ft) fail(`incidents/${f}: needs a cr or an ft source`);
   d.systems.forEach(s => { if (!sysIds.has(s)) fail(`incidents/${f}: unknown system ${s}`); });
   (d.services ?? []).forEach(s => { if (!svcIds.has(s)) fail(`incidents/${f}: unknown service ${s}`); });

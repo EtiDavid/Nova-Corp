@@ -1,25 +1,21 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
-import { labStories } from "../../data/labStories";
+import { typeLabel } from "../../lib/nova";
 const base = import.meta.env.BASE_URL;
-const kindFor=(id:string)=>labStories.find(s=>s.slug===id)?.kind??"controlled";
-const group: Record<string, string> = {
-  "dns-client-outage": "failure", "dc01-outage": "failure", "firewall-management-exposure": "failure",
-  "file-permission-denial": "failure", "wireguard-handshake": "failure", "proxmox-storage-pressure": "failure",
-  "backup-target-unavailable": "recovery", "vpn-validation-deferred": "deferred"
-};
-const labels: Record<string, string> = { failure: "Failure investigated", recovery: "Recovery tested", deferred: "Deferred test" };
 const all = await getCollection("incidents");
-const order = ["failure", "recovery", "deferred"];
-const cases = all.map((e: CollectionEntry<"incidents">) => ({ e, g: e.id in group ? group[e.id] : (e.data.status === "deferred" ? "deferred" : "failure") }))
-  .sort((a: {e: CollectionEntry<"incidents">; g: string}, b: {e: CollectionEntry<"incidents">; g: string}) => order.indexOf(a.g) - order.indexOf(b.g) || a.e.data.title.localeCompare(b.e.data.title));
+const order = ["real", "controlled", "blind", "tabletop"];
+const crRank = (c?: string | null) => (c === "CR-A" ? 100 : c ? parseInt(c.slice(3), 10) : 0);
+// Featured first, then the most recently built change first. The site shows no dates.
+const cases = [...all].sort((a: CollectionEntry<"incidents">, b: CollectionEntry<"incidents">) =>
+  ((a.data as any).featured ?? 99) - ((b.data as any).featured ?? 99) || crRank((b.data as any).cr) - crRank((a.data as any).cr) || a.id.localeCompare(b.id));
+const typeOf = (e: CollectionEntry<"incidents">) => (e.data as any).type as string;
+const count = (t: string) => all.filter((e: CollectionEntry<"incidents">) => (e.data as any).type === t).length;
 const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-client-outage");
 ---
-<BaseLayout title="Investigations" description="Replay real troubleshooting from the Nova Corp lab: DNS, Domain Controller outage, firewall rules, file permissions, VPN and recovery." breadcrumbs={[{ label: "Investigations" }]}>
+<BaseLayout title="Incidents" description="What broke in the Nova Corp lab, how I worked out why, and how I proved the fix: unexpected incidents, controlled tests, blind tests and tabletop exercises." breadcrumbs={[{ label: "Incidents" }]}>
   <section class="page-head tight"><div class="container">
-    <div class="byline">Investigations</div>
-    <h1>When something broke, here is how I found out why.</h1>
+    <h1>Incidents: when something broke, here is how I found out why.</h1>
     <p class="lead" style="margin-top:14px">Each case starts with what an employee saw, then the checks I ran, the cause, and how I proved the fix.</p>
   </div></section>
   {featured && <section class="container"><div class="outcome" style="max-width:820px">
@@ -29,22 +25,18 @@ const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-cli
     <a class="btn" href={base + "incidents/dns-client-outage/"} style="width:fit-content">Follow the investigation <span aria-hidden="true">→</span></a>
   </div></section>}
   <section class="v4-section" style="border-top:0"><div class="container">
-    <div class="tabs" role="group" aria-label="Filter investigations" id="filters">
-      <button type="button" data-f="all" aria-pressed="true">All</button>
-      <button type="button" data-f="controlled" aria-pressed="false">Controlled tests</button>
-      <button type="button" data-f="unplanned" aria-pressed="false">Unexpected issues</button>
-      <button type="button" data-f="failure" aria-pressed="false">Failure</button>
-      <button type="button" data-f="recovery" aria-pressed="false">Recovery</button>
-      <button type="button" data-f="deferred" aria-pressed="false">Deferred</button>
+    <div class="tabs" role="group" aria-label="Filter incidents by type" id="filters">
+      <button type="button" data-f="all" aria-pressed="true">All ({all.length})</button>
+      {order.map((t) => <button type="button" data-f={t} aria-pressed="false">{typeLabel[t]} ({count(t)})</button>)}
     </div>
     <div class="outcomes" id="case-grid">
-      {cases.map(({ e, g }: {e: CollectionEntry<"incidents">; g: string}) => <article class="outcome" data-g={g} data-kind={kindFor(e.id)}>
-        <span class={"chip " + (g === "deferred" ? "deferred" : "tested")}>{kindFor(e.id)==="controlled"?"Controlled test":kindFor(e.id)==="unplanned"?"Unexpected issue":labels[g]}</span>
+      {cases.map((e: CollectionEntry<"incidents">) => (<article class="outcome" data-g={typeOf(e)}>
+        <span class={"chip type " + typeOf(e)}>{typeLabel[typeOf(e)]}</span>
         <h3>{e.data.shortTitle ?? e.data.title}</h3>
         <p>{e.data.saw ?? e.data.summary}</p>
         <p class="result">{e.data.outcome}</p>
-        <a href={base + "incidents/" + e.id + "/"}>{g === "deferred" ? "Read what was not tested" : "Read the investigation"}</a>
-      </article>)}
+        <a href={base + "incidents/" + e.id + "/"}>Read the investigation</a>
+      </article>))}
     </div>
     <p class="muted" style="margin-top:28px">More investigations are in the <a href="https://github.com/EtiDavid/Nova-Corp/tree/main/docs/explore/incidents">public incident archive ↗</a>; they are not all rewritten as case studies yet.</p>
   </div></section>
@@ -54,11 +46,13 @@ const featured = all.find((e: CollectionEntry<"incidents">) => e.id === "dns-cli
     var cards = [].slice.call(document.querySelectorAll("#case-grid .outcome"));
     function apply(f) {
       btns.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.f === f ? "true" : "false"); });
-      cards.forEach(function (c) { c.hidden = !(f === "all" || c.dataset.g === f || c.dataset.kind === f); });
+      cards.forEach(function (c) { c.hidden = !(f === "all" || c.dataset.g === f); });
     }
     btns.forEach(function (b) { b.addEventListener("click", function () { apply(b.dataset.f); }); });
     var t = new URLSearchParams(location.search).get("type");
-    apply(["failure", "recovery", "deferred", "controlled", "unplanned"].indexOf(t) >= 0 ? t : "all");
+    var alias = { unplanned: "real", failure: "all", recovery: "all" };
+    t = alias[t] || t;
+    apply(["real", "controlled", "blind", "tabletop"].indexOf(t) >= 0 ? t : "all");
   })();
   </script>
 </BaseLayout>

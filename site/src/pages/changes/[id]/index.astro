@@ -16,22 +16,23 @@ import NovaLayout from "../../../layouts/NovaLayout.astro";
 import { loadNova, typeLabel, journalHref } from "../../../lib/nova";
 export async function getStaticPaths() {
   const nova = await loadNova();
-  return nova.done.map((c: any) => ({ params: { id: c.id }, props: { id: c.id } }));
+  return [...nova.done, ...nova.supplemental].map((c: any) => ({ params: { id: c.id }, props: { id: c.id } }));
 }
 const { id } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const nova = await loadNova();
 const c = nova.changes.find((x: any) => x.id === id);
 const b = nova.builtIn(id);
+const sup = !!c.supplemental;
 const i = nova.done.findIndex((x: any) => x.id === id);
 const journal = await journalHref(c.journal, base);
-const prev = nova.done[i - 1], nextC = nova.done[i + 1];
+const prev = sup ? undefined : nova.done[i - 1], nextC = sup ? undefined : nova.done[i + 1];
 ---
 <NovaLayout title={`${c.id}: ${c.title}`} description={`${c.title}. ${c.goal} Part of the Nova Corp lab by David Eti.`} current="changes">
   <section class="incident-head"><div class="wrap prose-narrow">
     <p class="tiny"><a href={base + "changes/"}>← All changes</a></p>
     <h1 style="margin-top:10px">{c.title}</h1>
-    <p class="lead" style="margin-top:12px"><span class="mono">{c.id}</span> · {c.goal}</p>
+    <p class="lead" style="margin-top:12px"><span class="mono">{c.id}</span>{sup && " · supplemental, outside the numbered roadmap"} · {c.goal}</p>
   </div></section>
   <div class="wrap prose-narrow">
     {id === "CR-001" && <ProxmoxLayers start="stack" />}
@@ -52,12 +53,15 @@ const prev = nova.done[i - 1], nextC = nova.done[i + 1];
   <div class="wrap prose-narrow" style="padding-bottom:40px">
     <h2 style="margin-top:20px">What I built</h2>
     <ul>{(c.built ?? []).map((x: string) => <li>{x}</li>)}</ul>
-    {(b.systems.length > 0 || b.services.length > 0) && <p class="tiny" style="margin-top:10px">On the map: {[...b.systems.map((s: any) => <a href={base + "systems/" + s.id + "/"}>{s.name}</a>), ...b.services.map((v: any) => <a href={base + "services/" + v.id + "/"}>{v.name}</a>)].reduce((a: any, x: any) => a === null ? [x] : [...a, ", ", x], null)}.</p>}
+    {b.adds.length > 0 && <p class="tiny" style="margin-top:10px">Added to the map: {b.adds.map((s: any, n: number) => <>{n ? ", " : ""}<a href={base + "systems/" + s.id + "/"}>{s.name}</a></>)}.</p>}
+    {b.changes.length > 0 && <p class="tiny" style="margin-top:6px">Changed on the map: {b.changes.map((s: any, n: number) => <>{n ? ", " : ""}<a href={base + "systems/" + s.id + "/"}>{s.name}</a></>)}.</p>}
+    {b.services.length > 0 && <p class="tiny" style="margin-top:6px">Services: {b.services.map((v: any, n: number) => <>{n ? ", " : ""}<a href={base + "services/" + v.id + "/"}>{v.name}</a></>)}.</p>}
     {b.incidents.length > 0 && <>
       <h2 style="margin-top:28px">What broke</h2>
       <ul class="plainlist">{b.incidents.map((n: any) => <li><span class={"type " + n.type} style="margin-right:8px">{typeLabel[n.type]}</span><a href={base + "incidents/" + n.slug + "/"}>{n.shortTitle ?? n.title}</a></li>)}</ul></>}
     {c.validated && <><h2 style="margin-top:28px">How it was validated</h2><p style="margin-top:6px">{c.validated}</p></>}
-    <h2 style="margin-top:28px">Original journal</h2>
+    {c.limits && c.limits.length > 0 && <><h2 style="margin-top:28px">What this does not prove</h2><ul>{c.limits.map((x: string) => <li>{x}</li>)}</ul></>}
+    <h2 style="margin-top:28px">{sup ? "Sanitized public summary" : "Original journal"}</h2>
     <p style="margin-top:6px"><a class="nv-link" href={journal.href}>Full journal ({c.id}){journal.external ? " ↗" : " →"}</a></p>
     <p class="tiny" style="margin-top:28px">{prev && <a href={base + "changes/" + prev.id + "/"}>← {prev.id}</a>}{prev && nextC && "  ·  "}{nextC && <a href={base + "changes/" + nextC.id + "/"}>{nextC.id} →</a>}</p>
   </div>

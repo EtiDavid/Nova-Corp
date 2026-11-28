@@ -3,7 +3,7 @@
 import { z } from "zod";
 
 const id = z.string().regex(/^[a-z0-9][a-z0-9-]*$/, "lowercase letters, digits and hyphens only");
-const cr = z.string().regex(/^CR-\d{3}$/, "like CR-004");
+const cr = z.string().regex(/^CR-(\d{3}|A)$/, "like CR-004, or CR-A for the supplemental change");
 const point = z.tuple([z.number(), z.number()]);
 const copy = z.enum(["migrated", "rewritten"]).default("migrated"); // migrated = old wording kept until the Phase 4 rewrite
 
@@ -14,7 +14,7 @@ export const lineSchema = z.object({
 }).strict();
 
 export const zoneSchema = z.object({
-  id: id, name: z.string(), vlan: z.number().int().optional(), kind: z.enum(["vlan", "tunnel", "upstream", "legacy"]),
+  id: id, name: z.string(), vlan: z.number().int().optional(), kind: z.enum(["vlan", "tunnel", "upstream", "legacy", "host"]),
   box: z.object({ col: z.number(), row: z.number(), w: z.number(), h: z.number() }).optional(), labelEnd: z.boolean().default(false)
 }).strict();
 
@@ -26,6 +26,7 @@ export const systemSchema = z.object({
   id: id, name: z.string(), role: z.string(), sub: z.string(), kind: z.enum(["hypervisor", "firewall", "server", "workstation", "appliance"]),
   zone: z.string(), ip: z.string().optional(), os: z.string().optional(), status: z.enum(["live", "retired"]),
   services: z.array(id).default([]), builtBy: z.array(cr).min(1),
+  physical: z.boolean().default(false), hostedOn: id.optional(), // a virtual machine names its hypervisor; a physical device names none
   map: z.object({ col: z.number(), row: z.number(), w: z.number().default(13), h: z.number().default(4.4) }),
   links: z.array(linkSchema).default([]), limit: z.string().min(10), story: z.string().min(60), copyStatus: copy
 }).strict();
@@ -36,7 +37,8 @@ export const serviceSchema = z.object({
 }).strict();
 
 export const changeSchema = z.object({
-  id: cr, title: z.string(), goal: z.string(), status: z.enum(["done", "next", "planned"]),
+  id: cr, title: z.string(), goal: z.string(), status: z.enum(["done", "next", "planned"]), supplemental: z.boolean().optional(), // supplemental = outside the locked numbered roadmap
+  limits: z.array(z.string()).optional(),
   journal: z.string().url().optional(), pdf: z.string().url().optional(), time: z.string().optional(),
   built: z.array(z.string()).optional(), validated: z.string().optional()
 }).strict().refine(c => c.status !== "done" || !!c.journal, { message: "a done change needs a journal link" })
@@ -61,7 +63,7 @@ export const factsSchema = z.object({
 
 // New fields added to the existing incidents collection. Optional for migrated records; required for featured ones.
 export const incidentExtra = {
-  type: z.enum(["real", "controlled", "blind", "tabletop", "deferred"]).optional(),
+  type: z.enum(["real", "controlled", "blind", "tabletop"]).optional(),
   cr: cr.nullable().optional(), ft: z.string().optional(),
   services: z.array(id).optional(), lines: z.array(z.enum(lineIds)).optional(),
   segment: z.object({ from: id, to: id, line: z.enum(lineIds) }).nullable().optional(),

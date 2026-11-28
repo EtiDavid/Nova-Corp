@@ -22,7 +22,6 @@ import NameMatch from "../../components/nova/xf/NameMatch.astro";
 import GatewayFix from "../../components/nova/xf/GatewayFix.astro";
 import ServiceStopped from "../../components/nova/xf/ServiceStopped.astro";
 import Rollback from "../../components/nova/xf/Rollback.astro";
-import TestNotRun from "../../components/nova/xf/TestNotRun.astro";
 import Cr004Rollback from "../../components/nova/xf/Cr004Rollback.astro";
 import { loadNova, typeLabel, segmentId, journalHref } from "../../lib/nova";
 export async function getStaticPaths() {
@@ -78,7 +77,6 @@ const journalOnSite = legacy ? (legacy.journalFormat === "markdown" ? siteArticl
         {entry.id === "proxmox-default-gateway" && <GatewayFix />}
         {entry.id === "proxmox-webgui-outage" && <ServiceStopped />}
         {entry.id === "bulk-users-partial-rollback" && <Rollback />}
-        {entry.id === "vpn-validation-deferred" && <TestNotRun />}
         {entry.id === "dc02-cannot-reach-dc01" && <Cr004Rollback />}
         {!legacy && <Content />}
         {d.limits && <><h2 style="margin-top:32px">What this doesn't prove</h2><p class="boxnote" style="margin-top:10px">{d.limits}</p></>}
