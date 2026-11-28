@@ -11,7 +11,7 @@ const strip = (id: string) => id.replace(/^nova-/, "");
 export const segmentId = (line: string, from: string, to: string) => `${line}:${strip(from)}-${strip(to)}`;
 const px = (n: number) => Math.round(n * GRID * 100) / 100;
 
-export const typeLabel: Record<string, string> = { real: "Real", controlled: "Controlled", blind: "Blind test", tabletop: "Tabletop", deferred: "Deferred" };
+export const typeLabel: Record<string, string> = { real: "Unexpected", controlled: "Controlled test", blind: "Blind test", tabletop: "Tabletop", deferred: "Deferred" }; // deferred is removed in F1 once the VPN card is retired
 
 // Where a change's full journal can be read on this site: the PDF viewer, or the rendered Markdown. Falls back to GitHub.
 export async function journalHref(journalUrl: string, base: string) {
